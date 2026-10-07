@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.33.0</span>
+    <span class="navbar-title">nodebpy 520.34.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -2626,7 +2626,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean">SDFGridBoolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>SDFGridBoolean(grid_1<span class="op">=</span><span class="va">None</span>, grid_2<span class="op">=</span>(), <span class="op">*</span>, operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Cut, subtract, or join multiple SDF volume grid inputs</p>
 <section id="attributes-15" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
@@ -2681,11 +2681,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect">intersect</a></td>
-<td></td>
+<td>Create SDF Grid Boolean with operation ‘Intersect’.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.union">union</a></td>
-<td></td>
+<td>Create SDF Grid Boolean with operation ‘Union’.</td>
 </tr>
 </tbody>
 </table>
@@ -2697,10 +2697,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect">intersect</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>intersect(grids<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create SDF Grid Boolean with operation ‘Intersect’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean.union" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean.union">union</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>union(grids<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create SDF Grid Boolean with operation ‘Union’.</p>
 </section>
 </section>
 </section>

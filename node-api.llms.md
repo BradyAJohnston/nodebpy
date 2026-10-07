@@ -168,6 +168,42 @@ with g.tree() as tree:
 tree
 ```
 
+Arithmetic between two colors uses a Mix node and keeps the left color’s alpha. With a scalar or a vector the color acts as a vector, so a texture’s color can still drive a vector or rotation input.
+
+``` python
+with g.tree() as tree:
+    col = g.CombineColor().o.color
+    tinted = col * (1.0, 0.8, 0.6, 1.0)  # Mix (Multiply), a color
+    offset = g.NoiseTexture().o.color * 0.2  # Vector Math (Scale), a vector
+tree
+```
+
+##### Bundle
+
+Bundle sockets store and read items by path. A read names the type it expects, and joining with `|` keeps the later bundle’s item when a path is in both.
+
+``` python
+with g.tree() as tree:
+    settings = g.CombineBundle().o.bundle.store("radius", 0.5).store("count", 8)
+    overrides = g.CombineBundle().o.bundle.store("radius", 1.0)
+    merged = settings | overrides
+    g.MeshCircle(merged.get.integer("count"), merged.get.float("radius"))
+tree
+```
+
+##### Python builtins
+
+`round()`, `math.floor()`, `math.ceil()` and `math.trunc()` on a float socket return an integer socket through Float To Integer, as they return an `int` in Python; the `.round()`/`.floor()` methods keep a float. Float To Integer rounds halves away from zero, where Python’s `round()` rounds them to even.
+
+``` python
+import math
+
+with g.tree() as tree:
+    count = math.ceil(g.Value(2.5).o.value * 3)
+    g.MeshLine(count=count)
+tree
+```
+
 ## Enum Options
 
 Many options aren’t available as sockets. These are exposed on the node class itself. The non-socket options are always keyword arguments, requiring them to be explicitly stated.
@@ -257,7 +293,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x12c6bc7d0>
+>     <nodebpy.builder.socket.BooleanSocket at 0x12ab39810>
 >
 > ### Comparing Python Objects
 >

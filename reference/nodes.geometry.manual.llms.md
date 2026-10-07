@@ -1009,7 +1009,7 @@ union(items=(), self_intersection=False, hole_tolerant=False, *, solver='FLOAT')
 ### SDFGridBoolean
 
 ``` python
-SDFGridBoolean(operation='DIFFERENCE')
+SDFGridBoolean(grid_1=None, grid_2=(), *, operation='DIFFERENCE')
 ```
 
 Cut, subtract, or join multiple SDF volume grid inputs
@@ -1030,8 +1030,8 @@ Cut, subtract, or join multiple SDF volume grid inputs
 | Name | Description |
 |----|----|
 | [difference](#nodebpy.nodes.geometry.manual.SDFGridBoolean.difference) | Create SDF Grid Boolean with operation ‘Difference’. |
-| [intersect](#nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect) |  |
-| [union](#nodebpy.nodes.geometry.manual.SDFGridBoolean.union) |  |
+| [intersect](#nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect) | Create SDF Grid Boolean with operation ‘Intersect’. |
+| [union](#nodebpy.nodes.geometry.manual.SDFGridBoolean.union) | Create SDF Grid Boolean with operation ‘Union’. |
 
 ##### difference
 
@@ -1047,11 +1047,15 @@ Create SDF Grid Boolean with operation ‘Difference’.
 intersect(grids=())
 ```
 
+Create SDF Grid Boolean with operation ‘Intersect’.
+
 ##### union
 
 ``` python
 union(grids=())
 ```
+
+Create SDF Grid Boolean with operation ‘Union’.
 
 ### StoreNamedAttribute
 

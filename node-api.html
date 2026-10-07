@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Node API Design – nodebpy 520.33.0</title>
+<title>Node API Design – nodebpy 520.34.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -177,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.33.0</span>
+    <span class="navbar-title">nodebpy 520.34.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -360,7 +360,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>The design approach for interfacing with the nodes takes several aspects into consideration.</p>
-<div id="9ca65d6a" class="cell" data-execution_count="1">
+<div id="3b545d1d" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="sockets" class="level2">
@@ -378,14 +378,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ):</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>We can either pass in nodes / sockets / values into the constructor, or link them after construction.</p>
 <p>The <code>g.Cube()</code> is used as a positional argument to <code>geometry</code>, while we explicitly state the offset with a keyword argument. On the second line we scale <code>Position()</code> by <code>0.5</code> and then link that to the <code>position</code> input of <code>SetPosition</code>.</p>
-<div id="ed698713" class="cell" data-execution_count="2">
+<div id="fa5246fe" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    sp <span class="op">=</span> g.SetPosition(g.Cube(), offset<span class="op">=</span>g.RandomValue() <span class="op">*</span> <span class="fl">0.1</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (g.Position() <span class="op">*</span> <span class="fl">0.5</span>) <span class="op">&gt;&gt;</span> sp.i.position</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
-<div id="gnwr-8d6fe7eaf6b449119beec77b7ba64408" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-ef04c641fc2a4ee4a252d3bb29068988" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -395,7 +395,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-8d6fe7eaf6b449119beec77b7ba64408"), { payload: "TreeClipper::H4sIABM9xmoC/+1aW2/qOBD+KyjP56Bcoewb23KOkKAcFVptt6oikwzgbRJHttPLqfrf1w5Ja9IkBUq7tFseuIztYb7xjL/JJPfaNIDIB+peA2WYRNofDc1pmk29MZiMtW8NjVMA1wtwHK9O0ptG0zDkjIj44MppTMgv7jXsi09dDPiII/H1XotQCHLNTyAhcHrXOBZLmFybMHBn6Apc8YWKKTMUMMjkcMspKg5g5tIk4jgEN1Ofj3A0V355JCDUXcq049FxT/6bDzOUBNydU5LEbmr3Dfb5Qswx7NRiYB7FMc8wyjXTQJqQLcERBzpDnkTDaZIapIgy7IaKHXkcX4NY6cNt5hfMIWSpx57WmOqadIJ05uWDeGUuZk+Tred/IL5GSRDk2pWdsNXJAfFQhu7C1JvCGlN+XIo5+ZCLpowECYeSOYq3pFxbAJ4vuBToS0G+04fJFKT3AjSFIHflDaIRjuZuTEmM5rkdWncwyEPBSxgnoZtuXnEzpTl6s6W3O+J1oNt2p9VuOd8a68mk9QwC8PjT1rEFuXFJutusII0pXGO4UWxYYB+Un+HSQfnPdBEXEZtQVYyjOOHKxjmlu5wNtspSZox/g1YemQWLIEIil/0nIAGOrtwAh5hnMZkaCbcxErHoF6C51yhIVHUxjtw5/h0SNcXu4tSos97hZHSSmoVZHKA7ly3QcmjQX021XO2FIeMjf7uUUZ3BbpfBPgPKsQes8dfege8fTzZCbipYD2qxnn8qrJ1arH9/BqxpGGsk4atZbuh1aW4YZY4ZAlvswiW23nF26ZWfvdGwNzk5r3aNsuWGWQbt9KwxRPE+gqs5x4763eHo+Kj0KEupLn+7zMNAmAOByzjiKlUbVhWxL2sL7BeLI1kbyWjIKTRGFCKe8bvq7Epi/57R83dTr+P259PWpvcT4XoSNs5Sj3zRfJHmjVqeN0qJfoij/eP57uC0V5oeh/2Tw0HpsSgCRQ3SUnYfottPgdVYxVrK7v2jd4WaLd6G6Gr2VEVZyutjECZ9FEavBVrB6WYtp5ulnP54PO4d722b13VMZ5rrMt2PJPKkLyTTLZnk0VMrZJfpc3OzfwxG3Ylab5hW/bXtCwRobkt/Q8QXX7T3jPZMuzZHnDfNkT0gPkcNzdZnRyuSIn0Zdkc3jJahXvuZ7Z2hzyV7uNlVVHFQmwadL6qw9HWpYrxAPtD0kig7c4sMQWKgj4ft8HQw6f8anD+euAEK4xyVEp+WUUkca3VFt22LjoE3fhGG03/7IpAigVhmXeZYVt09hb07VTfqnFh2eVUtdySLlX26hPhzNBr0usebdk6kZhV0aUWg5sc+Yd5Rs+gJfWmFMJrNGPCP1PHfvFP2jDGtdm3eH7x13v8XTdNafuxs0zQU5KLmTlXf0NZf7Bvaa7UN7U3Z74v5KpnPNmp2/Fm+2LU8aVtvfax+wD68bW+TUn25TWsllfNCJ8JeoxGxcUKdiagltPHVjijPqVZtllTcd5Ye/Uj0W30ZVl162Ae7w/4O1+c7Bt/5H4N3Sp/LGnso+ERNuArWdIy688Ax3/Y8eEfO3CowrLft2H2IvpRjb96XWkbIWt2p8WF38FT6VxYdE/lgoJiAoojwfHGmT/pUNbj2RrOzSoBMOgIr8SkkklnVfZhRUREw4l0Bz29rcaII1Ba3036leqOo3rJU9Qevtb5TVN9S1XdeqT4ts1X1dltR39JfqT49j1asfzzZxFpOSKAsXT6CK2RKSGnZvxAfz3DxGdpQLiDTf5YlWnEAfFwmZl4SxGUDMcJRQS7z1A3lQ03PxV5Cr6FEHhOhxgtI4heeBL5BmLszQuVzyN5Vyco5BSTmxRB5OChWirkH3BBFaC6tjdIyedmNkrWqKCWBRkgK76WDmQfR8lx4ePgXVb88EiItAAA=", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-ef04c641fc2a4ee4a252d3bb29068988"), { payload: "TreeClipper::H4sIALtXxmoC/+1aW2/qOBD+KyjP56Bcoewb23KOkKAcFVptt6oikwzgbRJHttPLqfrf1w5Ja9IkBUq7tFseuIztYb7xjL/JJPfaNIDIB+peA2WYRNofDc1pmk29MZiMtW8NjVMA1wtwHK9O0ptG0zDkjIj44MppTMgv7jXsi09dDPiII/H1XotQCHLNTyAhcHrXOBZLmFybMHBn6Apc8YWKKTMUMMjkcMspKg5g5tIk4jgEN1Ofj3A0V355JCDUXcq049FxT/6bDzOUBNydU5LEbmr3Dfb5Qswx7NRiYB7FMc8wyjXTQJqQLcERBzpDnkTDaZIapIgy7IaKHXkcX4NY6cNt5hfMIWSpx57WmOqadIJ05uWDeGUuZk+Tred/IL5GSRDk2pWdsNXJAfFQhu7C1JvCGlN+XIo5+ZCLpowECYeSOYq3pFxbAJ4vuBToS0G+04fJFKT3AjSFIHflDaIRjuZuTEmM5rkdWncwyEPBSxgnoZtuXnEzpTl6s6W3O+J1oNt2p9VuOd8a68mk9QwC8PjT1rEFuXFJutusII0pXGO4UWxYYB+Un+HSQfnPdBEXEZtQVYyjOOHKxjmlu5wNtspSZox/g1YemQWLIEIil/0nIAGOrtwAh5hnMZkaCbcxErHoF6C51yhIVHUxjtw5/h0SNcXu4tSos97hZHSSmoVZHKA7ly3QcmjQX021XO2FIeMjf7uUUZ3BbpfBPgPKsQes8dfege8fTzZCbipYD2qxnn8qrJ1arH9/BqxpGGsk4atZbuh1aW4YZY4ZAlvswiW23nF26ZWfvdGwNzk5r3aNsuWGWQbt9KwxRPE+gqs5x4763eHo+Kj0KEupLn+7zMNAmAOByzjiKlUbVhWxL2sL7BeLI1kbyWjIKTRGFCKe8bvq7Epi/57R83dTr+P259PWpvcT4XoSNs5Sj3zRfJHmjVqeN0qJfoij/eP57uC0V5oeh/2Tw0HpsSgCRQ3SUnYfottPgdVYxVrK7v2jd4WaLd6G6Gr2VEVZyutjECZ9FEavBVrB6WYtp5ulnP54PO4d722b13VMZ5rrMt2PJPKkLyTTLZnk0VMrZJfpc3OzfwxG3Ylab5hW/bXtCwRobkt/Q8QXX7T3jPZMuzZHnDfNkT0gPkcNzdZnRyuSIn0Zdkc3jJahXvuZ7Z2hzyV7uNlVVHFQmwadL6qw9HWpYrxAPtD0kig7c4sMQWKgj4ft8HQw6f8anD+euAEK4xyVEp+WUUkca3VFt22LjoE3fhGG03/7IpAigVhmXeZYVt09hb07VTfqnFh2eVUtdySLlX26hPhzNBr0usebdk6kZhV0aUWg5sc+Yd5Rs+gJfWmFMJrNGPCP1PHfvFP2jDGtdm3eH7x13v8XTdNafuxs0zQU5KLmTlXf0NZf7Bvaa7UN7U3Z74v5KpnPNmp2/Fm+2LU8aVtvfax+wD68bW+TUn25TWsllfNCJ8JeoxGxcUKdiagltPHVjijPqVZtllTcd5Ye/Uj0W30ZVl162Ae7w/4O1+c7Bt/5H4N3Sp/LGnso+ERNuArWdIy688Ax3/Y8eEfO3CowrLft2H2IvpRjb96XWkbIWt2p8WF38FT6VxYdE/lgoJiAoojwfHGmT/pUNbj2RrOzSoBMOgIr8SkkklnVfZhRUREw4l0Bz29rcaII1Ba3036leqOo3rJU9Qevtb5TVN9S1XdeqT4ts1X1dltR39JfqT49j1asfzzZxFpOSKAsXT6CK2RKSGnZvxAfz3DxGdpQLiDTf5YlWnEAfFwmZl4SxGUDMcJRQS7z1A3lQ03PxV5Cr6FEHhOhxgtI4heeBL5BmLszQuVzyN5Vyco5BSTmxRB5OChWirkH3BBFaC6tjdIyedmNkrWqKCWBRkgK76WDmQfR8lx4ePgXVb88EiItAAA=", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -410,7 +410,7 @@ mountGraphView(document.getElementById("gnwr-8d6fe7eaf6b449119beec77b7ba64408"),
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">id</span>: InputInteger <span class="op">=</span> Default.ID_OR_INDEX,</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The members mirror Blender’s default-input identifiers (<code>Default.POSITION</code>, <code>Default.NORMAL</code>, <code>Default.INDEX</code>, <code>Default.ID_OR_INDEX</code>, <code>Default.INSTANCE_TRANSFORM</code>, <code>Default.HANDLE_LEFT</code>, <code>Default.HANDLE_RIGHT</code>, <code>Default.SCENE_FRAME</code>, <code>Default.UNIFORM_IMAGE_COORDINATES</code>, <code>Default.SELF_OBJECT</code>). Passing a member to any constructor is the same as passing <code>None</code>: nothing is set or linked, the socket keeps its own fallback.</p>
-<div id="2d0e8d9a" class="cell" data-execution_count="3">
+<div id="99e979e4" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> Default</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
@@ -418,7 +418,7 @@ mountGraphView(document.getElementById("gnwr-8d6fe7eaf6b449119beec77b7ba64408"),
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
-<div id="gnwr-cb14ceacc4534700a08ac8942272cfe8" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-deb83738290242008dad4a640c8c08d3" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -428,7 +428,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-cb14ceacc4534700a08ac8942272cfe8"), { payload: "TreeClipper::H4sIABM9xmoC/+1ZXU/rOBD9K1Wed6sklAL3je2tENrSINqivYuQ5SbT1otjR7bDx0X897WdhLohDR/L7mXR7UMpY4/jOZ4zx53ee3MKLAGBrkFIwpn3pePtdsOu3xlNJ94vHU8JABRTkmWbk/xu0A0CM4PxBJCZJrX94t4jif7r64EEK6w/3nsMp2B8joCnoMRdZ6xdZNf3rX8uAS3wFSD9QehpC0wllHa4VQLXB4hEImeKpIDKR1QjCi+d/2JOuUCFzRtH46F5WgILnFOFloLnGbJ7vyGJWuk5Qc/uGmQsSKbKOI3PnJotlC6EKRALHJuIlMjthhxTGX/gxo9jRa5BeyZwW2JDFKTSorb2CV0fO8EBdKcNUK9535LHV6CQusvsbIP6xJpcvxXREFxjmoMDnTUShlKekAXZQH/BRQwaOIb0AE02z4UwmUGsEM9VlqvNsQwzoEjx5ZK6j6L4TmeWBKr9SMOqKbBc54H2TsC1cxsqpojiOVBnoFjKMWClBJnnSqcLTzGx8JxGx+Opmw/rSRW4FkF9wrHKBTyCeDibRq4fYUWg3vnhaGYzTMPGC1M0m57O7FPMaT4uMYkGvw+n3sPD5YN+lQyS6zzoPc0d/ZHllFaJ4+TFrjuZ8hiXCXDxa9D3uzrV9NulgbkcQnguOdVxNsxxiGCs3grIcmUiCfzCUEEzyOfg2bMroLdY3WDBCFuiTPAML6t9eIejUcXyOJeKp8jyss5Tsx2/2/f3DvRr3+/1Dvp7/V2ztZfYLt1zL1kpV/wGFVkia9ZMwDWBm1rCu0lXAPSYUsZJ6WKkM8FNanP2zsH12wi810TgCfkOW8hb2xEwrEt1sg6EEnaFKEmJKsuN3WQDURoJnuksXZLvKXerZ5mf58PBNDqz2yIy0/xEcoWLodHxZhWtlr0ITH5Ub5cmq8uw95vCPgehSAyy88eHC74qCy+NPHRiPWiN9dunijXwW4P98zMEa/PYK7TMoXkQtPE8CJuAOQG5eg9Iev7B7nuicjSMTobTs2/boXHPvPESMjvvnODsIwbXUsi+Hh+eROOvjbWsksRCF6s0KK4vUmHlanXQa8yFwkXfG0lSv6uZW5jJhkpDMyyAqVLgXbC3Kvuzsv4mTZ+A6pxySexTfmp7XduDVnEP9t5wPf9xtfB1rG+U8El1Yf9Pgyud22L7LYpGw8Pxa1lvVnaDbtRylx8fKeZ3KnSP0YeN4h4tFhLU/+m6+voq/0Tsw1axD8N/m/c/QvDbBC/ceYvgaXFxubNN88LeNs0L9p9Vvc0pL9a9I9PV6URFw+Kn7tV1L9xtzf/+59W9sFHTPyKnB7PJNDppDGpwfDYYrTn9tLztt9B5SwU4eGkFMMy39Fqza4P5RV+w7I4+tgwLJX6moExN59T09hjjquJluabB2tnvjt/aV92s79IAT5yD0xZDHPd8FkITvuitVt/3FHcMe04S7YT/cPmwvnzYr8DRvopzt/VZtOK1zUHNK5/ytJNbWDXy8782G6bVACSkySzjnGZNAxkmrGY3KYpS8+X3qTnOxTU02DOul4kpz5ParwE3mCi04ML8HhFfNXguBWA9LwMWE1qvdRUCKMUML6HoR6/zzbD2VoFg2BjvDcAyBlZk/sPD33czD90qGQAA", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-deb83738290242008dad4a640c8c08d3"), { payload: "TreeClipper::H4sIALtXxmoC/+1ZXU/rOBD9K1Wed6sklAL3je2tENrSINqivYuQ5SbT1otjR7bDx0X897WdhLohDR/L7mXR7UMpY4/jOZ4zx53ee3MKLAGBrkFIwpn3pePtdsOu3xlNJ94vHU8JABRTkmWbk/xu0A0CM4PxBJCZJrX94t4jif7r64EEK6w/3nsMp2B8joCnoMRdZ6xdZNf3rX8uAS3wFSD9QehpC0wllHa4VQLXB4hEImeKpIDKR1QjCi+d/2JOuUCFzRtH46F5WgILnFOFloLnGbJ7vyGJWuk5Qc/uGmQsSKbKOI3PnJotlC6EKRALHJuIlMjthhxTGX/gxo9jRa5BeyZwW2JDFKTSorb2CV0fO8EBdKcNUK9535LHV6CQusvsbIP6xJpcvxXREFxjmoMDnTUShlKekAXZQH/BRQwaOIb0AE02z4UwmUGsEM9VlqvNsQwzoEjx5ZK6j6L4TmeWBKr9SMOqKbBc54H2TsC1cxsqpojiOVBnoFjKMWClBJnnSqcLTzGx8JxGx+Opmw/rSRW4FkF9wrHKBTyCeDibRq4fYUWg3vnhaGYzTMPGC1M0m57O7FPMaT4uMYkGvw+n3sPD5YN+lQyS6zzoPc0d/ZHllFaJ4+TFrjuZ8hiXCXDxa9D3uzrV9NulgbkcQnguOdVxNsxxiGCs3grIcmUiCfzCUEEzyOfg2bMroLdY3WDBCFuiTPAML6t9eIejUcXyOJeKp8jyss5Tsx2/2/f3DvRr3+/1Dvp7/V2ztZfYLt1zL1kpV/wGFVkia9ZMwDWBm1rCu0lXAPSYUsZJ6WKkM8FNanP2zsH12wi810TgCfkOW8hb2xEwrEt1sg6EEnaFKEmJKsuN3WQDURoJnuksXZLvKXerZ5mf58PBNDqz2yIy0/xEcoWLodHxZhWtlr0ITH5Ub5cmq8uw95vCPgehSAyy88eHC74qCy+NPHRiPWiN9dunijXwW4P98zMEa/PYK7TMoXkQtPE8CJuAOQG5eg9Iev7B7nuicjSMTobTs2/boXHPvPESMjvvnODsIwbXUsi+Hh+eROOvjbWsksRCF6s0KK4vUmHlanXQa8yFwkXfG0lSv6uZW5jJhkpDMyyAqVLgXbC3Kvuzsv4mTZ+A6pxySexTfmp7XduDVnEP9t5wPf9xtfB1rG+U8El1Yf9Pgyud22L7LYpGw8Pxa1lvVnaDbtRylx8fKeZ3KnSP0YeN4h4tFhLU/+m6+voq/0Tsw1axD8N/m/c/QvDbBC/ceYvgaXFxubNN88LeNs0L9p9Vvc0pL9a9I9PV6URFw+Kn7tV1L9xtzf/+59W9sFHTPyKnB7PJNDppDGpwfDYYrTn9tLztt9B5SwU4eGkFMMy39Fqza4P5RV+w7I4+tgwLJX6moExN59T09hjjquJluabB2tnvjt/aV92s79IAT5yD0xZDHPd8FkITvuitVt/3FHcMe04S7YT/cPmwvnzYr8DRvopzt/VZtOK1zUHNK5/ytJNbWDXy8782G6bVACSkySzjnGZNAxkmrGY3KYpS8+X3qTnOxTU02DOul4kpz5ParwE3mCi04ML8HhFfNXguBWA9LwMWE1qvdRUCKMUML6HoR6/zzbD2VoFg2BjvDcAyBlZk/sPD33czD90qGQAA", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -436,7 +436,7 @@ mountGraphView(document.getElementById("gnwr-cb14ceacc4534700a08ac8942272cfe8"),
 <section id="outputs" class="level3">
 <h3 class="anchored" data-anchor-id="outputs">Outputs</h3>
 <p>Selection of outputs is done automatically to best match the data types of the inputs. You can be specific with the output though, with outputs available behind the <code>outputs</code> / <code>o</code> accessor.</p>
-<div id="de6ebe9f" class="cell" data-execution_count="4">
+<div id="7cdc14ae" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    time <span class="op">=</span> g.SceneTime()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -448,7 +448,7 @@ mountGraphView(document.getElementById("gnwr-cb14ceacc4534700a08ac8942272cfe8"),
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
-<div id="gnwr-befc4ba4456a4cf8870aefebf8173853" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-b49004cbf3b7401fbae99409bd45b1cf" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -458,7 +458,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-befc4ba4456a4cf8870aefebf8173853"), { payload: "TreeClipper::H4sIABM9xmoC/+1aW2/iOBT+KyjPW5SEhJZ963Y6I7TQVAWqnR1VkUkMeJvYke30MlX/+9pOAiaYlF5mh+mWB0qPL/E5/r7z2Y4frGkCcQxpeAMpQwRbv7csv+227dZgPLJ+a1mcQhhGCcqy9Up222k7jqyBSQxDWY0J+7cHC8Xiry0KYsCB+PlgYZBC2eYLJCnk9L51Jpqwtm27sn3OYDgD1zAUP6ioNgMJg6Ud3nEK6gWIhTTHHKUwLB9RlXAw1/6LSEJoWNiss+DsVD4thjOQJzycU5JnoRr7LYr5QtRxPDVqyCKKMl76KdtMEzmEsgnCHNIZiKRHnOZqQJqp9N/R/QcRRzdQtIzhXRkbxGHKVNRWbVy9jaqgBbTTFFDLPG5GomvIQ36fqdoy6iNl0tstkAjBDUhyqIVOGREOUxKjGVqL/ozQCIrA4VAUJPH6vCDMMhjxkOQ8y/l6WQYwTEJO5vNEf1QC7gWyGExEO2ToNYU4FzgQrWOo24lyFSRhAqYw0QqKrjQD4Jyiac4FXEgKkArPedA/G+t4WFWqgqsiKGY44jmFyyAeT8aB3g7hwlHr8ngwUQgTYSOFKZiMzyfqKXI2l12MgpM/T8fW4+PVo/iUDGIrHHib2BE/cZ4kFXA0XPh65YREoATAtwPXttsCageuK/5eyUiXpSGYMpIIV83VNDrIAmsB0Xwh/XGKmkv0jSKIYWsseGipeSymQcXtFlCM8DzMKMnAvBqTdTwYVIyPcsZJGiqO1jkrx2W3u/ZhT3yObM/rdQ+7wtHdbFc6BkqGsgW5DQvEsJo1o/AGwdsa+HUAFpFawks24iIxCVToAJc40CaxayTzlZrvgh1a5cMm5h+ZmD+CEcEx20L8mgcQA5Hm45XjCcLXYYJSJEPk2T2/8svAM2N+yATI5+h7SvTkW8J7SYQYsUywO2QLUJQM+us5uOpVwErGpfS3Z/L3MwUFzN6JtwUQipTIOOA6/x27ATtCi1Bcz/8ys/clABUlK0ZmgELMy9ShBdhxGnKGZLhiflPGWKu0c744yacfmWIzUziNuu8YhX+Evr8JG5w3pcLpyTi4eBYXvjkKSuXXlQ5Sz+T3JaQcRZC1/to776v1xK6uu7qzfqOzX9+Xs91GZ/9+D85u0XmnUegdo9IPIVvso/B9OQ2Gp+OLr9tDo8+5UdQnl60hyPZS1bensk/942Fw9smYzZTeVV9XzSrvvkjlJRoqHd2m767z9J5gty3BcxX+QgSepK1LFY8Ppa8rvduo9K5R6Ydiv7p3Qr91zXvSvzgZGJPigbO2yHeN8j4Ed+/C2ZqvRnXvf/pPXS0bv0Tntvu55mXXvE8VQ/pVBL3R0S2S7jZKumuU9GV+/HU2sw2heWo76/Z2FbrPOVZngFLoCilZRmpN68r+lgdqnwfB8VhfbnTsJ3a4B467wxZ3VWtnBRwCvvhQvg3l6ziNZ9vuD2WJ8/Mp4uvg7PyvvPXezNvlG4P9c3eLOHT8Rth3P8Shc7irOIwWIIZU7YHKHFvXBJJBukyuw8lg3D8ffF1m2ASkWeWVjs+jbVJR5vrmw9B6pd1fnkDeOicMqad9CMaGYPSamOPZL3gb+vOy6LOOSjzHvI4u34/u26bhjyAYnB6fPfeoRPasO21cAej82Cef3+h0aOW9cUUQzGYM8l/plP/5R2Mbiul5jbz3fzTvf8YpaZM+et2XnBIKcdG5s+2g0Dvcpn2dXV4Edl76IvCLvEjTCoo7Ih/aV9c+76iRA733q32+Udf3kdcnk9E4GDathremON9poLQ5C/jurllAsl/Ra8Wu+jIZsbC8kLa8pVWo8RNJZSwvq8nrVBgTXvGy7FPGWh9vpwnB/nqOZzLwSJs4YZHE0ednRgXhi+ts1akaJytDR3+/6Puv7H6j947ee/eVvatdn969t9b94Su7d+qj9/RDWv/old0rBV7rvlcBR7TlhOg38YqbocKmIcoqn7J5sbCwClRO/1m/v1cVwBiZzCzKk8xUkAGEa3ZJ3zCVb1Q3zVFOb6DBnhHRTZSQPK5dTr0FiIczQuX12Oja0HJOIRD1MogjlNR1oIpAmAIM5rC4HrniosxodxxSDKTxQQaYycs9imWPj/8CaGcy/rkrAAA=", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-b49004cbf3b7401fbae99409bd45b1cf"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -466,7 +466,7 @@ mountGraphView(document.getElementById("gnwr-befc4ba4456a4cf8870aefebf8173853"),
 <section id="slicing-inputs-and-outputs" class="level3">
 <h3 class="anchored" data-anchor-id="slicing-inputs-and-outputs">Slicing Inputs and Outputs</h3>
 <p>You can use slicing to access individual or multiple components of input and output sockets.</p>
-<div id="c1bfb3dc" class="cell" data-execution_count="5">
+<div id="d5844d63" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    sep <span class="op">=</span> g.SeparateXYZ(g.Position())</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    comb <span class="op">=</span> g.CombineXYZ(<span class="op">*</span>sep.o)</span>
@@ -476,7 +476,7 @@ mountGraphView(document.getElementById("gnwr-befc4ba4456a4cf8870aefebf8173853"),
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
-<div id="gnwr-949b82aefec947c7b5a061f9744f2d7f" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-9b58ab3336434439b70f117ce53f141d" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -486,12 +486,12 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-949b82aefec947c7b5a061f9744f2d7f"), { payload: "TreeClipper::H4sIABM9xmoC/+1ZbU/jOBD+K1U+H1WcpG/3DbHohNSD08KtdhetLDeZtj4cO7KdFg71v5+dF9VN0wAHrNBCP0AynpnMPOOZJy/33owBT0DiFUhFBfd+73mDftD3e9OrS++3nqclAI4ZzbJdJb+P+ghZDS4SwFZNGfn1vUcT8983CwnRxBzee5ykYG3+AJGClne9c2Oi+r4fWvtcAZ6TG8DmQBq1OWEKKjncakmaC1RhmXNNU8DVJeoVTRbOWSyYkLiUeecX56f2agnMSc40XkiRZ7iIfU0TvTQ6KCqiBhVLmukqT2szYzaEyoRyDXJOYpuRlnkRkCOq8kdu/iTWdAXGMoHbChuqIVUFalubwLUpFCygPzbmV8Gstsrh/gXMIc8Zq7071YhcZSZiUmV3fRQEft/EY/78MDr1EiYzJViuoUXHQctKvSXQxVJbgV8K6mr/JRQtrmMdkxmwGs41kZzyBc6kyMiijsU7nk7r7RDnSosUFwVsFtSG5PeH/mhifmM/iibD0XBgw3uMzGaggEGst+VTS7HGoqi4akgzCSsKayeGJU3AOU1LkOrTwkibXZtLV0x5lmuneINDlTZyketd5WGrcrU4auszF/mW7dxIATgxQyDZZs4ov8GMptRiFPmTQZ0Y3GbE7OGkAQdeEZa7HjPK8YL+mwq3Ne+yIrYvpydXF5+LyKjKGLnDaknKpU9nx39enH9yu7T2fF3vwHIbbjYlViYcYFhpot3WGHega1qZJs15ZMfRmS2RC1xGJHBd9ZS1rbxPDvZS9HArRf+rky7BBGNy7H399v2jm/a6CfldHYJQW4t8MTGb7F+gQdBP6o6Ts88n09MnNMfeIEFBJ05hG05f3+QMOZ7+ffpEkAwyThOjqC3Zb79osoO2ZL//Usl28QEaPpYQLpfE3AtbOqhHbjVxD5EBGh1ig2qoj7vooKHzaD44EemM8g86OEAH484xN3m1MYfeVtsH/qvNuLeWKXq1AYfe0HTbI/Sgk9CD8HVvfH7ik8GT733aiSCInk4E1ax9gAeCwQM8cPQYIjh6DhP0fR99sMEeGwSdj8/B6N2wwfjdsMHkfbJB2PkYHKIPNthlgzB4YTZ44A3TlX3ZaxQI50LXo7h6YWuhdEMLO0u5S2PKpk+duhiJnZUu/HNpZrwS8Q3o6qWhFttzhJz2CQfP9F68SNhxP3HdD5/rPmq4D9zmD0fPdT9out8BZ/zi0U/qjWNstRDMMS2/rBiZs6O86ioioXPa/CySWgMx+6fk3OYCJLRNrOKcZW0LGaG8IbfdiVNQyxZxnMsVtMgzYdzETORJ4+POmlCN50Laz0vxTYvlQgIxehnwmLIm9dcI4JRwsrDR8uK+x1bCQGoH1q0GyYkV3luAVQy8HACbzX/Fvz4p+RoAAA==", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-9b58ab3336434439b70f117ce53f141d"), { payload: "TreeClipper::H4sIALtXxmoC/+1ZbU/jOBD+K1U+H1WcpG/3DbHohNSD08KtdhetLDeZtj4cO7KdFg71v5+dF9VN0wAHrNBCP0AynpnMPOOZJy/33owBT0DiFUhFBfd+73mDftD3e9OrS++3nqclAI4ZzbJdJb+P+ghZDS4SwFZNGfn1vUcT8983CwnRxBzee5ykYG3+AJGClne9c2Oi+r4fWvtcAZ6TG8DmQBq1OWEKKjncakmaC1RhmXNNU8DVJeoVTRbOWSyYkLiUeecX56f2agnMSc40XkiRZ7iIfU0TvTQ6KCqiBhVLmukqT2szYzaEyoRyDXJOYpuRlnkRkCOq8kdu/iTWdAXGMoHbChuqIVUFalubwLUpFCygPzbmV8Gstsrh/gXMIc8Zq7071YhcZSZiUmV3fRQEft/EY/78MDr1EiYzJViuoUXHQctKvSXQxVJbgV8K6mr/JRQtrmMdkxmwGs41kZzyBc6kyMiijsU7nk7r7RDnSosUFwVsFtSG5PeH/mhifmM/iibD0XBgw3uMzGaggEGst+VTS7HGoqi4akgzCSsKayeGJU3AOU1LkOrTwkibXZtLV0x5lmuneINDlTZyketd5WGrcrU4auszF/mW7dxIATgxQyDZZs4ov8GMptRiFPmTQZ0Y3GbE7OGkAQdeEZa7HjPK8YL+mwq3Ne+yIrYvpydXF5+LyKjKGLnDaknKpU9nx39enH9yu7T2fF3vwHIbbjYlViYcYFhpot3WGHega1qZJs15ZMfRmS2RC1xGJHBd9ZS1rbxPDvZS9HArRf+rky7BBGNy7H399v2jm/a6CfldHYJQW4t8MTGb7F+gQdBP6o6Ts88n09MnNMfeIEFBJ05hG05f3+QMOZ7+ffpEkAwyThOjqC3Zb79osoO2ZL//Usl28QEaPpYQLpfE3AtbOqhHbjVxD5EBGh1ig2qoj7vooKHzaD44EemM8g86OEAH484xN3m1MYfeVtsH/qvNuLeWKXq1AYfe0HTbI/Sgk9CD8HVvfH7ik8GT733aiSCInk4E1ax9gAeCwQM8cPQYIjh6DhP0fR99sMEeGwSdj8/B6N2wwfjdsMHkfbJB2PkYHKIPNthlgzB4YTZ44A3TlX3ZaxQI50LXo7h6YWuhdEMLO0u5S2PKpk+duhiJnZUu/HNpZrwS8Q3o6qWhFttzhJz2CQfP9F68SNhxP3HdD5/rPmq4D9zmD0fPdT9out8BZ/zi0U/qjWNstRDMMS2/rBiZs6O86ioioXPa/CySWgMx+6fk3OYCJLRNrOKcZW0LGaG8IbfdiVNQyxZxnMsVtMgzYdzETORJ4+POmlCN50Laz0vxTYvlQgIxehnwmLIm9dcI4JRwsrDR8uK+x1bCQGoH1q0GyYkV3luAVQy8HACbzX/Fvz4p+RoAAA==", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
 <p>We can replicate part of a PCA analysis, getting the mean difference of the position field, scaling and combining into a matrix.</p>
-<div id="652511e2" class="cell" data-execution_count="6">
+<div id="df13ab66" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position()</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">=</span> g.FieldAverage.point.vector(pos).o.mean <span class="op">-</span> pos</span>
@@ -504,7 +504,7 @@ mountGraphView(document.getElementById("gnwr-949b82aefec947c7b5a061f9744f2d7f"),
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
-<div id="gnwr-cc966c768f8e421da19774dc0b35b6bc" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-d549d02907f4470997598be94dc03557" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -514,14 +514,14 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-cc966c768f8e421da19774dc0b35b6bc"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-d549d02907f4470997598be94dc03557"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
 <section id="vector-outputs" class="level4">
 <h4 class="anchored" data-anchor-id="vector-outputs">Vector Outputs</h4>
 <p>Some output attributes have convenience methods for simpler chaining. Vector outputs can access the <code>x/y/z/</code> components quickly, which internally adds the <code>SeparateXYZ</code> required. The same SeparateXYZ node is re-used across different outputs.</p>
-<div id="93911c88" class="cell" data-execution_count="7">
+<div id="ee85ff46" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position().o.position</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -529,7 +529,7 @@ mountGraphView(document.getElementById("gnwr-cc966c768f8e421da19774dc0b35b6bc"),
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<div id="gnwr-18d43b2308194265a24967a935ccd07d" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-3f5686ac7a6248ba8211c32c364f9c22" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -539,7 +539,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-18d43b2308194265a24967a935ccd07d"), { payload: "TreeClipper::H4sIABM9xmoC/+1ZbW/iOBD+Kyifd1ESXgr3rddFKyQKp8JWfVFlmWQAXx07sh1ot+p/PzskiwkhW9ruXbdXPgAZz0zmGXv8TJwHZ0qBhSDQEoQknDl/1JxW3a+7tcFk7HyqOUoAoICSON5Wcute3fOMBuMhIKMmtfz6wSGh/nX1QIgV1n8fHIYjMDZfgUegxH1tqE1k3XVbxj6RgGb4FpD+I7TaDFMJmRzulMDFASKRSJgiEaDsFvmIwnPrKuCUC7SWOcPRsGfuFsIMJ1ShueBJjNLYVyRUC63jNdOoQQaCxCrDaWym1ISQmRCmQMxwYBApkaQBWaIMv2fjx4EiS9CWIdxluSEKIplmbWPj2zapgknozaP+ZGmWG+XG7g30X5ZQmnu3ZqNpK1Me4Azd9Wev49Z1PJ89X//eaLV8FOGp5DRRUK5m5cwMOAsg84UyAnctyOf8Ly5JejfjG0+B5kldYcEIm6NY8BjP84ic48EgXxRBIhWPUDqNxWk1Ubn1tnvU1Z+O22x220ft1qfa02QGgQQKgdpMolzwFeLpvMuCNBawJLCyYliQEKzLaJ2n/DI1UnrtJsIWExYnyprC1r751nKeqG3ldqlyNnhUVm125ksWdQECMKy3gnCDnBJ2iyiJiMlR0+22cmBwF2O9ksNCOtAS08T2GBOG5uR7xO0CvY/T2M57J5PRWRoZkTHF90gu8HroS//4dDT8Ytdq7vk6XVr5l07UOlc6HKBIKqzsAulUZFcXNAmLu5LZlPpmiuzExVgAU1llGdvMe3dfRaXRpVWxt5q2VZ5cSSfJFD6qaKeKPLeqMjyvrDTG5Du8Rll4/1JNDPrb5PWjILx0KWVfN9b69Pwy3OcgFAlA1i7eHPr+cHIQdN8G26gEe/m+wDYrwV69B7B7ONBrVZZ6uywxpyAXb5EBv/ZGp73J2eX+1NhzXkrw385rpzj+n9K79yx+N6sh59F91O5Vc/tPWuXn9slj0PFoiLWLy6sPlt9heb+S5X2vfE8MlEb/G/H8Sf/sZNA7oDZ2tkjfr8xTKVFevMkt5HjwrXdgknRmrDr2S4ny8p2CbZWBvXpXYKvowG8/lQ7GCxyCMGSQb7nZjruPD/yjfXyQnYpUP+0VlQ5gBFX7OD3Zzwidyp2uW3UA+eY44aBusFF6uDpOZ+SVznueDC4zrsL252g06B0PD+0GjWcbtPerz7heE/MrNcAb9KWP86PZTIL6nRqcw7v/nQ6n0aiq+0bzV9f9f/EgWMV8jdZzHoQ0uVQcc/7EeGJeW2gFzBhXOfdkrx5MruzoKs+tG1vUSqRJHLESryWGHOz8zoQmNcmDW1DZwbfim2vfs4um80Lv6YnClvuu7b77QvdpN267b9jRN92Xum8W3f84WdG2inNqma5f4mmZNeVOdhcekhkpvoGLjAGf/r3uAooDEJIysQwSGpcNxJiwgtzUB4rM6c2uOEjEEkrkMdduAsqTsPAecYWJQjMuzJvM4LbEci4Aa70YWEBosRnJM4AizPDcRMvSTmxNUaYd0t0KCIaN8MEkWAbA1kX6+PgPmOWyEWQdAAA=", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-3f5686ac7a6248ba8211c32c364f9c22"), { payload: "TreeClipper::H4sIALtXxmoC/+1ZbW/iOBD+Kyifd1ESXgr3rddFKyQKp8JWfVFlmWQAXx07sh1ot+p/PzskiwkhW9ruXbdXPgAZz0zmGXv8TJwHZ0qBhSDQEoQknDl/1JxW3a+7tcFk7HyqOUoAoICSON5Wcute3fOMBuMhIKMmtfz6wSGh/nX1QIgV1n8fHIYjMDZfgUegxH1tqE1k3XVbxj6RgGb4FpD+I7TaDFMJmRzulMDFASKRSJgiEaDsFvmIwnPrKuCUC7SWOcPRsGfuFsIMJ1ShueBJjNLYVyRUC63jNdOoQQaCxCrDaWym1ISQmRCmQMxwYBApkaQBWaIMv2fjx4EiS9CWIdxluSEKIplmbWPj2zapgknozaP+ZGmWG+XG7g30X5ZQmnu3ZqNpK1Me4Azd9Wev49Z1PJ89X//eaLV8FOGp5DRRUK5m5cwMOAsg84UyAnctyOf8Ly5JejfjG0+B5kldYcEIm6NY8BjP84ic48EgXxRBIhWPUDqNxWk1Ubn1tnvU1Z+O22x220ft1qfa02QGgQQKgdpMolzwFeLpvMuCNBawJLCyYliQEKzLaJ2n/DI1UnrtJsIWExYnyprC1r751nKeqG3ldqlyNnhUVm125ksWdQECMKy3gnCDnBJ2iyiJiMlR0+22cmBwF2O9ksNCOtAS08T2GBOG5uR7xO0CvY/T2M57J5PRWRoZkTHF90gu8HroS//4dDT8Ytdq7vk6XVr5l07UOlc6HKBIKqzsAulUZFcXNAmLu5LZlPpmiuzExVgAU1llGdvMe3dfRaXRpVWxt5q2VZ5cSSfJFD6qaKeKPLeqMjyvrDTG5Du8Rll4/1JNDPrb5PWjILx0KWVfN9b69Pwy3OcgFAlA1i7eHPr+cHIQdN8G26gEe/m+wDYrwV69B7B7ONBrVZZ6uywxpyAXb5EBv/ZGp73J2eX+1NhzXkrw385rpzj+n9K79yx+N6sh59F91O5Vc/tPWuXn9slj0PFoiLWLy6sPlt9heb+S5X2vfE8MlEb/G/H8Sf/sZNA7oDZ2tkjfr8xTKVFevMkt5HjwrXdgknRmrDr2S4ny8p2CbZWBvXpXYKvowG8/lQ7GCxyCMGSQb7nZjruPD/yjfXyQnYpUP+0VlQ5gBFX7OD3Zzwidyp2uW3UA+eY44aBusFF6uDpOZ+SVznueDC4zrsL252g06B0PD+0GjWcbtPerz7heE/MrNcAb9KWP86PZTIL6nRqcw7v/nQ6n0aiq+0bzV9f9f/EgWMV8jdZzHoQ0uVQcc/7EeGJeW2gFzBhXOfdkrx5MruzoKs+tG1vUSqRJHLESryWGHOz8zoQmNcmDW1DZwbfim2vfs4um80Lv6YnClvuu7b77QvdpN267b9jRN92Xum8W3f84WdG2inNqma5f4mmZNeVOdhcekhkpvoGLjAGf/r3uAooDEJIysQwSGpcNxJiwgtzUB4rM6c2uOEjEEkrkMdduAsqTsPAecYWJQjMuzJvM4LbEci4Aa70YWEBosRnJM4AizPDcRMvSTmxNUaYd0t0KCIaN8MEkWAbA1kX6+PgPmOWyEWQdAAA=", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -548,7 +548,7 @@ mountGraphView(document.getElementById("gnwr-18d43b2308194265a24967a935ccd07d"),
 <h4 class="anchored" data-anchor-id="which-socket-owns-a-method">Which socket owns a method</h4>
 <p>A socket method lives on the value that continues down the chain, so the result has the same role as the receiver: <code>vec.transform(matrix)</code> and <code>vec.transform_direction(matrix)</code> apply a matrix to a vector (as a point, so translation applies, or as a direction, so it does not), <code>rot.rotate(other)</code> rotates a rotation, and <code>mat.invert()</code> keeps the matrix. Getters that produce another type read as nouns: <code>mat.translation</code>, <code>obj.matrix()</code>, <code>obj.location()</code>.</p>
 <p>The two selector factories are the deliberate exceptions. <code>fac.mix.float(a, b)</code> and <code>condition.switch.geometry(false, true)</code> sit on the factor or boolean that drives a Mix or Switch node, and return the mixed or chosen value:</p>
-<div id="f33a5fb0" class="cell" data-execution_count="8">
+<div id="5170ecc4" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    fac <span class="op">=</span> g.NoiseTexture().o.fac</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    mixed <span class="op">=</span> fac.mix.vector((<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
@@ -556,7 +556,7 @@ mountGraphView(document.getElementById("gnwr-18d43b2308194265a24967a935ccd07d"),
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
-<div id="gnwr-03ce4405cc7f4a67af3783802a432e6d" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-4890bab7342d46c7a9f95b7506fa785c" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -566,7 +566,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-03ce4405cc7f4a67af3783802a432e6d"), { payload: "TreeClipper::H4sIABM9xmoC/+1bWXOjOBD+Kymed1KAAdv75iRONlU+thzP7Bw1RSkg29oAopDIMan895XEYYFl4iTOrO1KHhy7ddBfd6sv4FG7DmDkw8S9hQlBONL+PNLsY/NYPxpMr7Q/jjSaQOh6AYrj6iT92Dg2DD4jwj50+TTC6D8eNeSz/zob8AEF7OujFoEQ8jUXEIeQJg9HI7aEHOu6w9enBLozcANd9iVh02YgIDCnw3uagPoAIm6SRhSF0M0vUYxQMJd+eTjAiZvRtNF41OdX8+EMpAF15wlOY1fwfod8umBzDEtwDYmXoJjmOPma64CzkC9BEYXJDHgcEU1SwZBEyvEbMn7gUXQL2Uof3ueyQRSGREhtucaU14gJXKA/n9hfLmaynNxavQD7GqVBUOwuacOSJwfYAzm6H59MXT9m/LCPn2xOMeSCa4KDlELFnFJajqBqC4jmC8oJ2bRS2yOMCDyaMhWmCeRiDMA1DAqZ3oEkQtHcjRMcg3nBkNYbDAqb8FJCcegKLda1yvnSjx293WV/Hd2yuk7bsTmPm9A4DAID6NGlDskC37lYqJ3UqHECbxG8k3hYIB9KP8NMUsVPsYjmuCWzjeKUShq0lerOBx3V+fnCOGbY1UZa4wlGgB1tfwklQNGNG6AQ0dw8BZvwPgbMLP0aOPcWBKlk4TGK3Dn6FWL5sD3EGVf90+l4IrhCJA7Ag0sWIBs6vZycDirHrtj3R2FSmV1xC8+Rt1XI/3kp6ILyOtQFsRF2b/C5/0LUDKqEtKNCeuWBAP5WFb8XWLsCtqsCewYpQMFBoDUraA1l/JvgdL6IICEHgVg/tmXEhgrxAHhpBBJEHw5RyaYK8ng2I5Aeor8yWsqkDqDoMNAaVbSW0mMhlpQkAuRhnGEGWURfDae0mp8YjQmKocxQzsG2MhRL79o7Zv7KzORUpKM7CHhycdJ7eVLW0cWfYXRNvWt2eXa2CckQOVxmSIx1GLiEAirXK0ZnXXWTFVjILzOgBWAFKS8RWe0gighN7JrAiC5LnDy/dkMQMynMpQtVMo1bkTK7hVD+Hl+OpllZCyISlHVQNRtl4wmm6weJyNHYiMGJxQcfCZF6RQjulfN5nZOtkavebHZZXWQIXU7TvmoS5YFTvsmUX5zyXaKIQznoTTUh56wiXhGZWclWRO0lJiYgjFfq6ZxYLK2EfVZThUxLktpNs8mJmJWIIlV2kvhKWYEgXoDMTXN7wATlCqoeU9NS7lkR/fN7GkvHKKr7GJfGog0uR/2eKHgWKXRXhovBXNjYL45jpoPrhNfLIgssruvhiNkjoSWBAGbbYMmKOCIw8ks7Hl5+1UqiJLdXHd+f5U6zzH2XItUifvxcHzGtkrwy1lpnWjlS8HN+MsyISQgC9Kv0UbJe7HVNCKHkTy2zqQlRmyO1bJqbEEN0/9F6WGk9mE7jqWy/b2jfsUTP7GwP7m9IbF/ZbRHWmH3I3RZTWZf3DrF8aSlr8pODhGpsRavvf3i32zpsmVvR8I7CriYvMuzWnpzh15UkkudahW7tyZl+B+j2vmh9PO1NL8ej7R1zZ1+UviXkaxo0rXZTFtdSpjUTSNiltiKq3evQtLrbg/xbelLbDX+Wvmca/x9aVEthGfsmrK06E3WTzjJf3qTLK+x6f47v4q4aetZhKLsin0eX5+PJUFvX4PACEMbLtkRZiAtykilrtdVgtRpbDS392U5DOWXjRsMpDrkIPpoNK80Gy2oKU5a9J6XKm6OT5exJdfLae8Fr0hSrMU2xOvsVs0/G40G/91IvnHuoRt/b3dT3nqeRx+XBva/kduoeGMew7CFrF5N+b9qfuNO/ct5l93w+GPfEXZHCLfcH/WF/lN00KJ5W0ht9qvG8TzVe7lPT6w+HqnhwzGg6ULayCXLFm/J71Afh91he1gWxW+pH5hKKPEiOvu4c+vxO5MbQTRms1Qj222GBtRvBfj8EsGtip914o8ZW3qgZQrLYxch50R8P+9PJt/WikXWuTAs+fzkagnjPSvmzy95wPDp7c3Fmb5wgFM/Zi/KMWUMRRysZgiRspzm2fxKPej9za7acs3F0v/Tw0VW8gB9FkyLGO40x3lHG+AnwUbpPz5au84fV+7OOMrBfpdc+ukXZUwn7HgCMtQHAaSyeHftgA4DjfASAWgBw2q8NAMzVLj3t2ijQWRcFjM4GNV590sZx4OoOUW/xEQNWY0C36ey3ld3+pTB3yiG+qWuyfDXIUD+pE5Ddq20bnV0OWYamjOhTxuWeIlsTz9qtRptWlrVjscneRbSaKNQ+vW2/xqcvT3m96Sd8iLvCX8HE2h2n/E1U/kBsFC2ffM735CKUWW6sSdvVIEW4PJGkD0bh3lAW+yxhXpxg7wbS4sUCipcEsy2fk862t7fkt5ja3TduL9rZ8vbtyht/+hu3FxV/ZXtD3t544/Yin6xsX7Ym2FqKcSAtzd77ZjTJpLT8KthHM1R/aZt3l118/W8WVusD0EcqMvHSIFYNxABFNTo3ezfk2e8q2UuTW6igx5ht4wU49WsP4d8BRN0ZTvjL796NYuU8gYDNi2HkoaAe3QsJuCGIwJxzG4nUhmuCiZR7qnsKkwhw4uOTeKkARplneHr6D3Fq2QyXPwAA", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-4890bab7342d46c7a9f95b7506fa785c"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -577,7 +577,7 @@ mountGraphView(document.getElementById("gnwr-03ce4405cc7f4a67af3783802a432e6d"),
 <section id="matrix" class="level5">
 <h5 class="anchored" data-anchor-id="matrix">Matrix</h5>
 <p>Matrix sockets have access to the <code>translation</code>, <code>rotation</code> and <code>scale</code> from the transform.</p>
-<div id="a2b8d68b" class="cell" data-execution_count="9">
+<div id="24ad061c" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    mat <span class="op">=</span> g.CombineMatrix().o.matrix</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    mat.translation <span class="op">*</span> <span class="fl">0.5</span></span>
@@ -586,7 +586,7 @@ mountGraphView(document.getElementById("gnwr-03ce4405cc7f4a67af3783802a432e6d"),
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
-<div id="gnwr-db107317c1f6475c829bda083f3295a7" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-c0786765999f4e7ab9ea11f02933cb4c" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -596,7 +596,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-db107317c1f6475c829bda083f3295a7"), { payload: "TreeClipper::H4sIABM9xmoC/+1bW0/jOBT+K1Wed6rc2+5bh5kdIXVAKl20EkKRm7itF8eObIfCIv772rlQJ6QJA2XVDfShl2OfE3/H5+o0D8YSQxJBFtxCxhElxu8DwxvaQ3MwW1wYvw0MwSAMQoySpDrJHFpDy1IzCI1goKZxSb96MFAkP005EAEB5NcHg4AYKp4fkMZQsPvBmWThQ9McKf6Uw2AFbmAgvzA5bQUwhwUd3gkG6gOIBywlAsUwKC5Rjgiw1n6FFFMW5DTj7Pzsu7paBFcgxSJYM5omQbb2LYrERs6x3GzVkIcMJaLAqXiWWC2hYEFEQLYCoUIkWJotSCMV+C0dPwgFuoWSM4J3hW6QgDHPtLbjsXWebIJS6PWjfBVq5rvJzvMLyK8kxbiUru2Gq0/GNAQFuqsvtmsO5Xrk27WcUw4FYMkpTgVsmKNpS1GNDUTrjVAEMyeUu31C4yUicPATCIbulB4xWEJcKnULGEFkHSSMJmBdrsiYzmalUYQpFzQOsm2sb6tamDn0zdFEvsam6078ke+pRb6EpnBwiGEodpvIN3Qb0GzfeY2aMHiL4FZbwwZFUPsZ56oqf2ZMQtpuynQyIkkqtC30Gve7GPSbHOhEbkpMBtZgTrcDy2i21traIAHSx6MdJIzITYBRjERhp9ly4V0CpH1GNZDBLcCpLi5BJFijf2Kqu919ki3vcjr7M3cyxBMM7gO+AfnIyen8ZFbxv1KuNTSVeReoR52o7V6gNiuox52onR6innSidnuI2jJbYNs9cuwabKsTtt3DeGbZnbD76NqW0wm7l77ttsB2+uvbXifsPmZty++E7fQxpI06YffSt9uKNLe/vj3phN1H37bNTth9zNu21Qnb7U9Iu87OVWgqqm25bbf15XZjabM743iralxz4h1SOz+ni/npX23qKRUhrwVxwAUQ+jmT7bZqo3qGEUEi0Aplp3XlURRXBzgYJPwJsm5w/hv5R2/kH7+KP1fYEgcoKi3gj5SEatPV0WZx8rUzigQwKbkQql9+svdgbtx9Ljd+1bHcBZSrkXs8WDBA+Iqy+PNo7tnRnGO2Wb3TGCYr+jyqCPnyGPAsGDqtwdBx9ioC52ZzhBHx8vvJ4nz+iwnjqvS13OE0H3Yam745FUergPn5Yro4PT87nAoaG8CLEGDYXwNoS5qOv+9WTlvaKCNzJZDsSx3OaF/qKAK+5bclj/qkF6ePSxmZKVM3dTafeeN53hi3hsvGZirX6PGV1YcNk655OOwl5f8D3vrI4O13zQ5H0EJ7e8sn12mLB677vvHgyCsnt7FsuMz4DuEUB4f/2vOVtlLBfXGpcLEBEWSqUMgtpEzBlQpBGWEC2VPuvTiZZuX9TulddcMLqoZfrRmyYhgO9Jr4s26oxonWusGdvHeLYR11f+GZe/HDwdf73ipgT1LxrDZj8eyP2o+2hVnPeU1HlpuYrrt6sGXFWMCT/P9/xo/Z+dfpTA+5ntsRcr9kEbQr6u5mvaZZG5qm9Rl4n/8Hr/VPeJ7/cRs2b/QBsGeWmb9VsI8/cL/mTQ7Wr/0H2A98889vPfj3rQ/dsPn2Z8M28J13bdim374ZjTcYy4cnlLyFem5ATgCElLXJkzSlUX25rfdv/Wr640oNSLNOSVF5Vd+FFZP1AKfhDRTl7XBBdwTH0g3Gf6N455n4iS5+9Fbxbk28WxE/fqt4rybe88utlbyCUqyx5o/RSJq250ZxFRqVd6W1Z2BixUCXf+cVVH0ARqiJzMMUJ00DCUCkRlduFMSQbxrIYcpuYQM9oVJMiGka1Z7k2QIkghVl6lmi8KaBc80gkPMSSEKE64VcqYEgBgSs1WpJVsUWt+NVaLkTkBGgiA9KwTyEJHfbx8d/AbFozr/mNAAA", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-c0786765999f4e7ab9ea11f02933cb4c"), { payload: "TreeClipper::H4sIALxXxmoC/+1bW0/jOBT+K1Wed6rc2+5bh5kdIXVAKl20EkKRm7itF8eObIfCIv772rlQJ6QJA2XVDfShl2OfE3/H5+o0D8YSQxJBFtxCxhElxu8DwxvaQ3MwW1wYvw0MwSAMQoySpDrJHFpDy1IzCI1goKZxSb96MFAkP005EAEB5NcHg4AYKp4fkMZQsPvBmWThQ9McKf6Uw2AFbmAgvzA5bQUwhwUd3gkG6gOIBywlAsUwKC5Rjgiw1n6FFFMW5DTj7Pzsu7paBFcgxSJYM5omQbb2LYrERs6x3GzVkIcMJaLAqXiWWC2hYEFEQLYCoUIkWJotSCMV+C0dPwgFuoWSM4J3hW6QgDHPtLbjsXWebIJS6PWjfBVq5rvJzvMLyK8kxbiUru2Gq0/GNAQFuqsvtmsO5Xrk27WcUw4FYMkpTgVsmKNpS1GNDUTrjVAEMyeUu31C4yUicPATCIbulB4xWEJcKnULGEFkHSSMJmBdrsiYzmalUYQpFzQOsm2sb6tamDn0zdFEvsam6078ke+pRb6EpnBwiGEodpvIN3Qb0GzfeY2aMHiL4FZbwwZFUPsZ56oqf2ZMQtpuynQyIkkqtC30Gve7GPSbHOhEbkpMBtZgTrcDy2i21traIAHSx6MdJIzITYBRjERhp9ly4V0CpH1GNZDBLcCpLi5BJFijf2Kqu919ki3vcjr7M3cyxBMM7gO+AfnIyen8ZFbxv1KuNTSVeReoR52o7V6gNiuox52onR6innSidnuI2jJbYNs9cuwabKsTtt3DeGbZnbD76NqW0wm7l77ttsB2+uvbXifsPmZty++E7fQxpI06YffSt9uKNLe/vj3phN1H37bNTth9zNu21Qnb7U9Iu87OVWgqqm25bbf15XZjabM743iralxz4h1SOz+ni/npX23qKRUhrwVxwAUQ+jmT7bZqo3qGEUEi0Aplp3XlURRXBzgYJPwJsm5w/hv5R2/kH7+KP1fYEgcoKi3gj5SEatPV0WZx8rUzigQwKbkQql9+svdgbtx9Ljd+1bHcBZSrkXs8WDBA+Iqy+PNo7tnRnGO2Wb3TGCYr+jyqCPnyGPAsGDqtwdBx9ioC52ZzhBHx8vvJ4nz+iwnjqvS13OE0H3Yam745FUergPn5Yro4PT87nAoaG8CLEGDYXwNoS5qOv+9WTlvaKCNzJZDsSx3OaF/qKAK+5bclj/qkF6ePSxmZKVM3dTafeeN53hi3hsvGZirX6PGV1YcNk655OOwl5f8D3vrI4O13zQ5H0EJ7e8sn12mLB677vvHgyCsnt7FsuMz4DuEUB4f/2vOVtlLBfXGpcLEBEWSqUMgtpEzBlQpBGWEC2VPuvTiZZuX9TulddcMLqoZfrRmyYhgO9Jr4s26oxonWusGdvHeLYR11f+GZe/HDwdf73ipgT1LxrDZj8eyP2o+2hVnPeU1HlpuYrrt6sGXFWMCT/P9/xo/Z+dfpTA+5ntsRcr9kEbQr6u5mvaZZG5qm9Rl4n/8Hr/VPeJ7/cRs2b/QBsGeWmb9VsI8/cL/mTQ7Wr/0H2A98889vPfj3rQ/dsPn2Z8M28J13bdim374ZjTcYy4cnlLyFem5ATgCElLXJkzSlUX25rfdv/Wr640oNSLNOSVF5Vd+FFZP1AKfhDRTl7XBBdwTH0g3Gf6N455n4iS5+9Fbxbk28WxE/fqt4rybe88utlbyCUqyx5o/RSJq250ZxFRqVd6W1Z2BixUCXf+cVVH0ARqiJzMMUJ00DCUCkRlduFMSQbxrIYcpuYQM9oVJMiGka1Z7k2QIkghVl6lmi8KaBc80gkPMSSEKE64VcqYEgBgSs1WpJVsUWt+NVaLkTkBGgiA9KwTyEJHfbx8d/AbFozr/mNAAA", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -604,7 +604,7 @@ mountGraphView(document.getElementById("gnwr-db107317c1f6475c829bda083f3295a7"),
 <section id="color" class="level5">
 <h5 class="anchored" data-anchor-id="color">Color</h5>
 <p>Color sockets have <code>r</code> <code>g</code> <code>b</code> <code>a</code> properties.</p>
-<div id="ab7e76fc" class="cell" data-execution_count="10">
+<div id="5275f5d2" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> g.CombineColor().o.color</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    col.r <span class="op">+</span> <span class="dv">10</span></span>
@@ -613,7 +613,7 @@ mountGraphView(document.getElementById("gnwr-db107317c1f6475c829bda083f3295a7"),
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    col.a <span class="op">-</span> <span class="fl">0.3</span></span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
-<div id="gnwr-8b72513cee424e09b8e0bbc506fdedd7" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-1182e05e5e9b47a990493cc16c45ed21" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -623,7 +623,81 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-8b72513cee424e09b8e0bbc506fdedd7"), { payload: "TreeClipper::H4sIABM9xmoC/+2abW/iOBCA/0qVz1eUV0juW9u9W63E9k4tXem0qiyTDOCrY0eO05er+t/XDkkxaUjpUrQ9gA8tjMfOzHhmHgfyaI0psAQEugWRE86s34+soOf27KPh6NL67ciSAgDFlGTZspLdc3qOozUYTwBptVzJvz9aJFH/bTWQYInV20eL4RT0nM/AU5Di4ehcTcl7th3q+UUOaIJvAKk3QqlNMM2hksO9FLg5QHIkCiZJCqi6RD0i8dT4FHPKBZrLrPO/zv/QV0tgggsq0VTwIkOl7XckkTOl4/il1ZDHgmSy8lPPGVNtQjWFMAligmPtkRRFaZAhqvx3TP9xLMktqJkJ3FexIRLSvIzaYo5rzikVdECvn9SrCnO+UPZeXkC9ZQWl9erGbvimMuUxrrz7fuyGdk/Zo/5cK516COFxzmkhoUXHiJaWWjMg05nUAnsuqHf7jKdjwuDoTG+DDiPFY6B1TO+wYIRNUSZ4hqe1QdbJcFjnRFzkkqeo3MXmrmq77F7fHkTqFdq+H/UH/UDbuI5Mu5EDhVgu9jCf8TvEy23PG9JMwC2BO8OGGUnA+JjOI1V/LCdJlbqFMMWEZYU0djBo3e5qsN9WPxeQWO0Z2jAIGFZ1nSz8oITdIEpSIqvcLG2E+wyrnEwanqFbTAtzuYwwNCX/pdwstYestOnbyfBqXlgkzyh+QPkMz0fOvlycDZdqrl5X5YlO6crVQWurUJXBdtDZsM3ZU625e75Gbb6e0GyGd8JZRzt7XfZmXsjl2nbsruJ2nLbIPPfJTSPj21HwnsG5+Hx68sbYqOYc2uXLcSLXjtxI9+F1RCqq13VYlelAUS6xNMnnrOTkHNUkqSP6Z8FiHUV93Kho9BzkDAtgcoHMlCe1s5aRw463Ep0V7zrRuayzNjovQZmnvD6wcwU7Hb+zvoKt1pfzq4vL0cmy9Od6dSfqd0ZqsMVzxnv3oc2J5IRbPWt8QIejbZ43Pp6/rr3VM8eHcbiLj67zM3yskfNWQLruKkBWUCvvHlcSsqm0NiK/YqV3AGMTjK7X1e5dv608vuHduf8IzNQMdttbp9H7+u/mbi35gLu74pjjDjrzPtxqJvw/sBCti4XLGU5AaCjUTbbJAp6BWHTXT5+euyvFaVY7ZKSmZ78CifLfa5B4VnoTJHrq7vIAiheg8JyugvHcfQKF5+2Vt/4ec8Lr/Nbd6x844Q1+ISfCVzhxvM7NxHH4k5xwD5x4yYmoq2B8e586p+/surfe0tfxYdQ3vXf3mBt+53217x+44Qdb4sbXq+Hoy9/Df16Dh99/DR5ufx16PGu9FR/eAR8v8OF33pf74V7hI9pnfAT2HuMj6LzbDtwDPgJvS/i4vDodXZycjVbgo+UC9WOK+hIj/YSeUsCMcVmvWV1GB9n0oPM36WAZj7mODDF2TEl0hzU3ZiIUGXIe34CsHxqR3BCYvSXob7r8oLG865vLDzZdPmws77nm8uGmy0eN5X3zm/Eg2nD58mfFpeXDOnPUXMk5NabOn4dVMiOlrOoqPCET0nyYVf+yhvj43zmqmwOQkDZxHhc0axvIMGENuS5clEI+axHHhbiFFnnG1TIx5UXSeCT3DhOJJlzoh4Ljm5aZUwFY6WXAYkKbJ4Y6AijFDE+1taw8LumdUCHVvexegmBYCx91gPMY2LxRPD39AEFt4wKvLAAA", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-1182e05e5e9b47a990493cc16c45ed21"), { payload: "TreeClipper::H4sIALxXxmoC/+2abW/iOBCA/0qVz1eUV0juW9u9W63E9k4tXem0qiyTDOCrY0eO05er+t/XDkkxaUjpUrQ9gA8tjMfOzHhmHgfyaI0psAQEugWRE86s34+soOf27KPh6NL67ciSAgDFlGTZspLdc3qOozUYTwBptVzJvz9aJFH/bTWQYInV20eL4RT0nM/AU5Di4ehcTcl7th3q+UUOaIJvAKk3QqlNMM2hksO9FLg5QHIkCiZJCqi6RD0i8dT4FHPKBZrLrPO/zv/QV0tgggsq0VTwIkOl7XckkTOl4/il1ZDHgmSy8lPPGVNtQjWFMAligmPtkRRFaZAhqvx3TP9xLMktqJkJ3FexIRLSvIzaYo5rzikVdECvn9SrCnO+UPZeXkC9ZQWl9erGbvimMuUxrrz7fuyGdk/Zo/5cK516COFxzmkhoUXHiJaWWjMg05nUAnsuqHf7jKdjwuDoTG+DDiPFY6B1TO+wYIRNUSZ4hqe1QdbJcFjnRFzkkqeo3MXmrmq77F7fHkTqFdq+H/UH/UDbuI5Mu5EDhVgu9jCf8TvEy23PG9JMwC2BO8OGGUnA+JjOI1V/LCdJlbqFMMWEZYU0djBo3e5qsN9WPxeQWO0Z2jAIGFZ1nSz8oITdIEpSIqvcLG2E+wyrnEwanqFbTAtzuYwwNCX/pdwstYestOnbyfBqXlgkzyh+QPkMz0fOvlycDZdqrl5X5YlO6crVQWurUJXBdtDZsM3ZU625e75Gbb6e0GyGd8JZRzt7XfZmXsjl2nbsruJ2nLbIPPfJTSPj21HwnsG5+Hx68sbYqOYc2uXLcSLXjtxI9+F1RCqq13VYlelAUS6xNMnnrOTkHNUkqSP6Z8FiHUV93Kho9BzkDAtgcoHMlCe1s5aRw463Ep0V7zrRuayzNjovQZmnvD6wcwU7Hb+zvoKt1pfzq4vL0cmy9Od6dSfqd0ZqsMVzxnv3oc2J5IRbPWt8QIejbZ43Pp6/rr3VM8eHcbiLj67zM3yskfNWQLruKkBWUCvvHlcSsqm0NiK/YqV3AGMTjK7X1e5dv608vuHduf8IzNQMdttbp9H7+u/mbi35gLu74pjjDjrzPtxqJvw/sBCti4XLGU5AaCjUTbbJAp6BWHTXT5+euyvFaVY7ZKSmZ78CifLfa5B4VnoTJHrq7vIAiheg8JyugvHcfQKF5+2Vt/4ec8Lr/Nbd6x844Q1+ISfCVzhxvM7NxHH4k5xwD5x4yYmoq2B8e586p+/surfe0tfxYdQ3vXf3mBt+53217x+44Qdb4sbXq+Hoy9/Df16Dh99/DR5ufx16PGu9FR/eAR8v8OF33pf74V7hI9pnfAT2HuMj6LzbDtwDPgJvS/i4vDodXZycjVbgo+UC9WOK+hIj/YSeUsCMcVmvWV1GB9n0oPM36WAZj7mODDF2TEl0hzU3ZiIUGXIe34CsHxqR3BCYvSXob7r8oLG865vLDzZdPmws77nm8uGmy0eN5X3zm/Eg2nD58mfFpeXDOnPUXMk5NabOn4dVMiOlrOoqPCET0nyYVf+yhvj43zmqmwOQkDZxHhc0axvIMGENuS5clEI+axHHhbiFFnnG1TIx5UXSeCT3DhOJJlzoh4Ljm5aZUwFY6WXAYkKbJ4Y6AijFDE+1taw8LumdUCHVvexegmBYCx91gPMY2LxRPD39AEFt4wKvLAAA", showCopyButton: false, allowSelection: false });
+</script>
+</div>
+</div>
+<p>Arithmetic between two colors uses a Mix node and keeps the left color’s alpha. With a scalar or a vector the color acts as a vector, so a texture’s color can still drive a vector or rotation input.</p>
+<div id="cca97d88" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> g.CombineColor().o.color</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    tinted <span class="op">=</span> col <span class="op">*</span> (<span class="fl">1.0</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">1.0</span>)  <span class="co"># Mix (Multiply), a color</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    offset <span class="op">=</span> g.NoiseTexture().o.color <span class="op">*</span> <span class="fl">0.2</span>  <span class="co"># Vector Math (Scale), a vector</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div id="gnwr-d2b7dd5a4487457d8f4730a8989d10e9" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-d2b7dd5a4487457d8f4730a8989d10e9"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
+</div>
+</div>
+</section>
+<section id="bundle" class="level5">
+<h5 class="anchored" data-anchor-id="bundle">Bundle</h5>
+<p>Bundle sockets store and read items by path. A read names the type it expects, and joining with <code>|</code> keeps the later bundle’s item when a path is in both.</p>
+<div id="8eb40460" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    settings <span class="op">=</span> g.CombineBundle().o.bundle.store(<span class="st">"radius"</span>, <span class="fl">0.5</span>).store(<span class="st">"count"</span>, <span class="dv">8</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    overrides <span class="op">=</span> g.CombineBundle().o.bundle.store(<span class="st">"radius"</span>, <span class="fl">1.0</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    merged <span class="op">=</span> settings <span class="op">|</span> overrides</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    g.MeshCircle(merged.get.integer(<span class="st">"count"</span>), merged.get.<span class="bu">float</span>(<span class="st">"radius"</span>))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div id="gnwr-5cf572608bc8484ab55e296dca8274c5" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-5cf572608bc8484ab55e296dca8274c5"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
+</div>
+</div>
+</section>
+<section id="python-builtins" class="level5">
+<h5 class="anchored" data-anchor-id="python-builtins">Python builtins</h5>
+<p><code>round()</code>, <code>math.floor()</code>, <code>math.ceil()</code> and <code>math.trunc()</code> on a float socket return an integer socket through Float To Integer, as they return an <code>int</code> in Python; the <code>.round()</code>/<code>.floor()</code> methods keep a float. Float To Integer rounds halves away from zero, where Python’s <code>round()</code> rounds them to even.</p>
+<div id="00123645" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    count <span class="op">=</span> math.ceil(g.Value(<span class="fl">2.5</span>).o.value <span class="op">*</span> <span class="dv">3</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    g.MeshLine(count<span class="op">=</span>count)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div id="gnwr-e359a3727fd84d9aa9376b7da1b5cba5" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-e359a3727fd84d9aa9376b7da1b5cba5"), { payload: "TreeClipper::H4sIALxXxmoC/+1ZbU/jOBD+K1U+31VJ+kJ73xAqqFKgJ+ietEIry02mrQ/HjmyHl0P897OTuHVDkgV298Qh+gGa8dieeWbmGTt99FYUWAIC3YKQhDPvj5436od9vxctr7zfep4SACimJMsOlfx+0A8Co8F4AsioSS2/fvRIov/7eiDBCuuvjx7DKZg5Z8BTUOKhd6GnyL5fzs8loDW+AaS/CK22xlRCJYd7JXB9gEgkcqZICqjawo4ovHGeYk65QKXMu1hczMxuCaxxThXaCJ5nqLD9jiRqq3WCYWE1yFiQTFV+mjkrakyophCmQKxxbDxSIi8MckSV/4HrP44VuQU9M4H7ChuiIJUFavs5oTunUDCAfnvSnwpmuVcePN9Af2U5pXZ1JxpDV5nyGFfeXf8ejv2+tkf/+aZ17BDCK8lprqBBx0HLSL0tkM1WGYFfCmy0/8I0BwMfxSugFss7LBhhG5QJnuGNNcQ7jiKbC3EuFU9REb16NI09fn/sH031Z+IPh9Px0XhkbHuJzJgvgUKs9rGTW36HeBFuWZNmAm4J3Dk2bEkCzmNaImQfi0lKp2wuXDFhWa6cyI3awqzlPFeHyuNG5WrwqKnIdrA3JHLNfmBYl3+yd5sSdoMoSYkBaOhPR9YruM+wzt6khgW6LTbbCzPC0Ib8k3K3KB+y0rDj6EtZgkRmFD8gucXlSDQ/rE27atgfPT2VwOjtgSKpsHKLYNIBpS5aklhQrrZYk5yhnR08GRbAVFUzZka15rS1VibfL5XJmyrlHGu9z0KpF0rgdyV/EPzS7A/+m9Q/mV+eRI3J75vk32VlEH5sbwd93/V28NO8tZJ3GNwWyg+GnWk/+iCk3wWO3037wfj1vG859oD2Dfz6XLsj1/Mv0XL+Z/R1x7AUp5n1ys3Po7Ym8f0e8bYWcUo5Vj3Fe3N91tzo4/Bnu3jWLiaddTNtqpsC1g/SLvxWRgk7G2nY2EidPHtvnDK/WL4WnG4+CcOX8slpzmKDg2GUIneWXAPVxCv6rsgSU5ApT0rrZnN9zj3zHBoJB2008oJr2RtvZecgt72IsM+b2XMGCTs7b9jYeU90nN8fg7SVSNtNK3BPX+G4ydFLKHLPuPc/OoK1Onxw3gwbb9JXCgvVi2xZvrsuMTtZLi5f5fW1pYySN1wEJk0ILNZrCeqDeR4Unre1ymkXBQwaX2saSn2PffJstjifLS+/tgPV3RYHwUvbon2xWxy0NRq2v9Sbou2Fi9PTq1nBULGhz12PXC6Wx9HOqtYtlua1qVbAjHFlG1W1hUHU9SHsjOdBAybSwEuc8GiJ6SRuFNZCd0DJ4xtQ1Rs4xffPQeDU1GD4g6sXd72D5afu8qMfXL44+LnLh7tLqZ6rOKfO1PItv5Y5MfGqXXhC1qT+it7EFPHV32VPrw9AQprEMs5p1jSQYcJqcpPmKDW191wc5+IWGuQZ18vElOdJ7YeGO0wUWnNhfuqIbxpmbgRgrZcBiwmtHy0sAijFDG+Mtaw4V5lIaEhN5d8rEAwb4aMBWMbAylp7evoXB7CzAYUZAAA=", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -634,26 +708,26 @@ mountGraphView(document.getElementById("gnwr-8b72513cee424e09b8e0bbc506fdedd7"),
 <section id="enum-options" class="level2">
 <h2 class="anchored" data-anchor-id="enum-options">Enum Options</h2>
 <p>Many options aren’t available as sockets. These are exposed on the node class itself. The non-socket options are always keyword arguments, requiring them to be explicitly stated.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EvaluateAtIndex(BaseNode):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        value: InputFloat</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputInteger</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputBoolean</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputVector</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputRotation</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputMatrix <span class="op">=</span> <span class="va">None</span>,</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        index: InputInteger <span class="op">=</span> <span class="dv">0</span>,</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        domain: _AttributeDomains <span class="op">=</span> <span class="st">"POINT"</span>,</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        data_type: _EvaluateAtIndexDataTypes <span class="op">=</span> <span class="st">"FLOAT"</span>,</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    ):</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EvaluateAtIndex(BaseNode):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        value: InputFloat</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputInteger</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputBoolean</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputVector</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputRotation</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">|</span> InputMatrix <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        index: InputInteger <span class="op">=</span> <span class="dv">0</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        domain: _AttributeDomains <span class="op">=</span> <span class="st">"POINT"</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        data_type: _EvaluateAtIndexDataTypes <span class="op">=</span> <span class="st">"FLOAT"</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    ):</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>They are set during the class construction, but can also be set and changed afterwards.</p>
-<div id="5070b3ca" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    eai <span class="op">=</span> g.EvaluateAtIndex(data_type<span class="op">=</span><span class="st">"FLOAT_VECTOR"</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    eai.data_type <span class="op">=</span> <span class="st">"QUATERNION"</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    eai.domain <span class="op">=</span> <span class="st">"FACE"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="89563613" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    eai <span class="op">=</span> g.EvaluateAtIndex(data_type<span class="op">=</span><span class="st">"FLOAT_VECTOR"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    eai.data_type <span class="op">=</span> <span class="st">"QUATERNION"</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    eai.domain <span class="op">=</span> <span class="st">"FACE"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="class-methods" class="level2">
@@ -661,31 +735,31 @@ mountGraphView(document.getElementById("gnwr-8b72513cee424e09b8e0bbc506fdedd7"),
 <p>For nodes that have <code>mode</code>, <code>domain</code>, <code>data_type</code> and <code>operation</code> as potential enum values, convenience class methods are provided.</p>
 <blockquote class="blockquote">
 <p>The order that these methods will appear are: <code>mode</code> &gt; <code>domain</code> &gt; <code>data_type</code> &gt; <code>operation</code>, but should only ever be 1 or 2 deep.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>g.EvaluateAtIndex.face.vector()   <span class="co"># .domain.data_type</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>g.Compare.<span class="bu">float</span>.less_than()       <span class="co"># .data_type.operation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>g.EvaluateAtIndex.face.vector()   <span class="co"># .domain.data_type</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>g.Compare.<span class="bu">float</span>.less_than()       <span class="co"># .data_type.operation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </blockquote>
 <p>Because sockets are the only positional arguments for the node constructors, enum values like <code>data_type</code> have to be specified as keyword arguments to the constructor. All enum options are type-hinted with <code>Literal[]</code> so IDE auto-complete and type hinting will work, but the convenience class methods enable a cleaner way of writing the nodes. For the example below both methods do work, but the second is cleaner to write and flows better with what the node is doing; ‘On the edge domain, evaluate a float attribute’.</p>
-<div id="e0b35e8d" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># domain and data_type require kwargs</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    eod1 <span class="op">=</span> g.EvaluateOnDomain(domain<span class="op">=</span><span class="st">"EDGE"</span>, data_type<span class="op">=</span><span class="st">"FLOAT"</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># better IDE type-hinting and auto-complete</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    eod2 <span class="op">=</span> g.EvaluateOnDomain.edge.<span class="bu">float</span>()</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> eod1.data_type <span class="op">==</span> eod2.data_type</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> eod1.domain <span class="op">==</span> eod2.domain</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8e35ebad" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># domain and data_type require kwargs</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    eod1 <span class="op">=</span> g.EvaluateOnDomain(domain<span class="op">=</span><span class="st">"EDGE"</span>, data_type<span class="op">=</span><span class="st">"FLOAT"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># better IDE type-hinting and auto-complete</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    eod2 <span class="op">=</span> g.EvaluateOnDomain.edge.<span class="bu">float</span>()</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> eod1.data_type <span class="op">==</span> eod2.data_type</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> eod1.domain <span class="op">==</span> eod2.domain</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>A similar approach is taken for the <code>Compare</code> node, with the first being data type and then secondarily the comparison operation.</p>
 <p>If the items being compared are nodes or sockets, regular boolean comparison with operators will also work. All 3 different approaches have the same result.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> g.Integer(<span class="dv">0</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> g.Integer(<span class="dv">2</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>g.Compare(A<span class="op">=</span>a, B<span class="op">=</span>b, data_type<span class="op">=</span><span class="st">"INT"</span>, operation<span class="op">=</span><span class="st">"EQUAL"</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>g.Compare.integer.equal(a, b)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>a <span class="op">==</span> b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> g.Integer(<span class="dv">0</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> g.Integer(<span class="dv">2</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>g.Compare(A<span class="op">=</span>a, B<span class="op">=</span>b, data_type<span class="op">=</span><span class="st">"INT"</span>, operation<span class="op">=</span><span class="st">"EQUAL"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>g.Compare.integer.equal(a, b)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>a <span class="op">==</span> b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -700,17 +774,17 @@ mountGraphView(document.getElementById("gnwr-8b72513cee424e09b8e0bbc506fdedd7"),
 <h3 class="anchored" data-anchor-id="comparing-node-objects">Comparing Node Objects</h3>
 <p>In this instance <code>comp</code> will be the output of a <code>g.Compare</code> node, set with <code>operation="GREATER_THAN"</code> and <code>data_type="FLOAT"</code> (the Scene Time <code>frame</code> output is a float, which takes precedence over the integer).</p>
 <p>As this is a node within the node graph, the inputs have the potential to change during node tree evaluation meaning the result of the comparison could change. During playback on an animation the output will be <code>Cube</code> at frames &lt;=50 and <code>Cone</code> when above that value.</p>
-<div id="ad4c9706" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> g.SceneTime().o.frame</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> g.Integer(<span class="dv">50</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    comp <span class="op">=</span> a <span class="op">&gt;</span> b</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> g.Switch.geometry(comp, g.Cube(), g.Cone())</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>comp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
-<pre><code>&lt;nodebpy.builder.socket.BooleanSocket at 0x12c6bc7d0&gt;</code></pre>
+<div id="d884357d" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> g.SceneTime().o.frame</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> g.Integer(<span class="dv">50</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    comp <span class="op">=</span> a <span class="op">&gt;</span> b</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> g.Switch.geometry(comp, g.Cube(), g.Cone())</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>comp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>&lt;nodebpy.builder.socket.BooleanSocket at 0x12ab39810&gt;</code></pre>
 </div>
 </div>
 </section>
@@ -718,16 +792,16 @@ mountGraphView(document.getElementById("gnwr-8b72513cee424e09b8e0bbc506fdedd7"),
 <h3 class="anchored" data-anchor-id="comparing-python-objects">Comparing Python Objects</h3>
 <p>If the comparison was of just regular python values, then the result at runtime will just be boolean <code>True</code> and <em>not</em> a <code>Compare</code> node. This means the value <em>won’t</em> change during node tree evaluation, and will only be evaluated a single time in node tree construction.</p>
 <p>The result below will <em>always</em> output a <code>Cone</code> geometry because the input will always be <code>True</code>.</p>
-<div id="c867df9c" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    comp <span class="op">=</span> a <span class="op">==</span> b</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> g.Switch.geometry(comp, g.Cube(), g.Cone())</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>comp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div id="db475c4d" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    comp <span class="op">=</span> a <span class="op">==</span> b</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> g.Switch.geometry(comp, g.Cube(), g.Cone())</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>comp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
 <pre><code>True</code></pre>
 </div>
 </div>

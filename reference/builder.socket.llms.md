@@ -46,8 +46,11 @@ Organization (top to bottom): \* Type variables and result types \* Base wrapper
 | [ObjectSocket](#nodebpy.builder.socket.ObjectSocket) | Runtime object socket wrapper. |
 | [ObjectSocketList](#nodebpy.builder.socket.ObjectSocketList) | List of object sockets. |
 | [ResultAxisAngle](#nodebpy.builder.socket.ResultAxisAngle) | Axis-angle components returned by `RotationSocket.to_axis_angle()`. |
+| [ResultCollectionChildren](#nodebpy.builder.socket.ResultCollectionChildren) | Children returned by `CollectionSocket.children()`. |
+| [ResultCylindrical](#nodebpy.builder.socket.ResultCylindrical) | Cylindrical coordinates returned by `VectorSocket.to_cylindrical()`. |
 | [ResultMatrixSVD](#nodebpy.builder.socket.ResultMatrixSVD) | SVD components returned by `MatrixSocket.svd()`. |
 | [ResultQuaternionComponents](#nodebpy.builder.socket.ResultQuaternionComponents) | Quaternion components returned by `RotationSocket.to_quaternion()`. |
+| [ResultSpherical](#nodebpy.builder.socket.ResultSpherical) | Spherical coordinates returned by `VectorSocket.to_spherical()`. |
 | [ResultStringFind](#nodebpy.builder.socket.ResultStringFind) | Result of `StringSocket.find()`. |
 | [RotationSocket](#nodebpy.builder.socket.RotationSocket) | Runtime rotation socket wrapper. |
 | [RotationSocketList](#nodebpy.builder.socket.RotationSocketList) | List of rotation sockets. |
@@ -183,6 +186,8 @@ Runtime boolean grid socket wrapper.
 | [prune](#nodebpy.builder.socket.BooleanSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [sample](#nodebpy.builder.socket.BooleanSocketGrid.sample) | Retrieve values from the specified volume grid. |
 | [sample_index](#nodebpy.builder.socket.BooleanSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
+| [set_background](#nodebpy.builder.socket.BooleanSocketGrid.set_background) | Set the grid’s background value, optionally also on inactive voxels. |
+| [set_transform](#nodebpy.builder.socket.BooleanSocketGrid.set_transform) | Set the grid’s transform from index to object space. |
 | [to_points](#nodebpy.builder.socket.BooleanSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
 | [voxelize](#nodebpy.builder.socket.BooleanSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
 
@@ -255,6 +260,22 @@ sample_index(x=0, y=0, z=0)
 ```
 
 Retrieve volume grid values at specific voxels.
+
+##### set_background
+
+``` python
+set_background(background, update_inactive=False)
+```
+
+Set the grid’s background value, optionally also on inactive voxels.
+
+##### set_transform
+
+``` python
+set_transform(matrix)
+```
+
+Set the grid’s transform from index to object space.
 
 ##### to_points
 
@@ -404,6 +425,7 @@ Runtime bundle socket wrapper.
 | Name | Description |
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.BundleSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`get`](#nodebpy.builder.socket.BundleSocket.get) | Read the item at a path as a given type: `bundle.get.float("path")`. |
 | [`i`](#nodebpy.builder.socket.BundleSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.BundleSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.BundleSocket.name) |  |
@@ -418,6 +440,10 @@ Runtime bundle socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.BundleSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [has](#nodebpy.builder.socket.BundleSocket.has) | Whether the bundle has an item at *path*. |
+| [join](#nodebpy.builder.socket.BundleSocket.join) | Join this bundle with *others*; on a duplicate path the later bundle wins. |
+| [paths](#nodebpy.builder.socket.BundleSocket.paths) | The paths of the items in this bundle and any nested bundles. |
+| [store](#nodebpy.builder.socket.BundleSocket.store) | This bundle with *value* stored at *path*; the item type follows *value*. |
 
 ##### enable_output
 
@@ -440,6 +466,38 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### has
+
+``` python
+has(path)
+```
+
+Whether the bundle has an item at *path*.
+
+##### join
+
+``` python
+join(*others)
+```
+
+Join this bundle with *others*; on a duplicate path the later bundle wins.
+
+##### paths
+
+``` python
+paths(mode='All', pattern_mode='Exact', bundle_type='', data_type='Float')
+```
+
+The paths of the items in this bundle and any nested bundles.
+
+##### store
+
+``` python
+store(path, value)
+```
+
+This bundle with *value* stored at *path*; the item type follows *value*.
 
 ### BundleSocketList
 
@@ -754,8 +812,17 @@ Runtime collection socket wrapper.
 
 | Name | Description |
 |----|----|
+| [children](#nodebpy.builder.socket.CollectionSocket.children) | The child collections and objects, as lists; *recursive* includes nested ones. |
 | [enable_output](#nodebpy.builder.socket.CollectionSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [instances](#nodebpy.builder.socket.CollectionSocket.instances) | Import objects from the collection as instances. |
+
+##### children
+
+``` python
+children(recursive=False)
+```
+
+The child collections and objects, as lists; *recursive* includes nested ones.
 
 ##### enable_output
 
@@ -961,8 +1028,19 @@ Runtime color socket wrapper.
 
 | Name | Description |
 |----|----|
+| [blur](#nodebpy.builder.socket.ColorSocket.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [enable_output](#nodebpy.builder.socket.ColorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [gamma](#nodebpy.builder.socket.ColorSocket.gamma) | Apply a gamma correction, raising each RGB channel to the power *gamma*. |
+| [hash](#nodebpy.builder.socket.ColorSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [to_list](#nodebpy.builder.socket.ColorSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
+
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
 
 ##### enable_output
 
@@ -985,6 +1063,22 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### gamma
+
+``` python
+gamma(gamma)
+```
+
+Apply a gamma correction, raising each RGB channel to the power *gamma*.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
 
 ##### to_list
 
@@ -1032,14 +1126,25 @@ List of color sockets.
 
 | Name | Description |
 |----|----|
+| [blur](#nodebpy.builder.socket.ColorSocketList.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [enable_output](#nodebpy.builder.socket.ColorSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.ColorSocketList.filter) | Filter the list based on the selection. |
+| [gamma](#nodebpy.builder.socket.ColorSocketList.gamma) | Apply a gamma correction, raising each RGB channel to the power *gamma*. |
 | [get](#nodebpy.builder.socket.ColorSocketList.get) | Get the item at the given index from the list. |
+| [hash](#nodebpy.builder.socket.ColorSocketList.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [list_length](#nodebpy.builder.socket.ColorSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ColorSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.ColorSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ColorSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [to_list](#nodebpy.builder.socket.ColorSocketList.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
+
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
 
 ##### enable_output
 
@@ -1071,6 +1176,14 @@ filter(selection=True)
 
 Filter the list based on the selection.
 
+##### gamma
+
+``` python
+gamma(gamma)
+```
+
+Apply a gamma correction, raising each RGB channel to the power *gamma*.
+
 ##### get
 
 ``` python
@@ -1078,6 +1191,14 @@ get(index)
 ```
 
 Get the item at the given index from the list.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
 
 ##### list_length
 
@@ -1173,6 +1294,7 @@ Runtime float socket wrapper.
 | [asin](#nodebpy.builder.socket.FloatSocket.asin) | Create a Math node with operation ‘ArcSine’. The arcsine of self |
 | [atan](#nodebpy.builder.socket.FloatSocket.atan) | Create a Math node with operation ‘ArcTangent’. The arctangent of self |
 | [atan2](#nodebpy.builder.socket.FloatSocket.atan2) | Create a Math node with operation ‘ArcTan2’. The arctangent of self |
+| [blur](#nodebpy.builder.socket.FloatSocket.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [ceil](#nodebpy.builder.socket.FloatSocket.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocket.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
 | [cos](#nodebpy.builder.socket.FloatSocket.cos) | Create a Math node with operation ‘Cosine’. The cosine of self |
@@ -1181,6 +1303,9 @@ Runtime float socket wrapper.
 | [exp](#nodebpy.builder.socket.FloatSocket.exp) | Create a Math node with operation ‘Exponent’. The exponent of self |
 | [floor](#nodebpy.builder.socket.FloatSocket.floor) | Round down to the nearest integer. |
 | [fraction](#nodebpy.builder.socket.FloatSocket.fraction) | The fractional part of the vlaue |
+| [hash](#nodebpy.builder.socket.FloatSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
+| [inverse_sqrt](#nodebpy.builder.socket.FloatSocket.inverse_sqrt) | Return `1 / sqrt(self)`. |
+| [is_close](#nodebpy.builder.socket.FloatSocket.is_close) | Whether self and *other* differ by at most *epsilon*. |
 | [log](#nodebpy.builder.socket.FloatSocket.log) | Return the logarithm of this value to *base*. |
 | [map_range](#nodebpy.builder.socket.FloatSocket.map_range) | Remap the values on the float socket using the MapRange node. |
 | [max](#nodebpy.builder.socket.FloatSocket.max) | Create Math with operation ‘Maximum’. The maximum from self and value |
@@ -1194,6 +1319,8 @@ Runtime float socket wrapper.
 | [sign](#nodebpy.builder.socket.FloatSocket.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
 | [sin](#nodebpy.builder.socket.FloatSocket.sin) | Create a Math node with operation ‘Sine’. The sine of self |
 | [sinh](#nodebpy.builder.socket.FloatSocket.sinh) | Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self |
+| [smooth_max](#nodebpy.builder.socket.FloatSocket.smooth_max) | The maximum of self and *value*, blended smoothly over *distance*. |
+| [smooth_min](#nodebpy.builder.socket.FloatSocket.smooth_min) | The minimum of self and *value*, blended smoothly over *distance*. |
 | [snap](#nodebpy.builder.socket.FloatSocket.snap) | Create a Math node with operation ‘Snap’. The snap of self |
 | [sqrt](#nodebpy.builder.socket.FloatSocket.sqrt) | Return the square root of this value. |
 | [tan](#nodebpy.builder.socket.FloatSocket.tan) | Create a Math node with operation ‘Tangent’. The tangent of self |
@@ -1245,6 +1372,14 @@ atan2(value=0.5)
 ```
 
 Create a Math node with operation ‘ArcTan2’. The arctangent of self
+
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
 
 ##### ceil
 
@@ -1323,6 +1458,30 @@ fraction()
 ```
 
 The fractional part of the vlaue
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
+##### inverse_sqrt
+
+``` python
+inverse_sqrt()
+```
+
+Return `1 / sqrt(self)`.
+
+##### is_close
+
+``` python
+is_close(other, epsilon=0.0001)
+```
+
+Whether self and *other* differ by at most *epsilon*.
 
 ##### log
 
@@ -1436,6 +1595,22 @@ sinh()
 ```
 
 Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self
+
+##### smooth_max
+
+``` python
+smooth_max(value, distance)
+```
+
+The maximum of self and *value*, blended smoothly over *distance*.
+
+##### smooth_min
+
+``` python
+smooth_min(value, distance)
+```
+
+The minimum of self and *value*, blended smoothly over *distance*.
 
 ##### snap
 
@@ -1556,9 +1731,11 @@ Runtime float grid socket wrapper.
 |----|----|
 | [abs](#nodebpy.builder.socket.FloatSocketGrid.abs) | Absolute value of the input |
 | [acos](#nodebpy.builder.socket.FloatSocketGrid.acos) | Create a Math node with operation ‘ArcCosine’. The arccosine of self |
+| [advect](#nodebpy.builder.socket.FloatSocketGrid.advect) | Move the grid’s values along the *velocity* grid over *time_step*. |
 | [asin](#nodebpy.builder.socket.FloatSocketGrid.asin) | Create a Math node with operation ‘ArcSine’. The arcsine of self |
 | [atan](#nodebpy.builder.socket.FloatSocketGrid.atan) | Create a Math node with operation ‘ArcTangent’. The arctangent of self |
 | [atan2](#nodebpy.builder.socket.FloatSocketGrid.atan2) | Create a Math node with operation ‘ArcTan2’. The arctangent of self |
+| [blur](#nodebpy.builder.socket.FloatSocketGrid.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [ceil](#nodebpy.builder.socket.FloatSocketGrid.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocketGrid.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
 | [clip](#nodebpy.builder.socket.FloatSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
@@ -1571,6 +1748,9 @@ Runtime float grid socket wrapper.
 | [floor](#nodebpy.builder.socket.FloatSocketGrid.floor) | Round down to the nearest integer. |
 | [fraction](#nodebpy.builder.socket.FloatSocketGrid.fraction) | The fractional part of the vlaue |
 | [gradient](#nodebpy.builder.socket.FloatSocketGrid.gradient) | Calculate the direction and magnitude of the change in values of a scalar grid. |
+| [hash](#nodebpy.builder.socket.FloatSocketGrid.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
+| [inverse_sqrt](#nodebpy.builder.socket.FloatSocketGrid.inverse_sqrt) | Return `1 / sqrt(self)`. |
+| [is_close](#nodebpy.builder.socket.FloatSocketGrid.is_close) | Whether self and *other* differ by at most *epsilon*. |
 | [laplacian](#nodebpy.builder.socket.FloatSocketGrid.laplacian) | Compute the divergence of the gradient of the input grid. |
 | [log](#nodebpy.builder.socket.FloatSocketGrid.log) | Return the logarithm of this value to *base*. |
 | [map_range](#nodebpy.builder.socket.FloatSocketGrid.map_range) | Remap the values on the float socket using the MapRange node. |
@@ -1587,15 +1767,22 @@ Runtime float grid socket wrapper.
 | [round](#nodebpy.builder.socket.FloatSocketGrid.round) | Round to the nearest integer. |
 | [sample](#nodebpy.builder.socket.FloatSocketGrid.sample) | Retrieve values from the specified volume grid. |
 | [sample_index](#nodebpy.builder.socket.FloatSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
+| [sdf_difference](#nodebpy.builder.socket.FloatSocketGrid.sdf_difference) | This signed distance field with *others* subtracted. |
 | [sdf_fillet](#nodebpy.builder.socket.FloatSocketGrid.sdf_fillet) | Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces. |
+| [sdf_intersect](#nodebpy.builder.socket.FloatSocketGrid.sdf_intersect) | Intersection of this signed distance field with *others*. |
 | [sdf_laplacian](#nodebpy.builder.socket.FloatSocketGrid.sdf_laplacian) | Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization. |
 | [sdf_mean](#nodebpy.builder.socket.FloatSocketGrid.sdf_mean) | Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field. |
 | [sdf_mean_curvature](#nodebpy.builder.socket.FloatSocketGrid.sdf_mean_curvature) | Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas. |
 | [sdf_median](#nodebpy.builder.socket.FloatSocketGrid.sdf_median) | Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field. |
 | [sdf_offset](#nodebpy.builder.socket.FloatSocketGrid.sdf_offset) | Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property. |
+| [sdf_union](#nodebpy.builder.socket.FloatSocketGrid.sdf_union) | Union of this signed distance field with *others*. |
+| [set_background](#nodebpy.builder.socket.FloatSocketGrid.set_background) | Set the grid’s background value, optionally also on inactive voxels. |
+| [set_transform](#nodebpy.builder.socket.FloatSocketGrid.set_transform) | Set the grid’s transform from index to object space. |
 | [sign](#nodebpy.builder.socket.FloatSocketGrid.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
 | [sin](#nodebpy.builder.socket.FloatSocketGrid.sin) | Create a Math node with operation ‘Sine’. The sine of self |
 | [sinh](#nodebpy.builder.socket.FloatSocketGrid.sinh) | Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self |
+| [smooth_max](#nodebpy.builder.socket.FloatSocketGrid.smooth_max) | The maximum of self and *value*, blended smoothly over *distance*. |
+| [smooth_min](#nodebpy.builder.socket.FloatSocketGrid.smooth_min) | The minimum of self and *value*, blended smoothly over *distance*. |
 | [snap](#nodebpy.builder.socket.FloatSocketGrid.snap) | Create a Math node with operation ‘Snap’. The snap of self |
 | [sqrt](#nodebpy.builder.socket.FloatSocketGrid.sqrt) | Return the square root of this value. |
 | [tan](#nodebpy.builder.socket.FloatSocketGrid.tan) | Create a Math node with operation ‘Tangent’. The tangent of self |
@@ -1624,6 +1811,19 @@ acos()
 
 Create a Math node with operation ‘ArcCosine’. The arccosine of self
 
+##### advect
+
+``` python
+advect(
+    velocity,
+    time_step=1.0,
+    integration_scheme='Runge-Kutta 3',
+    limiter='Clamp',
+)
+```
+
+Move the grid’s values along the *velocity* grid over *time_step*.
+
 ##### asin
 
 ``` python
@@ -1647,6 +1847,14 @@ atan2(value=0.5)
 ```
 
 Create a Math node with operation ‘ArcTan2’. The arctangent of self
+
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
 
 ##### ceil
 
@@ -1757,6 +1965,30 @@ gradient()
 ```
 
 Calculate the direction and magnitude of the change in values of a scalar grid.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
+##### inverse_sqrt
+
+``` python
+inverse_sqrt()
+```
+
+Return `1 / sqrt(self)`.
+
+##### is_close
+
+``` python
+is_close(other, epsilon=0.0001)
+```
+
+Whether self and *other* differ by at most *epsilon*.
 
 ##### laplacian
 
@@ -1895,6 +2127,14 @@ sample_index(x=0, y=0, z=0)
 
 Retrieve volume grid values at specific voxels.
 
+##### sdf_difference
+
+``` python
+sdf_difference(*others)
+```
+
+This signed distance field with *others* subtracted.
+
 ##### sdf_fillet
 
 ``` python
@@ -1902,6 +2142,14 @@ sdf_fillet(iterations=1)
 ```
 
 Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces.
+
+##### sdf_intersect
+
+``` python
+sdf_intersect(*others)
+```
+
+Intersection of this signed distance field with *others*.
 
 ##### sdf_laplacian
 
@@ -1943,6 +2191,30 @@ sdf_offset(distance=0.1)
 
 Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property.
 
+##### sdf_union
+
+``` python
+sdf_union(*others)
+```
+
+Union of this signed distance field with *others*.
+
+##### set_background
+
+``` python
+set_background(background, update_inactive=False)
+```
+
+Set the grid’s background value, optionally also on inactive voxels.
+
+##### set_transform
+
+``` python
+set_transform(matrix)
+```
+
+Set the grid’s transform from index to object space.
+
 ##### sign
 
 ``` python
@@ -1966,6 +2238,22 @@ sinh()
 ```
 
 Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self
+
+##### smooth_max
+
+``` python
+smooth_max(value, distance)
+```
+
+The maximum of self and *value*, blended smoothly over *distance*.
+
+##### smooth_min
+
+``` python
+smooth_min(value, distance)
+```
+
+The minimum of self and *value*, blended smoothly over *distance*.
 
 ##### snap
 
@@ -2087,6 +2375,7 @@ List float sockets.
 | [asin](#nodebpy.builder.socket.FloatSocketList.asin) | Create a Math node with operation ‘ArcSine’. The arcsine of self |
 | [atan](#nodebpy.builder.socket.FloatSocketList.atan) | Create a Math node with operation ‘ArcTangent’. The arctangent of self |
 | [atan2](#nodebpy.builder.socket.FloatSocketList.atan2) | Create a Math node with operation ‘ArcTan2’. The arctangent of self |
+| [blur](#nodebpy.builder.socket.FloatSocketList.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [ceil](#nodebpy.builder.socket.FloatSocketList.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocketList.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
 | [cos](#nodebpy.builder.socket.FloatSocketList.cos) | Create a Math node with operation ‘Cosine’. The cosine of self |
@@ -2097,6 +2386,9 @@ List float sockets.
 | [floor](#nodebpy.builder.socket.FloatSocketList.floor) | Round down to the nearest integer. |
 | [fraction](#nodebpy.builder.socket.FloatSocketList.fraction) | The fractional part of the vlaue |
 | [get](#nodebpy.builder.socket.FloatSocketList.get) | Get the item at the given index from the list. |
+| [hash](#nodebpy.builder.socket.FloatSocketList.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
+| [inverse_sqrt](#nodebpy.builder.socket.FloatSocketList.inverse_sqrt) | Return `1 / sqrt(self)`. |
+| [is_close](#nodebpy.builder.socket.FloatSocketList.is_close) | Whether self and *other* differ by at most *epsilon*. |
 | [list_length](#nodebpy.builder.socket.FloatSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.FloatSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [log](#nodebpy.builder.socket.FloatSocketList.log) | Return the logarithm of this value to *base*. |
@@ -2113,6 +2405,8 @@ List float sockets.
 | [sign](#nodebpy.builder.socket.FloatSocketList.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
 | [sin](#nodebpy.builder.socket.FloatSocketList.sin) | Create a Math node with operation ‘Sine’. The sine of self |
 | [sinh](#nodebpy.builder.socket.FloatSocketList.sinh) | Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self |
+| [smooth_max](#nodebpy.builder.socket.FloatSocketList.smooth_max) | The maximum of self and *value*, blended smoothly over *distance*. |
+| [smooth_min](#nodebpy.builder.socket.FloatSocketList.smooth_min) | The minimum of self and *value*, blended smoothly over *distance*. |
 | [snap](#nodebpy.builder.socket.FloatSocketList.snap) | Create a Math node with operation ‘Snap’. The snap of self |
 | [sort](#nodebpy.builder.socket.FloatSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [sqrt](#nodebpy.builder.socket.FloatSocketList.sqrt) | Return the square root of this value. |
@@ -2164,6 +2458,14 @@ atan2(value=0.5)
 ```
 
 Create a Math node with operation ‘ArcTan2’. The arctangent of self
+
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
 
 ##### ceil
 
@@ -2258,6 +2560,30 @@ get(index)
 ```
 
 Get the item at the given index from the list.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
+##### inverse_sqrt
+
+``` python
+inverse_sqrt()
+```
+
+Return `1 / sqrt(self)`.
+
+##### is_close
+
+``` python
+is_close(other, epsilon=0.0001)
+```
+
+Whether self and *other* differ by at most *epsilon*.
 
 ##### list_length
 
@@ -2395,6 +2721,22 @@ sinh()
 ```
 
 Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self
+
+##### smooth_max
+
+``` python
+smooth_max(value, distance)
+```
+
+The maximum of self and *value*, blended smoothly over *distance*.
+
+##### smooth_min
+
+``` python
+smooth_min(value, distance)
+```
+
+The minimum of self and *value*, blended smoothly over *distance*.
 
 ##### snap
 
@@ -2692,8 +3034,18 @@ Runtime geometry socket wrapper.
 
 | Name | Description |
 |----|----|
+| [bundle](#nodebpy.builder.socket.GeometrySocket.bundle) | The bundle stored on this geometry. |
 | [enable_output](#nodebpy.builder.socket.GeometrySocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [realize_instances](#nodebpy.builder.socket.GeometrySocket.realize_instances) |  |
+| [set_bundle](#nodebpy.builder.socket.GeometrySocket.set_bundle) | This geometry with *bundle* stored on it. |
+
+##### bundle
+
+``` python
+bundle()
+```
+
+The bundle stored on this geometry.
 
 ##### enable_output
 
@@ -2723,6 +3075,14 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 realize_instances(selection=True, realize_all=False, depth=0)
 ```
 
+##### set_bundle
+
+``` python
+set_bundle(bundle)
+```
+
+This geometry with *bundle* stored on it.
+
 ### GeometrySocketList
 
 ``` python
@@ -2749,6 +3109,7 @@ List of geometry sockets.
 
 | Name | Description |
 |----|----|
+| [bundle](#nodebpy.builder.socket.GeometrySocketList.bundle) | The bundle stored on this geometry. |
 | [enable_output](#nodebpy.builder.socket.GeometrySocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.GeometrySocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.GeometrySocketList.get) | Get the item at the given index from the list. |
@@ -2756,7 +3117,16 @@ List of geometry sockets.
 | [list_slice](#nodebpy.builder.socket.GeometrySocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [realize_instances](#nodebpy.builder.socket.GeometrySocketList.realize_instances) |  |
 | [reverse](#nodebpy.builder.socket.GeometrySocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
+| [set_bundle](#nodebpy.builder.socket.GeometrySocketList.set_bundle) | This geometry with *bundle* stored on it. |
 | [sort](#nodebpy.builder.socket.GeometrySocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### bundle
+
+``` python
+bundle()
+```
+
+The bundle stored on this geometry.
 
 ##### enable_output
 
@@ -2826,6 +3196,14 @@ reverse()
 
 Reverse the list. Currently uses a SortList node with negative Index to reverse the list.
 
+##### set_bundle
+
+``` python
+set_bundle(bundle)
+```
+
+This geometry with *bundle* stored on it.
+
 ##### sort
 
 ``` python
@@ -2876,6 +3254,7 @@ Runtime image socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.ImageSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [info](#nodebpy.builder.socket.ImageSocket.info) | Image Info for this image at *frame*; read its outputs, e.g. `.o.width`. |
 
 ##### enable_output
 
@@ -2898,6 +3277,14 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### info
+
+``` python
+info(frame=0)
+```
+
+Image Info for this image at *frame*; read its outputs, e.g. `.o.width`.
 
 ### ImageSocketList
 
@@ -3052,15 +3439,24 @@ Runtime integer socket wrapper.
 | Name | Description |
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocket.abs) | Return the absolute value of the IntegerSocket. |
+| [blur](#nodebpy.builder.socket.IntegerSocket.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [clamp](#nodebpy.builder.socket.IntegerSocket.clamp) | Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min() |
+| [divide_ceiling](#nodebpy.builder.socket.IntegerSocket.divide_ceiling) | Divide by *divisor*, rounding up. |
+| [divide_round](#nodebpy.builder.socket.IntegerSocket.divide_round) | Divide by *divisor*, rounding to the nearest integer. |
 | [enable_output](#nodebpy.builder.socket.IntegerSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [gcd](#nodebpy.builder.socket.IntegerSocket.gcd) | Greatest common divisor of self and *value*. |
+| [hash](#nodebpy.builder.socket.IntegerSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
+| [lcm](#nodebpy.builder.socket.IntegerSocket.lcm) | Least common multiple of self and *value*. |
 | [max](#nodebpy.builder.socket.IntegerSocket.max) | Create IntegerMath with operation ‘Maximum’. The maximum from self and value |
 | [min](#nodebpy.builder.socket.IntegerSocket.min) | Create IntegerMath with operation ‘Minimum’. The minimum from self and value |
-| [modulo](#nodebpy.builder.socket.IntegerSocket.modulo) | Remainder after dividing by *divisor* (always non-negative). |
+| [modulo](#nodebpy.builder.socket.IntegerSocket.modulo) | Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*. |
 | [mul_add](#nodebpy.builder.socket.IntegerSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [power](#nodebpy.builder.socket.IntegerSocket.power) | Raise this value to *exponent*. |
+| [rotate](#nodebpy.builder.socket.IntegerSocket.rotate) | Rotate the 32 bits left by *amount*, or right when *amount* is negative; |
+| [shift](#nodebpy.builder.socket.IntegerSocket.shift) | Shift the bits left by *amount*, or right when *amount* is negative. |
 | [sign](#nodebpy.builder.socket.IntegerSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
+| [to_float](#nodebpy.builder.socket.IntegerSocket.to_float) | Convert to a float with an Implicit Conversion node. |
 | [to_list](#nodebpy.builder.socket.IntegerSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 | [to_string](#nodebpy.builder.socket.IntegerSocket.to_string) | Convert the `IntegerSocket` to a `StringSocket` in the given base, zero-padded to `padding` digits. |
 
@@ -3072,6 +3468,14 @@ abs()
 
 Return the absolute value of the IntegerSocket.
 
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
+
 ##### clamp
 
 ``` python
@@ -3079,6 +3483,22 @@ clamp(min=0, max=1)
 ```
 
 Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min()
+
+##### divide_ceiling
+
+``` python
+divide_ceiling(divisor)
+```
+
+Divide by *divisor*, rounding up.
+
+##### divide_round
+
+``` python
+divide_round(divisor)
+```
+
+Divide by *divisor*, rounding to the nearest integer.
 
 ##### enable_output
 
@@ -3102,6 +3522,30 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### gcd
+
+``` python
+gcd(value)
+```
+
+Greatest common divisor of self and *value*.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
+##### lcm
+
+``` python
+lcm(value)
+```
+
+Least common multiple of self and *value*.
+
 ##### max
 
 ``` python
@@ -3124,7 +3568,7 @@ Create IntegerMath with operation ‘Minimum’. The minimum from self and value
 modulo(divisor)
 ```
 
-Remainder after dividing by *divisor* (always non-negative).
+Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*.
 
 ##### mul_add
 
@@ -3150,6 +3594,24 @@ power(exponent=2)
 
 Raise this value to *exponent*.
 
+##### rotate
+
+``` python
+rotate(amount)
+```
+
+Rotate the 32 bits left by *amount*, or right when *amount* is negative; bits shifted off one end come back at the other.
+
+##### shift
+
+``` python
+shift(amount)
+```
+
+Shift the bits left by *amount*, or right when *amount* is negative.
+
+Right shifts are logical, filling with zeros, so a negative value turns positive, unlike Python’s `>>`.
+
 ##### sign
 
 ``` python
@@ -3157,6 +3619,14 @@ sign()
 ```
 
 Return the sign of the IntegerSocket, either `-1`, `0`, or `1`.
+
+##### to_float
+
+``` python
+to_float()
+```
+
+Convert to a float with an Implicit Conversion node.
 
 ##### to_list
 
@@ -3203,23 +3673,35 @@ Runtime integer grid socket wrapper.
 | Name | Description |
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocketGrid.abs) | Return the absolute value of the IntegerSocket. |
+| [advect](#nodebpy.builder.socket.IntegerSocketGrid.advect) | Move the grid’s values along the *velocity* grid over *time_step*. |
+| [blur](#nodebpy.builder.socket.IntegerSocketGrid.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [clamp](#nodebpy.builder.socket.IntegerSocketGrid.clamp) | Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min() |
 | [clip](#nodebpy.builder.socket.IntegerSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
 | [dilate_erode](#nodebpy.builder.socket.IntegerSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
+| [divide_ceiling](#nodebpy.builder.socket.IntegerSocketGrid.divide_ceiling) | Divide by *divisor*, rounding up. |
+| [divide_round](#nodebpy.builder.socket.IntegerSocketGrid.divide_round) | Divide by *divisor*, rounding to the nearest integer. |
 | [enable_output](#nodebpy.builder.socket.IntegerSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [field_to_grid](#nodebpy.builder.socket.IntegerSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
+| [gcd](#nodebpy.builder.socket.IntegerSocketGrid.gcd) | Greatest common divisor of self and *value*. |
+| [hash](#nodebpy.builder.socket.IntegerSocketGrid.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
+| [lcm](#nodebpy.builder.socket.IntegerSocketGrid.lcm) | Least common multiple of self and *value*. |
 | [max](#nodebpy.builder.socket.IntegerSocketGrid.max) | Create IntegerMath with operation ‘Maximum’. The maximum from self and value |
 | [mean](#nodebpy.builder.socket.IntegerSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [median](#nodebpy.builder.socket.IntegerSocketGrid.median) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [min](#nodebpy.builder.socket.IntegerSocketGrid.min) | Create IntegerMath with operation ‘Minimum’. The minimum from self and value |
-| [modulo](#nodebpy.builder.socket.IntegerSocketGrid.modulo) | Remainder after dividing by *divisor* (always non-negative). |
+| [modulo](#nodebpy.builder.socket.IntegerSocketGrid.modulo) | Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*. |
 | [mul_add](#nodebpy.builder.socket.IntegerSocketGrid.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocketGrid.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [power](#nodebpy.builder.socket.IntegerSocketGrid.power) | Raise this value to *exponent*. |
 | [prune](#nodebpy.builder.socket.IntegerSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
+| [rotate](#nodebpy.builder.socket.IntegerSocketGrid.rotate) | Rotate the 32 bits left by *amount*, or right when *amount* is negative; |
 | [sample](#nodebpy.builder.socket.IntegerSocketGrid.sample) | Retrieve values from the specified volume grid. |
 | [sample_index](#nodebpy.builder.socket.IntegerSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
+| [set_background](#nodebpy.builder.socket.IntegerSocketGrid.set_background) | Set the grid’s background value, optionally also on inactive voxels. |
+| [set_transform](#nodebpy.builder.socket.IntegerSocketGrid.set_transform) | Set the grid’s transform from index to object space. |
+| [shift](#nodebpy.builder.socket.IntegerSocketGrid.shift) | Shift the bits left by *amount*, or right when *amount* is negative. |
 | [sign](#nodebpy.builder.socket.IntegerSocketGrid.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
+| [to_float](#nodebpy.builder.socket.IntegerSocketGrid.to_float) | Convert to a float with an Implicit Conversion node. |
 | [to_points](#nodebpy.builder.socket.IntegerSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
 | [voxelize](#nodebpy.builder.socket.IntegerSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
 
@@ -3230,6 +3712,27 @@ abs()
 ```
 
 Return the absolute value of the IntegerSocket.
+
+##### advect
+
+``` python
+advect(
+    velocity,
+    time_step=1.0,
+    integration_scheme='Runge-Kutta 3',
+    limiter='Clamp',
+)
+```
+
+Move the grid’s values along the *velocity* grid over *time_step*.
+
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
 
 ##### clamp
 
@@ -3254,6 +3757,22 @@ dilate_erode(steps=1, connectivity='Face', tiles='Preserve')
 ```
 
 Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.
+
+##### divide_ceiling
+
+``` python
+divide_ceiling(divisor)
+```
+
+Divide by *divisor*, rounding up.
+
+##### divide_round
+
+``` python
+divide_round(divisor)
+```
+
+Divide by *divisor*, rounding to the nearest integer.
 
 ##### enable_output
 
@@ -3284,6 +3803,30 @@ field_to_grid()
 ```
 
 Create new grids by evaluating new values on an existing volume grid topology.
+
+##### gcd
+
+``` python
+gcd(value)
+```
+
+Greatest common divisor of self and *value*.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
+##### lcm
+
+``` python
+lcm(value)
+```
+
+Least common multiple of self and *value*.
 
 ##### max
 
@@ -3323,7 +3866,7 @@ Create IntegerMath with operation ‘Minimum’. The minimum from self and value
 modulo(divisor)
 ```
 
-Remainder after dividing by *divisor* (always non-negative).
+Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*.
 
 ##### mul_add
 
@@ -3357,6 +3900,14 @@ prune(threshold=0.1, mode=None)
 
 Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes.
 
+##### rotate
+
+``` python
+rotate(amount)
+```
+
+Rotate the 32 bits left by *amount*, or right when *amount* is negative; bits shifted off one end come back at the other.
+
 ##### sample
 
 ``` python
@@ -3373,6 +3924,32 @@ sample_index(x=0, y=0, z=0)
 
 Retrieve volume grid values at specific voxels.
 
+##### set_background
+
+``` python
+set_background(background, update_inactive=False)
+```
+
+Set the grid’s background value, optionally also on inactive voxels.
+
+##### set_transform
+
+``` python
+set_transform(matrix)
+```
+
+Set the grid’s transform from index to object space.
+
+##### shift
+
+``` python
+shift(amount)
+```
+
+Shift the bits left by *amount*, or right when *amount* is negative.
+
+Right shifts are logical, filling with zeros, so a negative value turns positive, unlike Python’s `>>`.
+
 ##### sign
 
 ``` python
@@ -3380,6 +3957,14 @@ sign()
 ```
 
 Return the sign of the IntegerSocket, either `-1`, `0`, or `1`.
+
+##### to_float
+
+``` python
+to_float()
+```
+
+Convert to a float with an Implicit Conversion node.
 
 ##### to_points
 
@@ -3424,21 +4009,30 @@ List of integer sockets.
 | Name | Description |
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocketList.abs) | Return the absolute value of the IntegerSocket. |
+| [blur](#nodebpy.builder.socket.IntegerSocketList.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [clamp](#nodebpy.builder.socket.IntegerSocketList.clamp) | Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min() |
+| [divide_ceiling](#nodebpy.builder.socket.IntegerSocketList.divide_ceiling) | Divide by *divisor*, rounding up. |
+| [divide_round](#nodebpy.builder.socket.IntegerSocketList.divide_round) | Divide by *divisor*, rounding to the nearest integer. |
 | [enable_output](#nodebpy.builder.socket.IntegerSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.IntegerSocketList.filter) | Filter the list based on the selection. |
+| [gcd](#nodebpy.builder.socket.IntegerSocketList.gcd) | Greatest common divisor of self and *value*. |
 | [get](#nodebpy.builder.socket.IntegerSocketList.get) | Get the item at the given index from the list. |
+| [hash](#nodebpy.builder.socket.IntegerSocketList.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
+| [lcm](#nodebpy.builder.socket.IntegerSocketList.lcm) | Least common multiple of self and *value*. |
 | [list_length](#nodebpy.builder.socket.IntegerSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.IntegerSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [max](#nodebpy.builder.socket.IntegerSocketList.max) | Create IntegerMath with operation ‘Maximum’. The maximum from self and value |
 | [min](#nodebpy.builder.socket.IntegerSocketList.min) | Create IntegerMath with operation ‘Minimum’. The minimum from self and value |
-| [modulo](#nodebpy.builder.socket.IntegerSocketList.modulo) | Remainder after dividing by *divisor* (always non-negative). |
+| [modulo](#nodebpy.builder.socket.IntegerSocketList.modulo) | Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*. |
 | [mul_add](#nodebpy.builder.socket.IntegerSocketList.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocketList.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [power](#nodebpy.builder.socket.IntegerSocketList.power) | Raise this value to *exponent*. |
 | [reverse](#nodebpy.builder.socket.IntegerSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
+| [rotate](#nodebpy.builder.socket.IntegerSocketList.rotate) | Rotate the 32 bits left by *amount*, or right when *amount* is negative; |
+| [shift](#nodebpy.builder.socket.IntegerSocketList.shift) | Shift the bits left by *amount*, or right when *amount* is negative. |
 | [sign](#nodebpy.builder.socket.IntegerSocketList.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
 | [sort](#nodebpy.builder.socket.IntegerSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+| [to_float](#nodebpy.builder.socket.IntegerSocketList.to_float) | Convert to a float with an Implicit Conversion node. |
 | [to_string](#nodebpy.builder.socket.IntegerSocketList.to_string) | Convert the `IntegerSocket` to a `StringSocket` in the given base, zero-padded to `padding` digits. |
 
 ##### abs
@@ -3449,6 +4043,14 @@ abs()
 
 Return the absolute value of the IntegerSocket.
 
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
+
 ##### clamp
 
 ``` python
@@ -3456,6 +4058,22 @@ clamp(min=0, max=1)
 ```
 
 Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min()
+
+##### divide_ceiling
+
+``` python
+divide_ceiling(divisor)
+```
+
+Divide by *divisor*, rounding up.
+
+##### divide_round
+
+``` python
+divide_round(divisor)
+```
+
+Divide by *divisor*, rounding to the nearest integer.
 
 ##### enable_output
 
@@ -3487,6 +4105,14 @@ filter(selection=True)
 
 Filter the list based on the selection.
 
+##### gcd
+
+``` python
+gcd(value)
+```
+
+Greatest common divisor of self and *value*.
+
 ##### get
 
 ``` python
@@ -3494,6 +4120,22 @@ get(index)
 ```
 
 Get the item at the given index from the list.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
+##### lcm
+
+``` python
+lcm(value)
+```
+
+Least common multiple of self and *value*.
 
 ##### list_length
 
@@ -3533,7 +4175,7 @@ Create IntegerMath with operation ‘Minimum’. The minimum from self and value
 modulo(divisor)
 ```
 
-Remainder after dividing by *divisor* (always non-negative).
+Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*.
 
 ##### mul_add
 
@@ -3567,6 +4209,24 @@ reverse()
 
 Reverse the list. Currently uses a SortList node with negative Index to reverse the list.
 
+##### rotate
+
+``` python
+rotate(amount)
+```
+
+Rotate the 32 bits left by *amount*, or right when *amount* is negative; bits shifted off one end come back at the other.
+
+##### shift
+
+``` python
+shift(amount)
+```
+
+Shift the bits left by *amount*, or right when *amount* is negative.
+
+Right shifts are logical, filling with zeros, so a negative value turns positive, unlike Python’s `>>`.
+
 ##### sign
 
 ``` python
@@ -3596,6 +4256,14 @@ Sort the list based on the weights. Optional `Group ID` and `Selection` can be p
 | Name | Type | Description      |
 |------|------|------------------|
 |      | Self | The sorted list. |
+
+##### to_float
+
+``` python
+to_float()
+```
+
+Convert to a float with an Implicit Conversion node.
 
 ##### to_string
 
@@ -3633,15 +4301,24 @@ Runtime integer vector socket wrapper.
 | Name | Description |
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerVectorSocket.abs) | Return the absolute value of the IntegerSocket. |
+| [blur](#nodebpy.builder.socket.IntegerVectorSocket.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
 | [clamp](#nodebpy.builder.socket.IntegerVectorSocket.clamp) | Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min() |
+| [divide_ceiling](#nodebpy.builder.socket.IntegerVectorSocket.divide_ceiling) | Divide by *divisor*, rounding up. |
+| [divide_round](#nodebpy.builder.socket.IntegerVectorSocket.divide_round) | Divide by *divisor*, rounding to the nearest integer. |
 | [enable_output](#nodebpy.builder.socket.IntegerVectorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [gcd](#nodebpy.builder.socket.IntegerVectorSocket.gcd) | Greatest common divisor of self and *value*. |
+| [hash](#nodebpy.builder.socket.IntegerVectorSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
+| [lcm](#nodebpy.builder.socket.IntegerVectorSocket.lcm) | Least common multiple of self and *value*. |
 | [max](#nodebpy.builder.socket.IntegerVectorSocket.max) | Create IntegerMath with operation ‘Maximum’. The maximum from self and value |
 | [min](#nodebpy.builder.socket.IntegerVectorSocket.min) | Create IntegerMath with operation ‘Minimum’. The minimum from self and value |
-| [modulo](#nodebpy.builder.socket.IntegerVectorSocket.modulo) | Remainder after dividing by *divisor* (always non-negative). |
+| [modulo](#nodebpy.builder.socket.IntegerVectorSocket.modulo) | Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*. |
 | [mul_add](#nodebpy.builder.socket.IntegerVectorSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerVectorSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [power](#nodebpy.builder.socket.IntegerVectorSocket.power) | Raise this value to *exponent*. |
+| [rotate](#nodebpy.builder.socket.IntegerVectorSocket.rotate) | Rotate the 32 bits left by *amount*, or right when *amount* is negative; |
+| [shift](#nodebpy.builder.socket.IntegerVectorSocket.shift) | Shift the bits left by *amount*, or right when *amount* is negative. |
 | [sign](#nodebpy.builder.socket.IntegerVectorSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
+| [to_float](#nodebpy.builder.socket.IntegerVectorSocket.to_float) | Convert to a float with an Implicit Conversion node. |
 
 ##### abs
 
@@ -3651,6 +4328,14 @@ abs()
 
 Return the absolute value of the IntegerSocket.
 
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
+
 ##### clamp
 
 ``` python
@@ -3658,6 +4343,22 @@ clamp(min=0, max=1)
 ```
 
 Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min()
+
+##### divide_ceiling
+
+``` python
+divide_ceiling(divisor)
+```
+
+Divide by *divisor*, rounding up.
+
+##### divide_round
+
+``` python
+divide_round(divisor)
+```
+
+Divide by *divisor*, rounding to the nearest integer.
 
 ##### enable_output
 
@@ -3681,6 +4382,30 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### gcd
+
+``` python
+gcd(value)
+```
+
+Greatest common divisor of self and *value*.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
+##### lcm
+
+``` python
+lcm(value)
+```
+
+Least common multiple of self and *value*.
+
 ##### max
 
 ``` python
@@ -3703,7 +4428,7 @@ Create IntegerMath with operation ‘Minimum’. The minimum from self and value
 modulo(divisor)
 ```
 
-Remainder after dividing by *divisor* (always non-negative).
+Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*.
 
 ##### mul_add
 
@@ -3729,6 +4454,24 @@ power(exponent=2)
 
 Raise this value to *exponent*.
 
+##### rotate
+
+``` python
+rotate(amount)
+```
+
+Rotate the 32 bits left by *amount*, or right when *amount* is negative; bits shifted off one end come back at the other.
+
+##### shift
+
+``` python
+shift(amount)
+```
+
+Shift the bits left by *amount*, or right when *amount* is negative.
+
+Right shifts are logical, filling with zeros, so a negative value turns positive, unlike Python’s `>>`.
+
 ##### sign
 
 ``` python
@@ -3736,6 +4479,14 @@ sign()
 ```
 
 Return the sign of the IntegerSocket, either `-1`, `0`, or `1`.
+
+##### to_float
+
+``` python
+to_float()
+```
+
+Convert to a float with an Implicit Conversion node.
 
 ### MaterialSocket
 
@@ -3765,6 +4516,7 @@ Runtime material socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.MaterialSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [selection](#nodebpy.builder.socket.MaterialSocket.selection) | Whether each face uses this material. |
 
 ##### enable_output
 
@@ -3787,6 +4539,14 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### selection
+
+``` python
+selection()
+```
+
+Whether each face uses this material.
 
 ### MaterialSocketList
 
@@ -3944,6 +4704,7 @@ Runtime matrix socket wrapper.
 |----|----|
 | [determinant](#nodebpy.builder.socket.MatrixSocket.determinant) | Compute the determinant of a matrix input and return as a `FloatSocket`. |
 | [enable_output](#nodebpy.builder.socket.MatrixSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [hash](#nodebpy.builder.socket.MatrixSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [invert](#nodebpy.builder.socket.MatrixSocket.invert) | Invert the `MatrixSocet` and return a `MatrixSocket`. |
 | [svd](#nodebpy.builder.socket.MatrixSocket.svd) | Decompose the matrix via SVD. Returns `(u, s, v)`. |
 | [to_list](#nodebpy.builder.socket.MatrixSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
@@ -3979,6 +4740,14 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
 
 ##### invert
 
@@ -4053,6 +4822,7 @@ List of matrix sockets.
 | [enable_output](#nodebpy.builder.socket.MatrixSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.MatrixSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.MatrixSocketList.get) | Get the item at the given index from the list. |
+| [hash](#nodebpy.builder.socket.MatrixSocketList.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [invert](#nodebpy.builder.socket.MatrixSocketList.invert) | Invert the `MatrixSocet` and return a `MatrixSocket`. |
 | [list_length](#nodebpy.builder.socket.MatrixSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.MatrixSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
@@ -4107,6 +4877,14 @@ get(index)
 ```
 
 Get the item at the given index from the list.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
 
 ##### invert
 
@@ -4391,6 +5169,8 @@ Runtime object socket wrapper.
 
 | Name | Description |
 |----|----|
+| [bone_info](#nodebpy.builder.socket.ObjectSocket.bone_info) | Bone Info for *bone_name* on this armature; read its outputs, e.g. `.o.pose`. |
+| [camera_info](#nodebpy.builder.socket.ObjectSocket.camera_info) | Camera Info for this object; read its outputs, e.g. `.o.focal_length`. |
 | [enable_output](#nodebpy.builder.socket.ObjectSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [geometry](#nodebpy.builder.socket.ObjectSocket.geometry) | The object’s geometry, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [location](#nodebpy.builder.socket.ObjectSocket.location) | The object’s location, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
@@ -4398,6 +5178,22 @@ Runtime object socket wrapper.
 | [rotation](#nodebpy.builder.socket.ObjectSocket.rotation) | The object’s rotation, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [scale](#nodebpy.builder.socket.ObjectSocket.scale) | The object’s scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [transform](#nodebpy.builder.socket.ObjectSocket.transform) | Deprecated: use :meth:`matrix`, which does not read like |
+
+##### bone_info
+
+``` python
+bone_info(bone_name, transform_space='ORIGINAL')
+```
+
+Bone Info for *bone_name* on this armature; read its outputs, e.g. `.o.pose`.
+
+##### camera_info
+
+``` python
+camera_info()
+```
+
+Camera Info for this object; read its outputs, e.g. `.o.focal_length`.
 
 ##### enable_output
 
@@ -4663,6 +5459,37 @@ Axis-angle components returned by `RotationSocket.to_axis_angle()`.
 | [`angle`](#nodebpy.builder.socket.ResultAxisAngle.angle) |             |
 | [`axis`](#nodebpy.builder.socket.ResultAxisAngle.axis)   |             |
 
+### ResultCollectionChildren
+
+``` python
+ResultCollectionChildren()
+```
+
+Children returned by `CollectionSocket.children()`.
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`collections`](#nodebpy.builder.socket.ResultCollectionChildren.collections) |  |
+| [`objects`](#nodebpy.builder.socket.ResultCollectionChildren.objects) |  |
+
+### ResultCylindrical
+
+``` python
+ResultCylindrical()
+```
+
+Cylindrical coordinates returned by `VectorSocket.to_cylindrical()`.
+
+#### Attributes
+
+| Name                                                   | Description |
+|--------------------------------------------------------|-------------|
+| [`phi`](#nodebpy.builder.socket.ResultCylindrical.phi) |             |
+| [`r`](#nodebpy.builder.socket.ResultCylindrical.r)     |             |
+| [`z`](#nodebpy.builder.socket.ResultCylindrical.z)     |             |
+
 ### ResultMatrixSVD
 
 ``` python
@@ -4695,6 +5522,22 @@ Quaternion components returned by `RotationSocket.to_quaternion()`.
 | [`x`](#nodebpy.builder.socket.ResultQuaternionComponents.x) |             |
 | [`y`](#nodebpy.builder.socket.ResultQuaternionComponents.y) |             |
 | [`z`](#nodebpy.builder.socket.ResultQuaternionComponents.z) |             |
+
+### ResultSpherical
+
+``` python
+ResultSpherical()
+```
+
+Spherical coordinates returned by `VectorSocket.to_spherical()`.
+
+#### Attributes
+
+| Name                                                     | Description |
+|----------------------------------------------------------|-------------|
+| [`phi`](#nodebpy.builder.socket.ResultSpherical.phi)     |             |
+| [`r`](#nodebpy.builder.socket.ResultSpherical.r)         |             |
+| [`theta`](#nodebpy.builder.socket.ResultSpherical.theta) |             |
 
 ### ResultStringFind
 
@@ -4747,6 +5590,7 @@ Runtime rotation socket wrapper.
 |----|----|
 | [align_to_vector](#nodebpy.builder.socket.RotationSocket.align_to_vector) | Align the specified axis of this rotation to the given vector. Uses `AlignRotationToVector` with this socket as the rotation input. |
 | [enable_output](#nodebpy.builder.socket.RotationSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [hash](#nodebpy.builder.socket.RotationSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [invert](#nodebpy.builder.socket.RotationSocket.invert) | Invert the rotation of the socket. |
 | [rotate](#nodebpy.builder.socket.RotationSocket.rotate) | Rotate this rotation by the given rotation in the specified rotation space. |
 | [to_axis_angle](#nodebpy.builder.socket.RotationSocket.to_axis_angle) | Decompose the rotation into axis-angle components `(axis, angle)`. |
@@ -4790,6 +5634,14 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
 ##### invert
 
 ``` python
@@ -4805,6 +5657,8 @@ rotate(rotation, rotation_space='GLOBAL')
 ```
 
 Rotate this rotation by the given rotation in the specified rotation space.
+
+`"GLOBAL"` applies *rotation* after this one; `"LOCAL"` applies it first, matching matrix order: `r1.rotate(r2, rotation_space="LOCAL")` is `r1 @ r2`.
 
 ##### to_axis_angle
 
@@ -4868,6 +5722,7 @@ List of rotation sockets.
 | [enable_output](#nodebpy.builder.socket.RotationSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.RotationSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.RotationSocketList.get) | Get the item at the given index from the list. |
+| [hash](#nodebpy.builder.socket.RotationSocketList.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [invert](#nodebpy.builder.socket.RotationSocketList.invert) | Invert the rotation of the socket. |
 | [list_length](#nodebpy.builder.socket.RotationSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.RotationSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
@@ -4930,6 +5785,14 @@ get(index)
 
 Get the item at the given index from the list.
 
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
 ##### invert
 
 ``` python
@@ -4969,6 +5832,8 @@ rotate(rotation, rotation_space='GLOBAL')
 ```
 
 Rotate this rotation by the given rotation in the specified rotation space.
+
+`"GLOBAL"` applies *rotation* after this one; `"LOCAL"` applies it first, matching matrix order: `r1.rotate(r2, rotation_space="LOCAL")` is `r1 @ r2`.
 
 ##### sort
 
@@ -5440,6 +6305,7 @@ Runtime string socket wrapper.
 | [ends_with](#nodebpy.builder.socket.StringSocket.ends_with) | Create a MatchString\[Ends With\], return the result as a `BooleanSocket`. |
 | [find](#nodebpy.builder.socket.StringSocket.find) | Find where in a string a pattern occurs. Returns `(first_found, count)`. |
 | [format](#nodebpy.builder.socket.StringSocket.format) | Format a given string with the key-value items. |
+| [hash](#nodebpy.builder.socket.StringSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [join](#nodebpy.builder.socket.StringSocket.join) | Join the input strings with this as the separator. |
 | [length](#nodebpy.builder.socket.StringSocket.length) | Compute the length of a string and return as `IntegerSocket`. |
 | [lowercase](#nodebpy.builder.socket.StringSocket.lowercase) | Convert the string to lowercase and return as `StringSocket`. |
@@ -5507,6 +6373,14 @@ format(items)
 ```
 
 Format a given string with the key-value items.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
 
 ##### join
 
@@ -5643,6 +6517,7 @@ List of string sockets.
 | [find](#nodebpy.builder.socket.StringSocketList.find) | Find where in a string a pattern occurs. Returns `(first_found, count)`. |
 | [format](#nodebpy.builder.socket.StringSocketList.format) | Format a given string with the key-value items. |
 | [get](#nodebpy.builder.socket.StringSocketList.get) | Get the item at the given index from the list. |
+| [hash](#nodebpy.builder.socket.StringSocketList.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [length](#nodebpy.builder.socket.StringSocketList.length) | Compute the length of a string and return as `IntegerSocket`. |
 | [list_length](#nodebpy.builder.socket.StringSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.StringSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
@@ -5724,6 +6599,14 @@ get(index)
 ```
 
 Get the item at the given index from the list.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
 
 ##### length
 
@@ -5865,20 +6748,41 @@ Runtime vector socket wrapper.
 | Name | Description |
 |----|----|
 | [align_rotation](#nodebpy.builder.socket.VectorSocket.align_rotation) | Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input. |
+| [blur](#nodebpy.builder.socket.VectorSocket.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
+| [ceil](#nodebpy.builder.socket.VectorSocket.ceil) |  |
+| [cos](#nodebpy.builder.socket.VectorSocket.cos) |  |
 | [cross](#nodebpy.builder.socket.VectorSocket.cross) |  |
 | [distance](#nodebpy.builder.socket.VectorSocket.distance) | Euclidean distance between this vector and *other*, as a `FloatSocket`. |
 | [dot](#nodebpy.builder.socket.VectorSocket.dot) | Dot product with another vector and return the result as a `FloatSocket`. |
 | [enable_output](#nodebpy.builder.socket.VectorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [euler_to_rotation](#nodebpy.builder.socket.VectorSocket.euler_to_rotation) | Read this vector as XYZ Euler angles and convert it to a rotation. |
+| [faceforward](#nodebpy.builder.socket.VectorSocket.faceforward) |  |
+| [floor](#nodebpy.builder.socket.VectorSocket.floor) |  |
+| [fraction](#nodebpy.builder.socket.VectorSocket.fraction) |  |
+| [hash](#nodebpy.builder.socket.VectorSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [length](#nodebpy.builder.socket.VectorSocket.length) | Get the length of this vector as a `FloatSocket` |
 | [map_range](#nodebpy.builder.socket.VectorSocket.map_range) |  |
+| [max](#nodebpy.builder.socket.VectorSocket.max) |  |
+| [min](#nodebpy.builder.socket.VectorSocket.min) |  |
+| [mul_add](#nodebpy.builder.socket.VectorSocket.mul_add) |  |
 | [normalize](#nodebpy.builder.socket.VectorSocket.normalize) |  |
 | [project](#nodebpy.builder.socket.VectorSocket.project) |  |
+| [project_point](#nodebpy.builder.socket.VectorSocket.project_point) |  |
 | [reflect](#nodebpy.builder.socket.VectorSocket.reflect) |  |
+| [refract](#nodebpy.builder.socket.VectorSocket.refract) |  |
 | [rotate](#nodebpy.builder.socket.VectorSocket.rotate) |  |
+| [round](#nodebpy.builder.socket.VectorSocket.round) |  |
 | [scale](#nodebpy.builder.socket.VectorSocket.scale) |  |
+| [sign](#nodebpy.builder.socket.VectorSocket.sign) |  |
+| [sin](#nodebpy.builder.socket.VectorSocket.sin) |  |
+| [snap](#nodebpy.builder.socket.VectorSocket.snap) |  |
+| [tan](#nodebpy.builder.socket.VectorSocket.tan) |  |
+| [to_cylindrical](#nodebpy.builder.socket.VectorSocket.to_cylindrical) | Convert to cylindrical coordinates `(r, phi, z)`. |
 | [to_list](#nodebpy.builder.socket.VectorSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
+| [to_spherical](#nodebpy.builder.socket.VectorSocket.to_spherical) | Convert to spherical coordinates `(r, phi, theta)`. |
 | [transform](#nodebpy.builder.socket.VectorSocket.transform) |  |
 | [transform_direction](#nodebpy.builder.socket.VectorSocket.transform_direction) |  |
+| [wrap](#nodebpy.builder.socket.VectorSocket.wrap) |  |
 
 ##### align_rotation
 
@@ -5887,6 +6791,26 @@ align_rotation(rotation=None, factor=1.0, *, axis='Z', pivot_axis='AUTO')
 ```
 
 Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input.
+
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
+
+##### ceil
+
+``` python
+ceil()
+```
+
+##### cos
+
+``` python
+cos()
+```
 
 ##### cross
 
@@ -5932,6 +6856,40 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### euler_to_rotation
+
+``` python
+euler_to_rotation()
+```
+
+Read this vector as XYZ Euler angles and convert it to a rotation.
+
+##### faceforward
+
+``` python
+faceforward(incident, reference)
+```
+
+##### floor
+
+``` python
+floor()
+```
+
+##### fraction
+
+``` python
+fraction()
+```
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
+
 ##### length
 
 ``` python
@@ -5946,6 +6904,24 @@ Get the length of this vector as a `FloatSocket`
 map_range(*args, **kwargs)
 ```
 
+##### max
+
+``` python
+max(value)
+```
+
+##### min
+
+``` python
+min(value)
+```
+
+##### mul_add
+
+``` python
+mul_add(multiplier, addend)
+```
+
 ##### normalize
 
 ``` python
@@ -5958,10 +6934,22 @@ normalize()
 project(other)
 ```
 
+##### project_point
+
+``` python
+project_point(matrix)
+```
+
 ##### reflect
 
 ``` python
 reflect(normal)
+```
+
+##### refract
+
+``` python
+refract(normal, ior)
 ```
 
 ##### rotate
@@ -5970,11 +6958,49 @@ reflect(normal)
 rotate(rotation)
 ```
 
+##### round
+
+``` python
+round()
+```
+
 ##### scale
 
 ``` python
 scale(scale)
 ```
+
+##### sign
+
+``` python
+sign()
+```
+
+##### sin
+
+``` python
+sin()
+```
+
+##### snap
+
+``` python
+snap(increment)
+```
+
+##### tan
+
+``` python
+tan()
+```
+
+##### to_cylindrical
+
+``` python
+to_cylindrical()
+```
+
+Convert to cylindrical coordinates `(r, phi, z)`.
 
 ##### to_list
 
@@ -5983,6 +7009,14 @@ to_list(count=10)
 ```
 
 Create a list of elements, evaluating this field `count` times based on the `Index` node.
+
+##### to_spherical
+
+``` python
+to_spherical()
+```
+
+Convert to spherical coordinates `(r, phi, theta)`.
 
 ##### transform
 
@@ -5994,6 +7028,12 @@ transform(matrix)
 
 ``` python
 transform_direction(matrix)
+```
+
+##### wrap
+
+``` python
+wrap(min, max)
 ```
 
 ### VectorSocketGrid
@@ -6026,8 +7066,12 @@ Runtime vector grid socket wrapper.
 
 | Name | Description |
 |----|----|
+| [advect](#nodebpy.builder.socket.VectorSocketGrid.advect) | Move the grid’s values along the *velocity* grid over *time_step*. |
 | [align_rotation](#nodebpy.builder.socket.VectorSocketGrid.align_rotation) | Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input. |
+| [blur](#nodebpy.builder.socket.VectorSocketGrid.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
+| [ceil](#nodebpy.builder.socket.VectorSocketGrid.ceil) |  |
 | [clip](#nodebpy.builder.socket.VectorSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
+| [cos](#nodebpy.builder.socket.VectorSocketGrid.cos) |  |
 | [cross](#nodebpy.builder.socket.VectorSocketGrid.cross) |  |
 | [curl](#nodebpy.builder.socket.VectorSocketGrid.curl) | Calculate the magnitude and direction of circulation of a directional vector grid. |
 | [dilate_erode](#nodebpy.builder.socket.VectorSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
@@ -6035,23 +7079,56 @@ Runtime vector grid socket wrapper.
 | [divergence](#nodebpy.builder.socket.VectorSocketGrid.divergence) | Calculate the flow into and out of each point of a directional vector grid. |
 | [dot](#nodebpy.builder.socket.VectorSocketGrid.dot) | Dot product with another vector and return the result as a `FloatSocket`. |
 | [enable_output](#nodebpy.builder.socket.VectorSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [euler_to_rotation](#nodebpy.builder.socket.VectorSocketGrid.euler_to_rotation) | Read this vector as XYZ Euler angles and convert it to a rotation. |
+| [faceforward](#nodebpy.builder.socket.VectorSocketGrid.faceforward) |  |
 | [field_to_grid](#nodebpy.builder.socket.VectorSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
+| [floor](#nodebpy.builder.socket.VectorSocketGrid.floor) |  |
+| [fraction](#nodebpy.builder.socket.VectorSocketGrid.fraction) |  |
+| [hash](#nodebpy.builder.socket.VectorSocketGrid.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [length](#nodebpy.builder.socket.VectorSocketGrid.length) | Get the length of this vector as a `FloatSocket` |
 | [map_range](#nodebpy.builder.socket.VectorSocketGrid.map_range) |  |
+| [max](#nodebpy.builder.socket.VectorSocketGrid.max) |  |
 | [mean](#nodebpy.builder.socket.VectorSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [median](#nodebpy.builder.socket.VectorSocketGrid.median) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
+| [min](#nodebpy.builder.socket.VectorSocketGrid.min) |  |
+| [mul_add](#nodebpy.builder.socket.VectorSocketGrid.mul_add) |  |
 | [normalize](#nodebpy.builder.socket.VectorSocketGrid.normalize) |  |
 | [project](#nodebpy.builder.socket.VectorSocketGrid.project) |  |
+| [project_point](#nodebpy.builder.socket.VectorSocketGrid.project_point) |  |
 | [prune](#nodebpy.builder.socket.VectorSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [reflect](#nodebpy.builder.socket.VectorSocketGrid.reflect) |  |
+| [refract](#nodebpy.builder.socket.VectorSocketGrid.refract) |  |
 | [rotate](#nodebpy.builder.socket.VectorSocketGrid.rotate) |  |
+| [round](#nodebpy.builder.socket.VectorSocketGrid.round) |  |
 | [sample](#nodebpy.builder.socket.VectorSocketGrid.sample) | Retrieve values from the specified volume grid. |
 | [sample_index](#nodebpy.builder.socket.VectorSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
 | [scale](#nodebpy.builder.socket.VectorSocketGrid.scale) |  |
+| [set_background](#nodebpy.builder.socket.VectorSocketGrid.set_background) | Set the grid’s background value, optionally also on inactive voxels. |
+| [set_transform](#nodebpy.builder.socket.VectorSocketGrid.set_transform) | Set the grid’s transform from index to object space. |
+| [sign](#nodebpy.builder.socket.VectorSocketGrid.sign) |  |
+| [sin](#nodebpy.builder.socket.VectorSocketGrid.sin) |  |
+| [snap](#nodebpy.builder.socket.VectorSocketGrid.snap) |  |
+| [tan](#nodebpy.builder.socket.VectorSocketGrid.tan) |  |
+| [to_cylindrical](#nodebpy.builder.socket.VectorSocketGrid.to_cylindrical) | Convert to cylindrical coordinates `(r, phi, z)`. |
 | [to_points](#nodebpy.builder.socket.VectorSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
+| [to_spherical](#nodebpy.builder.socket.VectorSocketGrid.to_spherical) | Convert to spherical coordinates `(r, phi, theta)`. |
 | [transform](#nodebpy.builder.socket.VectorSocketGrid.transform) |  |
 | [transform_direction](#nodebpy.builder.socket.VectorSocketGrid.transform_direction) |  |
 | [voxelize](#nodebpy.builder.socket.VectorSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
+| [wrap](#nodebpy.builder.socket.VectorSocketGrid.wrap) |  |
+
+##### advect
+
+``` python
+advect(
+    velocity,
+    time_step=1.0,
+    integration_scheme='Runge-Kutta 3',
+    limiter='Clamp',
+)
+```
+
+Move the grid’s values along the *velocity* grid over *time_step*.
 
 ##### align_rotation
 
@@ -6061,6 +7138,20 @@ align_rotation(rotation=None, factor=1.0, *, axis='Z', pivot_axis='AUTO')
 
 Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input.
 
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
+
+##### ceil
+
+``` python
+ceil()
+```
+
 ##### clip
 
 ``` python
@@ -6068,6 +7159,12 @@ clip(min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
 ```
 
 Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
+
+##### cos
+
+``` python
+cos()
+```
 
 ##### cross
 
@@ -6137,6 +7234,20 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### euler_to_rotation
+
+``` python
+euler_to_rotation()
+```
+
+Read this vector as XYZ Euler angles and convert it to a rotation.
+
+##### faceforward
+
+``` python
+faceforward(incident, reference)
+```
+
 ##### field_to_grid
 
 ``` python
@@ -6144,6 +7255,26 @@ field_to_grid()
 ```
 
 Create new grids by evaluating new values on an existing volume grid topology.
+
+##### floor
+
+``` python
+floor()
+```
+
+##### fraction
+
+``` python
+fraction()
+```
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
 
 ##### length
 
@@ -6157,6 +7288,12 @@ Get the length of this vector as a `FloatSocket`
 
 ``` python
 map_range(*args, **kwargs)
+```
+
+##### max
+
+``` python
+max(value)
 ```
 
 ##### mean
@@ -6175,6 +7312,18 @@ median(width=1, iterations=1)
 
 Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
 
+##### min
+
+``` python
+min(value)
+```
+
+##### mul_add
+
+``` python
+mul_add(multiplier, addend)
+```
+
 ##### normalize
 
 ``` python
@@ -6185,6 +7334,12 @@ normalize()
 
 ``` python
 project(other)
+```
+
+##### project_point
+
+``` python
+project_point(matrix)
 ```
 
 ##### prune
@@ -6201,10 +7356,22 @@ Make the storage of a volume grid more efficient by collapsing data into tiles o
 reflect(normal)
 ```
 
+##### refract
+
+``` python
+refract(normal, ior)
+```
+
 ##### rotate
 
 ``` python
 rotate(rotation)
+```
+
+##### round
+
+``` python
+round()
 ```
 
 ##### sample
@@ -6229,6 +7396,54 @@ Retrieve volume grid values at specific voxels.
 scale(scale)
 ```
 
+##### set_background
+
+``` python
+set_background(background, update_inactive=False)
+```
+
+Set the grid’s background value, optionally also on inactive voxels.
+
+##### set_transform
+
+``` python
+set_transform(matrix)
+```
+
+Set the grid’s transform from index to object space.
+
+##### sign
+
+``` python
+sign()
+```
+
+##### sin
+
+``` python
+sin()
+```
+
+##### snap
+
+``` python
+snap(increment)
+```
+
+##### tan
+
+``` python
+tan()
+```
+
+##### to_cylindrical
+
+``` python
+to_cylindrical()
+```
+
+Convert to cylindrical coordinates `(r, phi, z)`.
+
 ##### to_points
 
 ``` python
@@ -6236,6 +7451,14 @@ to_points()
 ```
 
 Generate a point cloud from a volume grid’s active voxels.
+
+##### to_spherical
+
+``` python
+to_spherical()
+```
+
+Convert to spherical coordinates `(r, phi, theta)`.
 
 ##### transform
 
@@ -6256,6 +7479,12 @@ voxelize()
 ```
 
 Remove sparseness from a volume grid by making the active tiles into voxels.
+
+##### wrap
+
+``` python
+wrap(min, max)
+```
 
 ### VectorSocketList
 
@@ -6287,25 +7516,46 @@ Class for list of vector sockets.
 | Name | Description |
 |----|----|
 | [align_rotation](#nodebpy.builder.socket.VectorSocketList.align_rotation) | Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input. |
+| [blur](#nodebpy.builder.socket.VectorSocketList.blur) | Smooth this field by mixing each element with its neighbours, *iterations* times. |
+| [ceil](#nodebpy.builder.socket.VectorSocketList.ceil) |  |
+| [cos](#nodebpy.builder.socket.VectorSocketList.cos) |  |
 | [cross](#nodebpy.builder.socket.VectorSocketList.cross) |  |
 | [distance](#nodebpy.builder.socket.VectorSocketList.distance) | Euclidean distance between this vector and *other*, as a `FloatSocket`. |
 | [dot](#nodebpy.builder.socket.VectorSocketList.dot) | Dot product with another vector and return the result as a `FloatSocket`. |
 | [enable_output](#nodebpy.builder.socket.VectorSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [euler_to_rotation](#nodebpy.builder.socket.VectorSocketList.euler_to_rotation) | Read this vector as XYZ Euler angles and convert it to a rotation. |
+| [faceforward](#nodebpy.builder.socket.VectorSocketList.faceforward) |  |
 | [filter](#nodebpy.builder.socket.VectorSocketList.filter) | Filter the list based on the selection. |
+| [floor](#nodebpy.builder.socket.VectorSocketList.floor) |  |
+| [fraction](#nodebpy.builder.socket.VectorSocketList.fraction) |  |
 | [get](#nodebpy.builder.socket.VectorSocketList.get) | Get the item at the given index from the list. |
+| [hash](#nodebpy.builder.socket.VectorSocketList.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [length](#nodebpy.builder.socket.VectorSocketList.length) | Get the length of this vector as a `FloatSocket` |
 | [list_length](#nodebpy.builder.socket.VectorSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.VectorSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [map_range](#nodebpy.builder.socket.VectorSocketList.map_range) |  |
+| [max](#nodebpy.builder.socket.VectorSocketList.max) |  |
+| [min](#nodebpy.builder.socket.VectorSocketList.min) |  |
+| [mul_add](#nodebpy.builder.socket.VectorSocketList.mul_add) |  |
 | [normalize](#nodebpy.builder.socket.VectorSocketList.normalize) |  |
 | [project](#nodebpy.builder.socket.VectorSocketList.project) |  |
+| [project_point](#nodebpy.builder.socket.VectorSocketList.project_point) |  |
 | [reflect](#nodebpy.builder.socket.VectorSocketList.reflect) |  |
+| [refract](#nodebpy.builder.socket.VectorSocketList.refract) |  |
 | [reverse](#nodebpy.builder.socket.VectorSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [rotate](#nodebpy.builder.socket.VectorSocketList.rotate) |  |
+| [round](#nodebpy.builder.socket.VectorSocketList.round) |  |
 | [scale](#nodebpy.builder.socket.VectorSocketList.scale) |  |
+| [sign](#nodebpy.builder.socket.VectorSocketList.sign) |  |
+| [sin](#nodebpy.builder.socket.VectorSocketList.sin) |  |
+| [snap](#nodebpy.builder.socket.VectorSocketList.snap) |  |
 | [sort](#nodebpy.builder.socket.VectorSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+| [tan](#nodebpy.builder.socket.VectorSocketList.tan) |  |
+| [to_cylindrical](#nodebpy.builder.socket.VectorSocketList.to_cylindrical) | Convert to cylindrical coordinates `(r, phi, z)`. |
+| [to_spherical](#nodebpy.builder.socket.VectorSocketList.to_spherical) | Convert to spherical coordinates `(r, phi, theta)`. |
 | [transform](#nodebpy.builder.socket.VectorSocketList.transform) |  |
 | [transform_direction](#nodebpy.builder.socket.VectorSocketList.transform_direction) |  |
+| [wrap](#nodebpy.builder.socket.VectorSocketList.wrap) |  |
 
 ##### align_rotation
 
@@ -6314,6 +7564,26 @@ align_rotation(rotation=None, factor=1.0, *, axis='Z', pivot_axis='AUTO')
 ```
 
 Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input.
+
+##### blur
+
+``` python
+blur(iterations=1, weight=1.0)
+```
+
+Smooth this field by mixing each element with its neighbours, *iterations* times.
+
+##### ceil
+
+``` python
+ceil()
+```
+
+##### cos
+
+``` python
+cos()
+```
 
 ##### cross
 
@@ -6359,6 +7629,20 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### euler_to_rotation
+
+``` python
+euler_to_rotation()
+```
+
+Read this vector as XYZ Euler angles and convert it to a rotation.
+
+##### faceforward
+
+``` python
+faceforward(incident, reference)
+```
+
 ##### filter
 
 ``` python
@@ -6367,6 +7651,18 @@ filter(selection=True)
 
 Filter the list based on the selection.
 
+##### floor
+
+``` python
+floor()
+```
+
+##### fraction
+
+``` python
+fraction()
+```
+
 ##### get
 
 ``` python
@@ -6374,6 +7670,14 @@ get(index)
 ```
 
 Get the item at the given index from the list.
+
+##### hash
+
+``` python
+hash(seed=0)
+```
+
+Hash this value to a pseudo-random integer, varied by *seed*.
 
 ##### length
 
@@ -6405,6 +7709,24 @@ Slice the list using start, stop, and step indices. Behaves like Python’s slic
 map_range(*args, **kwargs)
 ```
 
+##### max
+
+``` python
+max(value)
+```
+
+##### min
+
+``` python
+min(value)
+```
+
+##### mul_add
+
+``` python
+mul_add(multiplier, addend)
+```
+
 ##### normalize
 
 ``` python
@@ -6417,10 +7739,22 @@ normalize()
 project(other)
 ```
 
+##### project_point
+
+``` python
+project_point(matrix)
+```
+
 ##### reflect
 
 ``` python
 reflect(normal)
+```
+
+##### refract
+
+``` python
+refract(normal, ior)
 ```
 
 ##### reverse
@@ -6437,10 +7771,34 @@ Reverse the list. Currently uses a SortList node with negative Index to reverse 
 rotate(rotation)
 ```
 
+##### round
+
+``` python
+round()
+```
+
 ##### scale
 
 ``` python
 scale(scale)
+```
+
+##### sign
+
+``` python
+sign()
+```
+
+##### sin
+
+``` python
+sin()
+```
+
+##### snap
+
+``` python
+snap(increment)
 ```
 
 ##### sort
@@ -6465,6 +7823,28 @@ Sort the list based on the weights. Optional `Group ID` and `Selection` can be p
 |------|------|------------------|
 |      | Self | The sorted list. |
 
+##### tan
+
+``` python
+tan()
+```
+
+##### to_cylindrical
+
+``` python
+to_cylindrical()
+```
+
+Convert to cylindrical coordinates `(r, phi, z)`.
+
+##### to_spherical
+
+``` python
+to_spherical()
+```
+
+Convert to spherical coordinates `(r, phi, theta)`.
+
 ##### transform
 
 ``` python
@@ -6475,4 +7855,10 @@ transform(matrix)
 
 ``` python
 transform_direction(matrix)
+```
+
+##### wrap
+
+``` python
+wrap(min, max)
 ```
