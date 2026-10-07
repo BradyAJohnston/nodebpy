@@ -1280,6 +1280,18 @@ def test_clamp_method():
     assert "value.clamp(0.2" in code
 
 
+def test_min_max_methods():
+    """The argument is always emitted, even at the node's 0.5 socket default."""
+    with TreeBuilder("MinMaxMethod") as tree:
+        val = tree.inputs.float("Value", 0.5)
+        count = tree.inputs.integer("Count")
+        val.max(0.5).min(2.0) >> tree.outputs.float("Out")
+        count.max(0).min(10) >> tree.outputs.integer("Count")
+    code = _assert_roundtrip(tree)
+    assert "value.max(0.5).min(2.0)" in code
+    assert "count.max(0).min(10)" in code
+
+
 def test_string_methods():
     with TreeBuilder("StringMethods") as tree:
         path = tree.inputs.string("Path")

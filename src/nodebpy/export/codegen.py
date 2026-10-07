@@ -2316,13 +2316,15 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             ("RADIANS", "to_radians"),
             ("DEGREES", "to_degrees"),
             ("SIGN", "sign"),
-            ("MINIMUM", "min", "value_001"),
-            ("MAXIMUM", "max", "value_001"),
             ("MULTIPLY_ADD", "mul_add", "multiplier", "addend"),
             ("PINGPONG", "ping_pong", "value"),
             ("LOGARITHM", "log", "base"),
             ("ARCTAN2", "atan2", "value"),
         ]
+    ]
+    + [
+        _math_unary_spec(op, method, "value", always_args=1)
+        for op, method in (("MINIMUM", "min"), ("MAXIMUM", "max"))
     ]
     # No float modulo lift: the float mixin's modulo() builds FLOORED_MODULO,
     # which the % operator lift already covers, and plain MODULO has no
@@ -2348,7 +2350,14 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             ("MULTIPLY_ADD", "mul_add", "multiplier", "addend"),
         )
     ]
-    + [_int_math_unary_spec("MODULO", "modulo", "divisor", always_args=1)],
+    + [
+        _int_math_unary_spec(op, method, *args, always_args=1)
+        for op, method, *args in (
+            ("MODULO", "modulo", "divisor"),
+            ("MINIMUM", "min", "value"),
+            ("MAXIMUM", "max", "value"),
+        )
+    ],
     "GeometryNodeListLength": [
         _list_spec("list_length", "Length", type_prop="data_type"),
     ],
