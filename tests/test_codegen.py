@@ -1708,7 +1708,8 @@ def test_roundtrip_structural_foreach_zone():
         transformed >> zone.output
         g.JoinGeometry([zone.generation.output, cube]) >> out
     code = _assert_roundtrip(tree)
-    assert 'domain="FACE"' in code
+    assert "g.ForEachGeometryElementZone.face(" in code
+    assert 'domain="FACE"' in code  # the generation item keeps its keyword
     assert ">> for_each.generation.input" in code
     assert "for_each.generation.output" in code
 

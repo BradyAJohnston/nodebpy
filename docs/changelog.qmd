@@ -6,6 +6,7 @@ title: Changelog
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **One way to add items.** Every items-driven node (Capture Attribute, Bake, Field to Grid, Field to List, Format String, Combine/Separate Bundle, Closure to List, Evaluate Closure, Index Switch, Menu Switch and the zones) exposes its items as one collection, `node.items` (`zone.main_items`/`zone.generated_items` on the for-each zone, `inputs`/`outputs` on closures). The typed methods take the value first, `items.float(value, "Name")`, and name the item after the linked source socket when no name is given; `items.new(value, name, type=...)` is the runtime-typed form. `len(items)`, iteration and `items[0]`/`items["Name"]` return the same `Item` handles the methods do (#159, #200).
 - **Items chain.** `>> item.input` links into an item and continues from `item.output`, and on simulation/repeat zones `>> item.initial` continues from `current` and `>> item.next` from `result`, so a zone body reads as one chain (#162).
@@ -67,6 +68,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Generic custom groups** — a `CustomGeometryGroup` (or shader/compositor group) can now build a different inner tree per instance, e.g. one per data type. Override `_group_name()` to name each variant's tree from state set before `super().__init__()`; each variant is built once and reused. Combined with a generic class (`class MyGroup[T](CustomGeometryGroup)`) and typed factories returning `MyGroup[FloatSocket]`, `node.i.value` narrows like the built-in `GetBundleItem.float()`.
 
@@ -98,6 +100,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **`Default` spells an input's fallback** — Blender lets an input read an implicit field or a context value when nothing is connected (a group interface's *Default Input*, or a built-in such as Set Position's *Position*), hiding the stored value. `nodebpy.Default` mirrors the default-input identifiers (`Default.POSITION`, `Default.ID_OR_INDEX`, `Default.SELF_OBJECT`, …). Generated asset classes use them as parameter defaults (`id: InputInteger = Default.ID_OR_INDEX`) and say in the docstring what the input reads when unconnected; inputs with a *Default Attribute* keep their stored value and the docstring notes the attribute a modifier input reads. Passing a member to any node constructor leaves the socket untouched, like `None`, and `to_python` treats such a default as "nothing to export". The `tree.inputs.*` factories accept the members for `default_input=` alongside the identifier strings. Built-in node inputs whose value Blender hides (`hide_value`: Set Position's *Position*, every *Selection*, …) now default to `None` instead of advertising a value Blender never shows.
 - **Factory methods take node properties** — generated factory methods accept the node's other properties as keyword-only arguments (`g.NoiseTexture.fbm(normalize=True, noise_dimensions="4D")`, `g.Math.add(a, b, use_clamp=True)`). Properties Blender only shows for some variants are only offered on those variants, and `to_python` passes non-default properties through the factory (`g.Math.multiply(use_clamp=True)`).
@@ -140,6 +143,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Rebuild a tree in place** — `TreeBuilder(tree, clear=True)` (also on `TreeBuilder.geometry/shader/compositor` and `g.tree` / `s.tree` / `c.tree`) empties the tree's nodes, links and interface before the body runs and keeps the datablock, so modifiers, group nodes and pinned editors that reference it stay attached. Given a name, an existing group of that name and tree type is reused instead of creating a `Name.001` duplicate; a group of another tree type is left alone. `to_python(in_place=True)` emits the `clear=True` header so an exported tree's source rebuilds the same datablock when re-run.
 - **`nodebpy.live`** — `run_source(code, filename=...)` executes nodebpy source for a live editor that re-runs on every change: node groups the code's classes claim by `_name` are stashed as `<name>.stale` so `create_group()` builds fresh, then their users are remapped onto the rebuilt trees and the old ones removed (or, on failure, the old names restored and the original exception re-raised); Geometry Nodes modifier input values (including attribute-driven inputs) are preserved across the interface rebuild, matched by socket name, also when the run fails; and the produced tree is returned in a `RunResult`. The pieces — `stash_groups` / `GroupStash`, `preserve_modifier_inputs`, `group_names_in_source` — are public for callers that need only one of them.
@@ -148,6 +152,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Dump a subset of assets** — `python -m nodebpy.assets dump --names` (and `dump_library(names=...)`) takes fnmatch wildcards like `plot` does (`--names "Style *"`), for quick iteration on a few assets without regenerating the whole library. A filtered dump now writes exactly what the full dump would for those assets: the whole library is still read to decide what is shared, so a helper also used by an unselected asset stays in `_shared/` (previously it was embedded into the selected asset's module) and an unselected nested asset stays imported from its own module (previously its class was duplicated into the importer). The `_shared/` and `materials/` modules the selection depends on are rewritten alongside; other assets' files are left untouched, so `check` remains the authority on the full sources.
 
@@ -155,6 +160,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Layouts read left to right with less dead space** — three additions to the Sugiyama arrangement, all on by default and each a `SugiyamaOptions` field / `build` flag / `[tool.nodebpy.assets]` key:
   - `sequential_frames` ranks frames as stages of the flow: every node of a frame comes after every node of the frame (or intermediate node) feeding it, so successive frames — closure bodies, processing stages — line up left to right instead of sharing columns and stacking into a staircase (MolecularNodes' *Style Surface* halves in height). Frames with no links between them still stack vertically as parallel branches.
@@ -170,6 +176,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Blender-styled node plots** — `nodebpy.export.to_plot` now reproduces what the node editor would show instead of bare labelled rectangles: header colours per node class and title (a Math node reads "Multiply"), socket markers coloured and shaped by type (circles, field diamonds, geometry bars), value widgets for unlinked inputs (sliders, vector rows, checkboxes, text fields, colour swatches), property dropdowns, frames with their labels, simulation / repeat / for-each zones, and socket-coloured links (dashed for fields, red for muted or invalid), all on the editor's dotted background. Colours come from Blender's active theme. One UI unit is drawn as one point, so text and widgets keep their real proportions at any `dpi`.
 - **Group-node renders** — `to_plot(tree, path, node=True)` draws a node group as the single group node a user sees when adding it: its interface inputs with default values and its outputs (`width=` sets the node width). `python -m nodebpy.assets plot` now writes both images per group (`<name>.png` and `<name>_node.png`; `--tree-only` / `--node-only` keep one), and `TreeBuilder` gained `to_plot()`. `axes=True` frames a render with axes ticked in Blender UI units, as the old plots were, for reading off node distances.
@@ -185,6 +192,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Group nodes read as their group in generated code** — codegen names a group node's variable after its node group (`inverse_mass = InverseMass()`) instead of the generic `group` / `group_1` a group node's "Group" label used to produce.
 
@@ -192,6 +200,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Split Group Inputs on build** — `build_library(split_inputs=True)` / `python -m nodebpy.assets build --split-inputs` gives each consumer node its own Group Input instance instead of one node trailing long noodles: instances are named and labelled after the interface sockets they carry (so they read as their content when scanning a tree), unused sockets are hidden, and each instance is parented into its consumer's frame and arranged next to it. Backed by the new `default_split_inputs()` scope (mirroring `default_sugiyama_options`), which `TreeBuilder`s left at their default `split_inputs` resolve on exit; snapshot-positions sources keep their authored splits untouched. `group_input_splits` entries now round-trip instance labels too. The config key `split-inputs` works in `[tool.nodebpy.assets]`, and the option is covered by the `ensure` stamp fingerprint and forwarded by `check`.
 
@@ -199,6 +208,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Assets CLI reads `pyproject.toml`** — `python -m nodebpy.assets` positionals and flags can come from a `[tool.nodebpy.assets]` table in the nearest `pyproject.toml` (walking up from the working directory), with keys spelled like the flags (`source` and `blend` supply the positionals, paths relative to the pyproject); explicit CLI arguments always win, and a positional neither given nor configured errors naming both the argument and the config key.
 - **`ensure` and `check` subcommands** — `build` and full `dump` now record a fingerprint stamp (`<blend>.stamp`) covering nodebpy's version, the resolved options, the source files and the resources `.blend` bytes. `ensure` rebuilds only when the `.blend` or stamp is missing or stale, comparing hashes alone; `check` verifies the roundtrip fixed point, building the sources and dumping the result back out (as fresh-session subprocesses) and failing unless the sources are reproduced byte-for-byte. The CLI entry also strips argv up to Blender's `--` separator, so every subcommand works as `blender -b --factory-startup -P .../__main__.py -- ...`.
@@ -211,6 +221,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Material assets are dump roots** — `dump_library` now dumps materials marked as assets alongside node-group assets, not only materials referenced by the dumped trees. Each gets its own `materials/` module carrying a `MATERIAL_ASSET_METADATA` footer, so `build_library` re-marks it as an asset with its metadata and tags; referenced-only materials still build unmarked. `names` / `--names` matches material asset names too, and a full re-dump clears modules of materials that are no longer asset-marked.
 
@@ -226,6 +237,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Unified `arrange()` API** — `nodebpy.arrange(tree, method)` lays out any node tree, in or outside a `TreeBuilder` context. `method` is `"sugiyama"` (layered layout, the default), `"simple"`, `None`, or a `SugiyamaOptions` / `SimpleOptions` instance for tuned settings; every `arrange=` parameter accepts the same values. `default_sugiyama_options(options)` scopes what the plain `"sugiyama"` default resolves to, so batch builds can tune trees whose recipes don't set an arrangement themselves.
 - **Vendored node-arrange synced and made truly headless** — the layout engine is synced with upstream `8ca5e29` (cycle-edge fix, Blender 5.0–5.2 socket bindings, `optimize_sizes`), its module-global state replaced with per-run state, and — critically — it now always arranges the whole tree: the addon-derived code arranged the *selection*, so a tree loaded from a `.blend` (no selection) was silently left untouched, and links to unselected nodes were dropped from the layout graph.
@@ -243,6 +255,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Typed `_build_group` signatures** — generated classes annotate the builder parameter per tree type (`def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:`), importing the `bpy.types` tree class, so the whole method body type-checks and autocompletes in editors; `NodeGroupBuilder._build_group` itself is now typed `TreeBuilder[T]`, so hand-written `Custom*Group` subclasses inherit the narrowed hint too.
 - **Lint-clean generated output** — formatted output now runs `ruff check --fix` *and* `ruff format` as it is written (sorted imports, double-quoted strings, `**{...}` collapsed to plain kwargs where socket names allow), so dumped sources need no lint pass afterwards; the dump's metadata footers and library references emit double-quoted strings directly.
@@ -255,6 +268,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Dump and build asset libraries** — `nodebpy.assets.dump_library(blend, dir)` writes every node-group asset in a `.blend` to its own `.py` module: assets, shared helper groups (under `_shared/`), code-generated materials (under `materials/`), with `ASSET_METADATA` / `MATERIAL_PROPERTIES` / `DATABLOCK_DEPENDENCIES` footers and the asset catalog file travelling alongside. `nodebpy.assets.build_library(dir, blend)` rebuilds the `.blend` from those sources, so the Python files can be the version-controlled source of truth. `python -m nodebpy.assets dump <blend> <dir>` / `build <dir> <blend>` run both in a fresh session; `--typed-api` merges the typed asset API (docstrings, `_Inputs`/`_Outputs` accessors, `PackageLibrary` anchor) into the dumped classes. A full re-dump clears modules of assets since renamed or deleted, appending refuses sessions whose same-named datablocks would corrupt the dumped names, and `build_library` resolves non-serialisable datablocks from the session, a `resources=` `.blend`, or `on_missing="drop"` placeholders — and fails upfront (with a per-tree-directory hint) when two sources build same-named assets.
 - **Library parity auditing** — `nodebpy.export.serialize_library` / `compare_libraries` (and the `python -m nodebpy.export.parity a.blend b.blend` CLI) deep-compare two asset libraries via `tree_clipper` serialization, with selectable cosmetic surfaces (`positions`, `reroutes`, …) to exclude. Used throughout the test suite to verify dump → build round-trips.
@@ -409,6 +423,7 @@ with g.tree():
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Asset node-group APIs** — generate typed `nodebpy` classes for node-group assets, so an asset reads, links and type-checks like any other node. Unlike a `Custom*Group` (which *builds* its tree), an asset class *appends* the asset's node group from a `.blend` at runtime and points a Group node at it.
     - Blender's bundled essentials are generated into `nodebpy.nodes.{geometry,shader,compositor}` and exported alongside the built-in nodes, so they're used exactly like any other node:
@@ -443,6 +458,7 @@ with g.tree():
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - **Nodes to code (`to_python`)** — `TreeBuilder.to_python()` (and the standalone `nodebpy.export.to_python()`) converts *any* node tree back into idiomatic `nodebpy` Python — interface sockets, properties, links, zones, frames and nested groups included. It recognises lifted operators (`Math` → `*`, `SeparateXYZ` → `.x`), socket methods, factory methods and zone item APIs, so generated code reads like hand-written `nodebpy`. Validated end-to-end against Blender's full bundled **geometry, shader and compositor essentials** asset libraries, so it round-trips real-world trees, not only ones built with `nodebpy`. See [Nodes to Code](nodes-to-code.qmd). Options:
     - `snapshot_positions=True` — capture and restore each node's authored `location` (top-level and inside nested groups) instead of auto-laying-out the rebuilt tree.
@@ -754,6 +770,7 @@ b.switch.geometry(g.Cube(), g.IcoSphere())
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - Nodes which previously took `*args` and `**kwargs` have been updated to use keyword-only arguments instead. This is a hard breaking change but makes the code more readable and less error-prone. ([`#69`](https://github.com/BradyAJohnston/nodebpy/pull/69))
   - Affected nodes: `FieldToGrid`, `JoinGeometry`, `MenuSwitch`, `IndexSwitch`, `CaptureAttribute`, `JoinStrings`, `FormatString`, `SDFGridBoolean`, `MeshBoolean`, `RepeatZone`, `SimulationZone`
@@ -800,6 +817,7 @@ tree.inputs.geometry()
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - Refactor the mermaid diagram generation. Change `screenshot.py` -> `diagram.py` and added test coverage.
 - **Socket iteration and indexing** — `VectorSocket`, `ColorSocket`, and `MatrixSocket` now support `__getitem__`, `__iter__`, and `__len__` on both output and input sockets. ([#48](https://github.com/BradyAJohnston/nodebpy/pull/48)) Output sockets decompose via `SeparateXYZ`/`SeparateColor`/`SeparateMatrix` (node reuse on repeated access); input sockets auto-wire a `CombineXYZ`/`CombineColor`/`CombineMatrix` and return the component input socket.
@@ -829,6 +847,7 @@ vec = g.CombineXYZ(*mat[:3])
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 - Added changelog to the documentation to better track and explain changes in the project.
 - Support `len(tree.inputs)` and `len(tree.outputs)` to get the number of inputs and outputs in the tree. ([#43](https://github.com/BradyAJohnston/nodebpy/pull/43))
@@ -931,6 +950,7 @@ The previous context-manager form still works.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 #### `==` / `!=` comparison operators ([#28](https://github.com/BradyAJohnston/nodebpy/pull/28))
 
@@ -955,6 +975,7 @@ The previous context-manager form still works.
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 #### `networkx` is now an optional dependency ([#24](https://github.com/BradyAJohnston/nodebpy/pull/24))
 
@@ -967,6 +988,7 @@ A built-in simple arranger is used when `networkx` is absent; the Sugiyama layou
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 #### `matrix @ vector` creates a `TransformPoint` node ([#22](https://github.com/BradyAJohnston/nodebpy/pull/22))
 
@@ -984,6 +1006,7 @@ matrix @ g.Position()  # → TransformPoint node
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 #### `Color >> Shader` linking ([#21](https://github.com/BradyAJohnston/nodebpy/pull/21))
 
@@ -995,6 +1018,7 @@ Piping a color socket into a shader input is now handled automatically, matching
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 #### Panels for tree interfaces ([#20](https://github.com/BradyAJohnston/nodebpy/pull/20))
 
@@ -1026,6 +1050,7 @@ Integer math is now handled correctly in Shader and Compositor editors (mapped t
 
 ### Enhancements
 
+- **`g.ForEachGeometryElementZone.face(geometry)`** — the for-each zone has the same domain class methods as the other domain-bearing nodes (`point`, `edge`, `face`, `corner`, `curve`, `instance`, `layer`); `domain=` still works. The exporter writes the factory form (#166).
 - **`g.tree("Name", is_modifier=True)`** — `TreeBuilder` and `TreeBuilder.geometry` take `is_modifier` and `is_tool`, and expose both as properties next to `fake_user`, so a group can be flagged for use as a modifier or node tool without reaching into `tree.tree`. `None` (the default) leaves an existing group's flags alone when rebuilding with `clear=True`. The `with`-form export writes the flags as constructor options (#232).
 #### Compositor and Material (Shader) node editors ([#12](https://github.com/BradyAJohnston/nodebpy/pull/12))
 

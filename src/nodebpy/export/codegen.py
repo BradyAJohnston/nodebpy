@@ -5936,12 +5936,13 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
         kwargs["selection"] = _zone_value_expr(ctx, selection_link)
     elif node.inputs["Selection"].default_value is not True:
         kwargs["selection"] = Lit(node.inputs["Selection"].default_value)
+    # The domain is spelled as the class-method factory, as for CaptureAttribute.
+    ctor = "g.ForEachGeometryElementZone"
     if out_node.domain != "POINT":
-        kwargs["domain"] = Lit(out_node.domain)
+        ctor += f".{out_node.domain.lower()}"
     zone_ref = Ref(_make_var("for_each", ctx.counter))
     ctx.pending_lines.append(
-        f"    {zone_ref.name} = "
-        f"{Call('g.ForEachGeometryElementZone', kwargs=kwargs).render()}"
+        f"    {zone_ref.name} = {Call(ctor, kwargs=kwargs).render()}"
     )
 
     generation_items = list(out_node.generation_items)

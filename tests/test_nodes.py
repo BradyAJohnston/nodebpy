@@ -878,6 +878,22 @@ def test_simulation_zone_typed_items():
         assert not hasattr(sim.items, "closure")
 
 
+def test_foreach_zone_domain_factories():
+    with TreeBuilder():
+        cube = g.Cube()
+        faces = g.ForEachGeometryElementZone.face(cube)
+        assert faces.output.domain == "FACE"
+        assert faces.input.i.geometry.socket.links[0].from_node == cube.node
+        instances = g.ForEachGeometryElementZone.instance(
+            g.GeometryToInstance(cube), selection=False
+        )
+        assert instances.output.domain == "INSTANCE"
+        assert instances.input.i.selection.socket.default_value is False
+        for name in ("point", "edge", "corner", "curve", "layer"):
+            zone = getattr(g.ForEachGeometryElementZone, name)()
+            assert zone.output.domain == name.upper()
+
+
 def test_foreach_zone_typed_items():
     with TreeBuilder():
         zone = g.ForEachGeometryElementZone(g.Cube())

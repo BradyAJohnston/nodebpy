@@ -591,6 +591,24 @@ class ForEachGeometryElementZone(_ZonePair):
     input: "ForEachGeometryElementInput"
     output: "ForEachGeometryElementOutput"
 
+    class _DomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def __call__(
+            self, geometry: InputGeometry = None, selection: InputBoolean = True
+        ) -> "ForEachGeometryElementZone":
+            """Create a for-each zone iterating over a pre-set domain."""
+            return ForEachGeometryElementZone(geometry, selection, domain=self._domain)
+
+    point: _DomainFactory = _DomainFactory("POINT")
+    edge: _DomainFactory = _DomainFactory("EDGE")
+    face: _DomainFactory = _DomainFactory("FACE")
+    corner: _DomainFactory = _DomainFactory("CORNER")
+    curve: _DomainFactory = _DomainFactory("CURVE")
+    instance: _DomainFactory = _DomainFactory("INSTANCE")
+    layer: _DomainFactory = _DomainFactory("LAYER")
+
     def __init__(
         self,
         geometry: InputGeometry = None,
