@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "520.33.0"
+version = "520.34.0"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
@@ -48,6 +48,7 @@ dev = [
     "griffe<2.0.0",
     "ty==0.0.74",
     "matplotlib>=3.11.2",
+    "databpy>=0.9.0",
 ]
 
 # The bpy stubs mark most collections/pointers as `| None` and cannot type

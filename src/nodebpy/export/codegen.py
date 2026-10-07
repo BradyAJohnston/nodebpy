@@ -2353,7 +2353,8 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
     + [
         _int_math_unary_spec(op, method, *args, always_args=1)
         for op, method, *args in (
-            ("MODULO", "modulo", "divisor"),
+            # No MODULO lift, as for float: modulo() builds FLOORED_MODULO,
+            # which the % operator lift covers.
             ("MINIMUM", "min", "value"),
             ("MAXIMUM", "max", "value"),
         )
@@ -3100,12 +3101,18 @@ _LIFT_BINARY: dict[str, dict[str, str]] = {
         "ADD": "+",
         "SUBTRACT": "-",
         "MULTIPLY": "*",
-        "DIVIDE": "/",
+        # no DIVIDE: integer / builds a float Math DIVIDE
         "POWER": "**",
-        "MODULO": "%",
+        # integer % dispatches to FLOORED_MODULO, as float % does
+        "FLOORED_MODULO": "%",
         "DIVIDE_FLOOR": "//",
     },
     "FunctionNodeBooleanMath": {
+        "AND": "&",
+        "OR": "|",
+        "XOR": "^",
+    },
+    "FunctionNodeBitMath": {
         "AND": "&",
         "OR": "|",
         "XOR": "^",
@@ -3114,6 +3121,7 @@ _LIFT_BINARY: dict[str, dict[str, str]] = {
 
 _LIFT_UNARY: dict[str, dict[str, str]] = {
     "FunctionNodeBooleanMath": {"NOT": "~"},
+    "FunctionNodeBitMath": {"NOT": "~"},
     "FunctionNodeIntegerMath": {"NEGATE": "-"},
 }
 
@@ -3194,6 +3202,9 @@ def _operator_dispatch_ok(node, pair, linked_ids: set[str], src_types) -> bool:
         )
         if dispatcher is not None and src_types.get(dispatcher) in ("RGBA", "VECTOR"):
             return False
+        # integer operands also make a Math node for ``/``
+        if getattr(node, "operation", "") == "DIVIDE":
+            return True
         return any(
             s.identifier not in linked_ids or src_types.get(s.identifier) == "VALUE"
             for s in pair
@@ -3206,7 +3217,20 @@ def _operator_dispatch_ok(node, pair, linked_ids: set[str], src_types) -> bool:
             s.identifier not in linked_ids or src_types.get(s.identifier) == "INT"
             for s in pair
         )
+    if node.bl_idname in ("FunctionNodeBooleanMath", "FunctionNodeBitMath"):
+        return _logic_dispatch_ok(node, pair, linked_ids, src_types)
     return True
+
+
+def _logic_dispatch_ok(node, sockets, linked_ids: set[str], src_types) -> bool:
+    """``&``/``|``/``^``/``~`` build Bit Math when the dispatching operand (the
+    first linked one) is an integer and Boolean Math otherwise, so the lift is
+    faithful only when that operand's type picks this node."""
+    dispatcher = next(
+        (s.identifier for s in sockets if s.identifier in linked_ids), None
+    )
+    is_int = dispatcher is not None and src_types.get(dispatcher) == "INT"
+    return is_int == (node.bl_idname == "FunctionNodeBitMath")
 
 
 def _lift_plan(
@@ -3245,6 +3269,12 @@ def _lift_plan(
         first_id = inputs[0].identifier
         unary = _LIFT_UNARY.get(node.bl_idname, {})
         if operation in unary and linked_ids == {first_id}:
+            if (
+                src_types is not None
+                and node.bl_idname in ("FunctionNodeBooleanMath", "FunctionNodeBitMath")
+                and not _logic_dispatch_ok(node, inputs[:1], linked_ids, src_types)
+            ):
+                return None
             return _LiftPlan("unary", unary[operation], (inputs[0],))
         unary_call = _LIFT_UNARY_CALL.get(node.bl_idname, {})
         if operation in unary_call and linked_ids == {first_id}:

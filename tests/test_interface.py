@@ -1487,7 +1487,7 @@ def test_integer_socket_new_methods():
         result = val.modulo(7)
         assert isinstance(result, IntegerSocket)
         assert result.node.bl_idname == g.IntegerMath._bl_idname
-        assert result.node.operation == "MODULO"
+        assert result.node.operation == "FLOORED_MODULO"
         assert result.builder_node.i.value.links[0].from_node == val.node
         assert result.builder_node.i.value_001.default_value == 7
 

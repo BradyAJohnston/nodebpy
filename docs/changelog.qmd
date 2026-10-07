@@ -2,6 +2,20 @@
 title: Changelog
 ---
 
+## v520.34.0
+
+### Breaking Changes
+
+Operators on sockets now evaluate to what Python gives for the same values, checked by tests that evaluate each operator in a tree and compare it with Python.
+
+- **Integer `%` is floored modulo**, as in Python and as float `%` already was: `-7 % 3` is `2`, not `-1`. `integer.modulo()` follows; Integer Math's truncated `MODULO` is still `g.IntegerMath.modulo()`.
+- **Integer `/` is true division**: `i / j` builds a float Math divide and returns a `FloatSocket`. Use `//` for integer division.
+
+### Fixes
+
+- **Integer `&`, `|`, `^` and `~` build Bit Math.** They built Boolean Math, casting the integers to booleans, and `i | 4` raised.
+- **Comparing an integer socket with a float socket** (`i < f`) compared the operands the wrong way round.
+
 ## v520.33.0 - 2026-10-07
 
 ### Enhancements
