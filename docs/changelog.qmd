@@ -2,7 +2,7 @@
 title: Changelog
 ---
 
-## v520.33.1
+## v520.34.0
 
 ### Enhancements
 
