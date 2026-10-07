@@ -907,6 +907,11 @@ class _VectorMixin[
         self._assert_output("scale")
         return self._vmath.scale(self.socket, scale).o.vector  # ty: ignore[invalid-return-type]
 
+    def mul_add(self, multiplier: InputVector, addend: InputVector) -> VectorResult:
+        """Multiply by *multiplier* and then add *addend*, per component. A float broadcasts to all components."""
+        self._assert_output("mul_add")
+        return self._vmath.multiply_add(self.socket, multiplier, addend).o.vector  # ty: ignore[invalid-return-type]
+
     def length(self) -> FloatResult:
         """Get the length of this vector as a `FloatSocket`"""
         self._assert_output("length")
@@ -1077,6 +1082,7 @@ class _VectorMixin[
     if TYPE_CHECKING:
 
         def scale(self, scale: InputFloat) -> Self: ...
+        def mul_add(self, multiplier: InputVector, addend: InputVector) -> Self: ...
         def normalize(self) -> Self: ...
         def cross(self, other: InputVector) -> Self: ...
         def project(self, other: InputVector) -> Self: ...

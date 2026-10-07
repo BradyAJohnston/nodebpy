@@ -1400,6 +1400,13 @@ def test_vector_socket_new_methods():
         assert isinstance(result, VectorSocket)
         assert result.node.operation == "REFLECT"
 
+        result = vec.mul_add(2.0, other)
+        assert isinstance(result, VectorSocket)
+        assert result.node.operation == "MULTIPLY_ADD"
+        assert result.builder_node.i.vector.links[0].from_node == vec.node
+        assert tuple(result.node.inputs[1].default_value) == (2.0, 2.0, 2.0)
+        assert result.builder_node.i.vector_002.links[0].from_node == other.node
+
         ftl = g.FieldToList(10)
         veclist = ftl.items.vector(vec).output
         assert ftl.i["Position"].links

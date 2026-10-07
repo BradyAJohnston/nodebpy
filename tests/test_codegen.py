@@ -1271,6 +1271,7 @@ def test_vector_math_methods():
         a.length() >> tree.outputs.float("Len")
         a.normalize() >> tree.outputs.vector("Norm")
         a.distance(b) >> tree.outputs.float("Dist")
+        a.mul_add(b, (0.0, 0.0, 0.0)) >> tree.outputs.vector("MulAdd")
     code = _assert_roundtrip(tree)
     for expected in (
         "a.dot(b)",
@@ -1278,6 +1279,7 @@ def test_vector_math_methods():
         "a.length()",
         "a.normalize()",
         "a.distance(b)",
+        "a.mul_add(b, (0.0, 0.0, 0.0))",
     ):
         assert expected in code, expected
     assert "VectorMath" not in code
