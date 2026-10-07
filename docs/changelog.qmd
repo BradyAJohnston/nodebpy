@@ -2,11 +2,16 @@
 title: Changelog
 ---
 
-## v520.32.1
+## v520.33.0
 
 ### Enhancements
 
 - **Item handles link like sockets.** An `Item` can be passed as a node argument or used on either side of `>>`: as a value or on the left it is `item.output`, on the right it is `item.input`, and the chain continues from `item.output`. One-sided items (a Separate Bundle item has only an output, a Combine Bundle item only an input) raise for the side they lack, and zone state items keep asking for `initial`, `current`, `next` or `result`. Code that fed a bundle item straight into a node, which 520.32.0 broke by returning handles, works again without `.output`.
+- **`integer.min(value)` / `integer.max(value)`** — integer sockets get Minimum/Maximum as methods (Integer Math), matching the float ones; the exporter emits both. The builtin `max(a, b)` cannot be overridden and silently picks the wrong socket, so use the methods (#242).
+
+### Breaking Changes
+
+- `FloatSocket.min()` / `.max()` take a required value; the old defaults (`0.0` / `1.0`) made `a.max()` silently mean `max(a, 1.0)`. The exporter now always writes the argument, fixing a round-trip where a Maximum node at the `0.5` socket default became `.max()`.
 
 ## v520.32.0 - 2026-10-07
 

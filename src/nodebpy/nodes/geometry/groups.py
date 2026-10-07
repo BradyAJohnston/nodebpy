@@ -70,7 +70,7 @@ class SliceToIndices(CustomGeometryGroup):
 
         range = stop - start
         length = IntegerMath.divide_ceiling(range, step).o.value.abs()
-        indices = FieldToList(length).integer((start + step) * Index())
+        indices = FieldToList(length).items.integer((start + step) * Index())
 
         indices >> tree.outputs.integer("Indices", structure_type="LIST")
 

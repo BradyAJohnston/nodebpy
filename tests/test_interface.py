@@ -942,10 +942,10 @@ def test_float_socket_methods(snapshot):
         assert string.builder_node.i.decimals.default_value == 3
         assert isinstance(string.builder_node, g.ValueToString)
 
+        _assert_method(val.sign(), "SIGN")
+        _assert_method(val.min(0.0), "MINIMUM")
+        _assert_method(val.max(1.0), "MAXIMUM")
         for method, operation in [
-            ("sign", "SIGN"),
-            ("min", "MINIMUM"),
-            ("max", "MAXIMUM"),
             ("sin", "SINE"),
             ("cos", "COSINE"),
             ("tan", "TANGENT"),
@@ -1475,6 +1475,14 @@ def test_integer_socket_new_methods():
         assert inner.operation == "MAXIMUM"
         assert inner.inputs[1].default_value == 0
         assert result.builder_node.i.value_001.default_value == 10
+
+        for method, operation in (("min", "MINIMUM"), ("max", "MAXIMUM")):
+            result = getattr(val, method)(3)
+            assert isinstance(result, IntegerSocket)
+            assert result.node.bl_idname == g.IntegerMath._bl_idname
+            assert result.node.operation == operation
+            assert result.builder_node.i.value.links[0].from_node == val.node
+            assert result.builder_node.i.value_001.default_value == 3
 
         result = val.modulo(7)
         assert isinstance(result, IntegerSocket)

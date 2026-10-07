@@ -1553,12 +1553,12 @@ class _FloatMixin[IntegerResult: (IntegerSocket, IntegerSocketGrid, IntegerSocke
 
         return Clamp.min_max(self.socket, min, max).o.result  # ty: ignore[invalid-return-type]
 
-    def min(self, value: InputFloat = 0.0) -> Self:
+    def min(self, value: InputFloat) -> Self:
         """Create Math with operation 'Minimum'. The minimum from self and value"""
         self._assert_output("min")
         return self._math.minimum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
 
-    def max(self, value: InputFloat = 1.0) -> Self:
+    def max(self, value: InputFloat) -> Self:
         """Create Math with operation 'Maximum'. The maximum from self and value"""
         self._assert_output("max")
         return self._math.maximum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
@@ -1727,11 +1727,19 @@ class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)
         return IntegerMath
 
     def clamp(self, min: InputInteger = 0, max: InputInteger = 1) -> Self:
-        """Clamp the value to *[min, max]*."""
+        """Clamp the value to *[min, max]*. There isn't a built-in node for this, so it uses .max().min()"""
         self._assert_output("clamp")
-        return self._imath.minimum(
-            self._imath.maximum(self.socket, min).o.value, max
-        ).o.value  # ty: ignore[invalid-return-type]
+        return self.max(min).min(max)
+
+    def min(self, value: InputInteger) -> Self:
+        """Create IntegerMath with operation 'Minimum'. The minimum from self and value"""
+        self._assert_output("min")
+        return self._imath.minimum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
+    def max(self, value: InputInteger) -> Self:
+        """Create IntegerMath with operation 'Maximum'. The maximum from self and value"""
+        self._assert_output("max")
+        return self._imath.maximum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
 
     def modulo(self, divisor: InputInteger) -> Self:
         """Remainder after dividing by *divisor* (always non-negative)."""
