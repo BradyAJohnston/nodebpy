@@ -2077,6 +2077,25 @@ class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)
         self._assert_output("lcm")
         return self._imath.least_common_multiple(self.socket, value).o.value  # ty: ignore[invalid-return-type]
 
+    def shift(self, amount: InputInteger) -> Self:
+        """Shift the bits left by *amount*, or right when *amount* is negative.
+
+        Right shifts are logical, filling with zeros, so a negative value
+        turns positive, unlike Python's ``>>``.
+        """
+        self._assert_output("shift")
+        from ..nodes.geometry import BitMath
+
+        return BitMath.shift(self.socket, amount).o.value  # ty: ignore[invalid-return-type]
+
+    def rotate(self, amount: InputInteger) -> Self:
+        """Rotate the 32 bits left by *amount*, or right when *amount* is negative;
+        bits shifted off one end come back at the other."""
+        self._assert_output("rotate")
+        from ..nodes.geometry import BitMath
+
+        return BitMath.rotate(self.socket, amount).o.value  # ty: ignore[invalid-return-type]
+
     def to_float(self) -> FloatResult:
         """Convert to a float with an Implicit Conversion node."""
         self._assert_output("to_float")

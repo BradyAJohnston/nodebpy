@@ -9,7 +9,7 @@ title: Changelog
 - **`vector.mul_add(multiplier, addend)`** — Vector Math Multiply Add as a vector method, mirroring `float.mul_add()`; a float multiplier or addend broadcasts to all components. Both arguments are required, as the node's zero defaults would return a zero vector. The exporter emits the method.
 - **More socket methods**, each emitted back by the exporter where it can be:
     - Vector: `min`, `max`, `floor`, `ceil`, `round`, `fraction`, `sign`, `snap`, `wrap`, `sin`, `cos`, `tan`, `faceforward`, `refract` (Vector Math, arguments required); `to_spherical()` / `to_cylindrical()` (named tuples), `project_point(matrix)`, `euler_to_rotation()`.
-    - Integer: `divide_round`, `divide_ceiling`, `gcd`, `lcm`, `to_float()`.
+    - Integer: `divide_round`, `divide_ceiling`, `gcd`, `lcm`, `to_float()`, and `shift(amount)` / `rotate(amount)` (Bit Math; negative amounts go right, and right shifts are logical, unlike Python's `>>`).
     - Float: `smooth_min`, `smooth_max`, `inverse_sqrt`, `is_close(other, epsilon)` (a boolean, via Compare).
     - Color: `gamma(gamma)`.
     - Float, integer, vector, color, rotation, matrix and string: `hash(seed)`; float, integer, vector and color fields: `blur(iterations, weight)`.

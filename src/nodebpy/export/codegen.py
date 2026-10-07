@@ -2581,6 +2581,19 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             receiver_socket_type="ROTATION",
         ),
     ],
+    "FunctionNodeBitMath": [
+        SocketMethodSpec(
+            receiver="A",
+            method=method,
+            output="Value",
+            params=(("Shift", "amount"),),
+            require=(("operation", operation),),
+            consumed_props=("operation",),
+            receiver_socket_type="INT",
+            always_args=1,
+        )
+        for operation, method in (("SHIFT", "shift"), ("ROTATE", "rotate"))
+    ],
     "FunctionNodeProjectPoint": [
         SocketMethodSpec(
             receiver="Vector",

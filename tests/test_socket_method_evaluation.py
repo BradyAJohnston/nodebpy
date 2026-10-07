@@ -120,6 +120,27 @@ def test_integer_methods(method, expected):
     ]
 
 
+def test_integer_bit_shift_and_rotate():
+    with g.tree("IntegerBits") as tree:
+        five = g.Integer(5).o.integer
+        one = g.Integer(1).o.integer
+        result = evaluate(
+            tree,
+            left=five.shift(3),
+            right=five.shift(-1),
+            negative=g.Integer(-8).o.integer.shift(-1),
+            rotate_left=one.rotate(4),
+            wrapped=one.rotate(-1),
+        )
+    assert result["left"] == 5 << 3
+    assert result["right"] == 5 >> 1
+    # right shifts are logical on the 32 bits, not arithmetic like Python's
+    assert result["negative"] == (-8 & 0xFFFFFFFF) >> 1
+    assert result["rotate_left"] == 1 << 4
+    # rotating the lowest bit right lands it in the int32 sign bit
+    assert result["wrapped"] == -(2**31)
+
+
 def test_integer_to_float():
     with g.tree("IntegerToFloat") as tree:
         result = evaluate(tree, f=g.Integer(-7).o.integer.to_float() / 2)

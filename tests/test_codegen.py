@@ -1359,6 +1359,8 @@ def test_scalar_methods_lift():
         i.divide_round(2) >> tree.outputs.integer("DivRound")
         i.gcd(0) >> tree.outputs.integer("GCD")
         i.to_float() >> tree.outputs.float("Float")
+        i.shift(0) >> tree.outputs.integer("Shift")
+        i.rotate(-2) >> tree.outputs.integer("Rotate")
     code = _assert_roundtrip(tree)
     for snippet in (
         "f.smooth_min(0.5, 0.0)",
@@ -1366,6 +1368,8 @@ def test_scalar_methods_lift():
         "i.divide_round(2)",
         "i.gcd(0)",
         "i.to_float()",
+        "i.shift(0)",
+        "i.rotate(-2)",
     ):
         assert snippet in code, snippet
 
