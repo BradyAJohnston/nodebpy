@@ -233,10 +233,24 @@ def test_handle_stands_in_for_its_sockets():
             g.Math.add(b, 1.0)
 
 
+def test_handle_as_explicit_link_endpoint_and_item_value():
+    with g.tree() as tree:
+        cap = g.CaptureAttribute(g.Cube())
+        fac = cap.items.float(name="Fac")
+        tree.link(g.Value().o.value, fac)  # tree.link resolves the handle's input
+        assert len(fac.input.socket.links) == 1
+        bake = g.Bake()
+        copied = bake.items.float(fac)  # a handle as an item value is its output
+        assert copied.name == "Fac"
+        assert copied.input.socket.links[0].from_socket == fac.output.socket
+
+
 def test_zone_items_require_a_role():
-    with g.tree():
+    with g.tree() as tree:
         zone = g.RepeatZone(2)
         geo = zone.items.geometry()
+        with pytest.raises(TypeError, match="two input sockets"):
+            tree.link(g.Cube().o.mesh, geo)
         with pytest.raises(TypeError, match="two output sockets"):
             geo >> g.SetShadeSmooth()
         with pytest.raises(TypeError, match="two input sockets"):
