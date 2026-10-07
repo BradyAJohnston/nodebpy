@@ -129,6 +129,8 @@ def test_lookup_search_show_and_socket(capsys):
 
     main(["lookup", "show", "Math"])
     assert "Math.add(" in capsys.readouterr().out
+    main(["lookup", "show", "Bake"])  # a variadic constructor
+    assert "**kwargs" in capsys.readouterr().out
 
     main(["lookup", "socket", "Vector"])
     out = capsys.readouterr().out
