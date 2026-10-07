@@ -1352,7 +1352,7 @@ Remap the values on the float socket using the MapRange node.
 ##### max
 
 ``` python
-max(value=1.0)
+max(value)
 ```
 
 Create Math with operation ‘Maximum’. The maximum from self and value
@@ -1360,7 +1360,7 @@ Create Math with operation ‘Maximum’. The maximum from self and value
 ##### min
 
 ``` python
-min(value=0.0)
+min(value)
 ```
 
 Create Math with operation ‘Minimum’. The minimum from self and value
@@ -1794,7 +1794,7 @@ Remap the values on the float socket using the MapRange node.
 ##### max
 
 ``` python
-max(value=1.0)
+max(value)
 ```
 
 Create Math with operation ‘Maximum’. The maximum from self and value
@@ -1818,7 +1818,7 @@ Apply median (box) filter smoothing to a voxel. The median value from surroundin
 ##### min
 
 ``` python
-min(value=0.0)
+min(value)
 ```
 
 Create Math with operation ‘Minimum’. The minimum from self and value
@@ -2303,7 +2303,7 @@ Remap the values on the float socket using the MapRange node.
 ##### max
 
 ``` python
-max(value=1.0)
+max(value)
 ```
 
 Create Math with operation ‘Maximum’. The maximum from self and value
@@ -2311,7 +2311,7 @@ Create Math with operation ‘Maximum’. The maximum from self and value
 ##### min
 
 ``` python
-min(value=0.0)
+min(value)
 ```
 
 Create Math with operation ‘Minimum’. The minimum from self and value
@@ -3052,8 +3052,10 @@ Runtime integer socket wrapper.
 | Name | Description |
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocket.abs) | Return the absolute value of the IntegerSocket. |
-| [clamp](#nodebpy.builder.socket.IntegerSocket.clamp) | Clamp the value to *\[min, max\]*. |
+| [clamp](#nodebpy.builder.socket.IntegerSocket.clamp) | Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min() |
 | [enable_output](#nodebpy.builder.socket.IntegerSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [max](#nodebpy.builder.socket.IntegerSocket.max) | Create IntegerMath with operation ‘Maximum’. The maximum from self and value |
+| [min](#nodebpy.builder.socket.IntegerSocket.min) | Create IntegerMath with operation ‘Minimum’. The minimum from self and value |
 | [modulo](#nodebpy.builder.socket.IntegerSocket.modulo) | Remainder after dividing by *divisor* (always non-negative). |
 | [mul_add](#nodebpy.builder.socket.IntegerSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
@@ -3076,7 +3078,7 @@ Return the absolute value of the IntegerSocket.
 clamp(min=0, max=1)
 ```
 
-Clamp the value to *\[min, max\]*.
+Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min()
 
 ##### enable_output
 
@@ -3099,6 +3101,22 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### max
+
+``` python
+max(value)
+```
+
+Create IntegerMath with operation ‘Maximum’. The maximum from self and value
+
+##### min
+
+``` python
+min(value)
+```
+
+Create IntegerMath with operation ‘Minimum’. The minimum from self and value
 
 ##### modulo
 
@@ -3185,13 +3203,15 @@ Runtime integer grid socket wrapper.
 | Name | Description |
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocketGrid.abs) | Return the absolute value of the IntegerSocket. |
-| [clamp](#nodebpy.builder.socket.IntegerSocketGrid.clamp) | Clamp the value to *\[min, max\]*. |
+| [clamp](#nodebpy.builder.socket.IntegerSocketGrid.clamp) | Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min() |
 | [clip](#nodebpy.builder.socket.IntegerSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
 | [dilate_erode](#nodebpy.builder.socket.IntegerSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
 | [enable_output](#nodebpy.builder.socket.IntegerSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [field_to_grid](#nodebpy.builder.socket.IntegerSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
+| [max](#nodebpy.builder.socket.IntegerSocketGrid.max) | Create IntegerMath with operation ‘Maximum’. The maximum from self and value |
 | [mean](#nodebpy.builder.socket.IntegerSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [median](#nodebpy.builder.socket.IntegerSocketGrid.median) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
+| [min](#nodebpy.builder.socket.IntegerSocketGrid.min) | Create IntegerMath with operation ‘Minimum’. The minimum from self and value |
 | [modulo](#nodebpy.builder.socket.IntegerSocketGrid.modulo) | Remainder after dividing by *divisor* (always non-negative). |
 | [mul_add](#nodebpy.builder.socket.IntegerSocketGrid.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocketGrid.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
@@ -3217,7 +3237,7 @@ Return the absolute value of the IntegerSocket.
 clamp(min=0, max=1)
 ```
 
-Clamp the value to *\[min, max\]*.
+Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min()
 
 ##### clip
 
@@ -3265,6 +3285,14 @@ field_to_grid()
 
 Create new grids by evaluating new values on an existing volume grid topology.
 
+##### max
+
+``` python
+max(value)
+```
+
+Create IntegerMath with operation ‘Maximum’. The maximum from self and value
+
 ##### mean
 
 ``` python
@@ -3280,6 +3308,14 @@ median(width=1, iterations=1)
 ```
 
 Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
+##### min
+
+``` python
+min(value)
+```
+
+Create IntegerMath with operation ‘Minimum’. The minimum from self and value
 
 ##### modulo
 
@@ -3388,12 +3424,14 @@ List of integer sockets.
 | Name | Description |
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocketList.abs) | Return the absolute value of the IntegerSocket. |
-| [clamp](#nodebpy.builder.socket.IntegerSocketList.clamp) | Clamp the value to *\[min, max\]*. |
+| [clamp](#nodebpy.builder.socket.IntegerSocketList.clamp) | Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min() |
 | [enable_output](#nodebpy.builder.socket.IntegerSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.IntegerSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.IntegerSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.IntegerSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.IntegerSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [max](#nodebpy.builder.socket.IntegerSocketList.max) | Create IntegerMath with operation ‘Maximum’. The maximum from self and value |
+| [min](#nodebpy.builder.socket.IntegerSocketList.min) | Create IntegerMath with operation ‘Minimum’. The minimum from self and value |
 | [modulo](#nodebpy.builder.socket.IntegerSocketList.modulo) | Remainder after dividing by *divisor* (always non-negative). |
 | [mul_add](#nodebpy.builder.socket.IntegerSocketList.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocketList.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
@@ -3417,7 +3455,7 @@ Return the absolute value of the IntegerSocket.
 clamp(min=0, max=1)
 ```
 
-Clamp the value to *\[min, max\]*.
+Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min()
 
 ##### enable_output
 
@@ -3472,6 +3510,22 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### max
+
+``` python
+max(value)
+```
+
+Create IntegerMath with operation ‘Maximum’. The maximum from self and value
+
+##### min
+
+``` python
+min(value)
+```
+
+Create IntegerMath with operation ‘Minimum’. The minimum from self and value
 
 ##### modulo
 
@@ -3579,8 +3633,10 @@ Runtime integer vector socket wrapper.
 | Name | Description |
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerVectorSocket.abs) | Return the absolute value of the IntegerSocket. |
-| [clamp](#nodebpy.builder.socket.IntegerVectorSocket.clamp) | Clamp the value to *\[min, max\]*. |
+| [clamp](#nodebpy.builder.socket.IntegerVectorSocket.clamp) | Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min() |
 | [enable_output](#nodebpy.builder.socket.IntegerVectorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [max](#nodebpy.builder.socket.IntegerVectorSocket.max) | Create IntegerMath with operation ‘Maximum’. The maximum from self and value |
+| [min](#nodebpy.builder.socket.IntegerVectorSocket.min) | Create IntegerMath with operation ‘Minimum’. The minimum from self and value |
 | [modulo](#nodebpy.builder.socket.IntegerVectorSocket.modulo) | Remainder after dividing by *divisor* (always non-negative). |
 | [mul_add](#nodebpy.builder.socket.IntegerVectorSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerVectorSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
@@ -3601,7 +3657,7 @@ Return the absolute value of the IntegerSocket.
 clamp(min=0, max=1)
 ```
 
-Clamp the value to *\[min, max\]*.
+Clamp the value to *\[min, max\]*. There isn’t a built-in node for this, so it uses .max().min()
 
 ##### enable_output
 
@@ -3624,6 +3680,22 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### max
+
+``` python
+max(value)
+```
+
+Create IntegerMath with operation ‘Maximum’. The maximum from self and value
+
+##### min
+
+``` python
+min(value)
+```
+
+Create IntegerMath with operation ‘Minimum’. The minimum from self and value
 
 ##### modulo
 

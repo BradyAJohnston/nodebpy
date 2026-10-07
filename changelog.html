@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Changelog – nodebpy 520.32.1</title>
+<title>Changelog – nodebpy 520.33.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.32.1</span>
+    <span class="navbar-title">nodebpy 520.33.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -255,21 +255,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#v520.32.1" id="toc-v520.32.1" class="nav-link active" data-scroll-target="#v520.32.1">v520.32.1</a>
+  <li><a href="#v520.33.0---2026-10-07" id="toc-v520.33.0---2026-10-07" class="nav-link active" data-scroll-target="#v520.33.0---2026-10-07">v520.33.0 - 2026-10-07</a>
   <ul class="collapse">
   <li><a href="#enhancements" id="toc-enhancements" class="nav-link" data-scroll-target="#enhancements">Enhancements</a></li>
+  <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking Changes</a></li>
   </ul></li>
   <li><a href="#v520.32.0---2026-10-07" id="toc-v520.32.0---2026-10-07" class="nav-link" data-scroll-target="#v520.32.0---2026-10-07">v520.32.0 - 2026-10-07</a>
   <ul class="collapse">
   <li><a href="#enhancements-1" id="toc-enhancements-1" class="nav-link" data-scroll-target="#enhancements-1">Enhancements</a></li>
   <li><a href="#deprecations" id="toc-deprecations" class="nav-link" data-scroll-target="#deprecations">Deprecations</a></li>
   <li><a href="#fixes" id="toc-fixes" class="nav-link" data-scroll-target="#fixes">Fixes</a></li>
-  <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking Changes</a></li>
+  <li><a href="#breaking-changes-1" id="toc-breaking-changes-1" class="nav-link" data-scroll-target="#breaking-changes-1">Breaking Changes</a></li>
   </ul></li>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section">520.31.0 - 2026-09-29</a>
   <ul class="collapse">
   <li><a href="#enhancements-2" id="toc-enhancements-2" class="nav-link" data-scroll-target="#enhancements-2">Enhancements</a></li>
-  <li><a href="#breaking-changes-1" id="toc-breaking-changes-1" class="nav-link" data-scroll-target="#breaking-changes-1">Breaking Changes</a></li>
+  <li><a href="#breaking-changes-2" id="toc-breaking-changes-2" class="nav-link" data-scroll-target="#breaking-changes-2">Breaking Changes</a></li>
   <li><a href="#fixes-1" id="toc-fixes-1" class="nav-link" data-scroll-target="#fixes-1">Fixes</a></li>
   </ul></li>
   <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1">520.30.2 - 2026-09-29</a>
@@ -283,7 +284,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3">520.30.0 - 2026-09-28</a>
   <ul class="collapse">
   <li><a href="#enhancements-3" id="toc-enhancements-3" class="nav-link" data-scroll-target="#enhancements-3">Enhancements</a></li>
-  <li><a href="#breaking-changes-2" id="toc-breaking-changes-2" class="nav-link" data-scroll-target="#breaking-changes-2">Breaking Changes</a></li>
+  <li><a href="#breaking-changes-3" id="toc-breaking-changes-3" class="nav-link" data-scroll-target="#breaking-changes-3">Breaking Changes</a></li>
   <li><a href="#fixes-4" id="toc-fixes-4" class="nav-link" data-scroll-target="#fixes-4">Fixes</a></li>
   </ul></li>
   <li><a href="#section-4" id="toc-section-4" class="nav-link" data-scroll-target="#section-4">520.29.0 - 2026-09-20</a>
@@ -330,7 +331,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#v520.19.0---2026-09-12" id="toc-v520.19.0---2026-09-12" class="nav-link" data-scroll-target="#v520.19.0---2026-09-12">v520.19.0 - 2026-09-12</a>
   <ul class="collapse">
-  <li><a href="#breaking-changes-3" id="toc-breaking-changes-3" class="nav-link" data-scroll-target="#breaking-changes-3">Breaking Changes</a></li>
+  <li><a href="#breaking-changes-4" id="toc-breaking-changes-4" class="nav-link" data-scroll-target="#breaking-changes-4">Breaking Changes</a></li>
   <li><a href="#enhancements-12" id="toc-enhancements-12" class="nav-link" data-scroll-target="#enhancements-12">Enhancements</a></li>
   <li><a href="#fixes-9" id="toc-fixes-9" class="nav-link" data-scroll-target="#fixes-9">Fixes</a></li>
   </ul></li>
@@ -428,7 +429,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#enhancements-29" id="toc-enhancements-29" class="nav-link" data-scroll-target="#enhancements-29">Enhancements</a></li>
   <li><a href="#fixes-21" id="toc-fixes-21" class="nav-link" data-scroll-target="#fixes-21">Fixes</a></li>
-  <li><a href="#breaking-changes-4" id="toc-breaking-changes-4" class="nav-link" data-scroll-target="#breaking-changes-4">Breaking Changes</a></li>
+  <li><a href="#breaking-changes-5" id="toc-breaking-changes-5" class="nav-link" data-scroll-target="#breaking-changes-5">Breaking Changes</a></li>
   </ul></li>
   <li><a href="#v520.0.1---2026-06-05" id="toc-v520.0.1---2026-06-05" class="nav-link" data-scroll-target="#v520.0.1---2026-06-05">v520.0.1 - 2026-06-05</a>
   <ul class="collapse">
@@ -445,12 +446,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#v0.17.0---2026-05-13" id="toc-v0.17.0---2026-05-13" class="nav-link" data-scroll-target="#v0.17.0---2026-05-13">v0.17.0 - 2026-05-13</a>
   <ul class="collapse">
   <li><a href="#enhancements-31" id="toc-enhancements-31" class="nav-link" data-scroll-target="#enhancements-31">Enhancements</a></li>
-  <li><a href="#breaking-changes-5" id="toc-breaking-changes-5" class="nav-link" data-scroll-target="#breaking-changes-5">Breaking Changes</a></li>
+  <li><a href="#breaking-changes-6" id="toc-breaking-changes-6" class="nav-link" data-scroll-target="#breaking-changes-6">Breaking Changes</a></li>
   </ul></li>
   <li><a href="#v0.16.0---2026-05-05" id="toc-v0.16.0---2026-05-05" class="nav-link" data-scroll-target="#v0.16.0---2026-05-05">v0.16.0 - 2026-05-05</a>
   <ul class="collapse">
   <li><a href="#enhancements-32" id="toc-enhancements-32" class="nav-link" data-scroll-target="#enhancements-32">Enhancements</a></li>
-  <li><a href="#breaking-changes-6" id="toc-breaking-changes-6" class="nav-link" data-scroll-target="#breaking-changes-6">Breaking Changes</a></li>
+  <li><a href="#breaking-changes-7" id="toc-breaking-changes-7" class="nav-link" data-scroll-target="#breaking-changes-7">Breaking Changes</a></li>
   <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug Fixes</a></li>
   </ul></li>
   <li><a href="#v0.15.0---2026-04-30" id="toc-v0.15.0---2026-04-30" class="nav-link" data-scroll-target="#v0.15.0---2026-04-30">v0.15.0 - 2026-04-30</a>
@@ -550,12 +551,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="v520.32.1" class="level2">
-<h2 class="anchored" data-anchor-id="v520.32.1">v520.32.1</h2>
+<section id="v520.33.0---2026-10-07" class="level2">
+<h2 class="anchored" data-anchor-id="v520.33.0---2026-10-07">v520.33.0 - 2026-10-07</h2>
 <section id="enhancements" class="level3">
 <h3 class="anchored" data-anchor-id="enhancements">Enhancements</h3>
 <ul>
 <li><strong>Item handles link like sockets.</strong> An <code>Item</code> can be passed as a node argument or used on either side of <code>&gt;&gt;</code>: as a value or on the left it is <code>item.output</code>, on the right it is <code>item.input</code>, and the chain continues from <code>item.output</code>. One-sided items (a Separate Bundle item has only an output, a Combine Bundle item only an input) raise for the side they lack, and zone state items keep asking for <code>initial</code>, <code>current</code>, <code>next</code> or <code>result</code>. Code that fed a bundle item straight into a node, which 520.32.0 broke by returning handles, works again without <code>.output</code>.</li>
+<li><strong><code>integer.min(value)</code> / <code>integer.max(value)</code></strong> — integer sockets get Minimum/Maximum as methods (Integer Math), matching the float ones; the exporter emits both. The builtin <code>max(a, b)</code> cannot be overridden and silently picks the wrong socket, so use the methods (#242).</li>
+</ul>
+</section>
+<section id="breaking-changes" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes">Breaking Changes</h3>
+<ul>
+<li><code>FloatSocket.min()</code> / <code>.max()</code> take a required value; the old defaults (<code>0.0</code> / <code>1.0</code>) made <code>a.max()</code> silently mean <code>max(a, 1.0)</code>. The exporter now always writes the argument, fixing a round-trip where a Maximum node at the <code>0.5</code> socket default became <code>.max()</code>.</li>
 </ul>
 </section>
 </section>
@@ -610,8 +618,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>With reroutes on, reroutes that lead nowhere or come from nowhere were deleted.</li>
 </ul>
 </section>
-<section id="breaking-changes" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes">Breaking Changes</h3>
+<section id="breaking-changes-1" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-1">Breaking Changes</h3>
 <ul>
 <li>Generated node classes now keep Blender’s acronyms: <code>XpbdSolver</code>, <code>SetNurbsOrder</code>, <code>SetNurbsWeight</code>, <code>IesTexture</code> and <code>AovOutput</code> are <code>XPBDSolver</code>, <code>SetNURBSOrder</code>, <code>SetNURBSWeight</code>, <code>IESTexture</code> and <code>AOVOutput</code> (#201).</li>
 <li><code>SeparateBundle</code>, <code>ClosureToList</code>, <code>EvaluateClosure.outputs</code> and <code>ClosureZone.inputs</code> factories return <code>Item</code> handles instead of the socket; read it from <code>.output</code> (<code>.input</code> for <code>CombineBundle</code>, <code>EvaluateClosure.inputs</code> and <code>ClosureZone.outputs</code>).</li>
@@ -641,8 +649,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Generic custom groups</strong> — a <code>CustomGeometryGroup</code> (or shader/compositor group) can now build a different inner tree per instance, e.g.&nbsp;one per data type. Override <code>_group_name()</code> to name each variant’s tree from state set before <code>super().__init__()</code>; each variant is built once and reused. Combined with a generic class (<code>class MyGroup[T](CustomGeometryGroup)</code>) and typed factories returning <code>MyGroup[FloatSocket]</code>, <code>node.i.value</code> narrows like the built-in <code>GetBundleItem.float()</code>.</li>
 </ul>
 </section>
-<section id="breaking-changes-1" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-1">Breaking Changes</h3>
+<section id="breaking-changes-2" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-2">Breaking Changes</h3>
 <ul>
 <li><code>SeparateBundle</code>, <code>ClosureToList</code>, <code>EvaluateClosure.outputs</code> and <code>ClosureZone.inputs</code> factories return <code>Item</code> handles instead of the socket; read it from <code>.output</code> (<code>.input</code> for <code>CombineBundle</code>, <code>EvaluateClosure.inputs</code> and <code>ClosureZone.outputs</code>).</li>
 <li><code>GridItem</code> is gone; a Field to Grid item is <code>Item[FloatSocket, FloatSocketGrid]</code> with <code>.input</code> and <code>.output</code> in place of <code>.field</code> and <code>.grid</code>.</li>
@@ -692,8 +700,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>ColorRamp</code> accepts flat <code>(position, r, g, b, a)</code> items, so an <code>(N, 5)</code> numpy array works like <code>FloatCurve</code>’s <code>(N, 2)</code>.</li>
 </ul>
 </section>
-<section id="breaking-changes-2" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-2">Breaking Changes</h3>
+<section id="breaking-changes-3" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-3">Breaking Changes</h3>
 <ul>
 <li><code>SeparateBundle</code>, <code>ClosureToList</code>, <code>EvaluateClosure.outputs</code> and <code>ClosureZone.inputs</code> factories return <code>Item</code> handles instead of the socket; read it from <code>.output</code> (<code>.input</code> for <code>CombineBundle</code>, <code>EvaluateClosure.inputs</code> and <code>ClosureZone.outputs</code>).</li>
 <li><code>GridItem</code> is gone; a Field to Grid item is <code>Item[FloatSocket, FloatSocketGrid]</code> with <code>.input</code> and <code>.output</code> in place of <code>.field</code> and <code>.grid</code>.</li>
@@ -850,8 +858,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v520.19.0---2026-09-12" class="level2">
 <h2 class="anchored" data-anchor-id="v520.19.0---2026-09-12">v520.19.0 - 2026-09-12</h2>
-<section id="breaking-changes-3" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-3">Breaking Changes</h3>
+<section id="breaking-changes-4" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-4">Breaking Changes</h3>
 <ul>
 <li><code>SeparateBundle</code>, <code>ClosureToList</code>, <code>EvaluateClosure.outputs</code> and <code>ClosureZone.inputs</code> factories return <code>Item</code> handles instead of the socket; read it from <code>.output</code> (<code>.input</code> for <code>CombineBundle</code>, <code>EvaluateClosure.inputs</code> and <code>ClosureZone.outputs</code>).</li>
 <li><code>GridItem</code> is gone; a Field to Grid item is <code>Item[FloatSocket, FloatSocketGrid]</code> with <code>.input</code> and <code>.output</code> in place of <code>.field</code> and <code>.grid</code>.</li>
@@ -1223,8 +1231,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Linking a node into a <code>Reroute</code> (or any other adaptive <code>__extend__</code> socket, such as <code>Viewer</code>) now works from any source type — the reroute adapts instead of rejecting the connection.</li>
 </ul>
 </section>
-<section id="breaking-changes-4" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-4">Breaking Changes</h3>
+<section id="breaking-changes-5" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-5">Breaking Changes</h3>
 <ul>
 <li><code>g.SetHandleType()</code> now defaults to <code>left=True, right=True</code> (<code>mode = {'LEFT', 'RIGHT'}</code>), matching Blender’s native default for a freshly added node. Previously it defaulted to an empty <code>mode</code>, which set <em>no</em> handle types. The shared <code>left</code>/<code>right</code>/<code>mode</code> logic for <code>SetHandleType</code> and <code>HandleTypeSelection</code> was factored into a mixin; <code>SetHandleType</code> also gained a <code>mode</code> property for parity.</li>
 </ul>
@@ -1368,8 +1376,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fac.mix.vector((<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), (<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)) <span class="co"># VectorSocket</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fac.mix.color(color_a, color_b)  <span class="co"># ColorSocket</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="breaking-changes-5" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-5">Breaking Changes</h3>
+<section id="breaking-changes-6" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-6">Breaking Changes</h3>
 <ul>
 <li><code>RotationSocket.euler()</code> renamed to <code>RotationSocket.to_euler()</code> for consistency with the new <code>to_quaternion()</code> and <code>to_axis_angle()</code> methods.</li>
 <li><code>RotationSocket.w</code>, <code>.x</code>, <code>.y</code>, <code>.z</code> component properties removed. Use <code>to_quaternion()</code> instead.</li>
@@ -1455,8 +1463,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ul>
 </section>
-<section id="breaking-changes-6" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-6">Breaking Changes</h3>
+<section id="breaking-changes-7" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-7">Breaking Changes</h3>
 <ul>
 <li><code>Compare.switch(false, true)</code> with automatic type inference has been removed. Use the explicit typed factory methods on <code>BooleanSocket.switch</code> instead.</li>
 </ul>
