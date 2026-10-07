@@ -897,12 +897,12 @@ def test_math_no_lift_when_unlinked():
 
 
 def test_math_non_liftable_stays_as_call():
-    """Non-liftable operation (INVERSE_SQUARE_ROOT) stays a call — via the factory shortcut."""
-    with TreeBuilder("MathInverseSquareRoot") as tree:
+    """Non-liftable operation (truncated MODULO) stays a call — via the factory shortcut."""
+    with TreeBuilder("MathTruncatedModulo") as tree:
         val = tree.inputs.float("Value", 1.0)
-        g.Math.inverse_square_root(val) >> tree.outputs.float("Result")
+        g.Math.truncated_modulo(val, 3.0) >> tree.outputs.float("Result")
     code = to_python(tree)
-    assert "g.Math.inverse_square_root(value)" in code
+    assert "g.Math.truncated_modulo(value, 3.0)" in code
 
 
 def test_math_fanout_assigns_variable():
@@ -1315,6 +1315,114 @@ def test_min_max_methods():
     code = _assert_roundtrip(tree)
     assert "value.max(0.5).min(2.0)" in code
     assert "count.max(0).min(10)" in code
+
+
+def test_vector_methods_lift():
+    """Vector Math methods lift, always writing their required arguments."""
+    with TreeBuilder("VectorMethodsLift") as tree:
+        v = tree.inputs.vector("V")
+        w = tree.inputs.vector("W")
+        m = tree.inputs.matrix("M")
+        v.min(w) >> tree.outputs.vector("Min")
+        v.max((0.0, 0.0, 0.0)) >> tree.outputs.vector("Max")
+        v.floor() >> tree.outputs.vector("Floor")
+        v.sin() >> tree.outputs.vector("Sin")
+        v.snap((0.5, 0.5, 0.5)) >> tree.outputs.vector("Snap")
+        v.wrap((0.0, 0.0, 0.0), (1.0, 1.0, 1.0)) >> tree.outputs.vector("Wrap")
+        v.faceforward(w, (0.0, 0.0, 0.0)) >> tree.outputs.vector("Face")
+        v.refract(w, 1.45) >> tree.outputs.vector("Refract")
+        v.project_point(m) >> tree.outputs.vector("Projected")
+        v.euler_to_rotation() >> tree.outputs.rotation("Rotation")
+    code = _assert_roundtrip(tree)
+    for snippet in (
+        "v.min(w)",
+        "v.max((0.0, 0.0, 0.0))",
+        "v.floor()",
+        "v.sin()",
+        "v.snap((0.5, 0.5, 0.5))",
+        "v.wrap((0.0, 0.0, 0.0), (1.0, 1.0, 1.0))",
+        "v.faceforward(w, (0.0, 0.0, 0.0))",
+        "v.refract(w, 1.45)",
+        "v.project_point(m)",
+        "v.euler_to_rotation()",
+    ):
+        assert snippet in code, snippet
+    assert "VectorMath" not in code
+
+
+def test_scalar_methods_lift():
+    with TreeBuilder("ScalarMethodsLift") as tree:
+        f = tree.inputs.float("F")
+        i = tree.inputs.integer("I")
+        f.smooth_min(0.5, 0.0) >> tree.outputs.float("SMin")
+        f.inverse_sqrt() >> tree.outputs.float("InvSqrt")
+        i.divide_round(2) >> tree.outputs.integer("DivRound")
+        i.gcd(0) >> tree.outputs.integer("GCD")
+        i.to_float() >> tree.outputs.float("Float")
+    code = _assert_roundtrip(tree)
+    for snippet in (
+        "f.smooth_min(0.5, 0.0)",
+        "f.inverse_sqrt()",
+        "i.divide_round(2)",
+        "i.gcd(0)",
+        "i.to_float()",
+    ):
+        assert snippet in code, snippet
+
+
+def test_color_hash_blur_methods_lift():
+    with TreeBuilder("ColorHashBlur") as tree:
+        c = tree.inputs.color("C")
+        f = tree.inputs.float("F")
+        s = tree.inputs.string("S")
+        c.gamma(2.2) >> tree.outputs.color("Gamma")
+        f.hash(3) >> tree.outputs.integer("HashF")
+        s.hash() >> tree.outputs.integer("HashS")
+        c.blur(2) >> tree.outputs.color("Blur")
+    code = _assert_roundtrip(tree)
+    for snippet in ("c_.gamma(2.2)", "f.hash(3)", "s_.hash()", "c_.blur(2)"):
+        assert snippet in code, snippet
+
+
+def test_color_arithmetic_round_trips():
+    """Colour-colour arithmetic builds Mix nodes, which rebuild faithfully."""
+    with TreeBuilder("ColorArithmeticRoundTrip") as tree:
+        a = tree.inputs.color("A")
+        b = tree.inputs.color("B")
+        (a + b) >> tree.outputs.color("Add")
+        (a / (0.5, 0.5, 0.5, 1.0)) >> tree.outputs.color("Div")
+        (a * 0.5) >> tree.outputs.vector("Scaled")
+    _assert_roundtrip(tree)
+
+
+def test_bundle_and_data_block_methods_lift():
+    with TreeBuilder("BundleMethods") as tree:
+        bundle = tree.inputs.bundle("Bundle")
+        geo = tree.inputs.geometry("Geometry")
+        material = tree.inputs.material("Material")
+        collection = tree.inputs.collection("Collection")
+        bundle.get.float("x") >> tree.outputs.float("X")
+        bundle.get.geometry("mesh") >> tree.outputs.geometry("Mesh")
+        bundle.has("x") >> tree.outputs.boolean("Has")
+        bundle.paths() >> tree.outputs.string("Paths", structure_type="LIST")
+        geo.set_bundle(bundle) >> tree.outputs.geometry("WithBundle")
+        geo.bundle() >> tree.outputs.bundle("FromGeometry")
+        material.selection() >> tree.outputs.boolean("Selection")
+        collection.children().objects >> tree.outputs.object(
+            "Objects", structure_type="LIST"
+        )
+    code = _assert_roundtrip(tree)
+    for snippet in (
+        'bundle.get.float("x")',
+        'bundle.get.geometry("mesh")',
+        'bundle.has("x")',
+        "bundle.paths()",
+        "geometry.set_bundle(bundle)",
+        "geometry.bundle()",
+        "material.selection()",
+        "collection.children(",
+    ):
+        assert snippet in code, snippet
 
 
 def test_string_methods():
@@ -2680,6 +2788,21 @@ def test_grid_common_methods_lift():
         ".prune(",
         ".voxelize()",
     ):
+        assert snippet in code, snippet
+
+
+def test_grid_setter_methods_lift():
+    """set_background / set_transform / advect lift to grid socket methods."""
+    with TreeBuilder("GridSetters") as tree:
+        grid = _named_grid(tree)
+        velocity = g.GetNamedGrid.vector(tree.inputs.geometry("Flow"), "vel").o.grid
+        grid.set_background(0.5) >> tree.outputs.float("B", structure_type="GRID")
+        grid.set_transform(tree.inputs.matrix("M")) >> tree.outputs.float(
+            "T", structure_type="GRID"
+        )
+        grid.advect(velocity, 0.5) >> tree.outputs.float("A", structure_type="GRID")
+    code = _assert_roundtrip(tree)
+    for snippet in (".set_background(0.5)", ".set_transform(m)", ".advect("):
         assert snippet in code, snippet
 
 

@@ -7,13 +7,24 @@ title: Changelog
 ### Enhancements
 
 - **`vector.mul_add(multiplier, addend)`** — Vector Math Multiply Add as a vector method, mirroring `float.mul_add()`; a float multiplier or addend broadcasts to all components. Both arguments are required, as the node's zero defaults would return a zero vector. The exporter emits the method.
+- **More socket methods**, each emitted back by the exporter where it can be:
+    - Vector: `min`, `max`, `floor`, `ceil`, `round`, `fraction`, `sign`, `snap`, `wrap`, `sin`, `cos`, `tan`, `faceforward`, `refract` (Vector Math, arguments required); `to_spherical()` / `to_cylindrical()` (named tuples), `project_point(matrix)`, `euler_to_rotation()`.
+    - Integer: `divide_round`, `divide_ceiling`, `gcd`, `lcm`, `to_float()`.
+    - Float: `smooth_min`, `smooth_max`, `inverse_sqrt`, `is_close(other, epsilon)` (a boolean, via Compare).
+    - Color: `gamma(gamma)`.
+    - Float, integer, vector, color, rotation, matrix and string: `hash(seed)`; float, integer, vector and color fields: `blur(iterations, weight)`.
+    - Grids: `set_background(value)`, `set_transform(matrix)`, `advect(velocity, ...)`; float grids: `sdf_union`, `sdf_intersect`, `sdf_difference`.
+    - Object: `camera_info()`, `bone_info(name)`; image: `info(frame)` (each returns the node, for its outputs); collection: `children()`; material: `selection()`.
+- **Bundle methods.** `bundle.store("path", value)` stores an item, typed from the value; `bundle.get.float("path")` reads one (any socket type); `bundle.has("path")`, `bundle.paths()`, and `bundle.join(*others)` or `a | b` (the later bundle wins on a duplicate path, like dict `|`). Geometry: `geo.bundle()` and `geo.set_bundle(bundle)`.
+- **`round()`, `math.floor()`, `math.ceil()` and `math.trunc()`** on a float socket return an integer socket through Float To Integer. Halves round away from zero, unlike Python's `round()`.
 
 ### Breaking Changes
 
-Operators on sockets now evaluate to what Python gives for the same values, checked by tests that evaluate each operator in a tree and compare it with Python.
+Integer operators now evaluate to what Python gives for the same values, checked by tests that evaluate each operator in a tree and compare it with Python.
 
 - **Integer `%` is floored modulo**, as in Python and as float `%` already was: `-7 % 3` is `2`, not `-1`. `integer.modulo()` follows; Integer Math's truncated `MODULO` is still `g.IntegerMath.modulo()`.
 - **Integer `/` is true division**: `i / j` builds a float Math divide and returns a `FloatSocket`. Use `//` for integer division.
+- **Color + color, -, \* and / use Mix**, returning a `ColorSocket` that keeps the left color's alpha; they used Vector Math and dropped alpha. A color with a scalar or vector operand still uses Vector Math and returns a vector.
 
 ### Fixes
 

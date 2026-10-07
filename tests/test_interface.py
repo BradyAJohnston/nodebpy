@@ -1803,3 +1803,34 @@ def test_default_value_on_output_socket_error_names_input_sockets():
         value = tree.inputs.float("F")
         with pytest.raises(RuntimeError, match="only available on input sockets"):
             value.default_value = 1.0
+
+
+def test_grid_sdf_boolean_methods():
+    with g.tree():
+        a = g.GetNamedGrid(None, "a").o.grid
+        b = g.GetNamedGrid(None, "b").o.grid
+        for method, operation in (
+            ("sdf_union", "UNION"),
+            ("sdf_intersect", "INTERSECT"),
+            ("sdf_difference", "DIFFERENCE"),
+        ):
+            result = getattr(a, method)(b)
+            assert result.node.bl_idname == g.SDFGridBoolean._bl_idname
+            assert result.node.operation == operation
+        # difference subtracts the others from the receiver
+        grid_1 = result.node.inputs["Grid 1"]
+        assert grid_1.links[0].from_node == a.node
+        assert result.node.inputs["Grid 2"].links[0].from_node == b.node
+
+
+def test_data_block_info_methods():
+    with g.tree() as tree:
+        obj = tree.inputs.object("Object")
+        image = tree.inputs.image("Image")
+        assert obj.camera_info().node.bl_idname == g.CameraInfo._bl_idname
+        bone = obj.bone_info("Root")
+        assert bone.node.bl_idname == g.BoneInfo._bl_idname
+        assert bone.i.bone_name.default_value == "Root"
+        info = image.info(frame=3)
+        assert info.node.bl_idname == g.ImageInfo._bl_idname
+        assert info.i.frame.default_value == 3

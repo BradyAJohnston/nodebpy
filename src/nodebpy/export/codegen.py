@@ -2018,6 +2018,11 @@ _DATA_TYPE_SOCKET = {
     "FLOAT4X4": "MATRIX",
     "TRANSFORM": "MATRIX",
     "VECTOR": "VECTOR",  # GridInfo-style enums spell vectors "VECTOR"
+    # Hash Value-style enums use the socket type names
+    "RGBA": "RGBA",
+    "ROTATION": "ROTATION",
+    "MATRIX": "MATRIX",
+    "STRING": "STRING",
 }
 
 _FIELD_PROPS = ("domain", "data_type")
@@ -2279,6 +2284,53 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             ("Vector_002", "addend"),
             always_args=2,
         ),
+        *(
+            _vector_op_spec(op, method, "Vector")
+            for op, method in (
+                ("FLOOR", "floor"),
+                ("CEIL", "ceil"),
+                ("ROUND", "round"),
+                ("FRACTION", "fraction"),
+                ("SIGN", "sign"),
+                ("SINE", "sin"),
+                ("COSINE", "cos"),
+                ("TANGENT", "tan"),
+            )
+        ),
+        _vector_op_spec(
+            "MINIMUM", "min", "Vector", ("Vector_001", "value"), always_args=1
+        ),
+        _vector_op_spec(
+            "MAXIMUM", "max", "Vector", ("Vector_001", "value"), always_args=1
+        ),
+        _vector_op_spec(
+            "SNAP", "snap", "Vector", ("Vector_001", "increment"), always_args=1
+        ),
+        # wrap()'s node sockets are swapped relative to the signature
+        _vector_op_spec(
+            "WRAP",
+            "wrap",
+            "Vector",
+            ("Vector_002", "min"),
+            ("Vector_001", "max"),
+            always_args=2,
+        ),
+        _vector_op_spec(
+            "FACEFORWARD",
+            "faceforward",
+            "Vector",
+            ("Vector_001", "incident"),
+            ("Vector_002", "reference"),
+            always_args=2,
+        ),
+        _vector_op_spec(
+            "REFRACT",
+            "refract",
+            "Vector",
+            ("Vector_001", "normal"),
+            ("Scale", "ior"),
+            always_args=2,
+        ),
     ],
     "FunctionNodeRotateVector": [
         SocketMethodSpec(
@@ -2329,7 +2381,12 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             ("PINGPONG", "ping_pong", "value"),
             ("LOGARITHM", "log", "base"),
             ("ARCTAN2", "atan2", "value"),
+            ("INVERSE_SQRT", "inverse_sqrt"),
         ]
+    ]
+    + [
+        _math_unary_spec(op, method, "value", "distance", always_args=2)
+        for op, method in (("SMOOTH_MIN", "smooth_min"), ("SMOOTH_MAX", "smooth_max"))
     ]
     + [
         _math_unary_spec(op, method, "value", always_args=1)
@@ -2366,6 +2423,10 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             # which the % operator lift covers.
             ("MINIMUM", "min", "value"),
             ("MAXIMUM", "max", "value"),
+            ("DIVIDE_ROUND", "divide_round", "divisor"),
+            ("DIVIDE_CEIL", "divide_ceiling", "divisor"),
+            ("GCD", "gcd", "value"),
+            ("LCM", "lcm", "value"),
         )
     ],
     "GeometryNodeListLength": [
@@ -2520,6 +2581,125 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             receiver_socket_type="ROTATION",
         ),
     ],
+    "FunctionNodeProjectPoint": [
+        SocketMethodSpec(
+            receiver="Vector",
+            method="project_point",
+            output="Vector",
+            params=(("Transform", "matrix"),),
+            receiver_socket_type="VECTOR",
+            always_args=1,
+        ),
+    ],
+    "FunctionNodeEulerToRotation": [
+        SocketMethodSpec(
+            receiver="Euler",
+            method="euler_to_rotation",
+            output="Rotation",
+            receiver_socket_type="VECTOR",
+        ),
+    ],
+    "NodeImplicitConversion": [
+        SocketMethodSpec(
+            receiver="Value",
+            method="to_float",
+            output="Value",
+            require=(("data_type", "FLOAT"),),
+            consumed_props=("data_type",),
+            receiver_socket_type="INT",
+        ),
+    ],
+    "ShaderNodeGamma": [
+        SocketMethodSpec(
+            receiver="Color",
+            method="gamma",
+            output="Color",
+            params=(("Gamma", "gamma"),),
+            receiver_socket_type="RGBA",
+            always_args=1,
+        ),
+    ],
+    "FunctionNodeHashValue": [
+        SocketMethodSpec(
+            receiver="Value",
+            method="hash",
+            output="Hash",
+            params=(("Seed", "seed"),),
+            consumed_props=("data_type",),
+            receiver_socket_type="{data_type}",
+        ),
+    ],
+    "GeometryNodeBlurAttribute": [
+        SocketMethodSpec(
+            receiver="Value",
+            method="blur",
+            output="Value",
+            params=(("Iterations", "iterations"), ("Weight", "weight")),
+            consumed_props=("data_type",),
+            receiver_socket_type="{data_type}",
+        ),
+    ],
+    "GeometryNodeMaterialSelection": [
+        SocketMethodSpec(
+            receiver="Material",
+            method="selection",
+            output="Selection",
+            receiver_socket_type="MATERIAL",
+        ),
+    ],
+    "GeometryNodeGetGeometryBundle": [
+        SocketMethodSpec(
+            receiver="Geometry",
+            method="bundle",
+            output="Bundle",
+            receiver_socket_type="GEOMETRY",
+        ),
+    ],
+    "GeometryNodeSetGeometryBundle": [
+        SocketMethodSpec(
+            receiver="Geometry",
+            method="set_bundle",
+            output="Geometry",
+            params=(("Bundle", "bundle"),),
+            receiver_socket_type="GEOMETRY",
+            always_args=1,
+        ),
+    ],
+    "NodeGetBundleItem": [
+        SocketMethodSpec(
+            receiver="Bundle",
+            method="get.{socket_type}",
+            output="Item",
+            params=(("Path", "path"),),
+            consumed_props=("socket_type",),
+            receiver_socket_type="BUNDLE",
+            always_args=1,
+        ),
+        # has() builds the node with the default FLOAT socket type
+        SocketMethodSpec(
+            receiver="Bundle",
+            method="has",
+            output="Exists",
+            params=(("Path", "path"),),
+            require=(("socket_type", "FLOAT"),),
+            receiver_socket_type="BUNDLE",
+            always_args=1,
+        ),
+    ],
+    "NodeGetNestedBundlePaths": [
+        SocketMethodSpec(
+            receiver="Bundle",
+            method="paths",
+            output="Paths",
+            params=(
+                ("Mode", "mode"),
+                ("Pattern Mode", "pattern_mode"),
+                ("Bundle Type", "bundle_type"),
+                ("Data Type", "data_type"),
+            ),
+            receiver_socket_type="BUNDLE",
+        ),
+    ],
     "ShaderNodeMix": [
         _mix_spec("FLOAT", "float", "Float"),
         _mix_spec("VECTOR", "vector", "Vector"),
@@ -2527,6 +2707,29 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
         _mix_spec("ROTATION", "rotation", "Rotation"),
     ],
     # Grid socket methods — numeric grids (Float / Integer / Vector) -------
+    "GeometryNodeSetGridBackground": [
+        _grid_spec(
+            "set_background",
+            "Grid",
+            ("Background", "background"),
+            ("Update Inactive", "update_inactive"),
+            always_args=1,
+        ),
+    ],
+    "GeometryNodeSetGridTransform": [
+        _grid_spec("set_transform", "Grid", ("Transform", "matrix"), always_args=1),
+    ],
+    "GeometryNodeGridAdvect": [
+        _grid_spec(
+            "advect",
+            "Grid",
+            ("Velocity", "velocity"),
+            ("Time Step", "time_step"),
+            ("Integration Scheme", "integration_scheme"),
+            ("Limiter", "limiter"),
+            always_args=1,
+        ),
+    ],
     "GeometryNodeGridMean": [
         _grid_spec("mean", "Grid", ("Width", "width"), ("Iterations", "iterations")),
     ],
@@ -2715,6 +2918,13 @@ _TUPLE_METHODS: dict[str, TupleMethodSpec] = {
         outputs=(("W", "w"), ("X", "x"), ("Y", "y"), ("Z", "z")),
         receiver_socket_type="ROTATION",
     ),
+    "GeometryNodeCollectionChildren": TupleMethodSpec(
+        receiver="Collection",
+        method="children",
+        outputs=(("Collections", "collections"), ("Objects", "objects")),
+        params=(("Recursive", "recursive"),),
+        receiver_socket_type="COLLECTION",
+    ),
     "FunctionNodeRotationToAxisAngle": TupleMethodSpec(
         receiver="Rotation",
         method="to_axis_angle",
@@ -2736,6 +2946,11 @@ def _format_method(spec: SocketMethodSpec, node) -> str | None:
         if attr is None:
             return None
         method = method.replace("{input_type}", attr)
+    if "{socket_type}" in method:
+        attr = _SWITCH_METHOD.get(getattr(node, "socket_type", ""))
+        if attr is None:
+            return None
+        method = method.replace("{socket_type}", attr)
     return method
 
 
