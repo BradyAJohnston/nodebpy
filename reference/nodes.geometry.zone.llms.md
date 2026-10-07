@@ -36,6 +36,7 @@ BaseRepeatZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`items`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -45,9 +46,9 @@ BaseRepeatZone(node=None)
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseRepeatZone.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseRepeatZone.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseRepeatZone.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.BaseRepeatZone.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.BaseRepeatZone.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.BaseRepeatZone.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -55,9 +56,7 @@ BaseRepeatZone(node=None)
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -65,9 +64,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -75,9 +72,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### BaseSimulationZone
 
@@ -90,6 +85,7 @@ BaseSimulationZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`items`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -99,9 +95,9 @@ BaseSimulationZone(node=None)
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseSimulationZone.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseSimulationZone.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseSimulationZone.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.BaseSimulationZone.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.BaseSimulationZone.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.BaseSimulationZone.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -109,9 +105,7 @@ BaseSimulationZone(node=None)
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -119,9 +113,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -129,9 +121,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### BaseZone
 
@@ -144,6 +134,7 @@ BaseZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`items`](#nodebpy.nodes.geometry.zone.BaseZone.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -153,9 +144,9 @@ BaseZone(node=None)
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseZone.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseZone.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseZone.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.BaseZone.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.BaseZone.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.BaseZone.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -163,9 +154,7 @@ BaseZone(node=None)
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -173,9 +162,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -183,9 +170,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### BaseZoneInput
 
@@ -200,6 +185,7 @@ Base class for zone input nodes
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZoneInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`items`](#nodebpy.nodes.geometry.zone.BaseZoneInput.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZoneInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZoneInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZoneInput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -210,9 +196,9 @@ Base class for zone input nodes
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseZoneInput.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseZoneInput.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseZoneInput.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.BaseZoneInput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.BaseZoneInput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.BaseZoneInput.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -220,9 +206,7 @@ Base class for zone input nodes
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -230,9 +214,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -240,9 +222,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### BaseZoneOutput
 
@@ -257,6 +237,7 @@ Base class for zone output nodes
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`items`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -266,9 +247,9 @@ Base class for zone output nodes
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseZoneOutput.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseZoneOutput.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseZoneOutput.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.BaseZoneOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.BaseZoneOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.BaseZoneOutput.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -276,9 +257,7 @@ Base class for zone output nodes
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -286,9 +265,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -296,9 +273,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### ClosureInput
 
@@ -386,16 +361,16 @@ ClosureZone()
 |----|----|
 | [`closure`](#nodebpy.nodes.geometry.zone.ClosureZone.closure) | The closure produced by the zone. |
 | [`input`](#nodebpy.nodes.geometry.zone.ClosureZone.input) |  |
-| [`inputs`](#nodebpy.nodes.geometry.zone.ClosureZone.inputs) | Typed factories for the closure’s input items. |
+| [`inputs`](#nodebpy.nodes.geometry.zone.ClosureZone.inputs) | The closure’s input items. |
 | [`output`](#nodebpy.nodes.geometry.zone.ClosureZone.output) |  |
-| [`outputs`](#nodebpy.nodes.geometry.zone.ClosureZone.outputs) | Typed factories for the closure’s output items. |
+| [`outputs`](#nodebpy.nodes.geometry.zone.ClosureZone.outputs) | The closure’s output items. |
 
 #### Methods
 
 | Name | Description |
 |----|----|
-| [input_item](#nodebpy.nodes.geometry.zone.ClosureZone.input_item) | Declare a closure input and return the socket to read in the body. |
-| [output_item](#nodebpy.nodes.geometry.zone.ClosureZone.output_item) | Declare a closure output and return the target to feed with `>>`. |
+| [input_item](#nodebpy.nodes.geometry.zone.ClosureZone.input_item) | Deprecated: use `zone.inputs.new(name, type=type).output`. |
+| [output_item](#nodebpy.nodes.geometry.zone.ClosureZone.output_item) | Deprecated: use `zone.outputs.new(name, type=type).input`. |
 
 ##### input_item
 
@@ -403,9 +378,7 @@ ClosureZone()
 input_item(name, type='GEOMETRY')
 ```
 
-Declare a closure input and return the socket to read in the body.
-
-`type` is a socket-type string (`"GEOMETRY"`, `"MATRIX"`, `"VECTOR"`, …); the typed factories on :attr:`inputs` are the static-typed equivalent.
+Deprecated: use `zone.inputs.new(name, type=type).output`.
 
 ##### output_item
 
@@ -413,9 +386,7 @@ Declare a closure input and return the socket to read in the body.
 output_item(name, type='GEOMETRY')
 ```
 
-Declare a closure output and return the target to feed with `>>`.
-
-The typed factories on :attr:`outputs` are the static-typed equivalent.
+Deprecated: use `zone.outputs.new(name, type=type).input`.
 
 ### ForEachGeometryElementInput
 
@@ -430,6 +401,7 @@ For Each Geometry Element Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.i) |  |
+| [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.o) |  |
@@ -440,9 +412,9 @@ For Each Geometry Element Input node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -450,9 +422,7 @@ For Each Geometry Element Input node
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -460,9 +430,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -470,9 +438,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### ForEachGeometryElementOutput
 
@@ -488,6 +454,7 @@ For Each Geometry Element Output node
 |----|----|
 | [`domain`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.domain) |  |
 | [`i`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.i) |  |
+| [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items) | The node’s items; subclasses return their typed collection. |
 | [`items_generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items_generated) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.node) |  |
@@ -498,11 +465,11 @@ For Each Geometry Element Output node
 
 | Name | Description |
 |----|----|
-| [add_generated_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_generated_item) | Add a generation item and return its handle. |
-| [add_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture) | Add an item linked from `value` and return its output socket. |
-| [capture_generated](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated) | Capture `value` as a generated-geometry item evaluated on the |
+| [add_generated_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_generated_item) | Deprecated: use `zone.generated_items.<type>(value, name)`. |
+| [add_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture) | Deprecated: use `items.new(value, name).output`. |
+| [capture_generated](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated) | Deprecated: use `zone.generated_items.<type>(value, name).output`. |
 
 ##### add_generated_item
 
@@ -510,9 +477,7 @@ For Each Geometry Element Output node
 add_generated_item(name, value=None, *, type=None, domain='POINT')
 ```
 
-Add a generation item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` declares the item unlinked.
+Deprecated: use `zone.generated_items.<type>(value, name)`.
 
 ##### add_item
 
@@ -520,9 +485,7 @@ Add a generation item and return its handle.
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -530,9 +493,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -540,9 +501,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ##### capture_generated
 
@@ -550,7 +509,7 @@ The item is auto-named after the source socket unless `name` is given.
 capture_generated(value, *, name=None, domain='POINT')
 ```
 
-Capture `value` as a generated-geometry item evaluated on the given `domain`, and return its output socket.
+Deprecated: use `zone.generated_items.<type>(value, name).output`.
 
 ### ForEachGeometryElementZone
 
@@ -562,22 +521,32 @@ ForEachGeometryElementZone(geometry=None, selection=True, *, domain='POINT')
 
 | Name | Description |
 |----|----|
+| [`corner`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.corner) |  |
+| [`curve`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.curve) |  |
+| [`edge`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.edge) |  |
 | [`element`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.element) | The current element as geometry, read inside the zone body. |
-| [`generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated) | Typed factories for generation items. |
+| [`face`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.face) |  |
+| [`generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated) |  |
+| [`generated_items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_items) | Generation items: values stored on the generated geometry. |
 | [`generation`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generation) | Handle for the default generation item (the generated geometry). |
 | [`index`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.index) |  |
 | [`input`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.input) |  |
-| [`inputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.inputs) | Typed factories for per-element input items. |
-| [`main`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main) | Typed factories for main (per-element result) items. |
+| [`inputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.inputs) |  |
+| [`instance`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.instance) |  |
+| [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.items) | Per-element input items, read inside the body. |
+| [`layer`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.layer) |  |
+| [`main`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main) |  |
+| [`main_items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_items) | Main items: per-element results written back onto the geometry. |
 | [`output`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.output) |  |
+| [`point`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.point) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
-| [generated_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_item) | Declare a generation item — a value stored on the generated |
-| [item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.item) | Declare an input item — a per-element field made available |
-| [main_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_item) | Declare a main item — a per-element result written back onto |
+| [generated_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_item) |  |
+| [item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.item) |  |
+| [main_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_item) |  |
 
 ##### generated_item
 
@@ -585,23 +554,17 @@ ForEachGeometryElementZone(geometry=None, selection=True, *, domain='POINT')
 generated_item(name, value=None, *, type=None, domain='POINT')
 ```
 
-Declare a generation item — a value stored on the generated geometry with the given `domain`.
-
 ##### item
 
 ``` python
 item(name, value=None, *, type=None)
 ```
 
-Declare an input item — a per-element field made available inside the zone.
-
 ##### main_item
 
 ``` python
 main_item(name, value=None, *, type=None)
 ```
-
-Declare a main item — a per-element result written back onto the input geometry.
 
 ### RepeatInput
 
@@ -616,6 +579,7 @@ Repeat Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.RepeatInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`items`](#nodebpy.nodes.geometry.zone.RepeatInput.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.RepeatInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.RepeatInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.RepeatInput.o) |  |
@@ -626,9 +590,9 @@ Repeat Input node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.RepeatInput.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.RepeatInput.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.RepeatInput.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.RepeatInput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.RepeatInput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.RepeatInput.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -636,9 +600,7 @@ Repeat Input node
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -646,9 +608,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -656,9 +616,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### RepeatOutput
 
@@ -673,6 +631,7 @@ Repeat Output node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.RepeatOutput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`items`](#nodebpy.nodes.geometry.zone.RepeatOutput.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.RepeatOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.RepeatOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.RepeatOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -682,9 +641,9 @@ Repeat Output node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.RepeatOutput.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.RepeatOutput.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.RepeatOutput.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.RepeatOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.RepeatOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.RepeatOutput.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -692,9 +651,7 @@ Repeat Output node
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -702,9 +659,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -712,9 +667,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### RepeatZone
 
@@ -727,7 +680,7 @@ RepeatZone(iterations=1, items=None)
 | Name | Description |
 |----|----|
 | [`input`](#nodebpy.nodes.geometry.zone.RepeatZone.input) |  |
-| [`items`](#nodebpy.nodes.geometry.zone.RepeatZone.items) | Typed item factories — declare state items with static types. |
+| [`items`](#nodebpy.nodes.geometry.zone.RepeatZone.items) | The zone’s state items. |
 | [`iteration`](#nodebpy.nodes.geometry.zone.RepeatZone.iteration) | The current iteration index. |
 | [`output`](#nodebpy.nodes.geometry.zone.RepeatZone.output) |  |
 
@@ -735,7 +688,7 @@ RepeatZone(iterations=1, items=None)
 
 | Name | Description |
 |----|----|
-| [item](#nodebpy.nodes.geometry.zone.RepeatZone.item) | Declare a state item and return its handle. |
+| [item](#nodebpy.nodes.geometry.zone.RepeatZone.item) | Deprecated: use `zone.items.new(initial, name, type=)`. |
 
 ##### item
 
@@ -743,9 +696,7 @@ RepeatZone(iterations=1, items=None)
 item(name, initial=None, *, type=None)
 ```
 
-Declare a state item and return its handle.
-
-`initial` may be a linkable (linked as the item’s starting value), a plain default value, or a socket-type string such as `"FLOAT"` (declares the item without linking).
+Deprecated: use `zone.items.new(initial, name, type=)`.
 
 ### SimulationInput
 
@@ -760,6 +711,7 @@ Simulation Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.SimulationInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`items`](#nodebpy.nodes.geometry.zone.SimulationInput.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.SimulationInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.SimulationInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.SimulationInput.o) |  |
@@ -770,9 +722,9 @@ Simulation Input node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.SimulationInput.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.SimulationInput.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.SimulationInput.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.SimulationInput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.SimulationInput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.SimulationInput.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -780,9 +732,7 @@ Simulation Input node
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -790,9 +740,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -800,9 +748,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### SimulationOutput
 
@@ -817,6 +763,7 @@ Simulation Output node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.SimulationOutput.i) |  |
+| [`items`](#nodebpy.nodes.geometry.zone.SimulationOutput.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.zone.SimulationOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.SimulationOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.SimulationOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -826,9 +773,9 @@ Simulation Output node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.SimulationOutput.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.zone.SimulationOutput.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.zone.SimulationOutput.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.zone.SimulationOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.zone.SimulationOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.zone.SimulationOutput.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -836,9 +783,7 @@ Simulation Output node
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -846,9 +791,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -856,9 +799,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### SimulationZone
 
@@ -872,14 +813,14 @@ SimulationZone(items=None)
 |----|----|
 | [`delta_time`](#nodebpy.nodes.geometry.zone.SimulationZone.delta_time) |  |
 | [`input`](#nodebpy.nodes.geometry.zone.SimulationZone.input) |  |
-| [`items`](#nodebpy.nodes.geometry.zone.SimulationZone.items) | Typed item factories — declare state items with static types. |
+| [`items`](#nodebpy.nodes.geometry.zone.SimulationZone.items) | The zone’s state items. |
 | [`output`](#nodebpy.nodes.geometry.zone.SimulationZone.output) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
-| [item](#nodebpy.nodes.geometry.zone.SimulationZone.item) | Declare a state item and return its handle. |
+| [item](#nodebpy.nodes.geometry.zone.SimulationZone.item) | Deprecated: use `zone.items.new(initial, name, type=)`. |
 
 ##### item
 
@@ -887,19 +828,21 @@ SimulationZone(items=None)
 item(name, initial=None, *, type=None)
 ```
 
-Declare a state item and return its handle.
-
-`initial` may be a linkable (linked as the item’s starting value), a plain default value, or a socket-type string such as `"FLOAT"` (declares the item without linking).
+Deprecated: use `zone.items.new(initial, name, type=)`.
 
 ### ZoneItem
 
 ``` python
-ZoneItem(input_node, output_node, item)
+ZoneItem(items, item)
 ```
 
 Handle for a simulation/repeat state item (four sockets per item).
 
-The type parameter is the socket class every role returns; the typed factories on `zone.items` (:class:`_StateZoneItems`) produce parameterised handles such as `ZoneItem[GeometrySocket]`.
+`initial` and `next` are the link targets; `>> item.initial` continues the chain from `current` and `>> item.next` from `result`, so a zone body can be written as one chain::
+
+    g.Cube() >> geo.initial >> g.SetShadeSmooth() >> geo.next >> out
+
+The type parameter is the socket class every role returns; the typed methods on `zone.items` produce parameterised handles such as `ZoneItem[GeometrySocket]`.
 
 #### Attributes
 
@@ -907,9 +850,9 @@ The type parameter is the socket class every role returns; the typed factories o
 |----|----|
 | [`current`](#nodebpy.nodes.geometry.zone.ZoneItem.current) | Input-node output socket — read the item inside the zone body. |
 | [`initial`](#nodebpy.nodes.geometry.zone.ZoneItem.initial) | Input-node input socket — set the item’s starting value. |
-| [`input`](#nodebpy.nodes.geometry.zone.ZoneItem.input) | The node’s input socket for this item. |
+| [`input`](#nodebpy.nodes.geometry.zone.ZoneItem.input) | The socket the item is fed through. |
 | [`name`](#nodebpy.nodes.geometry.zone.ZoneItem.name) |  |
 | [`next`](#nodebpy.nodes.geometry.zone.ZoneItem.next) | Output-node input socket — write the item’s per-iteration result. |
-| [`output`](#nodebpy.nodes.geometry.zone.ZoneItem.output) | The node’s output socket for this item. |
+| [`output`](#nodebpy.nodes.geometry.zone.ZoneItem.output) | The socket the item is read from. |
 | [`result`](#nodebpy.nodes.geometry.zone.ZoneItem.result) | Output-node output socket — read the item after the zone. |
 | [`socket_type`](#nodebpy.nodes.geometry.zone.ZoneItem.socket_type) |  |

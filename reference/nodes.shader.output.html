@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -756,7 +756,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
-  <li><a href="#nodebpy.nodes.shader.output.AovOutput" id="toc-nodebpy.nodes.shader.output.AovOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.output.AovOutput">AovOutput</a></li>
+  <li><a href="#nodebpy.nodes.shader.output.AOVOutput" id="toc-nodebpy.nodes.shader.output.AOVOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.output.AOVOutput">AOVOutput</a></li>
   <li><a href="#nodebpy.nodes.shader.output.LightOutput" id="toc-nodebpy.nodes.shader.output.LightOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.output.LightOutput">LightOutput</a></li>
   <li><a href="#nodebpy.nodes.shader.output.LineStyleOutput" id="toc-nodebpy.nodes.shader.output.LineStyleOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.output.LineStyleOutput">LineStyleOutput</a></li>
   <li><a href="#nodebpy.nodes.shader.output.MaterialOutput" id="toc-nodebpy.nodes.shader.output.MaterialOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.output.MaterialOutput">MaterialOutput</a></li>
@@ -786,7 +786,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput">AovOutput</a></td>
+<td><a href="#nodebpy.nodes.shader.output.AOVOutput">AOVOutput</a></td>
 <td>Arbitrary Output Variables.</td>
 </tr>
 <tr class="even">
@@ -807,9 +807,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.shader.output.AovOutput" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.output.AovOutput">AovOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AovOutput(color<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>), value<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, aov_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.shader.output.AOVOutput" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.output.AOVOutput">AOVOutput</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AOVOutput(color<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>), value<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, aov_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Arbitrary Output Variables.</code></pre>
 <p>Provide custom render passes for arbitrary shader node outputs</p>
 <section id="parameters" class="level4 doc-section doc-section-----parameters">
@@ -837,27 +837,27 @@ i.value : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.aov_name"><code>aov_name</code></a></td>
+<td><a href="#nodebpy.nodes.shader.output.AOVOutput.aov_name"><code>aov_name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.i"><code>i</code></a></td>
+<td><a href="#nodebpy.nodes.shader.output.AOVOutput.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.name"><code>name</code></a></td>
+<td><a href="#nodebpy.nodes.shader.output.AOVOutput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.node"><code>node</code></a></td>
+<td><a href="#nodebpy.nodes.shader.output.AOVOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.o"><code>o</code></a></td>
+<td><a href="#nodebpy.nodes.shader.output.AOVOutput.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.tree"><code>tree</code></a></td>
+<td><a href="#nodebpy.nodes.shader.output.AOVOutput.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>

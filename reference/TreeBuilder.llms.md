@@ -11,6 +11,8 @@ TreeBuilder(
     ignore_visibility=False,
     split_inputs=None,
     clear=False,
+    is_modifier=None,
+    is_tool=None,
 )
 ```
 
@@ -27,6 +29,8 @@ Supports geometry, shader, and compositor node trees.
 | [`group_input_splits`](#nodebpy.TreeBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.TreeBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.TreeBuilder.inputs) |  |
+| [`is_modifier`](#nodebpy.TreeBuilder.is_modifier) | Whether the group can be used as a Geometry Nodes modifier. |
+| [`is_tool`](#nodebpy.TreeBuilder.is_tool) | Whether the group can be used as a node tool. |
 | [`layout_snapshot`](#nodebpy.TreeBuilder.layout_snapshot) | A structural layout snapshot: for every node its type, `(x, y)` |
 | [`node_positions`](#nodebpy.TreeBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
 | [`nodes`](#nodebpy.TreeBuilder.nodes) |  |
@@ -115,10 +119,14 @@ geometry(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    is_modifier=None,
+    is_tool=None,
 )
 ```
 
 Create a geometry node tree.
+
+`is_modifier` and `is_tool` flag the group for use as a modifier or as a node tool; `None` leaves an existing group’s flags alone.
 
 ### link
 

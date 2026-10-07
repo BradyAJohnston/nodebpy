@@ -19,21 +19,19 @@ A screen-recording of nodebpy in action. Live-editing geometry, shader and compo
 ``` python
 from nodebpy import geometry as g
 
-with g.tree("AnotherTree", collapse=True) as tree:
-    rotation = (
+with g.tree("AnotherTree", collapse=True, is_modifier=True) as tree:
+    rot = (
         g.RandomValue.vector(min=-1, seed=2)
         >> g.AlignRotationToVector()
         >> g.RotateRotation(rotate_by=g.AxisAngleToRotation(angle=0.3))
     )
+    pos = g.Position() * 2.0 + (0, 0.2, 0.3)
 
-    _ = (
+    (
         tree.inputs.integer("Count", 10)
         >> g.Points(position=g.RandomValue.vector(min=-1))
-        >> g.InstanceOnPoints(instance=g.Cube(), rotation=rotation)
-        >> g.SetPosition(
-            position=g.Position() * 2.0 + (0, 0.2, 0.3),
-            offset=(0, 0, 0.1),
-        )
+        >> g.InstanceOnPoints(instance=g.Cube(), rotation=rot)
+        >> g.SetPosition(position=pos, offset=(0, 0, 0.1))
         >> g.RealizeInstances()
         >> g.InstanceOnPoints(g.Cube(), instance=...)
         >> tree.outputs.geometry("Instances")

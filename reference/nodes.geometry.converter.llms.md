@@ -618,11 +618,43 @@ Create a list of values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ClosureToList.i) |  |
-| [`items`](#nodebpy.nodes.geometry.converter.ClosureToList.items) | Typed item factories — declare list items with static types. |
+| [`items`](#nodebpy.nodes.geometry.converter.ClosureToList.items) | The list items. |
 | [`name`](#nodebpy.nodes.geometry.converter.ClosureToList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ClosureToList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ClosureToList.o) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ClosureToList.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`tree`](#nodebpy.nodes.geometry.converter.ClosureToList.tree) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.geometry.converter.ClosureToList.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.converter.ClosureToList.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.converter.ClosureToList.capture) | Deprecated: use `items.new(value, name).output`. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Deprecated: use `items.new(value, name, type=)`.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Deprecated: use `items.new(value, name)` per item.
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Deprecated: use `items.new(value, name).output`.
 
 **Inputs**
 
@@ -727,11 +759,43 @@ Combine multiple socket values into one.
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.converter.CombineBundle.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.CombineBundle.i) |  |
-| [`items`](#nodebpy.nodes.geometry.converter.CombineBundle.items) | Typed item factories — declare bundle items with static types. |
+| [`items`](#nodebpy.nodes.geometry.converter.CombineBundle.items) | The bundle items. |
 | [`name`](#nodebpy.nodes.geometry.converter.CombineBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineBundle.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.CombineBundle.tree) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.geometry.converter.CombineBundle.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.converter.CombineBundle.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.converter.CombineBundle.capture) | Deprecated: use `items.new(value, name).output`. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Deprecated: use `items.new(value, name, type=)`.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Deprecated: use `items.new(value, name)` per item.
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Deprecated: use `items.new(value, name).output`.
 
 **Outputs**
 
@@ -1230,6 +1294,7 @@ Create a list of values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.FieldToList.i) |  |
+| [`items`](#nodebpy.nodes.geometry.converter.FieldToList.items) | The list items. |
 | [`name`](#nodebpy.nodes.geometry.converter.FieldToList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FieldToList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FieldToList.o) |  |
@@ -1239,10 +1304,10 @@ Create a list of values
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.converter.FieldToList.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.converter.FieldToList.add_items) | Add an item per mapping entry and return their handles by name. |
+| [add_item](#nodebpy.nodes.geometry.converter.FieldToList.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.converter.FieldToList.add_items) | Deprecated: use `items.new(value, name)` per item. |
 | [boolean](#nodebpy.nodes.geometry.converter.FieldToList.boolean) |  |
-| [capture](#nodebpy.nodes.geometry.converter.FieldToList.capture) | Add an item linked from `value` and return its output socket. |
+| [capture](#nodebpy.nodes.geometry.converter.FieldToList.capture) | Deprecated: use `items.new(value, name).output`. |
 | [color](#nodebpy.nodes.geometry.converter.FieldToList.color) |  |
 | [float](#nodebpy.nodes.geometry.converter.FieldToList.float) |  |
 | [integer](#nodebpy.nodes.geometry.converter.FieldToList.integer) |  |
@@ -1258,9 +1323,7 @@ Create a list of values
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -1268,9 +1331,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### boolean
 
@@ -1284,9 +1345,7 @@ boolean(input=False, name=None)
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ##### color
 
@@ -1694,7 +1753,7 @@ Insert values into a string using a Python and path template compatible formatti
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.FormatString.i) |  |
-| [`items`](#nodebpy.nodes.geometry.converter.FormatString.items) | Input sockets: |
+| [`items`](#nodebpy.nodes.geometry.converter.FormatString.items) | The interpolated items. |
 | [`name`](#nodebpy.nodes.geometry.converter.FormatString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FormatString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FormatString.o) |  |
@@ -1704,9 +1763,9 @@ Insert values into a string using a Python and path template compatible formatti
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.converter.FormatString.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.converter.FormatString.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.converter.FormatString.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.converter.FormatString.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.converter.FormatString.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.converter.FormatString.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -1714,9 +1773,7 @@ Insert values into a string using a Python and path template compatible formatti
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -1724,9 +1781,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -1734,9 +1789,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 **Inputs**
 
@@ -4782,11 +4835,43 @@ Split a bundle into multiple sockets.
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.converter.SeparateBundle.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateBundle.i) |  |
-| [`items`](#nodebpy.nodes.geometry.converter.SeparateBundle.items) | Typed item factories — declare bundle items with static types. |
+| [`items`](#nodebpy.nodes.geometry.converter.SeparateBundle.items) | The bundle items. |
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateBundle.o) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SeparateBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`tree`](#nodebpy.nodes.geometry.converter.SeparateBundle.tree) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.geometry.converter.SeparateBundle.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.converter.SeparateBundle.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.converter.SeparateBundle.capture) | Deprecated: use `items.new(value, name).output`. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Deprecated: use `items.new(value, name, type=)`.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Deprecated: use `items.new(value, name)` per item.
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Deprecated: use `items.new(value, name).output`.
 
 **Inputs**
 

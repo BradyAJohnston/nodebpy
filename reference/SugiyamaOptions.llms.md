@@ -5,16 +5,17 @@ SugiyamaOptions(
     margin=(30.0, 30.0),
     direction='BALANCED',
     socket_alignment='NONE',
-    add_reroutes=False,
-    keep_reroutes_outside_frames=False,
+    reroutes='none',
     stack_collapsed=True,
-    stack_margin_y_fac=0.5,
-    optimize_sizes=False,
-    iterations=50,
-    sequential_frames=True,
+    fit_collapsed_widths=False,
+    straighten_trunk=True,
+    pin_group_output=True,
+    pin_group_input=False,
+    frames_as_stages=True,
     balance_heights=True,
-    balance_aspect=1.6,
-    reroute_margin_y_fac=0.35,
+    pack_components=True,
+    seed=0,
+    snap_to_grid=True,
 )
 ```
 
@@ -25,33 +26,34 @@ Options for the Sugiyama (layered) arrangement.
 | Name | Type | Description | Default |
 |----|----|----|----|
 | margin | tuple\[float, float\] | Horizontal and vertical space between nodes. | `(30.0, 30.0)` |
-| direction | str | Which directions nodes may be moved in during layout. | `'BALANCED'` |
-| socket_alignment | str | How aggressively links are straightened by aligning the sockets they connect. | `'NONE'` |
-| add_reroutes | bool | Insert reroute nodes to route long edges around nodes. Off by default: added reroutes are real nodes, which would change the authored structure of generated trees (node counts, round-trips, diagrams). | `False` |
-| keep_reroutes_outside_frames | bool | Do not place added reroutes inside frames. | `False` |
-| stack_collapsed | bool | Stack consecutive collapsed nodes tightly. | `True` |
-| stack_margin_y_fac | float | Fraction of the vertical margin used between stacked collapsed nodes. | `0.5` |
-| optimize_sizes | bool | Fit the widths of collapsed nodes to their display name. | `False` |
-| iterations | int | Number of crossing-minimization iterations. | `50` |
-| sequential_frames | bool | Rank frames as stages of the flow: every node of a frame comes after every node of the frame (or intermediate node) feeding it, so successive frames line up left to right instead of stacking into a staircase. Frames with no links between them (parallel branches) still share columns and stack vertically. | `True` |
-| balance_heights | bool | Shorten the tallest column by moving nodes whose feeders serve only them (a private upstream chain) one column left, while that makes the drawing smaller overall. Counters the tall sliver a node with many inputs otherwise produces, at the price of slightly longer links routed through reroutes / dummy nodes. | `True` |
-| balance_aspect | float | Width-to-height ratio the balancing aims for: it keeps promoting feeders left while the drawing’s bounding box (height, or width divided by this ratio, whichever is larger) shrinks. | `1.6` |
-| reroute_margin_y_fac | float | Fraction of the vertical margin kept between consecutive reroutes (and the dummy nodes long links are routed through) in a column; bundles of long links pack tighter than nodes. | `0.35` |
+| direction | str | Which way nodes lean where they could sit in several places along a column: `"LEFT_UP"`, `"LEFT_DOWN"`, `"RIGHT_UP"`, `"RIGHT_DOWN"`, or `"BALANCED"` for the middle of the four. | `'BALANCED'` |
+| socket_alignment | str | Whether aligned nodes line up by their tops (`"NONE"`), by the sockets of the link between them so the link is straight (`"FULL"`), or by sockets only where the nodes differ much in height (`"MODERATE"`). | `'NONE'` |
+| reroutes | str | Which links get reroute nodes. `"none"`: the layout only moves nodes. `"blocked"`: links that would otherwise be drawn across a node get reroutes, and the reroutes already in the tree are kept. `"all"`: every link that passes over a column gets reroutes, and the tree’s own reroutes are replaced. | `'none'` |
+| stack_collapsed | bool | Stack chains of collapsed Math nodes vertically. | `True` |
+| fit_collapsed_widths | bool | Fit the widths of collapsed nodes to their display name. | `False` |
+| straighten_trunk | bool | Align the trunk first, so that the flow links (geometry, shader, bundle, closure) form a straight row and each zone is a row with its node tops level. Off, a node aligns with its median neighbour. | `True` |
+| pin_group_output | bool | Put Group Output nodes (outside frames) in the last column. | `True` |
+| pin_group_input | bool | Put Group Input nodes (outside frames) in the first column. Off, they sit next to the nodes they feed. | `False` |
+| frames_as_stages | bool | Put every node of a frame in a later column than every node of the frame, or node outside frames, that feeds it. Frames then line up left to right. | `True` |
+| balance_heights | bool | Shorten the tallest columns by moving the chains that feed them one column left, while that brings the drawing closer to a screen’s shape. | `True` |
+| seed | int | Seed of the shuffled starting orders the ordering tries besides its fixed ones. The same seed always gives the same layout. | `0` |
+| snap_to_grid | bool | Put every node on the node editor’s grid, as Blender’s Snap does when nodes are moved by hand, and space the nodes of a column in whole grid steps. Reroutes are not snapped; they follow the sockets they join. With this on, `socket_alignment` can only line sockets up to within half a grid step. | `True` |
 
 ## Attributes
 
 | Name | Description |
 |----|----|
-| [`add_reroutes`](#nodebpy.SugiyamaOptions.add_reroutes) |  |
-| [`balance_aspect`](#nodebpy.SugiyamaOptions.balance_aspect) |  |
 | [`balance_heights`](#nodebpy.SugiyamaOptions.balance_heights) |  |
 | [`direction`](#nodebpy.SugiyamaOptions.direction) |  |
-| [`iterations`](#nodebpy.SugiyamaOptions.iterations) |  |
-| [`keep_reroutes_outside_frames`](#nodebpy.SugiyamaOptions.keep_reroutes_outside_frames) |  |
+| [`fit_collapsed_widths`](#nodebpy.SugiyamaOptions.fit_collapsed_widths) |  |
+| [`frames_as_stages`](#nodebpy.SugiyamaOptions.frames_as_stages) |  |
 | [`margin`](#nodebpy.SugiyamaOptions.margin) |  |
-| [`optimize_sizes`](#nodebpy.SugiyamaOptions.optimize_sizes) |  |
-| [`reroute_margin_y_fac`](#nodebpy.SugiyamaOptions.reroute_margin_y_fac) |  |
-| [`sequential_frames`](#nodebpy.SugiyamaOptions.sequential_frames) |  |
+| [`pack_components`](#nodebpy.SugiyamaOptions.pack_components) |  |
+| [`pin_group_input`](#nodebpy.SugiyamaOptions.pin_group_input) |  |
+| [`pin_group_output`](#nodebpy.SugiyamaOptions.pin_group_output) |  |
+| [`reroutes`](#nodebpy.SugiyamaOptions.reroutes) |  |
+| [`seed`](#nodebpy.SugiyamaOptions.seed) |  |
+| [`snap_to_grid`](#nodebpy.SugiyamaOptions.snap_to_grid) |  |
 | [`socket_alignment`](#nodebpy.SugiyamaOptions.socket_alignment) |  |
 | [`stack_collapsed`](#nodebpy.SugiyamaOptions.stack_collapsed) |  |
-| [`stack_margin_y_fac`](#nodebpy.SugiyamaOptions.stack_margin_y_fac) |  |
+| [`straighten_trunk`](#nodebpy.SugiyamaOptions.straighten_trunk) |  |

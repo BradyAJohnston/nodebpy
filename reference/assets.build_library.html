@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -782,8 +782,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Rebuild a <code>.blend</code> asset library from sources written by :func:<code>dump_library</code>.</p>
 <p>Imports every root module under <code>source_dir</code> (recursively; <code>_shared</code> group modules are pulled in by the root modules’ own imports), rebuilds each <code>MATERIAL</code> module’s material (re-marking it as an asset when the module carries a <code>MATERIAL_ASSET_METADATA</code> footer), builds each <code>ASSET</code> class via <code>create_group()</code>, re-marks the tree as an asset, applies the dumped <code>ASSET_METADATA</code>/<code>TREE_PROPERTIES</code>/<code>MATERIAL_PROPERTIES</code>, and writes those trees and materials (plus their dependencies) to <code>blend_path</code> with <code>bpy.data.libraries.write</code>. A <code>blender_assets.cats.txt</code> in <code>source_dir</code> is copied next to the <code>.blend</code>.</p>
 <p>Datablocks the sources reference but cannot serialise (images, objects, …, recorded in each module’s <code>DATABLOCK_DEPENDENCIES</code>) resolve in order: already present in the session (build “in the presence” of the data — e.g.&nbsp;after opening a working file), appended by name from the <code>resources</code> <code>.blend</code>, or — with <code>on_missing="drop"</code> — replaced by temporary placeholders deleted again before the write, leaving those socket defaults empty. The default <code>on_missing="error"</code> raises upfront, listing everything missing.</p>
-<p><code>arrange</code> tunes how the built trees are laid out: a :class:<code>~nodebpy.SugiyamaOptions</code> with any of its settings (spacing, crossing-reduction iterations, direction, socket alignment, …) is scoped over the build via :func:<code>nodebpy.builder.default_sugiyama_options</code>. <code>add_reroutes=True</code> additionally inserts reroute nodes to route long links around nodes (the node-arrange addon’s behaviour); it composes with <code>arrange</code>. <code>split_inputs=True</code> gives each consumer node its own Group Input instance — named and labelled after the interface sockets it carries, with unused sockets hidden — instead of a single Group Input trailing long noodles (scoped via :func:<code>nodebpy.builder.default_split_inputs</code>). All three only affect modules that leave the arrangement at its default — sources dumped with <code>snapshot_positions</code> disable arrangement and keep their authored layout, authored Group Input splits included.</p>
-<p>The built trees stay in the current session afterwards. Because <code>create_group()</code> reuses an existing tree of the same name (that is what deduplicates groups shared between asset files), the session must not already hold node groups when the build starts — a stale same-named group would silently end up in the <code>.blend</code>. This raises if any exist, unless <code>allow_existing</code> is passed. The CLI (<code>python -m nodebpy.assets build</code>) runs in a fresh session by construction.</p>
+<p><code>arrange</code> tunes how the built trees are laid out: a :class:<code>~nodebpy.SugiyamaOptions</code> with any of its settings (spacing, crossing-reduction iterations, direction, socket alignment, …) is scoped over the build via :func:<code>nodebpy.builder.default_sugiyama_options</code>. <code>add_reroutes=True</code> additionally inserts reroute nodes to route long links around nodes; it composes with <code>arrange</code>. <code>split_inputs=True</code> gives each consumer node its own Group Input instance — named and labelled after the interface sockets it carries, with unused sockets hidden — instead of a single Group Input trailing long noodles (scoped via :func:<code>nodebpy.builder.default_split_inputs</code>). All three only affect modules that leave the arrangement at its default — sources dumped with <code>snapshot_positions</code> disable arrangement and keep their authored layout, authored Group Input splits included.</p>
+<p>The built trees stay in the current session afterwards. Because <code>create_group()</code> reuses an existing tree of the same name (that is what deduplicates groups shared between asset files), the session must not already hold node groups when the build starts — a stale same-named group would silently end up in the <code>.blend</code>. This raises if any exist, unless <code>allow_existing</code> is passed. The CLI (<code>nodebpy build</code>) runs in a fresh session by construction.</p>
 <section id="returns" class="level2 doc-section doc-section-returns">
 <h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">

@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -757,7 +757,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
   <li><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture" id="toc-nodebpy.nodes.shader.texture.EnvironmentTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.EnvironmentTexture">EnvironmentTexture</a></li>
-  <li><a href="#nodebpy.nodes.shader.texture.IesTexture" id="toc-nodebpy.nodes.shader.texture.IesTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.IesTexture">IesTexture</a></li>
+  <li><a href="#nodebpy.nodes.shader.texture.IESTexture" id="toc-nodebpy.nodes.shader.texture.IESTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.IESTexture">IESTexture</a></li>
   <li><a href="#nodebpy.nodes.shader.texture.ImageTexture" id="toc-nodebpy.nodes.shader.texture.ImageTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.ImageTexture">ImageTexture</a></li>
   <li><a href="#nodebpy.nodes.shader.texture.SkyTexture" id="toc-nodebpy.nodes.shader.texture.SkyTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.SkyTexture">SkyTexture</a></li>
   </ul></li>
@@ -789,7 +789,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Sample an image file as an environment texture. Typically used to light the scene with the background node</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture">IesTexture</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture">IESTexture</a></td>
 <td>Match real world lights with IES files, which store the directional intensity distribution of light sources</td>
 </tr>
 <tr class="odd">
@@ -908,9 +908,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.shader.texture.IesTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IesTexture">IesTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>IesTexture(vector<span class="op">=</span><span class="va">None</span>, strength<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, filepath<span class="op">=</span><span class="st">''</span>, mode<span class="op">=</span><span class="st">'INTERNAL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.shader.texture.IESTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IESTexture">IESTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>IESTexture(vector<span class="op">=</span><span class="va">None</span>, strength<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, filepath<span class="op">=</span><span class="st">''</span>, mode<span class="op">=</span><span class="st">'INTERNAL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Match real world lights with IES files, which store the directional intensity distribution of light sources</p>
 <section id="parameters-1" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
@@ -950,31 +950,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.filepath"><code>filepath</code></a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.filepath"><code>filepath</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.i"><code>i</code></a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.mode"><code>mode</code></a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.mode"><code>mode</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.name"><code>name</code></a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.node"><code>node</code></a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.o"><code>o</code></a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.tree"><code>tree</code></a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
@@ -991,22 +991,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.external">external</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.external">external</a></td>
 <td>Create IES Texture with operation ‘External’. Use external .ies file</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.texture.IesTexture.internal">internal</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IESTexture.internal">internal</a></td>
 <td>Create IES Texture with operation ‘Internal’. Use internal text data-block</td>
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.shader.texture.IesTexture.external" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IesTexture.external">external</h5>
+<section id="nodebpy.nodes.shader.texture.IESTexture.external" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IESTexture.external">external</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>external(vector<span class="op">=</span><span class="va">None</span>, strength<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, filepath<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create IES Texture with operation ‘External’. Use external .ies file</p>
 </section>
-<section id="nodebpy.nodes.shader.texture.IesTexture.internal" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IesTexture.internal">internal</h5>
+<section id="nodebpy.nodes.shader.texture.IESTexture.internal" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IESTexture.internal">internal</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>internal(vector<span class="op">=</span><span class="va">None</span>, strength<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create IES Texture with operation ‘Internal’. Use internal text data-block</p>
 <p><strong>Inputs</strong></p>

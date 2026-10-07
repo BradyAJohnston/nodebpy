@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>nodebpy 520.31.0</title>
+<title>nodebpy 520.32.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -297,28 +297,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>A text-based version of nodes should bring the convenience of writing code with IDE auto-completion, type hinting, with overall compactness and readability, while staying as close as possible to what building a node tree via the GUI feels like.</p>
 </blockquote>
-<div id="47d97db7" class="cell" data-execution_count="1">
+<div id="1f702295" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"AnotherTree"</span>, collapse<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> tree:</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    rotation <span class="op">=</span> (</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"AnotherTree"</span>, collapse<span class="op">=</span><span class="va">True</span>, is_modifier<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> tree:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    rot <span class="op">=</span> (</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>, seed<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.AlignRotationToVector()</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.RotateRotation(rotate_by<span class="op">=</span>g.AxisAngleToRotation(angle<span class="op">=</span><span class="fl">0.3</span>))</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        tree.inputs.integer(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.Points(position<span class="op">=</span>g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>))</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(instance<span class="op">=</span>g.Cube(), rotation<span class="op">=</span>rotation)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            position<span class="op">=</span>g.Position() <span class="op">*</span> <span class="fl">2.0</span> <span class="op">+</span> (<span class="dv">0</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>),</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.1</span>),</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.RealizeInstances()</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(g.Cube(), instance<span class="op">=</span>...)</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Instances"</span>)</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position() <span class="op">*</span> <span class="fl">2.0</span> <span class="op">+</span> (<span class="dv">0</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    (</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        tree.inputs.integer(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.Points(position<span class="op">=</span>g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(instance<span class="op">=</span>g.Cube(), rotation<span class="op">=</span>rot)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(position<span class="op">=</span>pos, offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.1</span>))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.RealizeInstances()</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(g.Cube(), instance<span class="op">=</span>...)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Instances"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><img src="images/paste-1.png" class="img-fluid"></p>
 <p>Nodes are created by instantiating their classes inside a <code>with g.tree(...):</code> context, linked with the <code>&gt;&gt;</code> operator (which picks the most compatible socket pair automatically), and the tree’s interface is declared with <code>tree.inputs</code> and <code>tree.outputs</code>. Python’s math and comparison operators create the matching <code>Math</code>, <code>VectorMath</code> and <code>Compare</code> nodes for you.</p>

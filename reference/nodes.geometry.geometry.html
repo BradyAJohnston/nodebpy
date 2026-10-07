@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -833,8 +833,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.geometry.SetMaterial" id="toc-nodebpy.nodes.geometry.geometry.SetMaterial" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetMaterial">SetMaterial</a></li>
   <li><a href="#nodebpy.nodes.geometry.geometry.SetMaterialIndex" id="toc-nodebpy.nodes.geometry.geometry.SetMaterialIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetMaterialIndex">SetMaterialIndex</a></li>
   <li><a href="#nodebpy.nodes.geometry.geometry.SetMeshNormal" id="toc-nodebpy.nodes.geometry.geometry.SetMeshNormal" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetMeshNormal">SetMeshNormal</a></li>
-  <li><a href="#nodebpy.nodes.geometry.geometry.SetNurbsOrder" id="toc-nodebpy.nodes.geometry.geometry.SetNurbsOrder" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetNurbsOrder">SetNurbsOrder</a></li>
-  <li><a href="#nodebpy.nodes.geometry.geometry.SetNurbsWeight" id="toc-nodebpy.nodes.geometry.geometry.SetNurbsWeight" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetNurbsWeight">SetNurbsWeight</a></li>
+  <li><a href="#nodebpy.nodes.geometry.geometry.SetNURBSOrder" id="toc-nodebpy.nodes.geometry.geometry.SetNURBSOrder" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetNURBSOrder">SetNURBSOrder</a></li>
+  <li><a href="#nodebpy.nodes.geometry.geometry.SetNURBSWeight" id="toc-nodebpy.nodes.geometry.geometry.SetNURBSWeight" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetNURBSWeight">SetNURBSWeight</a></li>
   <li><a href="#nodebpy.nodes.geometry.geometry.SetPointRadius" id="toc-nodebpy.nodes.geometry.geometry.SetPointRadius" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetPointRadius">SetPointRadius</a></li>
   <li><a href="#nodebpy.nodes.geometry.geometry.SetPosition" id="toc-nodebpy.nodes.geometry.geometry.SetPosition" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetPosition">SetPosition</a></li>
   <li><a href="#nodebpy.nodes.geometry.geometry.SetSelection" id="toc-nodebpy.nodes.geometry.geometry.SetSelection" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.SetSelection">SetSelection</a></li>
@@ -857,7 +857,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.geometry.Triangulate" id="toc-nodebpy.nodes.geometry.geometry.Triangulate" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.Triangulate">Triangulate</a></li>
   <li><a href="#nodebpy.nodes.geometry.geometry.TrimCurve" id="toc-nodebpy.nodes.geometry.geometry.TrimCurve" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.TrimCurve">TrimCurve</a></li>
   <li><a href="#nodebpy.nodes.geometry.geometry.UVSphere" id="toc-nodebpy.nodes.geometry.geometry.UVSphere" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.UVSphere">UVSphere</a></li>
-  <li><a href="#nodebpy.nodes.geometry.geometry.XpbdSolver" id="toc-nodebpy.nodes.geometry.geometry.XpbdSolver" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.XpbdSolver">XpbdSolver</a></li>
+  <li><a href="#nodebpy.nodes.geometry.geometry.XPBDSolver" id="toc-nodebpy.nodes.geometry.geometry.XPBDSolver" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.geometry.XPBDSolver">XPBDSolver</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -1191,11 +1191,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Store a normal vector for each mesh element</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsOrder">SetNurbsOrder</a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSOrder">SetNURBSOrder</a></td>
 <td>Control how many curve control points influence each evaluated point by changing the “nurbs_order” attribute</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsWeight">SetNurbsWeight</a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSWeight">SetNURBSWeight</a></td>
 <td>Control the influence of each NURBS control point on the curve by changing the “nurbs_weight” attribute</td>
 </tr>
 <tr class="even">
@@ -1287,7 +1287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Generate a spherical mesh with quads, except for triangles at the top and bottom</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.geometry.XpbdSolver">XpbdSolver</a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.XPBDSolver">XPBDSolver</a></td>
 <td>Simulate physics using the XPBD framework</td>
 </tr>
 </tbody>
@@ -1582,7 +1582,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Bake.items"><code>items</code></a></td>
-<td>Typed item factories — declare bake items with static types.</td>
+<td>The bake items.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Bake.name"><code>name</code></a></td>
@@ -1615,35 +1615,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Bake.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Bake.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Bake.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.geometry.Bake.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.Bake.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.Bake.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.Bake.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.Bake.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.Bake.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -12903,9 +12900,9 @@ i.radius : FloatSocket
 </section>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.geometry.SetNurbsOrder" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetNurbsOrder">SetNurbsOrder</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb191"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a>SetNurbsOrder(curves<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, order<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.geometry.SetNURBSOrder" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetNURBSOrder">SetNURBSOrder</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb191"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a>SetNURBSOrder(curves<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, order<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Control how many curve control points influence each evaluated point by changing the “nurbs_order” attribute</p>
 <section id="parameters-76" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-76">Parameters</h4>
@@ -12951,23 +12948,23 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsOrder.i"><code>i</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSOrder.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsOrder.name"><code>name</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSOrder.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsOrder.node"><code>node</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSOrder.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsOrder.o"><code>o</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSOrder.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsOrder.tree"><code>tree</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSOrder.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
@@ -13018,9 +13015,9 @@ i.radius : FloatSocket
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.geometry.SetNurbsWeight" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetNurbsWeight">SetNurbsWeight</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb192"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb192-1"><a href="#cb192-1" aria-hidden="true" tabindex="-1"></a>SetNurbsWeight(curves<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, weight<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.geometry.SetNURBSWeight" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetNURBSWeight">SetNURBSWeight</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb192"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb192-1"><a href="#cb192-1" aria-hidden="true" tabindex="-1"></a>SetNURBSWeight(curves<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, weight<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Control the influence of each NURBS control point on the curve by changing the “nurbs_weight” attribute</p>
 <section id="parameters-77" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-77">Parameters</h4>
@@ -13066,23 +13063,23 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsWeight.i"><code>i</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSWeight.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsWeight.name"><code>name</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSWeight.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsWeight.node"><code>node</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSWeight.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsWeight.o"><code>o</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSWeight.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetNurbsWeight.tree"><code>tree</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetNURBSWeight.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
@@ -16574,9 +16571,9 @@ i.radius : FloatSocket
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.geometry.XpbdSolver" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.XpbdSolver">XpbdSolver</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb240"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb240-1"><a href="#cb240-1" aria-hidden="true" tabindex="-1"></a>XpbdSolver(</span>
+<section id="nodebpy.nodes.geometry.geometry.XPBDSolver" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.XPBDSolver">XPBDSolver</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb240"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb240-1"><a href="#cb240-1" aria-hidden="true" tabindex="-1"></a>XPBDSolver(</span>
 <span id="cb240-2"><a href="#cb240-2" aria-hidden="true" tabindex="-1"></a>    world<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb240-3"><a href="#cb240-3" aria-hidden="true" tabindex="-1"></a>    delta_time<span class="op">=</span><span class="fl">0.04</span>,</span>
 <span id="cb240-4"><a href="#cb240-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">filter</span><span class="op">=</span><span class="st">''</span>,</span>
@@ -16674,23 +16671,23 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.XpbdSolver.i"><code>i</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.XPBDSolver.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.geometry.XpbdSolver.name"><code>name</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.XPBDSolver.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.XpbdSolver.node"><code>node</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.XPBDSolver.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.geometry.XpbdSolver.o"><code>o</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.XPBDSolver.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.XpbdSolver.tree"><code>tree</code></a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.XPBDSolver.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>

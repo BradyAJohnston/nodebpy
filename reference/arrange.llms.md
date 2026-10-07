@@ -1,11 +1,21 @@
 # arrange
 
 ``` python
-arrange(tree, method='sugiyama')
+arrange(
+    tree,
+    method='sugiyama',
+    *,
+    selected_only=False,
+    pipeline=None,
+    observer=None,
+    verify=False,
+)
 ```
 
-Arrange the nodes of a tree.
+Arrange the nodes of *tree*.
 
-`method` selects the algorithm: `"sugiyama"` (or a :class:`SugiyamaOptions` instance for tuned settings), `"simple"` (or a :class:`SimpleOptions` instance), or None to leave the tree untouched.
+*method* is a :class:`SugiyamaOptions`, `"sugiyama"` for the default options, `"simple"` for plain columns by dependency (:data:`~.config.SIMPLE_OPTIONS`), or None to leave the tree alone.
 
-The Sugiyama layout requires the optional `networkx` dependency; when it is missing, the simple arrangement is used instead (with a warning).
+With *selected_only* the selected nodes are arranged among themselves around where they were, and moved clear of the others, which stay put. Otherwise selection is ignored.
+
+*pipeline*, *observer* and *verify* are passed on to :func:`~.sugiyama.sugiyama_layout`.

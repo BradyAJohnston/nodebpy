@@ -3875,7 +3875,7 @@ Runtime matrix socket wrapper.
 | [invert](#nodebpy.builder.socket.MatrixSocket.invert) | Invert the `MatrixSocet` and return a `MatrixSocket`. |
 | [svd](#nodebpy.builder.socket.MatrixSocket.svd) | Decompose the matrix via SVD. Returns `(u, s, v)`. |
 | [to_list](#nodebpy.builder.socket.MatrixSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
-| [transform_direction](#nodebpy.builder.socket.MatrixSocket.transform_direction) | Apply this matrix to *direction*, ignoring translation. |
+| [transform_direction](#nodebpy.builder.socket.MatrixSocket.transform_direction) | Deprecated: use `direction.transform_direction(matrix)`, which |
 | [transpose](#nodebpy.builder.socket.MatrixSocket.transpose) | Transpose the `MatrixSocket` and return a `MatrixSocket`. |
 
 ##### determinant
@@ -3938,9 +3938,7 @@ Create a list of elements, evaluating this field `count` times based on the `Ind
 transform_direction(direction)
 ```
 
-Apply this matrix to *direction*, ignoring translation.
-
-Use this instead of `transform()` when transforming a direction vector (e.g. a normal) where translation must not affect the result.
+Deprecated: use `direction.transform_direction(matrix)`, which keeps the method on the vector that continues down the chain.
 
 ##### transpose
 
@@ -3989,7 +3987,7 @@ List of matrix sockets.
 | [reverse](#nodebpy.builder.socket.MatrixSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.MatrixSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [svd](#nodebpy.builder.socket.MatrixSocketList.svd) | Decompose the matrix via SVD. Returns `(u, s, v)`. |
-| [transform_direction](#nodebpy.builder.socket.MatrixSocketList.transform_direction) | Apply this matrix to *direction*, ignoring translation. |
+| [transform_direction](#nodebpy.builder.socket.MatrixSocketList.transform_direction) | Deprecated: use `direction.transform_direction(matrix)`, which |
 | [transpose](#nodebpy.builder.socket.MatrixSocketList.transpose) | Transpose the `MatrixSocket` and return a `MatrixSocket`. |
 
 ##### determinant
@@ -4106,9 +4104,7 @@ Decompose the matrix via SVD. Returns `(u, s, v)`.
 transform_direction(direction)
 ```
 
-Apply this matrix to *direction*, ignoring translation.
-
-Use this instead of `transform()` when transforming a direction vector (e.g. a normal) where translation must not affect the result.
+Deprecated: use `direction.transform_direction(matrix)`, which keeps the method on the vector that continues down the chain.
 
 ##### transpose
 
@@ -4326,9 +4322,10 @@ Runtime object socket wrapper.
 | [enable_output](#nodebpy.builder.socket.ObjectSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [geometry](#nodebpy.builder.socket.ObjectSocket.geometry) | The object’s geometry, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [location](#nodebpy.builder.socket.ObjectSocket.location) | The object’s location, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
+| [matrix](#nodebpy.builder.socket.ObjectSocket.matrix) | The object’s transform matrix, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [rotation](#nodebpy.builder.socket.ObjectSocket.rotation) | The object’s rotation, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [scale](#nodebpy.builder.socket.ObjectSocket.scale) | The object’s scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
-| [transform](#nodebpy.builder.socket.ObjectSocket.transform) | The Object’s transform matrix, optionally in relative space. |
+| [transform](#nodebpy.builder.socket.ObjectSocket.transform) | Deprecated: use :meth:`matrix`, which does not read like |
 
 ##### enable_output
 
@@ -4393,6 +4390,26 @@ The object’s location, optionally in relative space, via [`ObjectInfo`](~nodeb
 |------|--------------|---------------------------------------|
 |      | VectorSocket | The output ‘Location’ `VectorSocket`. |
 
+##### matrix
+
+``` python
+matrix(transform_space='ORIGINAL')
+```
+
+The object’s transform matrix, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| transform_space | Literal\['ORIGINAL', 'RELATIVE'\] | The space in which to return the transform matrix. | `'ORIGINAL'` |
+
+###### Returns
+
+| Name | Type         | Description                            |
+|------|--------------|----------------------------------------|
+|      | MatrixSocket | The output ‘Transform’ `MatrixSocket`. |
+
 ##### rotation
 
 ``` python
@@ -4439,21 +4456,7 @@ The object’s scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.
 transform(transform_space='ORIGINAL')
 ```
 
-The Object’s transform matrix, optionally in relative space.
-
-Adds [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo) to the node tree and returns.
-
-###### Parameters
-
-| Name | Type | Description | Default |
-|----|----|----|----|
-| transform_space | Literal\['ORIGINAL', 'RELATIVE'\] | The space in which to return the transform matrix. | `'ORIGINAL'` |
-
-###### Returns
-
-| Name | Type         | Description                            |
-|------|--------------|----------------------------------------|
-|      | MatrixSocket | The output ‘Transform’ `MatrixSocket`. |
+Deprecated: use :meth:`matrix`, which does not read like `VectorSocket.transform(matrix)` (applying a matrix).
 
 ### ObjectSocketList
 
@@ -5803,6 +5806,7 @@ Runtime vector socket wrapper.
 | [scale](#nodebpy.builder.socket.VectorSocket.scale) |  |
 | [to_list](#nodebpy.builder.socket.VectorSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 | [transform](#nodebpy.builder.socket.VectorSocket.transform) |  |
+| [transform_direction](#nodebpy.builder.socket.VectorSocket.transform_direction) |  |
 
 ##### align_rotation
 
@@ -5914,6 +5918,12 @@ Create a list of elements, evaluating this field `count` times based on the `Ind
 transform(matrix)
 ```
 
+##### transform_direction
+
+``` python
+transform_direction(matrix)
+```
+
 ### VectorSocketGrid
 
 ``` python
@@ -5968,6 +5978,7 @@ Runtime vector grid socket wrapper.
 | [scale](#nodebpy.builder.socket.VectorSocketGrid.scale) |  |
 | [to_points](#nodebpy.builder.socket.VectorSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
 | [transform](#nodebpy.builder.socket.VectorSocketGrid.transform) |  |
+| [transform_direction](#nodebpy.builder.socket.VectorSocketGrid.transform_direction) |  |
 | [voxelize](#nodebpy.builder.socket.VectorSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
 
 ##### align_rotation
@@ -6160,6 +6171,12 @@ Generate a point cloud from a volume grid’s active voxels.
 transform(matrix)
 ```
 
+##### transform_direction
+
+``` python
+transform_direction(matrix)
+```
+
 ##### voxelize
 
 ``` python
@@ -6216,6 +6233,7 @@ Class for list of vector sockets.
 | [scale](#nodebpy.builder.socket.VectorSocketList.scale) |  |
 | [sort](#nodebpy.builder.socket.VectorSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [transform](#nodebpy.builder.socket.VectorSocketList.transform) |  |
+| [transform_direction](#nodebpy.builder.socket.VectorSocketList.transform_direction) |  |
 
 ##### align_rotation
 
@@ -6379,4 +6397,10 @@ Sort the list based on the weights. Optional `Group ID` and `Selection` can be p
 
 ``` python
 transform(matrix)
+```
+
+##### transform_direction
+
+``` python
+transform_direction(matrix)
 ```

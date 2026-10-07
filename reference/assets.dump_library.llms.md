@@ -12,6 +12,8 @@ dump_library(
     materials=True,
     format=True,
     typed_api=False,
+    api_only=False,
+    docstrings=True,
     library_anchor=None,
 )
 ```
@@ -20,7 +22,7 @@ Dump every node-group and material asset in `blend_path` to Python source files.
 
 Each node-group asset becomes one `.py` module under `<output_dir>/<tree>/` (`geometry`/`shader`/`compositor`) with an `ASSET` marker and metadata footers. Every group class is defined exactly once: helper groups used by a single asset are embedded in that asset’s module, groups nested by several assets get their own module under `<tree>/_shared/`, and an asset nested inside other assets keeps its class in its own module — all referenced via relative imports (`__init__.py` package markers are written so the imports resolve). Materials marked as assets, and materials referenced by the trees, are code-generated into `materials/` modules — asset-marked ones carry their asset metadata as a `MATERIAL_ASSET_METADATA` footer, so a rebuild re-marks them (referenced-only materials build as unmarked dependencies). Other non-serialisable datablocks each module needs are recorded in its `DATABLOCK_DEPENDENCIES` footer. :func:`build_library` rebuilds the `.blend` from these files. A `blender_assets.cats.txt` next to the `.blend` is copied into `output_dir` so catalog assignments travel with the sources.
 
-Each asset is appended into the current session for introspection and the appended groups are removed again afterwards. Run this in a session that doesn’t already hold node groups with the same names — appending renames on a clash, which would corrupt the dumped `_name` attributes; a clash raises instead. The CLI (`python -m nodebpy.assets dump`) runs in a fresh session by construction.
+Each asset is appended into the current session for introspection and the appended groups are removed again afterwards. Run this in a session that doesn’t already hold node groups with the same names — appending renames on a clash, which would corrupt the dumped `_name` attributes; a clash raises instead. The CLI (`nodebpy dump`) runs in a fresh session by construction.
 
 ## Parameters
 
@@ -35,6 +37,8 @@ Each asset is appended into the current session for introspection and the append
 | materials | bool | Code-generate materials referenced by the dumped trees into `materials/` modules (the default). With `False` they are only recorded as `DATABLOCK_DEPENDENCIES`, to be resolved at build time like any other non-serialisable datablock. Asset-marked materials are dump roots in their own right and are always code-generated, regardless of this flag. | `True` |
 | format | bool | Run the generated sources through `ruff format` when available. | `True` |
 | typed_api | bool | Merge the typed asset API into the dumped classes: each asset class gains a numpydoc docstring, `_Inputs`/`_Outputs` accessors and a typed `__init__`, subclasses `Asset*Group` and carries `_library = PackageLibrary(__file__, <relative path to blend_path>)` — so at runtime it *appends* the shipped `.blend` while its `_build_group` remains the source of truth that regenerates it (`build_library` builds from source via :func:`nodebpy.builder.build_from_source`). Shared helper modules get the typed API too (but stay `Custom*Group` — they are not assets), group calls in generated bodies use the typed parameter names, and each tree directory’s `__init__.py` re-exports its asset classes. Everything outside `_build_group` is regenerated on the next dump. | `False` |
+| api_only | bool | Write only the typed API: one module per node-group asset holding an `Asset*Group` class that appends the asset from the `.blend`, with no `_build_group`. The sources then document and type the library but cannot rebuild it, and materials are left out. The tree directories get the same `__init__.py` re-exports as the typed-API dump. | `False` |
+| docstrings | bool | Give the typed classes numpy-style docstrings from the assets’ own socket tooltips (the default); `False` keeps one line each. | `True` |
 | library_anchor | tuple\[str \| Path, str \| Path\] \| None | `(output_dir, blend_path)` stand-ins for the typed-API `PackageLibrary` relative-path computation: the dumped modules come out exactly as if they were written at that output directory with the library at that `.blend` — regardless of where this dump actually writes. Internal, used by the CLI’s `check` subcommand so a re-dump into a temporary directory is byte-identical to the real sources. | `None` |
 
 ## Returns

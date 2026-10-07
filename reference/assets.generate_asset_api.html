@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -776,15 +776,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    nodebpy_pkg<span class="op">=</span><span class="st">'nodebpy'</span>,</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    docstrings<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Generate typed asset classes for <code>libraries</code> into <code>output_path</code>.</p>
+<p>Generate typed asset classes for <code>libraries</code> into one module.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 3%">
-<col style="width: 10%">
-<col style="width: 82%">
-<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 13%">
+<col style="width: 78%">
+<col style="width: 4%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -816,13 +816,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>nodebpy_pkg</td>
 <td>str</td>
-<td>Import anchor for nodebpy in the generated module. Defaults to the absolute <code>"nodebpy"</code>. When nodebpy is vendored inside another package, pass the path that reaches it <em>relative to the generated module’s package</em> — e.g.&nbsp;<code>"..vendor.nodebpy"</code> — so the emitted imports stay relative to the install/vendor location.</td>
+<td>Import anchor for nodebpy in the generated module. Defaults to the absolute <code>"nodebpy"</code>. When nodebpy is vendored inside another package, pass the path that reaches it <em>relative to the generated module’s package</em>, such as <code>"..vendor.nodebpy"</code>.</td>
 <td><code>'nodebpy'</code></td>
 </tr>
 <tr class="odd">
 <td>docstrings</td>
 <td>bool</td>
-<td>Emit numpy-style class docstrings (description, <code>Parameters</code>, <code>Inputs</code>, <code>Outputs</code>) using the asset’s own socket tooltips, so editors show documentation alongside the type hints. Defaults to <code>True</code>; pass <code>False</code> for a terser module.</td>
+<td>Emit numpy-style class docstrings (description, <code>Parameters</code>, <code>Inputs</code>, <code>Outputs</code>) from the asset’s own socket tooltips, so editors show documentation alongside the type hints. Pass <code>False</code> for a terser module.</td>
 <td><code>True</code></td>
 </tr>
 </tbody>
@@ -842,7 +842,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>list[str]</td>
-<td>The list of generated class names.</td>
+<td>The generated class names.</td>
 </tr>
 </tbody>
 </table>

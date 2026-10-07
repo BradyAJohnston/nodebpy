@@ -83,8 +83,8 @@
 | [SetMaterial](#nodebpy.nodes.geometry.geometry.SetMaterial) | Assign a material to geometry elements |
 | [SetMaterialIndex](#nodebpy.nodes.geometry.geometry.SetMaterialIndex) | Set the material index for each selected geometry element |
 | [SetMeshNormal](#nodebpy.nodes.geometry.geometry.SetMeshNormal) | Store a normal vector for each mesh element |
-| [SetNurbsOrder](#nodebpy.nodes.geometry.geometry.SetNurbsOrder) | Control how many curve control points influence each evaluated point by changing the “nurbs_order” attribute |
-| [SetNurbsWeight](#nodebpy.nodes.geometry.geometry.SetNurbsWeight) | Control the influence of each NURBS control point on the curve by changing the “nurbs_weight” attribute |
+| [SetNURBSOrder](#nodebpy.nodes.geometry.geometry.SetNURBSOrder) | Control how many curve control points influence each evaluated point by changing the “nurbs_order” attribute |
+| [SetNURBSWeight](#nodebpy.nodes.geometry.geometry.SetNURBSWeight) | Control the influence of each NURBS control point on the curve by changing the “nurbs_weight” attribute |
 | [SetPointRadius](#nodebpy.nodes.geometry.geometry.SetPointRadius) | Set the display size of point cloud points |
 | [SetPosition](#nodebpy.nodes.geometry.geometry.SetPosition) | Set the location of each point |
 | [SetSelection](#nodebpy.nodes.geometry.geometry.SetSelection) | Set selection of the edited geometry, for tool execution |
@@ -107,7 +107,7 @@
 | [Triangulate](#nodebpy.nodes.geometry.geometry.Triangulate) | Convert all faces in a mesh to triangular faces |
 | [TrimCurve](#nodebpy.nodes.geometry.geometry.TrimCurve) | Shorten curves by removing portions at the start or end |
 | [UVSphere](#nodebpy.nodes.geometry.geometry.UVSphere) | Generate a spherical mesh with quads, except for triangles at the top and bottom |
-| [XpbdSolver](#nodebpy.nodes.geometry.geometry.XpbdSolver) | Simulate physics using the XPBD framework |
+| [XPBDSolver](#nodebpy.nodes.geometry.geometry.XPBDSolver) | Simulate physics using the XPBD framework |
 
 ### Arc
 
@@ -231,7 +231,7 @@ Cache the incoming data so that it can be used without recomputation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.geometry.Bake.i) |  |
-| [`items`](#nodebpy.nodes.geometry.geometry.Bake.items) | Typed item factories — declare bake items with static types. |
+| [`items`](#nodebpy.nodes.geometry.geometry.Bake.items) | The bake items. |
 | [`name`](#nodebpy.nodes.geometry.geometry.Bake.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Bake.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Bake.o) |  |
@@ -241,9 +241,9 @@ Cache the incoming data so that it can be used without recomputation
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.geometry.Bake.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.geometry.Bake.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.geometry.Bake.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.geometry.Bake.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.geometry.Bake.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.geometry.Bake.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -251,9 +251,7 @@ Cache the incoming data so that it can be used without recomputation
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -261,9 +259,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -271,9 +267,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### BezierSegment
 
@@ -4944,10 +4938,10 @@ Create Set Mesh Normal with operation ‘Tangent Space’. Store normals in a de
 |-----------|------------------|-------------|
 | `o.mesh`  | `GeometrySocket` | Mesh        |
 
-### SetNurbsOrder
+### SetNURBSOrder
 
 ``` python
-SetNurbsOrder(curves=None, selection=None, order=4)
+SetNURBSOrder(curves=None, selection=None, order=4)
 ```
 
 Control how many curve control points influence each evaluated point by changing the “nurbs_order” attribute
@@ -4964,11 +4958,11 @@ Control how many curve control points influence each evaluated point by changing
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.i) |  |
-| [`name`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.node) |  |
-| [`o`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.o) |  |
-| [`tree`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`i`](#nodebpy.nodes.geometry.geometry.SetNURBSOrder.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.SetNURBSOrder.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.geometry.SetNURBSOrder.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.SetNURBSOrder.o) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.SetNURBSOrder.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4984,10 +4978,10 @@ Control how many curve control points influence each evaluated point by changing
 |------------|------------------|-------------|
 | `o.curves` | `GeometrySocket` | Curves      |
 
-### SetNurbsWeight
+### SetNURBSWeight
 
 ``` python
-SetNurbsWeight(curves=None, selection=None, weight=1.0)
+SetNURBSWeight(curves=None, selection=None, weight=1.0)
 ```
 
 Control the influence of each NURBS control point on the curve by changing the “nurbs_weight” attribute
@@ -5004,11 +4998,11 @@ Control the influence of each NURBS control point on the curve by changing the �
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.i) |  |
-| [`name`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.node) |  |
-| [`o`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.o) |  |
-| [`tree`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`i`](#nodebpy.nodes.geometry.geometry.SetNURBSWeight.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.SetNURBSWeight.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.geometry.SetNURBSWeight.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.SetNURBSWeight.o) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.SetNURBSWeight.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -6351,10 +6345,10 @@ Generate a spherical mesh with quads, except for triangles at the top and bottom
 | `o.mesh`   | `GeometrySocket` | Mesh        |
 | `o.uv_map` | `VectorSocket`   | UV Map      |
 
-### XpbdSolver
+### XPBDSolver
 
 ``` python
-XpbdSolver(
+XPBDSolver(
     world=None,
     delta_time=0.04,
     filter='',
@@ -6387,11 +6381,11 @@ Simulate physics using the XPBD framework
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.geometry.geometry.XpbdSolver.i) |  |
-| [`name`](#nodebpy.nodes.geometry.geometry.XpbdSolver.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.geometry.geometry.XpbdSolver.node) |  |
-| [`o`](#nodebpy.nodes.geometry.geometry.XpbdSolver.o) |  |
-| [`tree`](#nodebpy.nodes.geometry.geometry.XpbdSolver.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`i`](#nodebpy.nodes.geometry.geometry.XPBDSolver.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.XPBDSolver.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.geometry.XPBDSolver.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.XPBDSolver.o) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.XPBDSolver.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

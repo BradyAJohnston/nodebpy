@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -890,18 +890,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.BaseRepeatZone.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseRepeatZone.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseRepeatZone.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseRepeatZone.o"><code>o</code></a></td>
 <td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseRepeatZone.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -920,35 +924,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseRepeatZone.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseRepeatZone.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseRepeatZone.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.BaseRepeatZone.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseRepeatZone.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseRepeatZone.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseRepeatZone.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseRepeatZone.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseRepeatZone.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -970,18 +971,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.BaseSimulationZone.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseSimulationZone.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseSimulationZone.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseSimulationZone.o"><code>o</code></a></td>
 <td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseSimulationZone.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1000,35 +1005,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseSimulationZone.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseSimulationZone.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseSimulationZone.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.BaseSimulationZone.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseSimulationZone.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseSimulationZone.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseSimulationZone.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseSimulationZone.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseSimulationZone.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -1050,18 +1052,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.BaseZone.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZone.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZone.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZone.o"><code>o</code></a></td>
 <td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZone.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1080,35 +1086,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZone.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZone.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZone.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.BaseZone.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZone.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseZone.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZone.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseZone.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZone.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -1131,22 +1134,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.o"><code>o</code></a></td>
 <td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.output"><code>output</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1165,35 +1172,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneInput.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.BaseZoneInput.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZoneInput.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseZoneInput.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZoneInput.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseZoneInput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZoneInput.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -1216,18 +1220,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.BaseZoneOutput.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneOutput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneOutput.o"><code>o</code></a></td>
 <td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneOutput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1246,35 +1254,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneOutput.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneOutput.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.BaseZoneOutput.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.BaseZoneOutput.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZoneOutput.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseZoneOutput.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZoneOutput.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.BaseZoneOutput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.BaseZoneOutput.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -1448,7 +1453,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ClosureZone.inputs"><code>inputs</code></a></td>
-<td>Typed factories for the closure’s input items.</td>
+<td>The closure’s input items.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ClosureZone.output"><code>output</code></a></td>
@@ -1456,7 +1461,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ClosureZone.outputs"><code>outputs</code></a></td>
-<td>Typed factories for the closure’s output items.</td>
+<td>The closure’s output items.</td>
 </tr>
 </tbody>
 </table>
@@ -1473,25 +1478,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ClosureZone.input_item">input_item</a></td>
-<td>Declare a closure input and return the socket to read in the body.</td>
+<td>Deprecated: use <code>zone.inputs.new(name, type=type).output</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ClosureZone.output_item">output_item</a></td>
-<td>Declare a closure output and return the target to feed with <code>&gt;&gt;</code>.</td>
+<td>Deprecated: use <code>zone.outputs.new(name, type=type).input</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.ClosureZone.input_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ClosureZone.input_item">input_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>input_item(name, <span class="bu">type</span><span class="op">=</span><span class="st">'GEOMETRY'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Declare a closure input and return the socket to read in the body.</p>
-<p><code>type</code> is a socket-type string (<code>"GEOMETRY"</code>, <code>"MATRIX"</code>, <code>"VECTOR"</code>, …); the typed factories on :attr:<code>inputs</code> are the static-typed equivalent.</p>
+<p>Deprecated: use <code>zone.inputs.new(name, type=type).output</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ClosureZone.output_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ClosureZone.output_item">output_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>output_item(name, <span class="bu">type</span><span class="op">=</span><span class="st">'GEOMETRY'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Declare a closure output and return the target to feed with <code>&gt;&gt;</code>.</p>
-<p>The typed factories on :attr:<code>outputs</code> are the static-typed equivalent.</p>
+<p>Deprecated: use <code>zone.outputs.new(name, type=type).input</code>.</p>
 </section>
 </section>
 </section>
@@ -1514,22 +1517,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.output"><code>output</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1548,35 +1555,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -1603,22 +1607,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items_generated"><code>items_generated</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1637,54 +1645,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_generated_item">add_generated_item</a></td>
-<td>Add a generation item and return its handle.</td>
+<td>Deprecated: use <code>zone.generated_items.&lt;type&gt;(value, name)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated">capture_generated</a></td>
-<td>Capture <code>value</code> as a generated-geometry item evaluated on the</td>
+<td>Deprecated: use <code>zone.generated_items.&lt;type&gt;(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_generated_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_generated_item">add_generated_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>add_generated_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a generation item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> declares the item unlinked.</p>
+<p>Deprecated: use <code>zone.generated_items.&lt;type&gt;(value, name)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated">capture_generated</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>capture_generated(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Capture <code>value</code> as a generated-geometry item evaluated on the given <code>domain</code>, and return its output socket.</p>
+<p>Deprecated: use <code>zone.generated_items.&lt;type&gt;(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -1702,35 +1706,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.corner"><code>corner</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.curve"><code>curve</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.edge"><code>edge</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.element"><code>element</code></a></td>
 <td>The current element as geometry, read inside the zone body.</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.face"><code>face</code></a></td>
+<td></td>
+</tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated"><code>generated</code></a></td>
-<td>Typed factories for generation items.</td>
+<td></td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_items"><code>generated_items</code></a></td>
+<td>Generation items: values stored on the generated geometry.</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generation"><code>generation</code></a></td>
 <td>Handle for the default generation item (the generated geometry).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.index"><code>index</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.input"><code>input</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.inputs"><code>inputs</code></a></td>
-<td>Typed factories for per-element input items.</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.instance"><code>instance</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.items"><code>items</code></a></td>
+<td>Per-element input items, read inside the body.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.layer"><code>layer</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main"><code>main</code></a></td>
-<td>Typed factories for main (per-element result) items.</td>
+<td></td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_items"><code>main_items</code></a></td>
+<td>Main items: per-element results written back onto the geometry.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.output"><code>output</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.point"><code>point</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1748,32 +1792,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_item">generated_item</a></td>
-<td>Declare a generation item — a value stored on the generated</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.item">item</a></td>
-<td>Declare an input item — a per-element field made available</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_item">main_item</a></td>
-<td>Declare a main item — a per-element result written back onto</td>
+<td></td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_item">generated_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>generated_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Declare a generation item — a value stored on the generated geometry with the given <code>domain</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.item">item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Declare an input item — a per-element field made available inside the zone.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_item">main_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>main_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Declare a main item — a per-element result written back onto the input geometry.</p>
 </section>
 </section>
 </section>
@@ -1796,22 +1837,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.output"><code>output</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1830,35 +1875,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatInput.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.RepeatInput.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.RepeatInput.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.RepeatInput.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.RepeatInput.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.RepeatInput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.RepeatInput.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -1881,18 +1923,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.RepeatOutput.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatOutput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatOutput.o"><code>o</code></a></td>
 <td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatOutput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1911,35 +1957,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatOutput.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatOutput.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatOutput.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.RepeatOutput.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.RepeatOutput.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.RepeatOutput.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.RepeatOutput.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.RepeatOutput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.RepeatOutput.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -1962,7 +2005,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatZone.items"><code>items</code></a></td>
-<td>Typed item factories — declare state items with static types.</td>
+<td>The zone’s state items.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatZone.iteration"><code>iteration</code></a></td>
@@ -1987,15 +2030,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.RepeatZone.item">item</a></td>
-<td>Declare a state item and return its handle.</td>
+<td>Deprecated: use <code>zone.items.new(initial, name, type=)</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.RepeatZone.item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.RepeatZone.item">item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>item(name, initial<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Declare a state item and return its handle.</p>
-<p><code>initial</code> may be a linkable (linked as the item’s starting value), a plain default value, or a socket-type string such as <code>"FLOAT"</code> (declares the item without linking).</p>
+<p>Deprecated: use <code>zone.items.new(initial, name, type=)</code>.</p>
 </section>
 </section>
 </section>
@@ -2018,22 +2060,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.output"><code>output</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -2052,35 +2098,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationInput.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.SimulationInput.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.SimulationInput.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.SimulationInput.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.SimulationInput.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.SimulationInput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.SimulationInput.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -2103,18 +2146,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.zone.SimulationOutput.items"><code>items</code></a></td>
+<td>The node’s items; subclasses return their typed collection.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationOutput.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationOutput.o"><code>o</code></a></td>
 <td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationOutput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -2133,35 +2180,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationOutput.add_item">add_item</a></td>
-<td>Add a single item and return its handle.</td>
+<td>Deprecated: use <code>items.new(value, name, type=)</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationOutput.add_items">add_items</a></td>
-<td>Add an item per mapping entry and return their handles by name.</td>
+<td>Deprecated: use <code>items.new(value, name)</code> per item.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationOutput.capture">capture</a></td>
-<td>Add an item linked from <code>value</code> and return its output socket.</td>
+<td>Deprecated: use <code>items.new(value, name).output</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.SimulationOutput.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.SimulationOutput.add_item">add_item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a single item and return its handle.</p>
-<p><code>value</code> may be a linkable (linked to the item’s input) or a plain default value; otherwise <code>type</code> (a socket-type string such as <code>"FLOAT"</code>) declares the item unlinked.</p>
+<p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.SimulationOutput.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.SimulationOutput.add_items">add_items</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item per mapping entry and return their handles by name.</p>
-<p>Values may be linkables (linked to the new item’s input) or socket-type strings such as <code>"FLOAT"</code> (declare an unlinked item).</p>
+<p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.geometry.zone.SimulationOutput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.SimulationOutput.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an item linked from <code>value</code> and return its output socket.</p>
-<p>The item is auto-named after the source socket unless <code>name</code> is given.</p>
+<p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 </section>
 </section>
 </section>
@@ -2188,7 +2232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationZone.items"><code>items</code></a></td>
-<td>Typed item factories — declare state items with static types.</td>
+<td>The zone’s state items.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationZone.output"><code>output</code></a></td>
@@ -2209,23 +2253,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.SimulationZone.item">item</a></td>
-<td>Declare a state item and return its handle.</td>
+<td>Deprecated: use <code>zone.items.new(initial, name, type=)</code>.</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.zone.SimulationZone.item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.SimulationZone.item">item</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>item(name, initial<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Declare a state item and return its handle.</p>
-<p><code>initial</code> may be a linkable (linked as the item’s starting value), a plain default value, or a socket-type string such as <code>"FLOAT"</code> (declares the item without linking).</p>
+<p>Deprecated: use <code>zone.items.new(initial, name, type=)</code>.</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.zone.ZoneItem" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.zone.ZoneItem">ZoneItem</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>ZoneItem(input_node, output_node, item)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>ZoneItem(items, item)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Handle for a simulation/repeat state item (four sockets per item).</p>
-<p>The type parameter is the socket class every role returns; the typed factories on <code>zone.items</code> (:class:<code>_StateZoneItems</code>) produce parameterised handles such as <code>ZoneItem[GeometrySocket]</code>.</p>
+<p><code>initial</code> and <code>next</code> are the link targets; <code>&gt;&gt; item.initial</code> continues the chain from <code>current</code> and <code>&gt;&gt; item.next</code> from <code>result</code>, so a zone body can be written as one chain::</p>
+<pre><code>g.Cube() &gt;&gt; geo.initial &gt;&gt; g.SetShadeSmooth() &gt;&gt; geo.next &gt;&gt; out</code></pre>
+<p>The type parameter is the socket class every role returns; the typed methods on <code>zone.items</code> produce parameterised handles such as <code>ZoneItem[GeometrySocket]</code>.</p>
 <section id="attributes-17" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
 <table class="caption-top table">
@@ -2246,7 +2291,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ZoneItem.input"><code>input</code></a></td>
-<td>The node’s input socket for this item.</td>
+<td>The socket the item is fed through.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ZoneItem.name"><code>name</code></a></td>
@@ -2258,7 +2303,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.zone.ZoneItem.output"><code>output</code></a></td>
-<td>The node’s output socket for this item.</td>
+<td>The socket the item is read from.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.zone.ZoneItem.result"><code>result</code></a></td>

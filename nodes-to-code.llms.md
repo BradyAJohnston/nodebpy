@@ -208,9 +208,9 @@ from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 
 with TreeBuilder("Wave Deform") as tree:
-    geo = tree.inputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
     amp = tree.inputs.float("Amplitude", 0.5, min_value=0.0)
-    out = tree.outputs.geometry("Geometry")
+    out = tree.outputs.geometry()
     height = g.Math.sine(g.Position().o.position.x) * amp
     geo >> g.SetPosition(offset=g.CombineXYZ(z=height)) >> out
 
@@ -276,8 +276,8 @@ By default the generated code lets `nodebpy` lay the tree out automatically when
 
 ``` python
 with TreeBuilder("Wave Deform") as tree:
-    geo = tree.inputs.geometry("Geometry")
-    out = tree.outputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
+    out = tree.outputs.geometry()
     geo >> g.SetPosition(offset=g.CombineXYZ(z=g.Position().o.position.x)) >> out
 ```
 
@@ -306,27 +306,27 @@ with TreeBuilder("Wave Deform.001", arrange=None) as tree:
 tree.layout_snapshot = {
     "Combine XYZ": (
         "ShaderNodeCombineXYZ",
-        (0.0, -32.67),
+        (0.0, -40.0),
         None,
         (("Z", "Separate XYZ", "X"),),
     ),
-    "Group Input": ("NodeGroupInput", (0.0, 65.33), None, ()),
+    "Group Input": ("NodeGroupInput", (0.0, 60.0), None, ()),
     "Group Output": (
         "NodeGroupOutput",
-        (340.0, 16.33),
+        (340.0, 60.0),
         None,
         (("Geometry", "Set Position", "Geometry"),),
     ),
-    "Position": ("GeometryNodeInputPosition", (-340.0, -32.67), None, ()),
+    "Position": ("GeometryNodeInputPosition", (-340.0, -40.0), None, ()),
     "Separate XYZ": (
         "ShaderNodeSeparateXYZ",
-        (-170.0, -32.67),
+        (-160.0, -40.0),
         None,
         (("Vector", "Position", "Position"),),
     ),
     "Set Position": (
         "GeometryNodeSetPosition",
-        (170.0, 16.33),
+        (180.0, 60.0),
         None,
         (
             ("Geometry", "Group Input", "Geometry"),
@@ -352,10 +352,10 @@ Simulation, repeat and for-each zones are reconstructed using the typed zone ite
 
 ``` python
 with TreeBuilder("Stack") as tree:
-    out = tree.outputs.geometry("Geometry")
+    out = tree.outputs.geometry()
     zone = g.RepeatZone(5)
-    geo = zone.items.geometry("Geometry", g.Cube())
-    (geo.current >> g.TransformGeometry(translation=(0, 0, 1.1))) >> geo.next
+    geo = zone.items.geometry(g.Cube())
+    geo.current >> g.TransformGeometry(translation=(0, 0, 1.1)) >> geo.next
     geo.result >> out
 
 code = tree.to_python()
@@ -369,13 +369,10 @@ with TreeBuilder("Stack") as tree:
     geometry = tree.outputs.geometry("Geometry")
 
     repeat_zone = g.RepeatZone(5)
-    geometry_1 = repeat_zone.items.geometry("Geometry", g.Cube().o.mesh)
-    (
-        g.TransformGeometry(geometry=geometry_1.current, translation=(0.0, 0.0, 1.1))
-        >> geometry_1.next
-    )
+    mesh = repeat_zone.items.geometry(g.Cube().o.mesh, "Mesh")
+    g.TransformGeometry(geometry=mesh.current, translation=(0.0, 0.0, 1.1)) >> mesh.next
 
-    geometry_1.result >> geometry
+    mesh.result >> geometry
 ```
 
 ## Frames
@@ -384,7 +381,7 @@ Frames are reconstructed as `with g.Frame("..."):` blocks, including frames nest
 
 ``` python
 with TreeBuilder("Framed") as tree:
-    geo = tree.inputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
     with g.Frame("Deform"):
         with g.Frame("Warp"):
             warped = geo >> g.SetPosition(offset=(0.0, 0.0, 1.0))
@@ -413,8 +410,8 @@ By default the top-level tree is emitted as a `with TreeBuilder(...) as tree:` b
 
 ``` python
 with TreeBuilder("Wave Deform") as tree:
-    geo = tree.inputs.geometry("Geometry")
-    out = tree.outputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
+    out = tree.outputs.geometry()
     geo >> g.SetPosition(offset=g.CombineXYZ(z=g.Position().o.position.x)) >> out
 
 code = tree.to_python(top_level="class")

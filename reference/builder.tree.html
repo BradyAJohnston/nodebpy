@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -764,6 +764,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.builder.tree.SocketContext" id="toc-nodebpy.builder.tree.SocketContext" class="nav-link" data-scroll-target="#nodebpy.builder.tree.SocketContext">SocketContext</a></li>
   <li><a href="#nodebpy.builder.tree.TreeBuilder" id="toc-nodebpy.builder.tree.TreeBuilder" class="nav-link" data-scroll-target="#nodebpy.builder.tree.TreeBuilder">TreeBuilder</a></li>
   <li><a href="#nodebpy.builder.tree.TreePanelContext" id="toc-nodebpy.builder.tree.TreePanelContext" class="nav-link" data-scroll-target="#nodebpy.builder.tree.TreePanelContext">TreePanelContext</a></li>
+  </ul></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
+  <ul class="collapse">
+  <li><a href="#nodebpy.builder.tree.default_split_inputs" id="toc-nodebpy.builder.tree.default_split_inputs" class="nav-link" data-scroll-target="#nodebpy.builder.tree.default_split_inputs">default_split_inputs</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -1699,6 +1703,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.builder.tree.MaterialBuilder.is_modifier"><code>is_modifier</code></a></td>
+<td>Whether the group can be used as a Geometry Nodes modifier.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.builder.tree.MaterialBuilder.is_tool"><code>is_tool</code></a></td>
+<td>Whether the group can be used as a node tool.</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.builder.tree.MaterialBuilder.layout_snapshot"><code>layout_snapshot</code></a></td>
 <td>A structural layout snapshot: for every node its type, <code>(x, y)</code></td>
 </tr>
@@ -1839,8 +1851,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    clear<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    is_modifier<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    is_tool<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a geometry node tree.</p>
+<p><code>is_modifier</code> and <code>is_tool</code> flag the group for use as a modifier or as a node tool; <code>None</code> leaves an existing group’s flags alone.</p>
 </section>
 <section id="nodebpy.builder.tree.MaterialBuilder.link" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.MaterialBuilder.link">link</h5>
@@ -2788,7 +2803,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a>    ignore_visibility<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb102-10"><a href="#cb102-10" aria-hidden="true" tabindex="-1"></a>    clear<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a>    is_modifier<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb102-12"><a href="#cb102-12" aria-hidden="true" tabindex="-1"></a>    is_tool<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb102-13"><a href="#cb102-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Builder for creating Blender node trees with a clean Python API.</p>
 <p>Supports geometry, shader, and compositor node trees.</p>
 <section id="attributes-5" class="level4">
@@ -2820,6 +2837,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.TreeBuilder.inputs"><code>inputs</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.builder.tree.TreeBuilder.is_modifier"><code>is_modifier</code></a></td>
+<td>Whether the group can be used as a Geometry Nodes modifier.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.builder.tree.TreeBuilder.is_tool"><code>is_tool</code></a></td>
+<td>Whether the group can be used as a node tool.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.TreeBuilder.layout_snapshot"><code>layout_snapshot</code></a></td>
@@ -2958,8 +2983,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb109-8"><a href="#cb109-8" aria-hidden="true" tabindex="-1"></a>    clear<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb109-9"><a href="#cb109-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb109-9"><a href="#cb109-9" aria-hidden="true" tabindex="-1"></a>    is_modifier<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb109-10"><a href="#cb109-10" aria-hidden="true" tabindex="-1"></a>    is_tool<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb109-11"><a href="#cb109-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a geometry node tree.</p>
+<p><code>is_modifier</code> and <code>is_tool</code> flag the group for use as a modifier or as a node tool; <code>None</code> leaves an existing group’s flags alone.</p>
 </section>
 <section id="nodebpy.builder.tree.TreeBuilder.link" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.TreeBuilder.link">link</h5>
@@ -3084,9 +3112,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-
-
 </section>
+</section>
+</section>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.builder.tree.default_split_inputs">default_split_inputs</a></td>
+<td>Scope in which every <code>TreeBuilder</code> left at its default</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.builder.tree.default_split_inputs" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.builder.tree.default_split_inputs">default_split_inputs</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb119"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>default_split_inputs(split<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Scope in which every <code>TreeBuilder</code> left at its default <code>split_inputs</code> splits the Group Input node into one instance per consumer node (with unused sockets hidden) on context exit.</p>
+<p>An explicit <code>split_inputs=True/False</code> is unaffected, and so are trees that disable auto-arrangement (as <code>snapshot_positions</code> dumps do).</p>
+
+
 </section>
 </section>
 </section>

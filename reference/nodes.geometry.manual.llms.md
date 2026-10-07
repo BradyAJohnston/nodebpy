@@ -79,7 +79,7 @@ Store the result of a field on a geometry and output the data as a node socket. 
 | [`face`](#nodebpy.nodes.geometry.manual.CaptureAttribute.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.CaptureAttribute.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.CaptureAttribute.instance) |  |
-| [`items`](#nodebpy.nodes.geometry.manual.CaptureAttribute.items) | Typed item factories — declare capture items with static types. |
+| [`items`](#nodebpy.nodes.geometry.manual.CaptureAttribute.items) | The captured items: `input` is the field, `output` the |
 | [`layer`](#nodebpy.nodes.geometry.manual.CaptureAttribute.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.CaptureAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.CaptureAttribute.node) |  |
@@ -91,9 +91,9 @@ Store the result of a field on a geometry and output the data as a node socket. 
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.manual.CaptureAttribute.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.manual.CaptureAttribute.add_items) | Add an item per mapping entry and return their handles by name. |
-| [capture](#nodebpy.nodes.geometry.manual.CaptureAttribute.capture) | Add an item linked from `value` and return its output socket. |
+| [add_item](#nodebpy.nodes.geometry.manual.CaptureAttribute.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.manual.CaptureAttribute.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.manual.CaptureAttribute.capture) | Deprecated: use `items.new(value, name).output`. |
 
 ##### add_item
 
@@ -101,9 +101,7 @@ Store the result of a field on a geometry and output the data as a node socket. 
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -111,9 +109,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### capture
 
@@ -121,9 +117,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ### ColorRamp
 
@@ -236,18 +230,46 @@ Execute a given closure
 | [`active_output_index`](#nodebpy.nodes.geometry.manual.EvaluateClosure.active_output_index) |  |
 | [`define_signature`](#nodebpy.nodes.geometry.manual.EvaluateClosure.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.EvaluateClosure.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.inputs) | Typed item factories — declare closure-call inputs with static |
+| [`inputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.inputs) | The values fed into the closure. |
+| [`items`](#nodebpy.nodes.geometry.manual.EvaluateClosure.items) | The node’s items; subclasses return their typed collection. |
 | [`name`](#nodebpy.nodes.geometry.manual.EvaluateClosure.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.EvaluateClosure.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.EvaluateClosure.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.outputs) | Typed item factories — declare closure-call outputs with static |
-| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateClosure.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`outputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.outputs) | The results read from the closure. |
+| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateClosure.tree) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
+| [add_item](#nodebpy.nodes.geometry.manual.EvaluateClosure.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.manual.EvaluateClosure.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.geometry.manual.EvaluateClosure.capture) | Deprecated: use `items.new(value, name).output`. |
 | [sync_signature](#nodebpy.nodes.geometry.manual.EvaluateClosure.sync_signature) |  |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Deprecated: use `items.new(value, name, type=)`.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Deprecated: use `items.new(value, name)` per item.
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Deprecated: use `items.new(value, name).output`.
 
 ##### sync_signature
 
@@ -281,7 +303,7 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.manual.FieldToGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.FieldToGrid.i) |  |
-| [`items`](#nodebpy.nodes.geometry.manual.FieldToGrid.items) | Typed item factories — declare field→grid items with static |
+| [`items`](#nodebpy.nodes.geometry.manual.FieldToGrid.items) | The evaluated items: `input` is the field, `output` the grid. |
 | [`name`](#nodebpy.nodes.geometry.manual.FieldToGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldToGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldToGrid.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -291,10 +313,10 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.manual.FieldToGrid.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.manual.FieldToGrid.add_items) | Add an item per mapping entry and return their handles by name. |
+| [add_item](#nodebpy.nodes.geometry.manual.FieldToGrid.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.manual.FieldToGrid.add_items) | Deprecated: use `items.new(value, name)` per item. |
 | [boolean](#nodebpy.nodes.geometry.manual.FieldToGrid.boolean) | Data type for the topology grid |
-| [capture](#nodebpy.nodes.geometry.manual.FieldToGrid.capture) | Add an item linked from `value` and return its output socket. |
+| [capture](#nodebpy.nodes.geometry.manual.FieldToGrid.capture) | Deprecated: use `items.new(value, name).output`. |
 | [capture_boolean](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_boolean) |  |
 | [capture_float](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_float) |  |
 | [capture_integer](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_integer) |  |
@@ -309,9 +331,7 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -319,9 +339,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### boolean
 
@@ -337,9 +355,7 @@ Data type for the topology grid
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ##### capture_boolean
 
@@ -513,6 +529,7 @@ Node builder for the Index Switch node
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.manual.IndexSwitch.data_type) | Input socket: Data Type |
 | [`i`](#nodebpy.nodes.geometry.manual.IndexSwitch.i) |  |
+| [`items`](#nodebpy.nodes.geometry.manual.IndexSwitch.items) | The switch’s items, one input socket each. |
 | [`name`](#nodebpy.nodes.geometry.manual.IndexSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.IndexSwitch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.IndexSwitch.o) |  |
@@ -522,11 +539,11 @@ Node builder for the Index Switch node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.manual.IndexSwitch.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.manual.IndexSwitch.add_items) | Add an item per mapping entry and return their handles by name. |
+| [add_item](#nodebpy.nodes.geometry.manual.IndexSwitch.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.manual.IndexSwitch.add_items) | Deprecated: use `items.new(value, name)` per item. |
 | [boolean](#nodebpy.nodes.geometry.manual.IndexSwitch.boolean) |  |
 | [bundle](#nodebpy.nodes.geometry.manual.IndexSwitch.bundle) |  |
-| [capture](#nodebpy.nodes.geometry.manual.IndexSwitch.capture) | Add an item linked from `value` and return its output socket. |
+| [capture](#nodebpy.nodes.geometry.manual.IndexSwitch.capture) | Deprecated: use `items.new(value, name).output`. |
 | [closure](#nodebpy.nodes.geometry.manual.IndexSwitch.closure) |  |
 | [collection](#nodebpy.nodes.geometry.manual.IndexSwitch.collection) |  |
 | [color](#nodebpy.nodes.geometry.manual.IndexSwitch.color) |  |
@@ -550,9 +567,7 @@ Node builder for the Index Switch node
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -560,9 +575,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### boolean
 
@@ -582,9 +595,7 @@ bundle(index=0, items=())
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ##### closure
 
@@ -732,6 +743,7 @@ Node builder for the Menu Switch node
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.manual.MenuSwitch.data_type) | Input socket: Data Type |
 | [`i`](#nodebpy.nodes.geometry.manual.MenuSwitch.i) |  |
+| [`items`](#nodebpy.nodes.geometry.manual.MenuSwitch.items) | The menu’s items, one input socket each. |
 | [`name`](#nodebpy.nodes.geometry.manual.MenuSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.MenuSwitch.o) |  |
@@ -741,11 +753,11 @@ Node builder for the Menu Switch node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.manual.MenuSwitch.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.geometry.manual.MenuSwitch.add_items) | Add an item per mapping entry and return their handles by name. |
+| [add_item](#nodebpy.nodes.geometry.manual.MenuSwitch.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.geometry.manual.MenuSwitch.add_items) | Deprecated: use `items.new(value, name)` per item. |
 | [boolean](#nodebpy.nodes.geometry.manual.MenuSwitch.boolean) |  |
 | [bundle](#nodebpy.nodes.geometry.manual.MenuSwitch.bundle) |  |
-| [capture](#nodebpy.nodes.geometry.manual.MenuSwitch.capture) | Add an item linked from `value` and return its output socket. |
+| [capture](#nodebpy.nodes.geometry.manual.MenuSwitch.capture) | Deprecated: use `items.new(value, name).output`. |
 | [closure](#nodebpy.nodes.geometry.manual.MenuSwitch.closure) |  |
 | [collection](#nodebpy.nodes.geometry.manual.MenuSwitch.collection) |  |
 | [color](#nodebpy.nodes.geometry.manual.MenuSwitch.color) |  |
@@ -755,7 +767,7 @@ Node builder for the Menu Switch node
 | [image](#nodebpy.nodes.geometry.manual.MenuSwitch.image) |  |
 | [integer](#nodebpy.nodes.geometry.manual.MenuSwitch.integer) |  |
 | [is_selected](#nodebpy.nodes.geometry.manual.MenuSwitch.is_selected) | Gets the boolean output socket that is True when the named menu item is selected. |
-| [item](#nodebpy.nodes.geometry.manual.MenuSwitch.item) | Declare a menu item and return its handle. |
+| [item](#nodebpy.nodes.geometry.manual.MenuSwitch.item) | Deprecated: use `items.new(value, name, description=)`. |
 | [material](#nodebpy.nodes.geometry.manual.MenuSwitch.material) |  |
 | [matrix](#nodebpy.nodes.geometry.manual.MenuSwitch.matrix) |  |
 | [menu](#nodebpy.nodes.geometry.manual.MenuSwitch.menu) |  |
@@ -771,9 +783,7 @@ Node builder for the Menu Switch node
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -781,9 +791,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### boolean
 
@@ -803,9 +811,7 @@ bundle(menu=None, items=None)
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ##### closure
 
@@ -883,11 +889,7 @@ Cannot be used with the “Output” name as this refers to the output socket it
 item(name, value=None, *, description=None)
 ```
 
-Declare a menu item and return its handle.
-
-`value` may be a linkable (linked into the item’s input socket), a plain default value, or a `(value, description)` pair; omit it to declare the item unlinked. `description` sets the tooltip Blender shows for the item in the menu.
-
-Unless the menu selection was set explicitly, declaring the first item also defaults the selection to it (as the constructor does).
+Deprecated: use `items.new(value, name, description=)`.
 
 ##### material
 

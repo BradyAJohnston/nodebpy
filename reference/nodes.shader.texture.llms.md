@@ -7,7 +7,7 @@
 | Name | Description |
 |----|----|
 | [EnvironmentTexture](#nodebpy.nodes.shader.texture.EnvironmentTexture) | Sample an image file as an environment texture. Typically used to light the scene with the background node |
-| [IesTexture](#nodebpy.nodes.shader.texture.IesTexture) | Match real world lights with IES files, which store the directional intensity distribution of light sources |
+| [IESTexture](#nodebpy.nodes.shader.texture.IESTexture) | Match real world lights with IES files, which store the directional intensity distribution of light sources |
 | [ImageTexture](#nodebpy.nodes.shader.texture.ImageTexture) | Sample an image file as a texture |
 | [SkyTexture](#nodebpy.nodes.shader.texture.SkyTexture) | Generate a procedural sky texture |
 
@@ -54,10 +54,10 @@ Sample an image file as an environment texture. Typically used to light the scen
 |-----------|---------------|-------------|
 | `o.color` | `ColorSocket` | Color       |
 
-### IesTexture
+### IESTexture
 
 ``` python
-IesTexture(vector=None, strength=1.0, *, filepath='', mode='INTERNAL')
+IESTexture(vector=None, strength=1.0, *, filepath='', mode='INTERNAL')
 ```
 
 Match real world lights with IES files, which store the directional intensity distribution of light sources
@@ -73,20 +73,20 @@ Match real world lights with IES files, which store the directional intensity di
 
 | Name | Description |
 |----|----|
-| [`filepath`](#nodebpy.nodes.shader.texture.IesTexture.filepath) |  |
-| [`i`](#nodebpy.nodes.shader.texture.IesTexture.i) |  |
-| [`mode`](#nodebpy.nodes.shader.texture.IesTexture.mode) |  |
-| [`name`](#nodebpy.nodes.shader.texture.IesTexture.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.shader.texture.IesTexture.node) |  |
-| [`o`](#nodebpy.nodes.shader.texture.IesTexture.o) |  |
-| [`tree`](#nodebpy.nodes.shader.texture.IesTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`filepath`](#nodebpy.nodes.shader.texture.IESTexture.filepath) |  |
+| [`i`](#nodebpy.nodes.shader.texture.IESTexture.i) |  |
+| [`mode`](#nodebpy.nodes.shader.texture.IESTexture.mode) |  |
+| [`name`](#nodebpy.nodes.shader.texture.IESTexture.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.texture.IESTexture.node) |  |
+| [`o`](#nodebpy.nodes.shader.texture.IESTexture.o) |  |
+| [`tree`](#nodebpy.nodes.shader.texture.IESTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
 | Name | Description |
 |----|----|
-| [external](#nodebpy.nodes.shader.texture.IesTexture.external) | Create IES Texture with operation ‘External’. Use external .ies file |
-| [internal](#nodebpy.nodes.shader.texture.IesTexture.internal) | Create IES Texture with operation ‘Internal’. Use internal text data-block |
+| [external](#nodebpy.nodes.shader.texture.IESTexture.external) | Create IES Texture with operation ‘External’. Use external .ies file |
+| [internal](#nodebpy.nodes.shader.texture.IESTexture.internal) | Create IES Texture with operation ‘Internal’. Use internal text data-block |
 
 ##### external
 

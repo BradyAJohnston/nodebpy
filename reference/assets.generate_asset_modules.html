@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -770,11 +770,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    names<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    nodebpy_pkg<span class="op">=</span><span class="st">'nodebpy'</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Generate typed asset classes for <code>libraries</code>, split into one module per tree type inside <code>output_dir</code>.</p>
-<p>Writes <code>geometry.py</code>, <code>shader.py</code> and/or <code>compositor.py</code> — one module for each tree type that has assets in the libraries (no file for the others). Asset names repeat across editors (a geometry <em>and</em> a compositor “Combine Spherical” both exist), so splitting keeps the generated class names collision-free where a single :func:<code>generate_asset_api</code> module would silently shadow one with the other.</p>
-<p>Parameters are as for :func:<code>generate_asset_api</code>, except <code>output_dir</code> is the directory to write the modules into (created if needed).</p>
-<p>Returns a mapping of module name (<code>"geometry"</code> / <code>"shader"</code> / <code>"compositor"</code>) to the class names written to it.</p>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    docstrings<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate typed asset classes for <code>libraries</code>, one module per tree type inside <code>output_dir</code>: <code>geometry.py</code>, <code>shader.py</code> and/or <code>compositor.py</code>, for the tree types that have assets. Asset names repeat across editors (a geometry and a compositor “Combine Spherical” both exist), so splitting keeps the class names from shadowing each other. Parameters are as for :func:<code>generate_asset_api</code>. Returns the class names written per module.</p>
 
 
 </section>

@@ -28,6 +28,7 @@ Node builder for the Menu Switch node (Compositor tree)
 |----|----|
 | [`data_type`](#nodebpy.nodes.compositor.manual.MenuSwitch.data_type) | Input socket: Data Type |
 | [`i`](#nodebpy.nodes.compositor.manual.MenuSwitch.i) |  |
+| [`items`](#nodebpy.nodes.compositor.manual.MenuSwitch.items) | The menu’s items, one input socket each. |
 | [`name`](#nodebpy.nodes.compositor.manual.MenuSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.manual.MenuSwitch.o) |  |
@@ -37,15 +38,15 @@ Node builder for the Menu Switch node (Compositor tree)
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.compositor.manual.MenuSwitch.add_item) | Add a single item and return its handle. |
-| [add_items](#nodebpy.nodes.compositor.manual.MenuSwitch.add_items) | Add an item per mapping entry and return their handles by name. |
+| [add_item](#nodebpy.nodes.compositor.manual.MenuSwitch.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.compositor.manual.MenuSwitch.add_items) | Deprecated: use `items.new(value, name)` per item. |
 | [boolean](#nodebpy.nodes.compositor.manual.MenuSwitch.boolean) |  |
-| [capture](#nodebpy.nodes.compositor.manual.MenuSwitch.capture) | Add an item linked from `value` and return its output socket. |
+| [capture](#nodebpy.nodes.compositor.manual.MenuSwitch.capture) | Deprecated: use `items.new(value, name).output`. |
 | [color](#nodebpy.nodes.compositor.manual.MenuSwitch.color) |  |
 | [float](#nodebpy.nodes.compositor.manual.MenuSwitch.float) |  |
 | [integer](#nodebpy.nodes.compositor.manual.MenuSwitch.integer) |  |
 | [is_selected](#nodebpy.nodes.compositor.manual.MenuSwitch.is_selected) | Gets the boolean output socket that is True when the named menu item is selected. |
-| [item](#nodebpy.nodes.compositor.manual.MenuSwitch.item) | Declare a menu item and return its handle. |
+| [item](#nodebpy.nodes.compositor.manual.MenuSwitch.item) | Deprecated: use `items.new(value, name, description=)`. |
 | [menu](#nodebpy.nodes.compositor.manual.MenuSwitch.menu) |  |
 | [string](#nodebpy.nodes.compositor.manual.MenuSwitch.string) |  |
 | [vector](#nodebpy.nodes.compositor.manual.MenuSwitch.vector) |  |
@@ -56,9 +57,7 @@ Node builder for the Menu Switch node (Compositor tree)
 add_item(name, value=None, *, type=None)
 ```
 
-Add a single item and return its handle.
-
-`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+Deprecated: use `items.new(value, name, type=)`.
 
 ##### add_items
 
@@ -66,9 +65,7 @@ Add a single item and return its handle.
 add_items(items)
 ```
 
-Add an item per mapping entry and return their handles by name.
-
-Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+Deprecated: use `items.new(value, name)` per item.
 
 ##### boolean
 
@@ -82,9 +79,7 @@ boolean(menu=None, items=None)
 capture(value, *, name=None)
 ```
 
-Add an item linked from `value` and return its output socket.
-
-The item is auto-named after the source socket unless `name` is given.
+Deprecated: use `items.new(value, name).output`.
 
 ##### color
 
@@ -132,11 +127,7 @@ Cannot be used with the “Output” name as this refers to the output socket it
 item(name, value=None, *, description=None)
 ```
 
-Declare a menu item and return its handle.
-
-`value` may be a linkable (linked into the item’s input socket), a plain default value, or a `(value, description)` pair; omit it to declare the item unlinked. `description` sets the tooltip Blender shows for the item in the menu.
-
-Unless the menu selection was set explicitly, declaring the first item also defaults the selection to it (as the constructor does).
+Deprecated: use `items.new(value, name, description=)`.
 
 ##### menu
 

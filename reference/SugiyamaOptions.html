@@ -71,7 +71,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/SimpleOptions.html" rel="next">
+<link href="../reference/SIMPLE_OPTIONS.html" rel="next">
 <link href="../reference/arrange.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -772,25 +772,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">=</span>(<span class="fl">30.0</span>, <span class="fl">30.0</span>),</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    direction<span class="op">=</span><span class="st">'BALANCED'</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    socket_alignment<span class="op">=</span><span class="st">'NONE'</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    add_reroutes<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    keep_reroutes_outside_frames<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    stack_collapsed<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    stack_margin_y_fac<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    optimize_sizes<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    iterations<span class="op">=</span><span class="dv">50</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    sequential_frames<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    reroutes<span class="op">=</span><span class="st">'none'</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    stack_collapsed<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    fit_collapsed_widths<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    straighten_trunk<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    pin_group_output<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    pin_group_input<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    frames_as_stages<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    balance_heights<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    balance_aspect<span class="op">=</span><span class="fl">1.6</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    reroute_margin_y_fac<span class="op">=</span><span class="fl">0.35</span>,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    pack_components<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    snap_to_grid<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Options for the Sugiyama (layered) arrangement.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 7%">
 <col style="width: 6%">
-<col style="width: 81%">
+<col style="width: 6%">
+<col style="width: 83%">
 <col style="width: 4%">
 </colgroup>
 <thead>
@@ -811,74 +812,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>direction</td>
 <td>str</td>
-<td>Which directions nodes may be moved in during layout.</td>
+<td>Which way nodes lean where they could sit in several places along a column: <code>"LEFT_UP"</code>, <code>"LEFT_DOWN"</code>, <code>"RIGHT_UP"</code>, <code>"RIGHT_DOWN"</code>, or <code>"BALANCED"</code> for the middle of the four.</td>
 <td><code>'BALANCED'</code></td>
 </tr>
 <tr class="odd">
 <td>socket_alignment</td>
 <td>str</td>
-<td>How aggressively links are straightened by aligning the sockets they connect.</td>
+<td>Whether aligned nodes line up by their tops (<code>"NONE"</code>), by the sockets of the link between them so the link is straight (<code>"FULL"</code>), or by sockets only where the nodes differ much in height (<code>"MODERATE"</code>).</td>
 <td><code>'NONE'</code></td>
 </tr>
 <tr class="even">
-<td>add_reroutes</td>
-<td>bool</td>
-<td>Insert reroute nodes to route long edges around nodes. Off by default: added reroutes are real nodes, which would change the authored structure of generated trees (node counts, round-trips, diagrams).</td>
-<td><code>False</code></td>
+<td>reroutes</td>
+<td>str</td>
+<td>Which links get reroute nodes. <code>"none"</code>: the layout only moves nodes. <code>"blocked"</code>: links that would otherwise be drawn across a node get reroutes, and the reroutes already in the tree are kept. <code>"all"</code>: every link that passes over a column gets reroutes, and the tree’s own reroutes are replaced.</td>
+<td><code>'none'</code></td>
 </tr>
 <tr class="odd">
-<td>keep_reroutes_outside_frames</td>
-<td>bool</td>
-<td>Do not place added reroutes inside frames.</td>
-<td><code>False</code></td>
-</tr>
-<tr class="even">
 <td>stack_collapsed</td>
 <td>bool</td>
-<td>Stack consecutive collapsed nodes tightly.</td>
+<td>Stack chains of collapsed Math nodes vertically.</td>
 <td><code>True</code></td>
 </tr>
-<tr class="odd">
-<td>stack_margin_y_fac</td>
-<td>float</td>
-<td>Fraction of the vertical margin used between stacked collapsed nodes.</td>
-<td><code>0.5</code></td>
-</tr>
 <tr class="even">
-<td>optimize_sizes</td>
+<td>fit_collapsed_widths</td>
 <td>bool</td>
 <td>Fit the widths of collapsed nodes to their display name.</td>
 <td><code>False</code></td>
 </tr>
 <tr class="odd">
-<td>iterations</td>
-<td>int</td>
-<td>Number of crossing-minimization iterations.</td>
-<td><code>50</code></td>
+<td>straighten_trunk</td>
+<td>bool</td>
+<td>Align the trunk first, so that the flow links (geometry, shader, bundle, closure) form a straight row and each zone is a row with its node tops level. Off, a node aligns with its median neighbour.</td>
+<td><code>True</code></td>
 </tr>
 <tr class="even">
-<td>sequential_frames</td>
+<td>pin_group_output</td>
 <td>bool</td>
-<td>Rank frames as stages of the flow: every node of a frame comes after every node of the frame (or intermediate node) feeding it, so successive frames line up left to right instead of stacking into a staircase. Frames with no links between them (parallel branches) still share columns and stack vertically.</td>
+<td>Put Group Output nodes (outside frames) in the last column.</td>
+<td><code>True</code></td>
+</tr>
+<tr class="odd">
+<td>pin_group_input</td>
+<td>bool</td>
+<td>Put Group Input nodes (outside frames) in the first column. Off, they sit next to the nodes they feed.</td>
+<td><code>False</code></td>
+</tr>
+<tr class="even">
+<td>frames_as_stages</td>
+<td>bool</td>
+<td>Put every node of a frame in a later column than every node of the frame, or node outside frames, that feeds it. Frames then line up left to right.</td>
 <td><code>True</code></td>
 </tr>
 <tr class="odd">
 <td>balance_heights</td>
 <td>bool</td>
-<td>Shorten the tallest column by moving nodes whose feeders serve only them (a private upstream chain) one column left, while that makes the drawing smaller overall. Counters the tall sliver a node with many inputs otherwise produces, at the price of slightly longer links routed through reroutes / dummy nodes.</td>
+<td>Shorten the tallest columns by moving the chains that feed them one column left, while that brings the drawing closer to a screen’s shape.</td>
 <td><code>True</code></td>
 </tr>
 <tr class="even">
-<td>balance_aspect</td>
-<td>float</td>
-<td>Width-to-height ratio the balancing aims for: it keeps promoting feeders left while the drawing’s bounding box (height, or width divided by this ratio, whichever is larger) shrinks.</td>
-<td><code>1.6</code></td>
+<td>seed</td>
+<td>int</td>
+<td>Seed of the shuffled starting orders the ordering tries besides its fixed ones. The same seed always gives the same layout.</td>
+<td><code>0</code></td>
 </tr>
 <tr class="odd">
-<td>reroute_margin_y_fac</td>
-<td>float</td>
-<td>Fraction of the vertical margin kept between consecutive reroutes (and the dummy nodes long links are routed through) in a column; bundles of long links pack tighter than nodes.</td>
-<td><code>0.35</code></td>
+<td>snap_to_grid</td>
+<td>bool</td>
+<td>Put every node on the node editor’s grid, as Blender’s Snap does when nodes are moved by hand, and space the nodes of a column in whole grid steps. Reroutes are not snapped; they follow the sockets they join. With this on, <code>socket_alignment</code> can only line sockets up to within half a grid step.</td>
+<td><code>True</code></td>
 </tr>
 </tbody>
 </table>
@@ -894,14 +895,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.SugiyamaOptions.add_reroutes"><code>add_reroutes</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.SugiyamaOptions.balance_aspect"><code>balance_aspect</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.SugiyamaOptions.balance_heights"><code>balance_heights</code></a></td>
 <td></td>
 </tr>
@@ -910,11 +903,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.SugiyamaOptions.iterations"><code>iterations</code></a></td>
+<td><a href="#nodebpy.SugiyamaOptions.fit_collapsed_widths"><code>fit_collapsed_widths</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.SugiyamaOptions.keep_reroutes_outside_frames"><code>keep_reroutes_outside_frames</code></a></td>
+<td><a href="#nodebpy.SugiyamaOptions.frames_as_stages"><code>frames_as_stages</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
@@ -922,27 +915,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.SugiyamaOptions.optimize_sizes"><code>optimize_sizes</code></a></td>
+<td><a href="#nodebpy.SugiyamaOptions.pack_components"><code>pack_components</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.SugiyamaOptions.reroute_margin_y_fac"><code>reroute_margin_y_fac</code></a></td>
+<td><a href="#nodebpy.SugiyamaOptions.pin_group_input"><code>pin_group_input</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.SugiyamaOptions.sequential_frames"><code>sequential_frames</code></a></td>
+<td><a href="#nodebpy.SugiyamaOptions.pin_group_output"><code>pin_group_output</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.SugiyamaOptions.reroutes"><code>reroutes</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.SugiyamaOptions.seed"><code>seed</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.SugiyamaOptions.snap_to_grid"><code>snap_to_grid</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.SugiyamaOptions.socket_alignment"><code>socket_alignment</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.SugiyamaOptions.stack_collapsed"><code>stack_collapsed</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
-<td><a href="#nodebpy.SugiyamaOptions.stack_margin_y_fac"><code>stack_margin_y_fac</code></a></td>
+<tr class="even">
+<td><a href="#nodebpy.SugiyamaOptions.straighten_trunk"><code>straighten_trunk</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1360,8 +1365,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/SimpleOptions.html" class="pagination-link" aria-label="SimpleOptions">
-        <span class="nav-page-text">SimpleOptions</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/SIMPLE_OPTIONS.html" class="pagination-link" aria-label="SIMPLE_OPTIONS">
+        <span class="nav-page-text">SIMPLE_OPTIONS</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

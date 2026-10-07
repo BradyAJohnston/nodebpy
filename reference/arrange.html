@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.31.0</span>
+    <span class="navbar-title">nodebpy 520.32.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SimpleOptions</span></a>
+  <a href="../reference/SIMPLE_OPTIONS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SIMPLE_OPTIONS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -764,10 +764,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="nodebpy.arrange" class="level1">
 <h1>arrange</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>arrange(tree, method<span class="op">=</span><span class="st">'sugiyama'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Arrange the nodes of a tree.</p>
-<p><code>method</code> selects the algorithm: <code>"sugiyama"</code> (or a :class:<code>SugiyamaOptions</code> instance for tuned settings), <code>"simple"</code> (or a :class:<code>SimpleOptions</code> instance), or None to leave the tree untouched.</p>
-<p>The Sugiyama layout requires the optional <code>networkx</code> dependency; when it is missing, the simple arrangement is used instead (with a warning).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>arrange(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    tree,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    selected_only<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    pipeline<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    observer<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    verify<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Arrange the nodes of <em>tree</em>.</p>
+<p><em>method</em> is a :class:<code>SugiyamaOptions</code>, <code>"sugiyama"</code> for the default options, <code>"simple"</code> for plain columns by dependency (:data:<code>~.config.SIMPLE_OPTIONS</code>), or None to leave the tree alone.</p>
+<p>With <em>selected_only</em> the selected nodes are arranged among themselves around where they were, and moved clear of the others, which stay put. Otherwise selection is ignored.</p>
+<p><em>pipeline</em>, <em>observer</em> and <em>verify</em> are passed on to :func:<code>~.sugiyama.sugiyama_layout</code>.</p>
 
 
 </section>

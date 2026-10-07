@@ -6,16 +6,16 @@
 
 | Name | Description |
 |----|----|
-| [AovOutput](#nodebpy.nodes.shader.output.AovOutput) | Arbitrary Output Variables. |
+| [AOVOutput](#nodebpy.nodes.shader.output.AOVOutput) | Arbitrary Output Variables. |
 | [LightOutput](#nodebpy.nodes.shader.output.LightOutput) | Output light information to a light object |
 | [LineStyleOutput](#nodebpy.nodes.shader.output.LineStyleOutput) | Control the mixing of texture information into the base color of line styles |
 | [MaterialOutput](#nodebpy.nodes.shader.output.MaterialOutput) | Output surface material information for use in rendering |
 | [WorldOutput](#nodebpy.nodes.shader.output.WorldOutput) | Output light color information to the scene’s World |
 
-### AovOutput
+### AOVOutput
 
 ``` python
-AovOutput(color=(0.0, 0.0, 0.0, 1.0), value=0.0, *, aov_name='')
+AOVOutput(color=(0.0, 0.0, 0.0, 1.0), value=0.0, *, aov_name='')
 ```
 
     Arbitrary Output Variables.
@@ -40,12 +40,12 @@ Provide custom render passes for arbitrary shader node outputs
 
 | Name | Description |
 |----|----|
-| [`aov_name`](#nodebpy.nodes.shader.output.AovOutput.aov_name) |  |
-| [`i`](#nodebpy.nodes.shader.output.AovOutput.i) |  |
-| [`name`](#nodebpy.nodes.shader.output.AovOutput.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.shader.output.AovOutput.node) |  |
-| [`o`](#nodebpy.nodes.shader.output.AovOutput.o) |  |
-| [`tree`](#nodebpy.nodes.shader.output.AovOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`aov_name`](#nodebpy.nodes.shader.output.AOVOutput.aov_name) |  |
+| [`i`](#nodebpy.nodes.shader.output.AOVOutput.i) |  |
+| [`name`](#nodebpy.nodes.shader.output.AOVOutput.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.output.AOVOutput.node) |  |
+| [`o`](#nodebpy.nodes.shader.output.AOVOutput.o) |  |
+| [`tree`](#nodebpy.nodes.shader.output.AOVOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### LightOutput
 

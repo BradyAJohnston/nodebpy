@@ -52,6 +52,12 @@ generate_asset_modules(
 
 Because asset names repeat across editors, splitting also keeps the generated class names collision-free where a single mixed module would silently shadow one tree type’s class with another’s.
 
+From the command line, `nodebpy dump --api-only` writes the same typed classes as the dump does (see below): one module per asset under `geometry/`, `shader/` and `compositor/`, with each directory’s `__init__.py` re-exporting its classes, and no `_build_group` recipe:
+
+``` bash
+nodebpy dump --api-only data/my_assets.blend my_addon/nodes/
+```
+
 ### Docstrings and menu types
 
 By default the generated classes carry numpy-style docstrings built from the asset’s own interface — the group description, then `Parameters`, `Inputs` and `Outputs` sections using each socket’s tooltip — so editors show documentation next to the type hints. Menu sockets are narrowed to the items they actually offer:
@@ -73,7 +79,7 @@ def __init__(
     ...
 ```
 
-Pass `docstrings=False` (or `--no-docstrings` on the command line) for a terser module without the class docstrings.
+Pass `docstrings=False` (or `--no-docstrings` to `nodebpy dump`) for a terser module without the class docstrings.
 
 The generated module imports from `nodebpy` and looks like any other node module, so import and use it directly:
 
@@ -112,14 +118,16 @@ build_library("my_assets_src/", "my_assets.blend")  # rebuild the .blend
 or from the command line (each runs in a fresh Blender session):
 
 ``` bash
-python -m nodebpy.assets dump my_assets.blend my_assets_src/
-python -m nodebpy.assets build my_assets_src/ my_assets.blend
+nodebpy dump my_assets.blend my_assets_src/
+nodebpy build my_assets_src/ my_assets.blend
 ```
+
+`nodebpy` is installed as a console script (`python -m nodebpy` works too). The older `python -m nodebpy.assets` entry point is deprecated and will be removed in nodebpy 530: it still forwards to `nodebpy`, with a warning. Inside a full Blender, run any subcommand as `blender -b --factory-startup -P <.../nodebpy/__main__.py> -- <subcommand ...>`.
 
 Dumping a whole library takes a while, so while iterating on a few assets pass `--names` (`names=` in Python) with exact names or wildcards, as for `plot` below:
 
 ``` bash
-python -m nodebpy.assets dump my_assets.blend my_assets_src/ --names "Style *" "Sample Radius"
+nodebpy dump my_assets.blend my_assets_src/ --names "Style *" "Sample Radius"
 ```
 
 Only the matching assets’ modules are rewritten — plus the `_shared/` helper and `materials/` modules they depend on — byte-identical to what a full dump would write, since the whole library is still read to decide what is shared. Other assets’ files are left untouched, so edits to them are not picked up: a full dump, or the `check` subcommand in CI, catches those.
@@ -127,17 +135,33 @@ Only the matching assets’ modules are rewritten — plus the `_shared/` helper
 Node groups can also be rendered to PNG images headlessly, styled like Blender’s node editor — for reviewing new or edited nodes in pull requests without opening Blender — selected by exact name or wildcard (`plot_library` in Python):
 
 ``` bash
-python -m nodebpy.assets plot my_assets.blend plots/ "Style *"
+nodebpy plot my_assets.blend plots/ "Style *"
 ```
 
 Each group gets two images: `<name>.png` shows its internals (header colours per node class, socket markers by type, value widgets, property dropdowns, frames, zones and socket-coloured links) and `<name>_node.png` shows the group node as a user sees it when adding the group to a tree, with its interface sockets and default values, with interface panels in their default open or closed state (`--open-panels` expands them all). `--tree-only` / `--node-only` keep just one. By default the internals are drawn at their stored layout; pass `--arrange` (plus any of the arrangement flags shared with `build`, e.g. `--add-reroutes`) to re-arrange before plotting. From Python, `nodebpy.export.to_plot(tree, path)` draws the internals and `to_plot(tree, path, node=True)` the group node (`axes=True` frames either with axes ticked in node-location units), and any `TreeBuilder` offers the same as `tree.to_plot(path, ...)`.
 
-Each asset becomes one module holding its group as a class; helper groups used by a single asset are embedded, groups shared between assets get their own module under `_shared/`, and referenced materials are code-generated under `materials/`. Asset metadata (catalog, description, tags), tree-level flags and non-serialisable datablock references (`DATABLOCK_DEPENDENCIES`) travel in module footers, and a `blender_assets.cats.txt` next to the `.blend` is copied along so catalog assignments survive. Pass `snapshot_positions=True` to keep authored node layouts (including split Group Input instances), and `--typed-api` / `typed_api=True` to merge the typed asset API from above into the dumped classes. On the build side the automatic layout is tunable: `--add-reroutes` / `add_reroutes=True` arranges the rebuilt trees with reroute nodes routing long links around nodes (the node-arrange addon’s behaviour), and `--spacing`, `--iterations` (crossing reduction), `--direction`, `--socket-alignment`, `--no-sequential-frames`, `--no-balance-heights`, `--balance-aspect` and the other `SugiyamaOptions` fields (`arrange=SugiyamaOptions(...)` in Python) override the defaults; `--split-inputs` / `split_inputs=True` gives each consumer node its own Group Input instance — named and labelled after the interface sockets it uses, unused sockets hidden — instead of a single Group Input trailing long noodles. Sources dumped with `snapshot_positions` keep their authored layout regardless.
+Each asset becomes one module holding its group as a class; helper groups used by a single asset are embedded, groups shared between assets get their own module under `_shared/`, and referenced materials are code-generated under `materials/`. Asset metadata (catalog, description, tags), tree-level flags and non-serialisable datablock references (`DATABLOCK_DEPENDENCIES`) travel in module footers, and a `blender_assets.cats.txt` next to the `.blend` is copied along so catalog assignments survive. Pass `snapshot_positions=True` to keep authored node layouts (including split Group Input instances), and `--typed-api` / `typed_api=True` to merge the typed asset API from above into the dumped classes. On the build side the automatic layout is tunable: `--add-reroutes` / `add_reroutes=True` arranges the rebuilt trees with reroute nodes routing long links around nodes, and `--spacing`, `--direction`, `--socket-alignment`, `--no-sequential-frames`, `--no-balance-heights` and the other `SugiyamaOptions` fields (`arrange=SugiyamaOptions(...)` in Python) override the defaults; `--split-inputs` / `split_inputs=True` gives each consumer node its own Group Input instance — named and labelled after the interface sockets it uses, unused sockets hidden — instead of a single Group Input trailing long noodles. Sources dumped with `snapshot_positions` keep their authored layout regardless.
 
 Round-trip fidelity is checked with `nodebpy.export.compare_libraries` / `serialize_library` (or `python -m nodebpy.export.parity a.blend b.blend`), which deep-compare two libraries with cosmetic surfaces (positions, reroutes, …) excludable — Blender’s bundled essentials libraries and MolecularNodes round-trip to zero functional findings.
+
+## Diffing `.blend` files in git
+
+`nodebpy textconv <blend>` prints every asset in a `.blend` as its dumped Python source, in sorted path order, each module headed by `### <path>` — so git can diff asset libraries line by line. Register it as a git [diff driver](https://git-scm.com/docs/gitattributes#_performing_text_diffs_of_binary_files):
+
+``` bash
+# .gitattributes (keep filter=lfs etc. if the files are in Git LFS)
+*.blend diff=blend
+
+git config diff.blend.textconv "nodebpy textconv"
+git config diff.blend.cachetextconv true
+```
+
+`git diff`, `git log -p` and `git show` then show changes to the node groups as Python, with hunk headers naming the asset class that changed. Git hands textconv the blob as stored, which for Git LFS files is the pointer; it is smudged through `git lfs smudge` to the real `.blend` first. With `cachetextconv`, each blob is dumped once and cached under `refs/notes/textconv/blend` — delete that ref after upgrading nodebpy or Blender to refresh it. For a pull request, diff against the merge base (`git diff main...HEAD`), so changes that landed on `main` meanwhile don’t show up as reverts.
+
+The dumping Blender must be at least as new as the file: an older `bpy` silently drops sockets it doesn’t know, hiding changes to them. To use a Blender build instead of the `bpy` module, point the driver at it: `blender -b -q --factory-startup -P <.../nodebpy/__main__.py> -- textconv`.
 
 ## Notes
 
 - The generator is a normal runtime tool — call `generate_asset_api` in a build step, a test, or once by hand; commit the generated module like the rest of your source.
 - Inputs with non-scalar defaults (vectors, colours) take `None` in the generated signature; the appended group keeps its own socket defaults.
-- `nodebpy`’s own bundled-essentials modules are regenerated by `python -m nodebpy.assets` (wired into `make generate`).
+- `nodebpy`’s own bundled-essentials modules are regenerated by `make generate` (`python -m gen`, which also regenerates the node classes).

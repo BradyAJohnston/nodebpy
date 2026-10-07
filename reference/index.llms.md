@@ -17,11 +17,11 @@ Automatic node layout and its options.
 
 |  |  |
 |----|----|
-| [arrange](../reference/arrange.llms.md#nodebpy.arrange) | Arrange the nodes of a tree. |
+| [arrange](../reference/arrange.llms.md#nodebpy.arrange) | Arrange the nodes of *tree*. |
 | [SugiyamaOptions](../reference/SugiyamaOptions.llms.md#nodebpy.SugiyamaOptions) | Options for the Sugiyama (layered) arrangement. |
-| [SimpleOptions](../reference/SimpleOptions.llms.md#nodebpy.SimpleOptions) | Options for the simple column-based arrangement. |
+| [`SIMPLE_OPTIONS`](../reference/SIMPLE_OPTIONS.llms.md#nodebpy.SIMPLE_OPTIONS) | What `arrange(tree, "simple")` uses: nodes in columns by dependency, |
 | [default_split_inputs](../reference/default_split_inputs.llms.md#nodebpy.default_split_inputs) | Scope in which every `TreeBuilder` left at its default |
-| [default_sugiyama_options](../reference/default_sugiyama_options.llms.md#nodebpy.default_sugiyama_options) | Scope in which `arrange(tree, "sugiyama")` — and therefore every |
+| [default_sugiyama_options](../reference/default_sugiyama_options.llms.md#nodebpy.default_sugiyama_options) | Scope in which `arrange(tree, "sugiyama")`, and so every |
 
 ## Assets
 
@@ -29,8 +29,8 @@ Generating classes from pre-build assets
 
 |  |  |
 |----|----|
-| [assets.generate_asset_api](../reference/assets.generate_asset_api.llms.md#nodebpy.assets.generate_asset_api) | Generate typed asset classes for `libraries` into `output_path`. |
-| [assets.generate_asset_modules](../reference/assets.generate_asset_modules.llms.md#nodebpy.assets.generate_asset_modules) | Generate typed asset classes for `libraries`, split into one module per |
+| [assets.generate_asset_api](../reference/assets.generate_asset_api.llms.md#nodebpy.assets.generate_asset_api) | Generate typed asset classes for `libraries` into one module. |
+| [assets.generate_asset_modules](../reference/assets.generate_asset_modules.llms.md#nodebpy.assets.generate_asset_modules) | Generate typed asset classes for `libraries`, one module per tree |
 | [assets.dump_library](../reference/assets.dump_library.llms.md#nodebpy.assets.dump_library) | Dump every node-group and material asset in `blend_path` to Python |
 | [assets.build_library](../reference/assets.build_library.llms.md#nodebpy.assets.build_library) | Rebuild a `.blend` asset library from sources written by |
 | [assets.plot_library](../reference/assets.plot_library.llms.md#nodebpy.assets.plot_library) | Render node groups from `blend_path` to PNG images under |

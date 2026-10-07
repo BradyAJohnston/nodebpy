@@ -790,6 +790,8 @@ MaterialBuilder(
 | [`group_input_splits`](#nodebpy.builder.tree.MaterialBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.builder.tree.MaterialBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.builder.tree.MaterialBuilder.inputs) |  |
+| [`is_modifier`](#nodebpy.builder.tree.MaterialBuilder.is_modifier) | Whether the group can be used as a Geometry Nodes modifier. |
+| [`is_tool`](#nodebpy.builder.tree.MaterialBuilder.is_tool) | Whether the group can be used as a node tool. |
 | [`layout_snapshot`](#nodebpy.builder.tree.MaterialBuilder.layout_snapshot) | A structural layout snapshot: for every node its type, `(x, y)` |
 | [`material`](#nodebpy.builder.tree.MaterialBuilder.material) |  |
 | [`node_positions`](#nodebpy.builder.tree.MaterialBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
@@ -879,10 +881,14 @@ geometry(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    is_modifier=None,
+    is_tool=None,
 )
 ```
 
 Create a geometry node tree.
+
+`is_modifier` and `is_tool` flag the group for use as a modifier or as a node tool; `None` leaves an existing group’s flags alone.
 
 ##### link
 
@@ -1753,6 +1759,8 @@ TreeBuilder(
     ignore_visibility=False,
     split_inputs=None,
     clear=False,
+    is_modifier=None,
+    is_tool=None,
 )
 ```
 
@@ -1769,6 +1777,8 @@ Supports geometry, shader, and compositor node trees.
 | [`group_input_splits`](#nodebpy.builder.tree.TreeBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.builder.tree.TreeBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.builder.tree.TreeBuilder.inputs) |  |
+| [`is_modifier`](#nodebpy.builder.tree.TreeBuilder.is_modifier) | Whether the group can be used as a Geometry Nodes modifier. |
+| [`is_tool`](#nodebpy.builder.tree.TreeBuilder.is_tool) | Whether the group can be used as a node tool. |
 | [`layout_snapshot`](#nodebpy.builder.tree.TreeBuilder.layout_snapshot) | A structural layout snapshot: for every node its type, `(x, y)` |
 | [`node_positions`](#nodebpy.builder.tree.TreeBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
 | [`nodes`](#nodebpy.builder.tree.TreeBuilder.nodes) |  |
@@ -1857,10 +1867,14 @@ geometry(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    is_modifier=None,
+    is_tool=None,
 )
 ```
 
 Create a geometry node tree.
+
+`is_modifier` and `is_tool` flag the group for use as a modifier or as a node tool; `None` leaves an existing group’s flags alone.
 
 ##### link
 
@@ -1982,3 +1996,19 @@ Activates the panel on the builder’s `inputs` and `outputs` contexts at once, 
 | Name                                                    | Description |
 |---------------------------------------------------------|-------------|
 | [`panel`](#nodebpy.builder.tree.TreePanelContext.panel) |             |
+
+## Functions
+
+| Name | Description |
+|----|----|
+| [default_split_inputs](#nodebpy.builder.tree.default_split_inputs) | Scope in which every `TreeBuilder` left at its default |
+
+### default_split_inputs
+
+``` python
+default_split_inputs(split=True)
+```
+
+Scope in which every `TreeBuilder` left at its default `split_inputs` splits the Group Input node into one instance per consumer node (with unused sockets hidden) on context exit.
+
+An explicit `split_inputs=True/False` is unaffected, and so are trees that disable auto-arrangement (as `snapshot_positions` dumps do).
