@@ -355,7 +355,7 @@ class FloatCurve(BaseNode):
             points.new(0.0, 0.0)
         for i, item in enumerate(items):
             points[i].location = item[:2]
-            points[i].handle_type = item[2] if len(item) > 2 else "AUTO"  # ty: ignore[index-out-of-bounds]
+            points[i].handle_type = item[2] if len(item) > 2 else "AUTO"
             points[i].select = False
         mapping = self.node.mapping
         assert mapping
