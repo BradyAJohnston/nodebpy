@@ -2037,7 +2037,7 @@ def _field_spec(method: str, output: str, *params) -> SocketMethodSpec:
 
 
 def _vector_op_spec(
-    operation: str, method: str, output: str, *params
+    operation: str, method: str, output: str, *params, always_args: int = 0
 ) -> SocketMethodSpec:
     return SocketMethodSpec(
         receiver="Vector",
@@ -2047,6 +2047,7 @@ def _vector_op_spec(
         require=(("operation", operation),),
         consumed_props=("operation",),
         receiver_socket_type="VECTOR",
+        always_args=always_args,
     )
 
 
@@ -2270,6 +2271,14 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
         _vector_op_spec("DISTANCE", "distance", "Value", ("Vector_001", "other")),
         _vector_op_spec("PROJECT", "project", "Vector", ("Vector_001", "other")),
         _vector_op_spec("REFLECT", "reflect", "Vector", ("Vector_001", "normal")),
+        _vector_op_spec(
+            "MULTIPLY_ADD",
+            "mul_add",
+            "Vector",
+            ("Vector_001", "multiplier"),
+            ("Vector_002", "addend"),
+            always_args=2,
+        ),
     ],
     "FunctionNodeRotateVector": [
         SocketMethodSpec(
