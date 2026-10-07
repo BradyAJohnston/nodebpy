@@ -164,10 +164,6 @@ class ZoneItem(Item[_SocketT]):
     def _default_output_socket(self) -> bpy.types.NodeSocket:
         self._no_role("output")
 
-    @property
-    def _default_input_socket(self) -> bpy.types.NodeSocket:
-        self._no_role("input")
-
     def _as_rshift_target(self) -> _SocketT:
         self._no_role("input")
 

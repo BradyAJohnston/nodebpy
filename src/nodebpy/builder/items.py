@@ -274,10 +274,6 @@ class Item(Generic[_InT, _OutT]):
     def _default_output_socket(self) -> NodeSocket:
         return self.output.socket
 
-    @property
-    def _default_input_socket(self) -> NodeSocket:
-        return self.input.socket
-
     def _as_rshift_target(self) -> _InT:
         return self.input
 
