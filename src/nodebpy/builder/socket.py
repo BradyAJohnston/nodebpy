@@ -79,7 +79,7 @@ from ..types import (
     InputVector,
 )
 from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
-from ._utils import _NodeLike, _output_socket_type, _SocketLike
+from ._utils import _deprecated, _NodeLike, _output_socket_type, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
@@ -992,11 +992,27 @@ class _VectorMixin[
         return RotateVector(self.socket, rotation).o.vector  # ty: ignore[invalid-return-type]
 
     def transform(self, matrix: InputMatrix) -> VectorResult:
-        "Transform this vector by the given matrix."
+        """Transform this vector as a point by the given matrix.
+
+        The matrix's translation applies; use :meth:`transform_direction`
+        for a direction such as a normal or a velocity.
+        """
         self._assert_output("transform")
         from ..nodes.geometry import TransformPoint
 
         return TransformPoint(self.socket, matrix).o.vector  # ty: ignore[invalid-return-type]
+
+    def transform_direction(self, matrix: InputMatrix) -> VectorResult:
+        """Transform this vector as a direction by the given matrix.
+
+        Only the matrix's rotation and scale apply; its translation is
+        ignored, as a direction (a normal, a velocity, gravity) has no
+        position.
+        """
+        self._assert_output("transform_direction")
+        from ..nodes.geometry import TransformDirection
+
+        return TransformDirection(self.socket, matrix).o.direction  # ty: ignore[invalid-return-type]
 
     @overload
     def __rmatmul__(self, other: CombineTransform) -> VectorResult: ...
@@ -1068,6 +1084,7 @@ class _VectorMixin[
         def map_range(self, *args: Any, **kwargs: Any) -> Self: ...
         def rotate(self, rotation: InputRotation) -> Self: ...
         def transform(self, matrix: InputMatrix) -> Self: ...
+        def transform_direction(self, matrix: InputMatrix) -> Self: ...
         def _dispatch_unary(self, operation: str) -> Self: ...
         def _dispatch_math(
             self, other: Any, operation: str, reverse: bool = ...
@@ -1990,11 +2007,12 @@ class _MatrixMixin[
         return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-argument-type]
 
     def transform_direction(self, direction: InputVector) -> VectorResult:
-        """Apply this matrix to *direction*, ignoring translation.
-
-        Use this instead of ``transform()`` when transforming a direction vector
-        (e.g. a normal) where translation must not affect the result.
-        """
+        """Deprecated: use ``direction.transform_direction(matrix)``, which
+        keeps the method on the vector that continues down the chain."""
+        _deprecated(
+            "MatrixSocket.transform_direction(direction)",
+            "VectorSocket.transform_direction(matrix)",
+        )
         self._assert_output("transform_direction")
         from ..nodes.geometry import TransformDirection
 
@@ -2846,12 +2864,10 @@ class ObjectSocket(_ObjectMixin, _DefaultValueMixin[bpy.types.Object]):
 
         return ObjectInfo
 
-    def transform(
+    def matrix(
         self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
     ) -> MatrixSocket:
-        """The Object's transform matrix, optionally in relative space.
-
-        Adds [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo) to the node tree and returns.
+        """The object's transform matrix, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
 
         Parameters
         ----------
@@ -2864,6 +2880,14 @@ class ObjectSocket(_ObjectMixin, _DefaultValueMixin[bpy.types.Object]):
             The output 'Transform' `MatrixSocket`.
         """
         return self._info(self.socket, transform_space=transform_space).o.transform
+
+    def transform(
+        self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
+    ) -> MatrixSocket:
+        """Deprecated: use :meth:`matrix`, which does not read like
+        ``VectorSocket.transform(matrix)`` (applying a matrix)."""
+        _deprecated("ObjectSocket.transform()", "ObjectSocket.matrix()")
+        return self.matrix(transform_space)
 
     def location(
         self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"

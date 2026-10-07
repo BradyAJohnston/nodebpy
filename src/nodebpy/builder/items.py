@@ -20,7 +20,7 @@ from mathutils import Euler
 
 from ..types import _is_default_value
 from ._registry import _wrap_socket
-from ._utils import _SocketLike
+from ._utils import _deprecated, _SocketLike
 from .node import DynamicInputsMixin, _match_compatible_data
 from .socket import BaseSocket, Socket
 
@@ -570,14 +570,6 @@ class ItemsMixin(DynamicInputsMixin):
             else:
                 handles[name] = self.items._declare(value, name, None)
         return handles
-
-
-def _deprecated(old: str, new: str) -> None:
-    warnings.warn(
-        f"{old} is deprecated and will be removed in nodebpy 530; use {new}",
-        DeprecationWarning,
-        stacklevel=3,
-    )
 
 
 class _ValueItems(ItemCollection[_HandleT]):

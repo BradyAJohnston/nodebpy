@@ -2466,11 +2466,11 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
     ],
     "FunctionNodeTransformDirection": [
         SocketMethodSpec(
-            receiver="Transform",
+            receiver="Direction",
             method="transform_direction",
             output="Direction",
-            params=(("Direction", "direction"),),
-            receiver_socket_type="MATRIX",
+            params=(("Transform", "matrix"),),
+            receiver_socket_type="VECTOR",
             always_args=1,
         ),
     ],

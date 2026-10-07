@@ -3,6 +3,7 @@ from __future__ import annotations
 import keyword
 import re
 import unicodedata
+import warnings
 from functools import cache
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
@@ -205,3 +206,12 @@ def _output_socket_type(value: Any) -> SOCKET_TYPES | None:
     if isinstance(value, (_SocketLike, _NodeLike)):
         return value._default_output_socket.type  # type: ignore[return-value]
     return None
+
+
+def _deprecated(old: str, new: str) -> None:
+    """Warn that ``old`` is removed in nodebpy 530 in favour of ``new``."""
+    warnings.warn(
+        f"{old} is deprecated and will be removed in nodebpy 530; use {new}",
+        DeprecationWarning,
+        stacklevel=3,
+    )
