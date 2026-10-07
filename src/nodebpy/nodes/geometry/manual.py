@@ -2128,32 +2128,31 @@ class SDFGridBoolean(BaseNode):
         def o(self) -> _Outputs: ...
 
     def __init__(
-        self, *, operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE"
+        self,
+        grid_1: InputFloatGrid = None,
+        grid_2: Iterable[InputFloatGrid] = (),
+        *,
+        operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
     ):
         super().__init__()
         self.operation = operation
+        if grid_1 is not None and not isinstance(grid_1, Default):
+            self._link_from(*self._find_best_socket_pair(grid_1, self.i["Grid 1"]))
+        # Grid 2 is multi-input: link in reverse so the socket lists the
+        # grids in the order given (later links sort first), as JoinGeometry.
+        for grid in reversed(list(grid_2)):
+            assert grid
+            self._link_from(*self._find_best_socket_pair(grid, self.i["Grid 2"]))
 
     @classmethod
-    def intersect(
-        cls,
-        grids: Iterable[InputFloatGrid] = (),
-    ) -> "SDFGridBoolean":
-        node = cls(operation="INTERSECT")
-        for grid in grids:
-            assert grid
-            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
-        return node
+    def intersect(cls, grids: Iterable[InputFloatGrid] = ()) -> "SDFGridBoolean":
+        """Create SDF Grid Boolean with operation 'Intersect'."""
+        return cls(grid_2=grids, operation="INTERSECT")
 
     @classmethod
-    def union(
-        cls,
-        grids: Iterable[InputFloatGrid] = (),
-    ) -> "SDFGridBoolean":
-        node = cls(operation="UNION")
-        for grid in grids:
-            assert grid
-            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
-        return node
+    def union(cls, grids: Iterable[InputFloatGrid] = ()) -> "SDFGridBoolean":
+        """Create SDF Grid Boolean with operation 'Union'."""
+        return cls(grid_2=grids, operation="UNION")
 
     @classmethod
     def difference(
@@ -2162,13 +2161,7 @@ class SDFGridBoolean(BaseNode):
         grids: Iterable[InputFloatGrid] = (),
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
-        node = cls(operation="DIFFERENCE")
-        if grid_1 is not None and not isinstance(grid_1, Default):
-            node._link_from(*node._find_best_socket_pair(grid_1, node.i["Grid 1"]))
-        for grid in grids:
-            assert grid
-            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
-        return node
+        return cls(grid_1, grids, operation="DIFFERENCE")
 
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:

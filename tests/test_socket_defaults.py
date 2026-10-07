@@ -62,6 +62,9 @@ def test_generated_defaults_match_fresh_node(module, tree_type):
             fresh = getattr(socket, "default_value", None)
             if default is None or default.default is None or fresh is None:
                 continue
+            if socket.is_multi_input:
+                continue  # the parameter takes an iterable of sources
+
             if isinstance(fresh, (bool, int, str)) or isinstance(default.default, str):
                 continue
             if _as_f32(default.default) != _as_f32(fresh):

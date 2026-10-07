@@ -19,6 +19,7 @@ Operators on sockets now evaluate to what Python gives for the same values, chec
 
 - **Integer `&`, `|`, `^` and `~` build Bit Math.** They built Boolean Math, casting the integers to booleans, and `i | 4` raised.
 - **Comparing an integer socket with a float socket** (`i < f`) compared the operands the wrong way round.
+- **SDF Grid Boolean round-trips through the exporter** (#246). `g.SDFGridBoolean(grid_1, grid_2=[...], operation=...)` takes its grids, and the exporter writes `g.SDFGridBoolean.union([a, b])` / `.intersect(...)` instead of a constructor call that failed. Grid 2 lists the grids in the order given.
 
 ## v520.33.0 - 2026-10-07
 
