@@ -136,6 +136,21 @@ with g.tree() as tree:
 tree
 ```
 
+#### Which socket owns a method
+
+A socket method lives on the value that continues down the chain, so the result has the same role as the receiver: `vec.transform(matrix)` and `vec.transform_direction(matrix)` apply a matrix to a vector (as a point, so translation applies, or as a direction, so it does not), `rot.rotate(other)` rotates a rotation, and `mat.invert()` keeps the matrix. Getters that produce another type read as nouns: `mat.translation`, `obj.matrix()`, `obj.location()`.
+
+The two selector factories are the deliberate exceptions. `fac.mix.float(a, b)` and `condition.switch.geometry(false, true)` sit on the factor or boolean that drives a Mix or Switch node, and return the mixed or chosen value:
+
+```{python}
+with g.tree() as tree:
+    fac = g.NoiseTexture().o.fac
+    mixed = fac.mix.vector((0, 0, 0), (1, 1, 1))
+    picked = (fac > 0.5).switch.geometry(g.Cube(), g.IcoSphere())
+
+tree
+```
+
 #### Other Accessors
 
 Similar methods also exist for `SocketColor`, `SocketMatrix`

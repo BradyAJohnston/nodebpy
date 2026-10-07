@@ -332,6 +332,6 @@ class ClipFieldToBox(CustomGeometryGroup):
         masked = tree.outputs.boolean("Clipped Field")
 
         pos = Position().o.position
-        local_pos = box.transform("RELATIVE").invert() @ pos * 0.5
+        local_pos = box.matrix("RELATIVE").invert() @ pos * 0.5
         result = abs(local_pos) < 0.5
         (result != invert) >> masked

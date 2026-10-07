@@ -1333,13 +1333,13 @@ def test_matrix_methods():
         mat.invert() >> tree.outputs.matrix("Inverted")
         mat.transpose() >> tree.outputs.matrix("Transposed")
         mat.determinant() >> tree.outputs.float("Det")
-        mat.transform_direction(vec) >> tree.outputs.vector("Dir")
+        vec.transform_direction(mat) >> tree.outputs.vector("Dir")
     code = _assert_roundtrip(tree)
     for expected in (
         "mat.invert()",
         "mat.transpose()",
         "mat.determinant()",
-        "mat.transform_direction(vec)",
+        "vec.transform_direction(mat)",
     ):
         assert expected in code, expected
 
