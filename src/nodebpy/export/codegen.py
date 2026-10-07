@@ -1102,9 +1102,6 @@ class EmitContext:
     pending_lines: list[str] = field(default_factory=list)
     zones: dict[str, _ZoneState] = field(default_factory=dict)
     collector: _GroupCollector | None = None
-    # Statements emitted after the body — menu interface defaults whose enum is
-    # only populated once the consuming MenuSwitch has been created and linked.
-    iface_deferred: list[str] = field(default_factory=list)
 
     def input_link(self, node: Node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
@@ -3730,16 +3727,13 @@ def _emit_interface(
     # A socket no effective link touches (e.g. a panel-toggle input, or one
     # only read through the modifier UI) still needs its declaration, but the
     # variable is never referenced again — prefix it so the generated module
-    # passes lint (F841). A menu input with a default counts as referenced:
-    # its deferred ``var.default_value = …`` line reads the variable.
+    # passes lint (F841).
     if direction == "inputs":
         used = any(
             link.from_node.bl_idname == "NodeGroupInput"
             and link.from_socket.identifier == item.identifier
             for link in ctx.links
         )
-        if not used and item.socket_type == "NodeSocketMenu":
-            used = bool(getattr(item, "default_value", None))
     else:
         used = any(
             link.to_node.bl_idname == "NodeGroupOutput"
@@ -3785,11 +3779,12 @@ def _emit_interface(
                 and (factory_default is None or _eq(default, factory_default))
             ):
                 default = None
-        if item.socket_type == "NodeSocketMenu" and default:
-            # A menu's valid values come from the MenuSwitch linked to it, so
-            # the default can only be set once the body has created that node.
-            ctx.iface_deferred.append(f"    {var_name}.default_value = {_fmt(default)}")
-        elif default is not None:
+        # A menu default is emitted inline: the builder defers applying it to
+        # context exit, once the MenuSwitch defining its enum items is linked.
+        # An empty one (no linked MenuSwitch) has nothing to restore.
+        if item.socket_type == "NodeSocketMenu" and not default:
+            default = None
+        if default is not None:
             args.append(_fmt(default))
     description = getattr(item, "description", "")
     if description:
@@ -4312,7 +4307,6 @@ def _assemble_tree_body(emission: _TreeEmission) -> list[str]:
         emission.body_lines,
         emission.out_lines,
     )
-    deferred = emission.deferred_lines
     lines = list(iface_lines)
     if iface_lines and (body or out_lines):
         lines.append("")
@@ -4321,11 +4315,7 @@ def _assemble_tree_body(emission: _TreeEmission) -> list[str]:
         if body:
             lines.append("")
         lines.extend(out_lines)
-    if deferred:
-        if iface_lines or body or out_lines:
-            lines.append("")
-        lines.extend(deferred)
-    if not (iface_lines or body or out_lines or deferred):
+    if not (iface_lines or body or out_lines):
         lines.append("    pass")
     return lines
 
@@ -4340,7 +4330,6 @@ class _TreeEmission:
     body_lines: list[str]
     out_lines: list[str]
     used_aliases: set[str]
-    deferred_lines: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -4962,9 +4951,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
         source = ctx.upstream_expr(link, pipeline=True)
         out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
-    return _TreeEmission(
-        iface_lines, body, out_lines, ctx.used_aliases, ctx.iface_deferred
-    )
+    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases)
 
 
 # ---------------------------------------------------------------------------
