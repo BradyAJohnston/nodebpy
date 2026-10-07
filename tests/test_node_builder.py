@@ -514,7 +514,7 @@ def test_placeholder():
         mix = v >> g.Mix.color(0.3, (0.5, 0.5, 0.5, 1.0), ...)
 
     assert not mix.i["Factor_Float"].socket.links
-    assert tuple(mix.i["A_Color"].socket.default_value) == (0.5, 0.5, 0.5, 1.0)
+    assert tuple(mix.i["A_Color"].default_value) == (0.5, 0.5, 0.5, 1.0)
     assert mix.i["B_Color"].socket.links
     assert mix.i["B_Color"].socket.links[0].from_node == v.node
 

@@ -76,7 +76,7 @@ class AmbientOcclusion(BaseNode):
         self,
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         distance: InputFloat = 1.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         *,
         samples: int = 0,
         inside: bool = False,
@@ -94,7 +94,7 @@ class AmbientOcclusion(BaseNode):
         return self.node.samples
 
     @samples.setter
-    def samples(self, value: int):
+    def samples(self, value: int) -> None:
         self.node.samples = value
 
     @property
@@ -102,7 +102,7 @@ class AmbientOcclusion(BaseNode):
         return self.node.inside
 
     @inside.setter
-    def inside(self, value: bool):
+    def inside(self, value: bool) -> None:
         self.node.inside = value
 
     @property
@@ -110,7 +110,7 @@ class AmbientOcclusion(BaseNode):
         return self.node.only_local
 
     @only_local.setter
-    def only_local(self, value: bool):
+    def only_local(self, value: bool) -> None:
         self.node.only_local = value
 
 
@@ -162,7 +162,7 @@ class Bevel(BaseNode):
     def __init__(
         self,
         radius: InputFloat = 0.05,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         *,
         samples: int = 0,
     ):
@@ -176,7 +176,7 @@ class Bevel(BaseNode):
         return self.node.samples
 
     @samples.setter
-    def samples(self, value: int):
+    def samples(self, value: int) -> None:
         self.node.samples = value
 
 
@@ -215,7 +215,7 @@ class CameraData(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -249,7 +249,7 @@ class Color(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -298,7 +298,7 @@ class ColorAttribute(BaseNode):
         return self.node.layer_name
 
     @layer_name.setter
-    def layer_name(self, value: str):
+    def layer_name(self, value: str) -> None:
         self.node.layer_name = value
 
 
@@ -349,7 +349,7 @@ class CurvesInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -404,7 +404,7 @@ class Fresnel(BaseNode):
     def __init__(
         self,
         ior: InputFloat = 1.5,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
     ):
         super().__init__()
         key_args = {"IOR": ior, "Normal": normal}
@@ -471,7 +471,7 @@ class Geometry(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -530,7 +530,7 @@ class LayerWeight(BaseNode):
     def __init__(
         self,
         blend: InputFloat = 0.5,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
     ):
         super().__init__()
         key_args = {"Blend": blend, "Normal": normal}
@@ -622,7 +622,7 @@ class LightPath(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -676,7 +676,7 @@ class ObjectInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -738,7 +738,7 @@ class ParticleInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -780,7 +780,7 @@ class PointInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -855,8 +855,8 @@ class Raycast(BaseNode):
 
     def __init__(
         self,
-        position: InputVector = (0.0, 0.0, 0.0),
-        direction: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
+        direction: InputVector = None,
         length: InputFloat = 1.0,
         *,
         only_local: bool = False,
@@ -871,7 +871,7 @@ class Raycast(BaseNode):
         return self.node.only_local
 
     @only_local.setter
-    def only_local(self, value: bool):
+    def only_local(self, value: bool) -> None:
         self.node.only_local = value
 
 
@@ -920,7 +920,7 @@ class Tangent(BaseNode):
         return self.node.direction_type
 
     @direction_type.setter
-    def direction_type(self, value: Literal["RADIAL", "UV_MAP"]):
+    def direction_type(self, value: Literal["RADIAL", "UV_MAP"]) -> None:
         self.node.direction_type = value
 
     @property
@@ -928,7 +928,7 @@ class Tangent(BaseNode):
         return self.node.axis
 
     @axis.setter
-    def axis(self, value: Literal["X", "Y", "Z"]):
+    def axis(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.axis = value
 
     @property
@@ -936,7 +936,7 @@ class Tangent(BaseNode):
         return self.node.uv_map
 
     @uv_map.setter
-    def uv_map(self, value: str):
+    def uv_map(self, value: str) -> None:
         self.node.uv_map = value
 
 
@@ -1003,7 +1003,7 @@ class TextureCoordinate(BaseNode):
         return self.node.from_instancer
 
     @from_instancer.setter
-    def from_instancer(self, value: bool):
+    def from_instancer(self, value: bool) -> None:
         self.node.from_instancer = value
 
 
@@ -1045,7 +1045,7 @@ class UVAlongStroke(BaseNode):
         return self.node.use_tips
 
     @use_tips.setter
-    def use_tips(self, value: bool):
+    def use_tips(self, value: bool) -> None:
         self.node.use_tips = value
 
 
@@ -1092,7 +1092,7 @@ class UVMap(BaseNode):
         return self.node.from_instancer
 
     @from_instancer.setter
-    def from_instancer(self, value: bool):
+    def from_instancer(self, value: bool) -> None:
         self.node.from_instancer = value
 
     @property
@@ -1100,7 +1100,7 @@ class UVMap(BaseNode):
         return self.node.uv_map
 
     @uv_map.setter
-    def uv_map(self, value: str):
+    def uv_map(self, value: str) -> None:
         self.node.uv_map = value
 
 
@@ -1159,5 +1159,5 @@ class Wireframe(BaseNode):
         return self.node.use_pixel_size
 
     @use_pixel_size.setter
-    def use_pixel_size(self, value: bool):
+    def use_pixel_size(self, value: bool) -> None:
         self.node.use_pixel_size = value

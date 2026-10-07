@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ...builder import (
     CustomGeometryGroup,
@@ -63,7 +63,7 @@ class SliceToIndices(CustomGeometryGroup):
         kwargs = {"Start": start, "Stop": stop, "Step": step}
         super().__init__(**kwargs)
 
-    def _build_group(self, tree: TreeBuilder) -> None:
+    def _build_group(self, tree: TreeBuilder[Any]) -> None:
         start = tree.inputs.integer("Start")
         stop = tree.inputs.integer("Stop")
         step = tree.inputs.integer("Step")
@@ -108,7 +108,7 @@ class OtherVertex(CustomGeometryGroup):
         kwargs = {"Vertex Index": vertex_index, "Edge Number": edge_number}
         super().__init__(**kwargs)
 
-    def _build_group(self, tree: TreeBuilder):
+    def _build_group(self, tree: TreeBuilder[Any]):
         vertex_index = tree.inputs.integer("Vertex Index", default_input="INDEX")
         edge_number = tree.inputs.integer("Edge Number")
 
@@ -157,7 +157,7 @@ class OffsetVector(CustomGeometryGroup):
     ):
         super().__init__(index=index, vector=vector, offset=offset)
 
-    def _build_group(self, tree: TreeBuilder):
+    def _build_group(self, tree: TreeBuilder[Any]):
         index = tree.inputs.integer("Index", default_input="INDEX")
         vector = tree.inputs.vector("Vector", default_input="POSITION")
         offset = tree.inputs.integer("Offset")
@@ -206,7 +206,7 @@ class PrincipalComponents(CustomGeometryGroup):
         }
         super().__init__(**kwargs)
 
-    def _build_group(self, tree: TreeBuilder):
+    def _build_group(self, tree: TreeBuilder[Any]):
         tree.collapse = True
         position = tree.inputs.vector("Position", default_input="POSITION")
         group_id = tree.inputs.integer(
@@ -285,7 +285,7 @@ class GeometryPrincipalComponents(CustomGeometryGroup):
         }
         super().__init__(**kwargs)
 
-    def _build_group(self, tree: TreeBuilder):
+    def _build_group(self, tree: TreeBuilder[Any]):
         tree.collapse = True
         geo = tree.inputs.geometry("Geometry")
         position = tree.inputs.vector("Position", default_input="POSITION")
@@ -298,7 +298,7 @@ class GeometryPrincipalComponents(CustomGeometryGroup):
             shortest_axis = tree.outputs.vector("Shortest Axis")
 
         geo = geo >> CaptureAttribute.point()
-        pca = PrincipalComponents(position=geo.capture(position))
+        pca = PrincipalComponents(position=geo.items.vector(position).output)
 
         SampleIndex.point.vector(geo, pca.o.group_center) >> center
         SampleIndex.point.quaternion(geo, pca.o.rotation) >> rotation
@@ -326,12 +326,12 @@ class ClipFieldToBox(CustomGeometryGroup):
             }
         )
 
-    def _build_group(self, tree: TreeBuilder):
+    def _build_group(self, tree: TreeBuilder[Any]):
         box = tree.inputs.object("Box Object", optional_label=True)
         invert = tree.inputs.boolean("Invert")
         masked = tree.outputs.boolean("Clipped Field")
 
         pos = Position().o.position
-        local_pos = box.transform("RELATIVE").invert() @ pos * 0.5
+        local_pos = box.matrix("RELATIVE").invert() @ pos * 0.5
         result = abs(local_pos) < 0.5
         (result != invert) >> masked

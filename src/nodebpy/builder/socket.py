@@ -79,7 +79,7 @@ from ..types import (
     InputVector,
 )
 from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
-from ._utils import _NodeLike, _output_socket_type, _SocketLike
+from ._utils import _deprecated, _NodeLike, _output_socket_type, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
@@ -235,7 +235,7 @@ class BaseSocket:
         return self.tree.tree.bl_idname == "CompositorNodeTree"
 
     @property
-    def tree(self) -> TreeBuilder:
+    def tree(self) -> TreeBuilder[Any]:
         if self._tree is None:
             from .tree import TreeBuilder
 
@@ -259,6 +259,26 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         The underlying Blender NodeSocket.
 
     """
+
+    # Socket arithmetic keeps the socket's own type (FloatSocket * 2 -> FloatSocket).
+    if TYPE_CHECKING:
+
+        def __mul__(self, other: Any) -> Self: ...
+        def __rmul__(self, other: Any) -> Self: ...
+        def __truediv__(self, other: Any) -> Self: ...
+        def __rtruediv__(self, other: Any) -> Self: ...
+        def __add__(self, other: Any) -> Self: ...
+        def __radd__(self, other: Any) -> Self: ...
+        def __sub__(self, other: Any) -> Self: ...
+        def __rsub__(self, other: Any) -> Self: ...
+        def __pow__(self, other: Any) -> Self: ...
+        def __rpow__(self, other: Any) -> Self: ...
+        def __mod__(self, other: Any) -> Self: ...
+        def __rmod__(self, other: Any) -> Self: ...
+        def __floordiv__(self, other: Any) -> Self: ...
+        def __rfloordiv__(self, other: Any) -> Self: ...
+        def __neg__(self) -> Self: ...
+        def __abs__(self) -> Self: ...
 
     @property
     def builder_node(self) -> BaseNode:
@@ -495,7 +515,7 @@ class _VectorGridOperatorMixin(Socket):
 # ---------------------------------------------------------------------------
 
 
-class _GridSocketMixin[T, TG](Socket):
+class _GridSocketMixin[T, TG: BaseSocket](Socket):
     def _info(self) -> GridInfo[T, TG]:
         from ..nodes.geometry import GridInfo
 
@@ -555,7 +575,7 @@ class _GridSocketMixin[T, TG](Socket):
             data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.value
 
-    def field_to_grid(self) -> FieldToGrid:
+    def field_to_grid(self) -> FieldToGrid[TG]:
         """Create new grids by evaluating new values on an existing volume grid topology."""
         from ..nodes.geometry import FieldToGrid
 
@@ -838,7 +858,7 @@ class _VectorMixin[
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketVector
-    _tree: TreeBuilder
+    _tree: TreeBuilder[Any]
 
     @property
     def _vmath(self) -> type[VectorMath]:
@@ -972,11 +992,27 @@ class _VectorMixin[
         return RotateVector(self.socket, rotation).o.vector  # ty: ignore[invalid-return-type]
 
     def transform(self, matrix: InputMatrix) -> VectorResult:
-        "Transform this vector by the given matrix."
+        """Transform this vector as a point by the given matrix.
+
+        The matrix's translation applies; use :meth:`transform_direction`
+        for a direction such as a normal or a velocity.
+        """
         self._assert_output("transform")
         from ..nodes.geometry import TransformPoint
 
         return TransformPoint(self.socket, matrix).o.vector  # ty: ignore[invalid-return-type]
+
+    def transform_direction(self, matrix: InputMatrix) -> VectorResult:
+        """Transform this vector as a direction by the given matrix.
+
+        Only the matrix's rotation and scale apply; its translation is
+        ignored, as a direction (a normal, a velocity, gravity) has no
+        position.
+        """
+        self._assert_output("transform_direction")
+        from ..nodes.geometry import TransformDirection
+
+        return TransformDirection(self.socket, matrix).o.direction  # ty: ignore[invalid-return-type]
 
     @overload
     def __rmatmul__(self, other: CombineTransform) -> VectorResult: ...
@@ -1048,6 +1084,7 @@ class _VectorMixin[
         def map_range(self, *args: Any, **kwargs: Any) -> Self: ...
         def rotate(self, rotation: InputRotation) -> Self: ...
         def transform(self, matrix: InputMatrix) -> Self: ...
+        def transform_direction(self, matrix: InputMatrix) -> Self: ...
         def _dispatch_unary(self, operation: str) -> Self: ...
         def _dispatch_math(
             self, other: Any, operation: str, reverse: bool = ...
@@ -1492,7 +1529,7 @@ class _FloatMixin[IntegerResult: (IntegerSocket, IntegerSocketGrid, IntegerSocke
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         *,
-        clamp=True,
+        clamp: bool = True,
         interpolation_type: Literal[
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
         ] = "LINEAR",
@@ -1680,8 +1717,8 @@ class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""
 
     socket: NodeSocketInt
-    tree: TreeBuilder
-    _tree: TreeBuilder
+    tree: TreeBuilder[Any]
+    _tree: TreeBuilder[Any]
 
     @property
     def _imath(self) -> type[IntegerMath]:
@@ -1970,11 +2007,12 @@ class _MatrixMixin[
         return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-argument-type]
 
     def transform_direction(self, direction: InputVector) -> VectorResult:
-        """Apply this matrix to *direction*, ignoring translation.
-
-        Use this instead of ``transform()`` when transforming a direction vector
-        (e.g. a normal) where translation must not affect the result.
-        """
+        """Deprecated: use ``direction.transform_direction(matrix)``, which
+        keeps the method on the vector that continues down the chain."""
+        _deprecated(
+            "MatrixSocket.transform_direction(direction)",
+            "VectorSocket.transform_direction(matrix)",
+        )
         self._assert_output("transform_direction")
         from ..nodes.geometry import TransformDirection
 
@@ -2179,7 +2217,7 @@ class _ToListMixin[T](BaseSocket):
         """Create a list of elements, evaluating this field `count` times based on the `Index` node."""
         from ..nodes.geometry import FieldToList
 
-        return FieldToList(count, {self.name: self}).o[0]  # ty: ignore[invalid-return-type, invalid-argument-type]
+        return FieldToList(count, {self.name: self}).o[0]  # ty: ignore[invalid-return-type]
 
 
 class _FloatConvertDatatypeMixin[
@@ -2382,8 +2420,15 @@ class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):
 
     # Resolve the base-class conflict explicitly: component access (r/g/b/a)
     # wins over list-element indexing, matching the MRO.
-    __getitem__ = _ColorMixin.__getitem__
-    __len__ = _ColorMixin.__len__
+    @overload
+    def __getitem__(self, key: slice) -> list[FloatSocket]: ...
+    @overload
+    def __getitem__(self, key: int) -> FloatSocket: ...
+    def __getitem__(self, key: int | slice) -> FloatSocket | list[FloatSocket]:
+        return _ColorMixin.__getitem__(self, key)
+
+    def __len__(self) -> int:
+        return _ColorMixin.__len__(self)
 
 
 # -- Integer --
@@ -2819,12 +2864,10 @@ class ObjectSocket(_ObjectMixin, _DefaultValueMixin[bpy.types.Object]):
 
         return ObjectInfo
 
-    def transform(
+    def matrix(
         self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
     ) -> MatrixSocket:
-        """The Object's transform matrix, optionally in relative space.
-
-        Adds [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo) to the node tree and returns.
+        """The object's transform matrix, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
 
         Parameters
         ----------
@@ -2837,6 +2880,14 @@ class ObjectSocket(_ObjectMixin, _DefaultValueMixin[bpy.types.Object]):
             The output 'Transform' `MatrixSocket`.
         """
         return self._info(self.socket, transform_space=transform_space).o.transform
+
+    def transform(
+        self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
+    ) -> MatrixSocket:
+        """Deprecated: use :meth:`matrix`, which does not read like
+        ``VectorSocket.transform(matrix)`` (applying a matrix)."""
+        _deprecated("ObjectSocket.transform()", "ObjectSocket.matrix()")
+        return self.matrix(transform_space)
 
     def location(
         self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"

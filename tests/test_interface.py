@@ -524,7 +524,8 @@ def test_socket_accessor():
         cube = g.Cube()
         sim = g.SimulationZone()
         (
-            sim.input.capture(cube)
+            cube
+            >> sim.items.geometry().initial
             >> g.TransformGeometry(translation=g.CombineXYZ(y=sim.delta_time))
             >> sim.output
             >> tree.outputs.geometry("MovedCube")
@@ -1400,9 +1401,9 @@ def test_vector_socket_new_methods():
         assert result.node.operation == "REFLECT"
 
         ftl = g.FieldToList(10)
-        veclist = ftl.vector(vec)
-        assert ftl.i["VECTOR"].links
-        assert ftl.i["VECTOR"].links[0].from_node == vec.node
+        veclist = ftl.items.vector(vec).output
+        assert ftl.i["Position"].links
+        assert ftl.i["Position"].links[0].from_node == vec.node
         sorted = veclist.sort(veclist.length())
         assert isinstance(sorted, VectorSocketList)
         node = sorted.builder_node
@@ -1415,7 +1416,7 @@ def test_vector_socket_new_methods():
             node.i.sort_weight.links[0].from_node.bl_idname == g.VectorMath._bl_idname
         )
 
-        list = ftl.float(1.0)
+        list = ftl.items.float(1.0).output
         assert isinstance(list, FloatSocketList)
         assert list.node.bl_idname == g.FieldToList._bl_idname
 
@@ -1581,17 +1582,32 @@ def test_all_domain_properties_reachable():
             input_pos.point.evaluate()
 
 
-def test_matrix_socket_transform_direction():
+def test_vector_socket_transform_direction():
     with g.tree():
         mat = g.CombineTransform().o.transform
         direction = g.Vector().o.vector
 
-        result = mat.transform_direction(direction)
+        result = direction.transform_direction(mat)
 
     assert isinstance(result, VectorSocket)
     assert result.node.bl_idname == g.TransformDirection._bl_idname
     assert result.builder_node.i.direction.links[0].from_node == direction.node
     assert result.builder_node.i.transform.links[0].from_node == mat.node
+
+
+def test_deprecated_matrix_transform_direction_and_object_transform():
+    with g.tree():
+        mat = g.CombineTransform().o.transform
+        direction = g.Vector().o.vector
+        obj = g.SelfObject().o.self_object
+        with pytest.warns(DeprecationWarning, match="VectorSocket.transform_direction"):
+            result = mat.transform_direction(direction)
+        assert result.node.bl_idname == g.TransformDirection._bl_idname
+        with pytest.warns(DeprecationWarning, match="ObjectSocket.matrix"):
+            legacy = obj.transform("RELATIVE")
+        assert isinstance(legacy, MatrixSocket)
+        assert legacy.node.transform_space == "RELATIVE"
+        assert isinstance(obj.matrix(), MatrixSocket)
 
 
 def test_accumulate_field_socket_methods():

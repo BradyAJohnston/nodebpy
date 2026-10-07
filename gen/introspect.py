@@ -84,6 +84,7 @@ def collect_socket_info(
             is_output=is_output,
             is_multi_input=getattr(socket, "is_multi_input", False),
             structure_type=_socket_structure_type(socket),
+            hide_value=bool(getattr(socket, "hide_value", False)),
             menu_items=_collect_socket_menu_items(socket)
             if socket.type == "MENU" and cast(Any, socket).default_value != ""
             else [],
@@ -179,6 +180,11 @@ def collect_property_info(node, node_type):
 
     for prop in node_type.bl_rna.properties:
         if prop.identifier in props_to_ignore:
+            continue
+        # Deprecated properties linger in RNA after a node moves the setting onto
+        # a Menu socket of the same name (e.g. Merge Layers' ``mode`` in 5.3),
+        # which would produce a duplicate ``__init__`` parameter.
+        if getattr(prop, "is_deprecated", False):
             continue
 
         if prop.type == "ENUM":

@@ -9,15 +9,13 @@ bespoke behaviour lives here.
 
 from __future__ import annotations
 
-import warnings
-from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, cast
+from collections.abc import Iterable, Mapping
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 import bpy
 from mathutils import Euler
 
 from ..builder import (
-    BaseNode,
     BooleanSocketList,
     ColorSocketList,
     FloatSocketList,
@@ -26,20 +24,19 @@ from ..builder import (
     MatrixSocketList,
     MenuSocketList,
     RotationSocketList,
-    SocketAccessor,
     StringSocketList,
     VectorSocketList,
 )
-from ..builder import Socket as SocketLinker
-from ..builder._registry import _wrap_socket
 from ..builder.items import (
+    _ALL_ITEM_TYPES,
+    _DEFAULT_NAMES,
     Item,
-    _apply_item_value,
-    _FieldItemFactory,
-    _infer_value_type,
+    _deprecated,
+    _FieldItems,
     _socket_for_item,
-    _SocketItemFactory,
-    _SocketValueItemFactory,
+    _SocketItems,
+    _SocketValueItems,
+    _ValueItems,
 )
 from ..types import (
     InputAny,
@@ -52,236 +49,213 @@ from ..types import (
     InputInteger,
     InputLinkable,
     InputMatrix,
+    InputMenu,
     InputRotation,
     InputString,
     InputVector,
     _BakedDataTypeValues,
-    _SocketShapeStructureType,
 )
 
 if TYPE_CHECKING:
-    from ..builder import BundleSocket, GeometrySocket, StringSocket
-    from ..builder.tree import TreeBuilder
+    from ..builder import (
+        BooleanSocket,
+        BundleSocket,
+        ColorSocket,
+        FloatSocket,
+        GeometrySocket,
+        IntegerSocket,
+        MatrixSocket,
+        MenuSocket,
+        RotationSocket,
+        StringSocket,
+        VectorSocket,
+    )
 
 
-class _BakeItems(_FieldItemFactory):
-    """Typed item factories for the Bake node — the field types plus the
-    geometry-ish types bake items additionally support."""
-
-    _owner: _BakeMixin
+class _BakeItems(_FieldItems):
+    """Bake items: the field types plus the geometry-ish types bake items
+    additionally support."""
 
     def string(
-        self, name: str = "String", value: InputString = None
+        self, value: InputString = None, name: str | None = None
     ) -> Item[StringSocket]:
-        return cast("Item[StringSocket]", self._declare(name, value, "STRING"))
+        return self._typed(value, name, "STRING")
 
     def geometry(
-        self, name: str = "Geometry", value: InputGeometry = None
+        self, value: InputGeometry = None, name: str | None = None
     ) -> Item[GeometrySocket]:
-        return cast("Item[GeometrySocket]", self._declare(name, value, "GEOMETRY"))
+        return self._typed(value, name, "GEOMETRY")
 
     def bundle(
-        self, name: str = "Bundle", value: InputBundle = None
+        self, value: InputBundle = None, name: str | None = None
     ) -> Item[BundleSocket]:
-        return cast("Item[BundleSocket]", self._declare(name, value, "BUNDLE"))
+        return self._typed(value, name, "BUNDLE")
 
 
 class _BakeMixin(ItemsMixin):
     """Variadic items constructor for the Bake node. Items may be passed
-    positionally (``*args``), as a ``name -> value`` mapping, or as keyword
-    arguments; all are funnelled through :meth:`ItemsMixin._add_inputs`."""
+    positionally (``*args``, named after their sources), as a ``name ->
+    value`` mapping, or as keyword arguments."""
 
     _items_collection = "bake_items"
-    _socket_data_types = _BakedDataTypeValues
+    # sources are matched by socket type (VALUE), items are made by item type (FLOAT)
+    _socket_data_types = tuple(
+        "VALUE" if t == "FLOAT" else t for t in _BakedDataTypeValues
+    )
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     def __init__(
-        self, *args, items: dict[str, InputLinkable | str] | None = None, **kwargs
+        self,
+        *args: InputLinkable | str,
+        items: Mapping[str, InputAny] | Iterable[InputAny] | None = None,
+        **kwargs: InputAny,
     ):
         super().__init__()
-        key_args = dict(items or {})
-        key_args.update(kwargs)
-        self._establish_links(**self._add_inputs(*args, **key_args))
+        self.items._add_all(args)
+        self.items._add_all(items)
+        self.items._add_all(kwargs)
+        self._establish_links()
 
     @property
     def items(self) -> _BakeItems:
-        """Typed item factories — declare bake items with static types."""
+        """The bake items."""
         return _BakeItems(self)
 
 
-class _CombineBundleItems(_SocketValueItemFactory):
-    """Typed factories for Combine Bundle items; each declares one bundle
-    item and returns its typed input socket, linked from ``value`` when one
-    is given."""
+class _CombineBundleItems(_SocketValueItems):
+    """Combine Bundle items: each has an input socket to feed."""
 
-    _owner: _CombineBundleMixin
-
-    def _declare(
-        self,
-        name: str,
-        value: InputAny,
-        type: str,
-        structure_type: _SocketShapeStructureType,
-    ) -> SocketLinker:
-        node = self._owner.node
-        item = node.bundle_items.new(type, name)  # ty: ignore[invalid-argument-type]
-        assert item is not None
-        if structure_type != "AUTO":
-            item.structure_type = structure_type
-        socket = _socket_for_item(node, node.bundle_items, "Item_", item)
-        _apply_item_value(self._owner, socket, value)
-        return _wrap_socket(socket)
+    _has_output = False
 
 
-class _CombineBundleMixin:
-    """Items constructor + typed item factories for the Combine Bundle
-    node, whose inputs are all dynamic bundle items."""
+class _CombineBundleMixin(ItemsMixin):
+    """Items constructor for the Combine Bundle node, whose inputs are all
+    dynamic bundle items."""
+
+    _items_collection = "bundle_items"
+    _socket_data_types = _ALL_ITEM_TYPES
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     if TYPE_CHECKING:
         node: bpy.types.NodeCombineBundle
-        tree: TreeBuilder
-
-        def _source_socket(self, node) -> bpy.types.NodeSocket: ...
 
     def __init__(
         self,
-        items: dict[str, InputAny] | None = None,
+        items: Mapping[str, InputAny] | Iterable[InputAny] | None = None,
         *,
         define_signature: bool = False,
     ):
         super().__init__()
-        for name, value in (items or {}).items():
-            self._add_bundle_item(name, value)
+        self.items._add_all(items)
         self.node.define_signature = define_signature
+
+    def _item_socket(self, item, *, output: bool = False) -> bpy.types.NodeSocket:
+        return _socket_for_item(self.node, self._items, "Item_", item, output=output)
 
     @property
     def items(self) -> _CombineBundleItems:
-        """Typed item factories — declare bundle items with static types."""
+        """The bundle items."""
         return _CombineBundleItems(self)
 
-    def _add_bundle_item(self, name: str, value: InputAny) -> None:
-        """Add a named bundle item from a value of any supported kind.
 
-        - a socket-type string (``"GEOMETRY"``) declares an empty item;
-        - a socket / node source is linked in via the ``__extend__`` virtual
-          socket (Blender makes an item of the source's own type, then renamed);
-        - any other value declares an item of the inferred type and sets its
-          default.
-        """
-        if isinstance(value, str):
-            self.node.bundle_items.new(value, name)  # ty: ignore[invalid-argument-type]
-        elif isinstance(value, (BaseNode, SocketLinker, bpy.types.NodeSocket)):
-            extend = self.node.inputs[len(self.node.inputs) - 1]
-            self.tree.link(self._source_socket(value), extend)
-            # Re-fetch by index: the collection just grew, so any earlier item
-            # reference is stale (see bpy collection invalidation).
-            self.node.bundle_items[len(self.node.bundle_items) - 1].name = name
-        else:
-            socket_type = _infer_value_type(value)
-            if socket_type is None:
-                raise TypeError(f"Unsupported bundle item {name!r}: {value!r}")
-            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
-            cast(Any, self.node.inputs[name]).default_value = value
+class _SeparateBundleItems(_SocketItems):
+    """Separate Bundle items: each has an output socket to read."""
+
+    _has_input = False
 
 
-class _SeparateBundleItems(_SocketItemFactory):
-    """Typed factories for Separate Bundle items; each declares one bundle
-    item and returns its typed output socket."""
+class _SeparateBundleMixin(ItemsMixin):
+    """Items constructor for the Separate Bundle node, whose outputs are all
+    dynamic bundle items declared by name and socket type."""
 
-    _owner: _SeparateBundleMixin
-
-    def _declare(
-        self, name: str, type: str, structure_type: _SocketShapeStructureType
-    ) -> SocketLinker:
-        node = self._owner.node
-        item = node.bundle_items.new(type, name)  # ty: ignore[invalid-argument-type]
-        assert item is not None
-        if structure_type != "AUTO":
-            item.structure_type = structure_type
-        return _wrap_socket(
-            _socket_for_item(node, node.bundle_items, "Item_", item, output=True)
-        )
-
-
-class _SeparateBundleMixin:
-    """Items constructor + typed item factories for the Separate Bundle
-    node, whose outputs are all dynamic bundle items."""
+    _items_collection = "bundle_items"
+    _socket_data_types = _ALL_ITEM_TYPES
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     if TYPE_CHECKING:
         node: bpy.types.NodeSeparateBundle
 
-        def _establish_links(self, **kwargs: Any) -> None: ...
-
     def __init__(
         self,
         bundle: InputBundle = None,
-        items: dict[str, str] | None = None,
+        items: Mapping[str, str] | None = None,
         *,
         define_signature: bool = False,
     ):
         super().__init__()
         self.node.define_signature = define_signature
-        # Items are output sockets pulled from the bundle; each is declared by
-        # name and socket-type string (the inverse of CombineBundle, where the
-        # type is inferred from a linked source).
-        for name, socket_type in (items or {}).items():
-            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
+        self.items._add_all(items)
         self._establish_links(Bundle=bundle)
+
+    def _item_socket(self, item, *, output: bool = False) -> bpy.types.NodeSocket:
+        return _socket_for_item(self.node, self._items, "Item_", item, output=output)
 
     @property
     def items(self) -> _SeparateBundleItems:
-        """Typed item factories — declare bundle items with static types."""
+        """The bundle items."""
         return _SeparateBundleItems(self)
 
 
-class _ClosureToListItems(_SocketItemFactory):
-    """Typed factories for Closure to List items; each declares one list item
-    and returns its typed output socket (a list of that type, one element per
-    closure evaluation)."""
+class _ClosureToListItems(_SocketItems):
+    """Closure to List items: each has an output socket carrying a list of
+    that type, one element per closure evaluation."""
 
-    _owner: _ClosureToListMixin
-
-    def _declare(
-        self, name: str, type: str, structure_type: _SocketShapeStructureType
-    ) -> SocketLinker:
-        node = self._owner.node
-        item = node.list_items.new(type, name)  # ty: ignore[invalid-argument-type]
-        assert item is not None
-        if structure_type != "AUTO":
-            item.structure_type = structure_type
-        return _wrap_socket(
-            _socket_for_item(node, node.list_items, "List_", item, output=True)
-        )
+    _has_input = False
 
 
-class _ClosureToListMixin:
-    """Items constructor + typed item factories for the Closure to List node,
-    whose outputs are all dynamic list items filled by evaluating the closure
-    ``count`` times. Items must be declared explicitly — Blender only syncs
-    them from the linked closure's signature on an editor update, which never
-    runs in a headless build."""
+class _ClosureToListMixin(ItemsMixin):
+    """Items constructor for the Closure to List node, whose outputs are all
+    dynamic list items filled by evaluating the closure ``count`` times.
+    Items must be declared explicitly — Blender only syncs them from the
+    linked closure's signature on an editor update, which never runs in a
+    headless build."""
+
+    _items_collection = "list_items"
+    _socket_data_types = _ALL_ITEM_TYPES
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     if TYPE_CHECKING:
         node: bpy.types.GeometryNodeClosureToList
-
-        def _establish_links(self, **kwargs: Any) -> None: ...
 
     def __init__(
         self,
         count: InputInteger = 1,
         closure: InputClosure = None,
-        items: dict[str, str] | None = None,
+        items: Mapping[str, str] | None = None,
     ):
         super().__init__()
-        # Items are output lists computed from the closure; each is declared
-        # by name and socket-type string (as for SeparateBundle).
-        for name, socket_type in (items or {}).items():
-            self.node.list_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
+        self.items._add_all(items)
         self._establish_links(Count=count, Closure=closure)
+
+    def _item_socket(self, item, *, output: bool = False) -> bpy.types.NodeSocket:
+        return _socket_for_item(self.node, self._items, "List_", item, output=output)
 
     @property
     def items(self) -> _ClosureToListItems:
-        """Typed item factories — declare list items with static types."""
+        """The list items."""
         return _ClosureToListItems(self)
+
+
+class _FormatStringItems(_ValueItems[Item]):
+    """Format String items: the values interpolated into the template, each
+    with an input socket."""
+
+    _has_output = False
+
+    def float(
+        self, value: InputFloat = None, name: str | None = None
+    ) -> Item[FloatSocket]:
+        return self._typed(value, name, "FLOAT")
+
+    def integer(
+        self, value: InputInteger = None, name: str | None = None
+    ) -> Item[IntegerSocket]:
+        return self._typed(value, name, "INT")
+
+    def string(
+        self, value: InputString = None, name: str | None = None
+    ) -> Item[StringSocket]:
+        return self._typed(value, name, "STRING")
 
 
 class _FormatStringMixin(ItemsMixin):
@@ -292,30 +266,76 @@ class _FormatStringMixin(ItemsMixin):
     _socket_data_types = ("VALUE", "INT", "STRING")
     _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> SocketAccessor: ...
-
     def __init__(
         self,
         format: InputString = "",
-        items: Mapping[str, InputString | InputInteger | InputFloat] | None = None,
+        items: Mapping[str, InputString | InputInteger | InputFloat]
+        | Iterable[InputString | InputInteger | InputFloat]
+        | None = None,
     ):
         super().__init__()
-        key_args = {"Format": format}
-        key_args.update(self._add_inputs(**(items or {})))
-        self._establish_links(**key_args)
+        self.items._add_all(items)
+        self._establish_links(Format=format)
 
     @property
-    def items(self) -> dict[str, SocketLinker]:
-        """Input sockets:"""
-        return {socket.name: self.i._get(socket.name) for socket in self.node.inputs}
+    def items(self) -> _FormatStringItems:
+        """The interpolated items."""
+        return _FormatStringItems(self)
+
+
+class _FieldToListItems(_ValueItems[Item]):
+    """Field to List items: ``input`` is the field gathered, ``output`` the
+    resulting list socket."""
+
+    def float(
+        self, value: InputFloat = None, name: str | None = None
+    ) -> Item[FloatSocket, FloatSocketList]:
+        return self._typed(value, name, "FLOAT")
+
+    def integer(
+        self, value: InputInteger = None, name: str | None = None
+    ) -> Item[IntegerSocket, IntegerSocketList]:
+        return self._typed(value, name, "INT")
+
+    def boolean(
+        self, value: InputBoolean = None, name: str | None = None
+    ) -> Item[BooleanSocket, BooleanSocketList]:
+        return self._typed(value, name, "BOOLEAN")
+
+    def vector(
+        self, value: InputVector = None, name: str | None = None
+    ) -> Item[VectorSocket, VectorSocketList]:
+        return self._typed(value, name, "VECTOR")
+
+    def color(
+        self, value: InputColor = None, name: str | None = None
+    ) -> Item[ColorSocket, ColorSocketList]:
+        return self._typed(value, name, "RGBA")
+
+    def rotation(
+        self, value: InputRotation = None, name: str | None = None
+    ) -> Item[RotationSocket, RotationSocketList]:
+        return self._typed(value, name, "ROTATION")
+
+    def matrix(
+        self, value: InputMatrix = None, name: str | None = None
+    ) -> Item[MatrixSocket, MatrixSocketList]:
+        return self._typed(value, name, "MATRIX")
+
+    def string(
+        self, value: InputString = None, name: str | None = None
+    ) -> Item[StringSocket, StringSocketList]:
+        return self._typed(value, name, "STRING")
+
+    def menu(
+        self, value: InputMenu = None, name: str | None = None
+    ) -> Item[MenuSocket, MenuSocketList]:
+        return self._typed(value, name, "MENU")
 
 
 class _FieldToListMixin(ItemsMixin):
-    """Items constructor + per-type ``float``/``integer``/… helpers for the
-    Field to List node, which gathers field values into typed socket lists."""
+    """Items constructor for the Field to List node, which gathers field
+    values into typed socket lists."""
 
     _items_collection = "list_items"
     _socket_data_types = (
@@ -331,103 +351,80 @@ class _FieldToListMixin(ItemsMixin):
     )
     _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
-    if TYPE_CHECKING:
-        # i/o are declared on the generated subclass; restate them here so the
-        # item helpers below type-check against the mixin in isolation.
-        @property
-        def i(self) -> SocketAccessor: ...
-        @property
-        def o(self) -> SocketAccessor: ...
-
     def __init__(
         self,
         count: InputInteger = 1,
-        items: dict[str, InputLinkable | str] | None = None,
+        items: Mapping[str, InputAny] | Iterable[InputAny] | None = None,
         *,
         fields: dict[str, InputLinkable | str] | None = None,
     ):
         super().__init__()
         if fields is not None:
-            warnings.warn(
-                "'fields' is deprecated, use 'items'", DeprecationWarning, stacklevel=2
-            )
+            _deprecated("FieldToList(fields=)", "FieldToList(items=)")
             items = fields
-        key_args = {"Count": count}
-        key_args.update(self._add_inputs(**(items or {})))
-        self._establish_links(**key_args)
+        self.items._add_all(items)
+        self._establish_links(Count=count)
 
-    def _declare_item(
-        self,
-        type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-        ],
-        name: str | None = None,
-        default: Any | None = None,
-    ) -> bpy.types.NodeSocket:
-        item = self._new_item(name if name else type, type)
+    @property
+    def items(self) -> _FieldToListItems:
+        """The list items."""
+        return _FieldToListItems(self)
 
-        input_socket = self.i[item.name]
-        if isinstance(default, (BaseNode, SocketLinker)):
-            self._establish_links(**{item.name: default})
-        else:
-            input_socket.default_value = default
+    # -- deprecated per-type methods, removed in 530 --
 
-        return self.o[item.name].socket
+    def _list_item(self, type: str, value: Any, name: str | None) -> Any:
+        _deprecated(
+            f"FieldToList.{_DEFAULT_NAMES[type].lower()}(value, name)",
+            "items.<type>(value, name).output",
+        )
+        return self.items._declare(value, name, type).output
 
     def float(
         self, input: InputFloat = 0.0, name: str | None = None
     ) -> FloatSocketList:
-        return FloatSocketList(self._declare_item("FLOAT", name, input))
+        return self._list_item("FLOAT", input, name)
 
     def integer(
         self, input: InputInteger = 0, name: str | None = None
     ) -> IntegerSocketList:
-        return IntegerSocketList(self._declare_item("INT", name, input))
+        return self._list_item("INT", input, name)
 
     def boolean(
         self, input: InputBoolean = False, name: str | None = None
     ) -> BooleanSocketList:
-        return BooleanSocketList(self._declare_item("BOOLEAN", name, input))
+        return self._list_item("BOOLEAN", input, name)
 
     def vector(
         self, input: InputVector = (0, 0, 0), name: str | None = None
     ) -> VectorSocketList:
-        return VectorSocketList(self._declare_item("VECTOR", name, input))
+        return self._list_item("VECTOR", input, name)
 
     def color(
         self, input: InputColor = (0, 0, 0, 1), name: str | None = None
     ) -> ColorSocketList:
-        return ColorSocketList(self._declare_item("RGBA", name, input))
+        return self._list_item("RGBA", input, name)
 
     def rotation(
         self, input: InputRotation = None, name: str | None = None
     ) -> RotationSocketList:
-        if input is None:
-            input = Euler((0, 0, 0))
-        return RotationSocketList(self._declare_item("ROTATION", name, input))
+        return self._list_item(
+            "ROTATION", Euler((0, 0, 0)) if input is None else input, name
+        )
 
     def matrix(
         self, input: InputMatrix = None, name: str | None = None
     ) -> MatrixSocketList:
-        return MatrixSocketList(self._declare_item("MATRIX", name, input))
+        return self._list_item("MATRIX", input, name)
 
     def string(
         self, input: InputString = "", name: str | None = None
     ) -> StringSocketList:
-        return StringSocketList(self._declare_item("STRING", name, input))
+        return self._list_item("STRING", input, name)
 
     def menu(
         self, input: InputString = None, name: str | None = None
     ) -> MenuSocketList:
-        return MenuSocketList(self._declare_item("MENU", name, input))
+        return self._list_item("MENU", input, name)
 
 
 class _HandleModeMixin:
@@ -447,7 +444,7 @@ class _HandleModeMixin:
         return "LEFT" in self.node.mode
 
     @left.setter
-    def left(self, value: bool):
+    def left(self, value: bool) -> None:
         self.node.mode = (
             (self.node.mode | {"LEFT"}) if value else (self.node.mode - {"LEFT"})
         )
@@ -457,7 +454,7 @@ class _HandleModeMixin:
         return "RIGHT" in self.node.mode
 
     @right.setter
-    def right(self, value: bool):
+    def right(self, value: bool) -> None:
         self.node.mode = (
             (self.node.mode | {"RIGHT"}) if value else (self.node.mode - {"RIGHT"})
         )
@@ -467,5 +464,5 @@ class _HandleModeMixin:
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: set[Literal["LEFT", "RIGHT"]]):
+    def mode(self, value: set[Literal["LEFT", "RIGHT"]]) -> None:
         self.node.mode = value

@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "520.29.1"
+version = "520.32.0"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
@@ -9,10 +9,13 @@ authors = [
 requires-python = ">=3.13"
 license = { text = "GPL-3.0-or-later" }
 
+[project.scripts]
+nodebpy = "nodebpy.__main__:main"
+
 [project.optional-dependencies]
-networkx = [
-    "networkx>=3.6.1",
-]
+# Deprecated: the Sugiyama layout no longer needs networkx. Kept (empty) so
+# existing `nodebpy[networkx]` installs keep resolving.
+networkx = []
 plot = [
     "matplotlib>=3.8",
 ]
@@ -32,7 +35,6 @@ build-backend = "uv_build"
 dev = [
     "ipython>=8.0.0",
     "ipykernel>=6.0.0",
-    "networkx>=3.6.1",
     "fake-bpy-module>=20260501",
     "jsondiff>=2.2.1",
     "pytest>=9.0.2",
@@ -45,7 +47,6 @@ dev = [
     "pytest-xdist>=3.8.0",
     "griffe<2.0.0",
     "ty==0.0.74",
-    "types-networkx>=3.6.1.20260728",
     "matplotlib>=3.11.2",
 ]
 

@@ -120,7 +120,7 @@ class BrickTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         color1: InputColor = (0.8, 0.8, 0.8, 1.0),
         color2: InputColor = (0.2, 0.2, 0.2, 1.0),
         mortar: InputColor = (0.0, 0.0, 0.0, 1.0),
@@ -160,7 +160,7 @@ class BrickTexture(BaseNode):
         return self.node.offset_frequency
 
     @offset_frequency.setter
-    def offset_frequency(self, value: int):
+    def offset_frequency(self, value: int) -> None:
         self.node.offset_frequency = value
 
     @property
@@ -168,7 +168,7 @@ class BrickTexture(BaseNode):
         return self.node.squash_frequency
 
     @squash_frequency.setter
-    def squash_frequency(self, value: int):
+    def squash_frequency(self, value: int) -> None:
         self.node.squash_frequency = value
 
     @property
@@ -176,7 +176,7 @@ class BrickTexture(BaseNode):
         return self.node.offset
 
     @offset.setter
-    def offset(self, value: float):
+    def offset(self, value: float) -> None:
         self.node.offset = value
 
     @property
@@ -184,7 +184,7 @@ class BrickTexture(BaseNode):
         return self.node.squash
 
     @squash.setter
-    def squash(self, value: float):
+    def squash(self, value: float) -> None:
         self.node.squash = value
 
 
@@ -250,7 +250,7 @@ class CheckerTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         color1: InputColor = (0.8, 0.8, 0.8, 1.0),
         color2: InputColor = (0.2, 0.2, 0.2, 1.0),
         scale: InputFloat = 5.0,
@@ -344,7 +344,7 @@ class GaborTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         frequency: InputFloat = 2.0,
         anisotropy: InputFloat = 1.0,
@@ -368,7 +368,7 @@ class GaborTexture(BaseNode):
     @classmethod
     def type_2d(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         frequency: InputFloat = 2.0,
         anisotropy: InputFloat = 1.0,
@@ -387,7 +387,7 @@ class GaborTexture(BaseNode):
     @classmethod
     def type_3d(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         frequency: InputFloat = 2.0,
         anisotropy: InputFloat = 1.0,
@@ -408,7 +408,7 @@ class GaborTexture(BaseNode):
         return self.node.gabor_type
 
     @gabor_type.setter
-    def gabor_type(self, value: Literal["2D", "3D"]):
+    def gabor_type(self, value: Literal["2D", "3D"]) -> None:
         self.node.gabor_type = value
 
 
@@ -456,7 +456,7 @@ class GradientTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         *,
         gradient_type: Literal[
             "LINEAR",
@@ -474,39 +474,37 @@ class GradientTexture(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def linear(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def linear(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Linear'. Create a linear progression"""
         return cls(gradient_type="LINEAR", vector=vector)
 
     @classmethod
-    def quadratic(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def quadratic(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Quadratic'. Create a quadratic progression"""
         return cls(gradient_type="QUADRATIC", vector=vector)
 
     @classmethod
-    def easing(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def easing(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Easing'. Create a progression easing from one step to the next"""
         return cls(gradient_type="EASING", vector=vector)
 
     @classmethod
-    def diagonal(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def diagonal(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Diagonal'. Create a diagonal progression"""
         return cls(gradient_type="DIAGONAL", vector=vector)
 
     @classmethod
-    def spherical(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def spherical(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Spherical'. Create a spherical progression"""
         return cls(gradient_type="SPHERICAL", vector=vector)
 
     @classmethod
-    def quadratic_sphere(
-        cls, vector: InputVector = (0.0, 0.0, 0.0)
-    ) -> "GradientTexture":
+    def quadratic_sphere(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Quadratic Sphere'. Create a quadratic progression in the shape of a sphere"""
         return cls(gradient_type="QUADRATIC_SPHERE", vector=vector)
 
     @classmethod
-    def radial(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def radial(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Radial'. Create a radial progression"""
         return cls(gradient_type="RADIAL", vector=vector)
 
@@ -536,7 +534,7 @@ class GradientTexture(BaseNode):
             "QUADRATIC_SPHERE",
             "RADIAL",
         ],
-    ):
+    ) -> None:
         self.node.gradient_type = value
 
 
@@ -597,7 +595,7 @@ class ImageTexture(BaseNode):
     def __init__(
         self,
         image: InputImage = None,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         frame: InputInteger = 0,
         *,
         interpolation: Literal["Linear", "Closest", "Cubic"] = "Linear",
@@ -614,7 +612,7 @@ class ImageTexture(BaseNode):
         return self.node.interpolation
 
     @interpolation.setter
-    def interpolation(self, value: Literal["Linear", "Closest", "Cubic"]):
+    def interpolation(self, value: Literal["Linear", "Closest", "Cubic"]) -> None:
         self.node.interpolation = value
 
     @property
@@ -622,7 +620,7 @@ class ImageTexture(BaseNode):
         return self.node.extension
 
     @extension.setter
-    def extension(self, value: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]):
+    def extension(self, value: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]) -> None:
         self.node.extension = value
 
 
@@ -682,7 +680,7 @@ class MagicTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         distortion: InputFloat = 1.0,
         *,
@@ -698,7 +696,7 @@ class MagicTexture(BaseNode):
         return self.node.turbulence_depth
 
     @turbulence_depth.setter
-    def turbulence_depth(self, value: int):
+    def turbulence_depth(self, value: int) -> None:
         self.node.turbulence_depth = value
 
 
@@ -794,7 +792,7 @@ class NoiseTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         w: InputFloat = 0.0,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
@@ -834,7 +832,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def multifractal(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -858,7 +856,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def ridged_multifractal(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -886,7 +884,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def hybrid_multifractal(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -914,7 +912,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def fbm(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -940,7 +938,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def hetero_terrain(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -968,7 +966,7 @@ class NoiseTexture(BaseNode):
         return self.node.noise_dimensions
 
     @noise_dimensions.setter
-    def noise_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]):
+    def noise_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
         self.node.noise_dimensions = value
 
     @property
@@ -993,7 +991,7 @@ class NoiseTexture(BaseNode):
             "FBM",
             "HETERO_TERRAIN",
         ],
-    ):
+    ) -> None:
         self.node.noise_type = value
 
     @property
@@ -1001,7 +999,7 @@ class NoiseTexture(BaseNode):
         return self.node.normalize
 
     @normalize.setter
-    def normalize(self, value: bool):
+    def normalize(self, value: bool) -> None:
         self.node.normalize = value
 
 
@@ -1109,7 +1107,7 @@ class VoronoiTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         w: InputFloat = 0.0,
         scale: InputFloat = 5.0,
         detail: InputFloat = 0.0,
@@ -1151,7 +1149,7 @@ class VoronoiTexture(BaseNode):
         return self.node.voronoi_dimensions
 
     @voronoi_dimensions.setter
-    def voronoi_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]):
+    def voronoi_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
         self.node.voronoi_dimensions = value
 
     @property
@@ -1161,7 +1159,7 @@ class VoronoiTexture(BaseNode):
     @distance.setter
     def distance(
         self, value: Literal["EUCLIDEAN", "MANHATTAN", "CHEBYCHEV", "MINKOWSKI"]
-    ):
+    ) -> None:
         self.node.distance = value
 
     @property
@@ -1174,7 +1172,7 @@ class VoronoiTexture(BaseNode):
     def feature(
         self,
         value: Literal["F1", "F2", "SMOOTH_F1", "DISTANCE_TO_EDGE", "N_SPHERE_RADIUS"],
-    ):
+    ) -> None:
         self.node.feature = value
 
     @property
@@ -1182,7 +1180,7 @@ class VoronoiTexture(BaseNode):
         return self.node.normalize
 
     @normalize.setter
-    def normalize(self, value: bool):
+    def normalize(self, value: bool) -> None:
         self.node.normalize = value
 
 
@@ -1266,7 +1264,7 @@ class WaveTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         distortion: InputFloat = 0.0,
         detail: InputFloat = 2.0,
@@ -1298,7 +1296,7 @@ class WaveTexture(BaseNode):
     @classmethod
     def bands(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         distortion: InputFloat = 0.0,
         detail: InputFloat = 2.0,
@@ -1326,7 +1324,7 @@ class WaveTexture(BaseNode):
     @classmethod
     def rings(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         distortion: InputFloat = 0.0,
         detail: InputFloat = 2.0,
@@ -1356,7 +1354,7 @@ class WaveTexture(BaseNode):
         return self.node.wave_type
 
     @wave_type.setter
-    def wave_type(self, value: Literal["BANDS", "RINGS"]):
+    def wave_type(self, value: Literal["BANDS", "RINGS"]) -> None:
         self.node.wave_type = value
 
     @property
@@ -1364,7 +1362,7 @@ class WaveTexture(BaseNode):
         return self.node.bands_direction
 
     @bands_direction.setter
-    def bands_direction(self, value: Literal["X", "Y", "Z", "DIAGONAL"]):
+    def bands_direction(self, value: Literal["X", "Y", "Z", "DIAGONAL"]) -> None:
         self.node.bands_direction = value
 
     @property
@@ -1372,7 +1370,7 @@ class WaveTexture(BaseNode):
         return self.node.rings_direction
 
     @rings_direction.setter
-    def rings_direction(self, value: Literal["X", "Y", "Z", "SPHERICAL"]):
+    def rings_direction(self, value: Literal["X", "Y", "Z", "SPHERICAL"]) -> None:
         self.node.rings_direction = value
 
     @property
@@ -1380,7 +1378,7 @@ class WaveTexture(BaseNode):
         return self.node.wave_profile
 
     @wave_profile.setter
-    def wave_profile(self, value: Literal["SIN", "SAW", "TRI"]):
+    def wave_profile(self, value: Literal["SIN", "SAW", "TRI"]) -> None:
         self.node.wave_profile = value
 
 
@@ -1434,7 +1432,7 @@ class WhiteNoiseTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         w: InputFloat = 0.0,
         *,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
@@ -1449,5 +1447,5 @@ class WhiteNoiseTexture(BaseNode):
         return self.node.noise_dimensions
 
     @noise_dimensions.setter
-    def noise_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]):
+    def noise_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
         self.node.noise_dimensions = value

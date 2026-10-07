@@ -1,13 +1,15 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Mermaid diagram generation for node trees."""
 
 from __future__ import annotations
 
 import contextlib
-from typing import cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bpy
 from bpy.types import Node, NodeTree
+
+if TYPE_CHECKING:
+    from ..builder.tree import TreeBuilder
 
 _COLOR_CLASS_MAP = {
     "GEOMETRY": "geometry-node",
@@ -75,13 +77,28 @@ def _sorted_nodes(node_tree: NodeTree, reroute_names: set) -> list[Node]:
         for n in node_tree.nodes
         if n not in input_nodes + output_nodes and n.name not in reroute_names
     ]
-    sorted_regular = sorted(
-        regular_nodes, key=lambda n: (n.location[0], -n.location[1])
-    )
+    # By how far along the links a node is, then by creation order: the same
+    # however the tree is arranged.
+    depth = dict.fromkeys(node_tree.nodes, 0)
+    links = [
+        (link.from_node, link.to_node)
+        for link in node_tree.links
+        if link.is_valid and link.from_node and link.to_node
+    ]
+    for _ in node_tree.nodes:
+        changed = False
+        for source, target in links:
+            if depth[target] <= depth[source]:
+                depth[target] = depth[source] + 1
+                changed = True
+        if not changed:
+            break
+    order = {node: index for index, node in enumerate(node_tree.nodes)}
+    sorted_regular = sorted(regular_nodes, key=lambda n: (depth[n], order[n]))
     return input_nodes + sorted_regular + output_nodes
 
 
-def to_mermaid(tree, fenced=True) -> str:
+def to_mermaid(tree: TreeBuilder[Any] | NodeTree, fenced: bool = True) -> str:
     """Generate a Mermaid diagram string from a node tree.
 
     Arguments
@@ -95,7 +112,7 @@ def to_mermaid(tree, fenced=True) -> str:
     -------
         A string containing the Mermaid diagram as a possibly fenced markdown code block
     """
-    node_tree = tree.tree if hasattr(tree, "tree") else tree
+    node_tree = tree if isinstance(tree, NodeTree) else tree.tree
 
     reroute_names = {n.name for n in node_tree.nodes if n.bl_idname == "NodeReroute"}
     sorted_nodes = _sorted_nodes(node_tree, reroute_names)

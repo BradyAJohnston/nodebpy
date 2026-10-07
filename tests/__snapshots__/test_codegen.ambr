@@ -4,11 +4,11 @@
   from nodebpy import TreeBuilder
   from nodebpy import geometry as g
   
-  with TreeBuilder("Geometry Node Group") as tree:
+  with TreeBuilder("Geometry Nodes") as tree:
       filtered = tree.outputs.vector("Filtered")
   
       (
-          g.FieldToList(count=10, items={"VECTOR": (0.0, 0.0, 0.0)}).o.vector.filter(
+          g.FieldToList(count=10, items={"Vector": (0.0, 0.0, 0.0)}).o.vector.filter(
               g.RandomValue.boolean(0.5)
           )
           >> filtered

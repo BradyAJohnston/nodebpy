@@ -27,9 +27,10 @@ make generate
 
 which runs, in order:
 
-1. `uv run python -m nodebpy.assets` — regenerates the typed classes for Blender's bundled essentials asset libraries
-2. `uv run python -m gen` — regenerates the node classes for every tree type
-3. `make format` — `ruff format`, `ruff check --fix`, and `ty check --fix src`
+1. `uv run python -m gen` — regenerates the typed classes for Blender's bundled essentials asset libraries, then the node classes for every tree type
+2. `make format` — `ruff format`, `ruff check --fix`, and `ty check --fix src`
+
+CI regenerates on every pull request and fails when the checked-in classes differ from the generator's output, so a change to `gen/` ships with its regenerated classes. The generator imports the project's own `nodebpy` before `bpy`: Blender puts its extensions' site-packages first on the path when `bpy` loads, and a `nodebpy` installed there would otherwise shadow the sources being generated.
 
 For faster iteration you can regenerate a single tree type:
 

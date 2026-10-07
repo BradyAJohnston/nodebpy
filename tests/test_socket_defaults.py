@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Generated constructor defaults must be Blender's own socket defaults.
 
 The generator spells a float32 default as the shortest literal that rebuilds it

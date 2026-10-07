@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Generate Python code from a Blender node tree using nodebpy.
 
 The generator walks the tree in topological order and builds a small
@@ -27,13 +26,16 @@ import keyword
 import re
 import textwrap
 from collections import Counter
-from collections.abc import Callable, Collection, Mapping
+from collections.abc import Callable, Collection, Iterator, Mapping
+from contextlib import contextmanager
 from dataclasses import dataclass, field
+from functools import cache
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 import numpy as np
-from bpy.types import ID, FunctionNodeCompare, NodeTree
+from bpy.types import ID, FunctionNodeCompare, Node, NodeSocket, NodeTree
 
+from ..types import Default
 from ._floats import (
     fmt_float as _fmt_float,
 )
@@ -304,6 +306,7 @@ class BinOp(Expr):
     op: str
     lhs: Expr
     rhs: Expr
+    prec: int = field(default=_ATOM_PREC, init=False)
 
     def __post_init__(self) -> None:
         self.prec = _BINOP_PREC[self.op]
@@ -573,19 +576,61 @@ def _find_cls(bl_idname: str) -> tuple[str, type] | None:
 # ---------------------------------------------------------------------------
 
 
+# Signatures are read for every constructor call emitted; they do not change.
+_signature = cache(inspect.signature)
+
+# Probe trees kept open inside probe_trees(), by tree type.
+_PROBE_TREES: dict[str, Any] = {}
+_KEEP_PROBE_TREES = False
+
+
+@contextmanager
+def probe_trees() -> Iterator[None]:
+    """Within the block, :func:`_with_probe_tree` keeps one throwaway tree
+    per tree type, emptied between probes, instead of making and removing
+    one per probe. The trees are removed on leaving the block."""
+    global _KEEP_PROBE_TREES
+    if _KEEP_PROBE_TREES:  # nested: the outer block owns the trees
+        yield
+        return
+    _KEEP_PROBE_TREES = True
+    try:
+        yield
+    finally:
+        _KEEP_PROBE_TREES = False
+        import bpy
+
+        for tree in _PROBE_TREES.values():
+            bpy.data.node_groups.remove(tree)
+        _PROBE_TREES.clear()
+
+
 def _with_probe_tree[T](tree_idname: str, fn: Callable[[Any], T], default: T) -> T:
     """Run ``fn`` against a throwaway node tree of ``tree_idname`` and return its
-    result, removing the tree afterward. Returns ``default`` if Blender is
-    unavailable or anything goes wrong. The probe tree is never the user's."""
+    result. Returns ``default`` if Blender is unavailable or anything goes
+    wrong. The probe tree is never the user's: it is removed afterward, or
+    emptied and kept for the next probe inside :func:`probe_trees`."""
     try:
         import bpy
 
-        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)  # ty: ignore[invalid-argument-type]
-        assert probe_tree is not None
+        probe_tree = _PROBE_TREES.get(tree_idname)
+        if probe_tree is None:
+            probe_tree = bpy.data.node_groups.new(
+                "__nodebpy_codegen_probe__",
+                tree_idname,  # ty: ignore[invalid-argument-type]
+            )
+            assert probe_tree is not None
+            if _KEEP_PROBE_TREES:
+                _PROBE_TREES[tree_idname] = probe_tree
         try:
             return fn(probe_tree)
         finally:
-            bpy.data.node_groups.remove(probe_tree)
+            if _KEEP_PROBE_TREES:
+                probe_tree.nodes.clear()
+                if probe_tree.interface is not None:
+                    probe_tree.interface.clear()
+            else:
+                bpy.data.node_groups.remove(probe_tree)
     except Exception:  # noqa: BLE001
         return default
 
@@ -874,35 +919,27 @@ def _topo_sort(node_tree, keep_reroutes: bool = False) -> list:
     node name — the nodes collection follows creation order, which a rebuild
     shuffles, and a name tie-break keeps emission (and thus re-dumps of a
     rebuilt tree) deterministic."""
-    try:
-        import networkx as nx
-
-        G: nx.DiGraph = nx.DiGraph()
-        for node in node_tree.nodes:
-            G.add_node(node)
-        for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
-            G.add_edge(from_node, to_node)
-        return list(nx.lexicographical_topological_sort(G, key=lambda n: n.name))
-    except ImportError:  # pragma: no cover - networkx ships as a dependency
-        nodes = list(node_tree.nodes)
-        node_by_name = {n.name: n for n in nodes}
-        in_deg: dict[str, int] = {n.name: 0 for n in nodes}
-        adj: dict[str, list[str]] = {n.name: [] for n in nodes}
-        for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
-            fn, tn = from_node.name, to_node.name
-            adj[fn].append(tn)
-            in_deg[tn] += 1
-        heap = [n.name for n in nodes if in_deg[n.name] == 0]
-        heapq.heapify(heap)
-        order = []
-        while heap:
-            name = heapq.heappop(heap)
-            order.append(node_by_name[name])
-            for m_name in adj[name]:
-                in_deg[m_name] -= 1
-                if in_deg[m_name] == 0:
-                    heapq.heappush(heap, m_name)
-        return order
+    nodes = list(node_tree.nodes)
+    node_by_name = {n.name: n for n in nodes}
+    in_deg: dict[str, int] = {n.name: 0 for n in nodes}
+    adj: dict[str, list[str]] = {n.name: [] for n in nodes}
+    for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
+        fn, tn = from_node.name, to_node.name
+        adj[fn].append(tn)
+        in_deg[tn] += 1
+    heap = [n.name for n in nodes if in_deg[n.name] == 0]
+    heapq.heapify(heap)
+    order = []
+    while heap:
+        name = heapq.heappop(heap)
+        order.append(node_by_name[name])
+        for m_name in adj[name]:
+            in_deg[m_name] -= 1
+            if in_deg[m_name] == 0:
+                heapq.heappush(heap, m_name)
+    if len(order) != len(nodes):
+        raise ValueError(f"Node tree {node_tree.name!r} contains a link cycle")
+    return order
 
 
 def _frame_chain(node) -> list:
@@ -1069,7 +1106,7 @@ class EmitContext:
     # only populated once the consuming MenuSwitch has been created and linked.
     iface_deferred: list[str] = field(default_factory=list)
 
-    def input_link(self, node, identifier: str) -> _Link | None:
+    def input_link(self, node: Node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
         for link in self.incoming.get(node.name, ()):
             if link.to_socket.identifier == identifier:
@@ -1135,7 +1172,7 @@ class EmitContext:
             )
         return ref
 
-    def input_expr(self, node, socket) -> Expr | None:
+    def input_expr(self, node: Node, socket: NodeSocket) -> Expr | None:
         """Expression for an input socket: upstream reference or literal default."""
         link = self.input_link(node, socket.identifier)
         if link is not None:
@@ -1144,7 +1181,7 @@ class EmitContext:
             return Lit(socket.default_value)
         return None
 
-    def constructor(self, node, skip_input_id: str | None = None) -> Call:
+    def constructor(self, node: Node, skip_input_id: str | None = None) -> Call:
         """``alias.ClassName(...)`` call for a node.
 
         Linked inputs become kwargs referencing upstream expressions, unlinked
@@ -1216,7 +1253,7 @@ class EmitContext:
     ) -> dict[str, Expr]:
         """Literal kwargs for unlinked sockets whose value differs from the default."""
         try:
-            sig = inspect.signature(cls.__init__)
+            sig = _signature(cls.__init__)
         except (TypeError, ValueError):
             sig = None
         positional = (
@@ -1486,7 +1523,7 @@ def _non_default_props(node, cls: type) -> dict[str, Any]:
     ``bl_rna.properties`` or shadow a base-Node property like ``color``.
     """
     try:
-        sig = inspect.signature(cls.__init__)
+        sig = _signature(cls.__init__)
     except (TypeError, ValueError):
         return {}
     rna_props = getattr(getattr(node, "bl_rna", None), "properties", None)
@@ -1626,7 +1663,7 @@ def _parse_factory_func(
         try:
             init_params = [
                 param
-                for param in inspect.signature(cls.__init__).parameters.values()
+                for param in _signature(cls.__init__).parameters.values()
                 if param.name != "self"
                 and param.kind
                 in (
@@ -1668,7 +1705,7 @@ def _parse_factory_func(
 
 def _factory_param_defaults(func) -> dict[str, Any] | None:
     try:
-        sig = inspect.signature(func)
+        sig = _signature(func)
     except (TypeError, ValueError):
         return None
     defaults: dict[str, Any] = {}
@@ -1702,7 +1739,7 @@ def _class_factories(cls: type) -> list[_Factory]:
         # take ``*, normalize=..., noise_dimensions=...``), not sockets.
         keyword_only = {
             name
-            for name, param in inspect.signature(func).parameters.items()
+            for name, param in _signature(func).parameters.items()
             if param.kind is inspect.Parameter.KEYWORD_ONLY
         }
         prop_params = {
@@ -1755,6 +1792,7 @@ def _factory_state_matches(node, props: dict[str, Any]) -> bool:
 # baking behavioural props (``operation``, ``mode``, …) keep requiring a
 # non-default state, as before.
 _TYPE_FACTORY_PROPS = frozenset({"data_type", "domain", "input_type", "socket_type"})
+_DATA_TYPE_PROPS = frozenset({"data_type", "input_type", "socket_type"})
 
 
 def _factory_call(
@@ -1773,7 +1811,7 @@ def _factory_call(
     from the node's value get explicit literal kwargs.
     """
     skip_key = _normalize(skip_input_id) if skip_input_id else None
-    best: tuple[_Factory, dict[str, Expr]] | None = None
+    best: tuple[_Factory, dict[str, Expr], tuple[bool, int, int]] | None = None
 
     for factory in _class_factories(cls):
         if not _factory_state_matches(node, factory.props):
@@ -1812,8 +1850,12 @@ def _factory_call(
                 if param in call_kwargs or key == skip_key:
                     continue
                 default = factory.param_defaults.get(param, inspect.Parameter.empty)
-                if default is inspect.Parameter.empty or default is None:
-                    continue  # None means "leave the socket untouched"
+                if (
+                    default is inspect.Parameter.empty
+                    or default is None
+                    or isinstance(default, Default)
+                ):
+                    continue  # None / Default.* mean "leave the socket untouched"
                 socket = _input_socket_by_kwarg(node, key)
                 if socket is None:
                     faithful = False
@@ -1822,17 +1864,26 @@ def _factory_call(
                     continue
                 if not _eq(socket.default_value, default):
                     call_kwargs[param] = Lit(socket.default_value)
-            if faithful and (best is None or len(factory.props) > len(best[0].props)):
+            # Prefer a factory baking the data type (``GetBundleItem.float(...,
+            # structure_type="SINGLE")`` over ``GetBundleItem.single(...)``),
+            # then the most constants baked, then the fewest properties passed
+            # through (``DeleteGeometry.edge()`` over ``.all(domain="EDGE")``).
+            rank = (
+                bool(_DATA_TYPE_PROPS & set(factory.props)),
+                len(factory.props),
+                -len(passed),
+            )
+            if faithful and (best is None or rank > best[2]):
                 ordered = {
                     param: call_kwargs[param]
                     for param in factory.param_defaults
                     if param in call_kwargs
                 }
-                best = (factory, ordered)
+                best = (factory, ordered, rank)
 
     if best is None:
         return None
-    factory, call_kwargs = best
+    factory, call_kwargs, _ = best
     # Leading consecutive parameters render positionally (g.Math.sine(x)),
     # matching how factory shortcuts are written by hand.
     args: list[Expr] = []
@@ -2415,11 +2466,11 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
     ],
     "FunctionNodeTransformDirection": [
         SocketMethodSpec(
-            receiver="Transform",
+            receiver="Direction",
             method="transform_direction",
             output="Direction",
-            params=(("Direction", "direction"),),
-            receiver_socket_type="MATRIX",
+            params=(("Transform", "matrix"),),
+            receiver_socket_type="VECTOR",
             always_args=1,
         ),
     ],
@@ -3367,7 +3418,7 @@ def _interface_kwargs(item, method: str) -> dict[str, Any]:
     if fn is None:
         return {}
     try:
-        sig = inspect.signature(fn)
+        sig = _signature(fn)
     except (TypeError, ValueError):
         return {}
     defaults = _get_interface_defaults(item.id_data.bl_idname, item.socket_type)
@@ -3448,7 +3499,7 @@ def _emit_interface(
             from ..builder.tree import SocketContext
 
             fresh = _get_interface_defaults(item.id_data.bl_idname, item.socket_type)
-            param = inspect.signature(getattr(SocketContext, method)).parameters.get(
+            param = _signature(getattr(SocketContext, method)).parameters.get(
                 "default_value"
             )
             factory_default = None if param is None else param.default
@@ -3638,7 +3689,7 @@ def _format_with_ruff(code: str) -> str:
 
 
 def to_python(
-    tree: NodeTree | TreeBuilder,
+    tree: NodeTree | TreeBuilder[Any],
     min_chain_length: int = 3,
     strict: bool = True,
     max_inline_width: int | None = 88,
@@ -3657,7 +3708,7 @@ def to_python(
 
     Parameters
     ----------
-    tree: TreeBuilder | bpy.types.NodeTree
+    tree: TreeBuilder[Any] | bpy.types.NodeTree
         The node tree to export.
     min_chain_length: int
         Minimum number of items (including interface endpoints) for a linear
@@ -3817,6 +3868,12 @@ def to_python(
             ctor_args.append("arrange=None")
         if in_place:
             ctor_args.append("clear=True")
+        # The modifier/tool flags are constructor options; the other tree
+        # properties only the class form carries.
+        tree_props = _tree_prop_overrides(node_tree)
+        for flag in ("is_modifier", "is_tool"):
+            if tree_props.get(flag):
+                ctor_args.append(f"{flag}=True")
         lines.append(f"with {constructor}({', '.join(ctor_args)}) as tree:")
         lines.extend(_assemble_tree_body(emission))
 
@@ -4076,7 +4133,7 @@ class _GroupCollector:
     # bpy.types names the emitted ``tree: TreeBuilder[...]`` annotations need.
     tree_param_types: set[str] = field(default_factory=set)
 
-    def register(self, node_tree) -> str:
+    def register(self, node_tree: NodeTree) -> str:
         """Ensure a class exists for ``node_tree`` and return its name."""
         existing = self.names_by_tree.get(node_tree.name)
         if existing is not None:
@@ -4160,24 +4217,33 @@ _TREE_PROP_CANDIDATES = (
     "is_type_curve",
     "is_type_pointcloud",
     "is_type_grease_pencil",
+    "allow_usage_in_scene_compositor_effect",
 )
+
+
+# Fresh-tree defaults of the candidate properties, probed once per tree type.
+_TREE_PROP_DEFAULTS: dict[str, dict[str, Any]] = {}
 
 
 def _tree_prop_overrides(node_tree) -> dict[str, Any]:
     """Tree-level properties of ``node_tree`` differing from a fresh tree's
-    defaults, probed against a throwaway tree of the same type."""
+    defaults, probed once per tree type against a throwaway tree."""
+    tree_idname = node_tree.bl_idname
+    if tree_idname not in _TREE_PROP_DEFAULTS:
 
-    def collect(probe) -> dict[str, Any]:
-        out: dict[str, Any] = {}
-        for name in _TREE_PROP_CANDIDATES:
-            if not hasattr(probe, name):
-                continue
-            value = getattr(node_tree, name)
-            if value != getattr(probe, name):
-                out[name] = value
-        return out
+        def collect(probe) -> dict[str, Any]:
+            return {
+                name: getattr(probe, name)
+                for name in _TREE_PROP_CANDIDATES
+                if hasattr(probe, name)
+            }
 
-    return _with_probe_tree(node_tree.bl_idname, collect, {})
+        _TREE_PROP_DEFAULTS[tree_idname] = _with_probe_tree(tree_idname, collect, {})
+    return {
+        name: value
+        for name, default in _TREE_PROP_DEFAULTS[tree_idname].items()
+        if (value := getattr(node_tree, name)) != default
+    }
 
 
 def _node_prop_lines(node) -> list[str]:
@@ -4246,6 +4312,10 @@ def _norm_floats(value):
 
 _FRESH_MAPPING_CACHE: dict[tuple[str, str], tuple | None] = {}
 
+# Nodes whose constructor takes the curve points as ``items=`` (written by the
+# node's emitter), so only the mapping's other settings need statements.
+_MAPPING_POINTS_AS_ITEMS = {"ShaderNodeFloatCurve"}
+
 
 def _fresh_mapping_state(tree_idname: str, bl_idname: str) -> tuple | None:
     key = (tree_idname, bl_idname)
@@ -4267,7 +4337,14 @@ def _has_custom_mapping(node, tree_idname: str) -> bool:
     mapping = getattr(node, "mapping", None)
     if mapping is None or not hasattr(mapping, "curves"):
         return False
-    return _mapping_state(mapping) != _fresh_mapping_state(tree_idname, node.bl_idname)
+    state = _mapping_state(mapping)
+    fresh = _fresh_mapping_state(tree_idname, node.bl_idname)
+    if node.bl_idname in _MAPPING_POINTS_AS_ITEMS:
+        # ``items=`` carries the points; only other settings and selection
+        # (the constructor deselects every point) need statements.
+        selected = any(select for curve in state[1] for _, _, select in curve)
+        return fresh is None or state[0] != fresh[0] or selected
+    return state != fresh
 
 
 def _node_mapping_lines(
@@ -4292,7 +4369,8 @@ def _node_mapping_lines(
             lines.append(f"{map_ref}.{name} = {_fmt(value)}")
     fresh_curves = fresh[1] if fresh is not None else None
     state_curves = _mapping_state(mapping)[1]
-    for index, curve in enumerate(mapping.curves):
+    curves = () if node.bl_idname in _MAPPING_POINTS_AS_ITEMS else mapping.curves
+    for index, curve in enumerate(curves):
         if (
             fresh_curves is not None
             and index < len(fresh_curves)
@@ -4321,6 +4399,12 @@ def _node_mapping_lines(
             # select what it creates), so it is always written out.
             lines.append(f"{var}.points[{j}].select = {point.select}")
     lines.append(f"{map_ref}.update()")
+    if node.bl_idname in _MAPPING_POINTS_AS_ITEMS:
+        # Selected after ``update()`` so it can't clamp them to the clip range.
+        for index, curve in enumerate(mapping.curves):
+            for j, point in enumerate(curve.points):
+                if point.select:
+                    lines.append(f"{map_ref}.curves[{index}].points[{j}].select = True")
     return lines
 
 
@@ -4907,7 +4991,7 @@ _UNSET = object()
 #
 # Nodes with typed per-item factories (CaptureAttribute / Bake / FieldToGrid)
 # are emitted statement-form instead: one constructor line plus one
-# ``node.items.<type>(name, value)`` line per item, with a handle variable
+# ``node.items.<type>(value, name)`` line per item, with a handle variable
 # whenever the item's output is read. The typed factory encodes the item type,
 # so declarations can never drift to a different inferred type.
 # ---------------------------------------------------------------------------
@@ -4945,7 +5029,6 @@ _CAPTURE_ITEM_METHOD = {
 class _TypedItemsNodeSpec(_ItemsNodeSpec):
     label: str = "node"  # variable name stem
     method_map: dict[str, str] | None = None  # item type → factory method
-    output_attr: str = "output"  # handle attribute for the item's output
     fixed_outputs: tuple[tuple[str, str], ...] = ()  # (output id, accessor path)
 
 
@@ -4979,7 +5062,6 @@ _TYPED_ITEMS_NODE_SPECS = {
             "VECTOR": "vector",
             "BOOLEAN": "boolean",
         },
-        output_attr="grid",
     ),
 }
 
@@ -5076,7 +5158,7 @@ for _items_bl_idname in _ITEMS_NODE_SPECS:
 
 def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
     """A variable-items node with typed per-item factories, statement-form:
-    one constructor line plus one ``<var>.items.<type>(name, value)`` line
+    one constructor line plus one ``<var>.items.<type>(value, name)`` line
     per item, binding a handle variable whenever the item's output is read.
 
     Bails (falls through) when a fixed input the call cannot express is
@@ -5121,19 +5203,13 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
     }
     consumed = {link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())}
     for in_socket, out_socket, item in zip(item_inputs, item_outputs, items):
-        args: list[Expr] = [Lit(item.name)]
-        link = ctx.input_link(node, in_socket.identifier)
-        if link is not None:
-            args.append(_zone_value_expr(ctx, link))
-        else:
-            default = _significant_default(in_socket)
-            if default is not None:
-                args.append(Lit(default))
-        call = Call(f"{ref.name}.items.{method_map[_item_socket_type(item)]}", args)
+        args, kwargs = _item_decl_args(ctx, node, item, in_socket)
+        method = method_map[_item_socket_type(item)]
+        call = Call(f"{ref.name}.items.{method}", args, kwargs)
         if out_socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            outputs[out_socket.identifier] = Attr(handle, spec.output_attr)
+            outputs[out_socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs=outputs)
@@ -5155,6 +5231,56 @@ def _emit_set_handle_type(node, ctx: EmitContext) -> Expr | _Val | None:
         call.kwargs["left"] = Lit(False)
     if "RIGHT" not in node.mode:
         call.kwargs["right"] = Lit(False)
+    return call
+
+
+# ColorRamp constructor param → attribute on ``node.color_ramp``.
+_COLOR_RAMP_SETTINGS = {
+    "color_interpolation": "interpolation",
+    "hue_interpolation": "hue_interpolation",
+    "mode": "color_mode",
+}
+
+
+@register_emitter("ShaderNodeValToRGB")
+def _emit_color_ramp(node, ctx: EmitContext) -> Expr | _Val | None:
+    """ColorRamp's stops and settings live on ``node.color_ramp``, not on the
+    node, so the generic ``_non_default_props`` can't see them. Append
+    ``items=`` and each setting that differs from the constructor's
+    default."""
+    call = ctx.constructor(node)
+    ramp = node.color_ramp
+    found = _find_cls(node.bl_idname)
+    assert found is not None
+    params = _signature(found[1].__init__).parameters
+    stops = tuple((element.position, tuple(element.color)) for element in ramp.elements)
+    if _norm_floats(stops) != _norm_floats(params["items"].default):
+        call.kwargs["items"] = Lit(stops)
+    for param, attr in _COLOR_RAMP_SETTINGS.items():
+        value = getattr(ramp, attr)
+        if value != params[param].default:
+            call.kwargs[param] = Lit(value)
+    return call
+
+
+@register_emitter("ShaderNodeFloatCurve")
+def _emit_float_curve(node, ctx: EmitContext) -> Expr | _Val | None:
+    """FloatCurve's points live on ``node.mapping``: append ``items=`` when
+    they differ from the constructor's default, with a point's handle type
+    only when it isn't ``AUTO``. The mapping's other settings are written
+    after the constructor by ``_node_mapping_lines``."""
+    call = ctx.constructor(node)
+    found = _find_cls(node.bl_idname)
+    assert found is not None
+    default = _signature(found[1].__init__).parameters["items"].default
+    points = tuple(
+        tuple(point.location)
+        if point.handle_type == "AUTO"
+        else (*point.location, point.handle_type)
+        for point in node.mapping.curves[0].points
+    )
+    if _norm_floats(points) != _norm_floats(default):
+        call.kwargs["items"] = Lit(points)
     return call
 
 
@@ -5200,27 +5326,41 @@ def _emit_viewer(node, ctx: EmitContext) -> Expr | _Val | None:
 
 
 def _bundle_item_call(
-    receiver: str, item, args: list[Expr], method_map: dict[str, str]
+    receiver: str,
+    item,
+    args: list[Expr],
+    method_map: dict[str, str],
+    kwargs: dict[str, Expr] | None = None,
 ) -> Call:
     """One typed-factory declaration call for a bundle/closure item."""
-    kwargs: dict[str, Expr] = {}
+    kwargs = dict(kwargs or {})
     if getattr(item, "structure_type", "AUTO") != "AUTO":
         kwargs["structure_type"] = Lit(item.structure_type)
     return Call(f"{receiver}.{method_map[item.socket_type]}", args, kwargs)
 
 
-def _item_value_args(ctx: EmitContext, node, item, socket) -> list[Expr]:
-    """Declaration arguments for one value-taking item: the name, plus the
-    linked source or a significant literal default."""
-    args: list[Expr] = [Lit(item.name)]
-    link = ctx.input_link(node, socket.identifier)
+def _item_decl_args(
+    ctx: EmitContext, node, item, socket
+) -> tuple[list[Expr], dict[str, Expr]]:
+    """Declaration arguments for one value-taking item: the linked source
+    or a significant literal default first, then the name, which becomes
+    the ``name=`` keyword when there is no value."""
+    return _decl_args(ctx.input_link(node, socket.identifier), socket, item.name, ctx)
+
+
+def _decl_args(
+    link: _Link | None, default_socket, name: str, ctx: EmitContext
+) -> tuple[list[Expr], dict[str, Expr]]:
+    value: Expr | None = None
     if link is not None:
-        args.append(_zone_value_expr(ctx, link))
-    else:
-        default = _significant_default(socket)
+        value = _zone_value_expr(ctx, link)
+    elif default_socket is not None:
+        default = _significant_default(default_socket)
         if default is not None:
-            args.append(Lit(default))
-    return args
+            value = Lit(default)
+    if value is None:
+        return [], {"name": Lit(name)}
+    return [value, Lit(name)], {}
 
 
 def _combine_bundle_dict(node, ctx: EmitContext) -> Expr:
@@ -5244,7 +5384,7 @@ def _combine_bundle_dict(node, ctx: EmitContext) -> Expr:
 @register_emitter("NodeCombineBundle")
 def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     """CombineBundle's inputs are its bundle items: emit the constructor
-    plus one typed ``.items.<type>(name, value)`` line per item, preserving
+    plus one typed ``.items.<type>(value, name)`` line per item, preserving
     unlinked defaults and non-AUTO structure types. Falls back to the
     items-dict constructor for item types without a typed factory."""
     items = list(node.bundle_items)
@@ -5261,8 +5401,10 @@ def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     ctor = Call("g.CombineBundle", kwargs=kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     for socket, item in zip(_prefixed_sockets(node, "Item_"), items):
-        args = _item_value_args(ctx, node, item, socket)
-        call = _bundle_item_call(f"{ref.name}.items", item, args, _SWITCH_METHOD)
+        args, kwargs = _item_decl_args(ctx, node, item, socket)
+        call = _bundle_item_call(
+            f"{ref.name}.items", item, args, _SWITCH_METHOD, kwargs
+        )
         ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs={"Bundle": Attr(ref, "o.bundle")})
 
@@ -5311,7 +5453,7 @@ def _emit_separate_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
         if socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            outputs[socket.identifier] = handle
+            outputs[socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs=outputs)
@@ -5375,7 +5517,7 @@ def _emit_closure_to_list(node, ctx: EmitContext) -> Expr | _Val | None:
         if socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            outputs[socket.identifier] = handle
+            outputs[socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs=outputs)
@@ -5413,10 +5555,10 @@ def _evaluate_closure_dict(node, ctx: EmitContext) -> Expr:
 @register_emitter("NodeEvaluateClosure")
 def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
     """EvaluateClosure feeds values into a closure and reads results: emit
-    the constructor plus one typed ``.inputs.<type>(name, value)`` line per
-    input item and one ``.outputs.<type>(name)`` line per output item (the
-    handle variable *is* the typed result socket). Falls back to the
-    items-dict constructor for item types without a typed factory."""
+    the constructor plus one typed ``.inputs.<type>(value, name)`` line per
+    input item and one ``.outputs.<type>(name)`` line per output item, whose
+    handle's ``.output`` is the result socket. Falls back to the items-dict
+    constructor for item types without a typed factory."""
     in_items = list(node.input_items)
     out_items = list(node.output_items)
     ctx.used_aliases.add("g")
@@ -5434,8 +5576,10 @@ def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
     ctor = Call("g.EvaluateClosure", args, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     for socket, item in zip(_prefixed_sockets(node, "Item_"), in_items):
-        value_args = _item_value_args(ctx, node, item, socket)
-        call = _bundle_item_call(f"{ref.name}.inputs", item, value_args, _SWITCH_METHOD)
+        args, kwargs = _item_decl_args(ctx, node, item, socket)
+        call = _bundle_item_call(
+            f"{ref.name}.inputs", item, args, _SWITCH_METHOD, kwargs
+        )
         ctx.pending_lines.append(f"    {call.render()}")
     outputs: dict[str, Expr] = {}
     consumed = {link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())}
@@ -5446,7 +5590,7 @@ def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
         if socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            outputs[socket.identifier] = handle
+            outputs[socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs=outputs)
@@ -5548,7 +5692,7 @@ for _group_bl_idname in _GROUP_BASES:
 # expressed as two independent constructors: the wrapper owns the pairing
 # and the shared item collections. The input-node emitter declares the zone
 # wrapper plus one typed-factory handle line per item (``zone.items.float``,
-# ``zone.inputs.vector``, …) and dissolves the
+# ``zone.main_items.vector``, …) and dissolves the
 # input node into per-output handle expressions (``h.current``); the
 # output-node emitter renders its incoming links as ``expr >> h.next``
 # statements at its own topological position and dissolves into
@@ -5661,14 +5805,9 @@ def _emit_zone_items(
     # counters that stop matching the collection after a UI reorder — sorting
     # by them would rebuild reordered items in their original positions.
     for plan in plans:
-        args: list[Expr] = [Lit(plan.item.name)]
-        kwargs: dict[str, Expr] = {}
-        if plan.value_link is not None:
-            args.append(_zone_value_expr(ctx, plan.value_link))
-        elif plan.default_socket is not None:
-            default = _significant_default(plan.default_socket)
-            if default is not None:
-                args.append(Lit(default))
+        args, kwargs = _decl_args(
+            plan.value_link, plan.default_socket, plan.item.name, ctx
+        )
         kwargs.update(plan.extra_kwargs)
         call = Call(f"{zone_ref.name}.{plan.method}", args, kwargs)
 
@@ -5797,12 +5936,13 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
         kwargs["selection"] = _zone_value_expr(ctx, selection_link)
     elif node.inputs["Selection"].default_value is not True:
         kwargs["selection"] = Lit(node.inputs["Selection"].default_value)
+    # The domain is spelled as the class-method factory, as for CaptureAttribute.
+    ctor = "g.ForEachGeometryElementZone"
     if out_node.domain != "POINT":
-        kwargs["domain"] = Lit(out_node.domain)
+        ctor += f".{out_node.domain.lower()}"
     zone_ref = Ref(_make_var("for_each", ctx.counter))
     ctx.pending_lines.append(
-        f"    {zone_ref.name} = "
-        f"{Call('g.ForEachGeometryElementZone', kwargs=kwargs).render()}"
+        f"    {zone_ref.name} = {Call(ctor, kwargs=kwargs).render()}"
     )
 
     generation_items = list(out_node.generation_items)
@@ -5822,7 +5962,7 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
     for i, item in enumerate(out_node.input_items):
         plans.append(
             _ZoneItemPlan(
-                method=_zone_item_method("inputs", item),
+                method=_zone_item_method("items", item),
                 item=item,
                 value_link=ctx.input_link(node, in_inputs[i].identifier),
                 default_socket=in_inputs[i],
@@ -5838,7 +5978,7 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
     for i, item in enumerate(out_node.main_items):
         plans.append(
             _ZoneItemPlan(
-                method=_zone_item_method("main", item),
+                method=_zone_item_method("main_items", item),
                 item=item,
                 value_link=None,
                 default_socket=main_inputs[i],
@@ -5859,7 +5999,7 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
             extra["domain"] = Lit(item.domain)
         plans.append(
             _ZoneItemPlan(
-                method=_zone_item_method("generated", item),
+                method=_zone_item_method("generated_items", item),
                 item=item,
                 value_link=None,
                 default_socket=gen_inputs[i],
@@ -5919,12 +6059,9 @@ def _closure_item_call(zone_ref: Ref, namespace: str, item) -> Call:
     if getattr(item, "structure_type", "AUTO") != "AUTO":
         kwargs["structure_type"] = Lit(item.structure_type)
     if _item_socket_type(item) not in _SWITCH_METHOD:
-        # no typed factory for this socket type — use the string-typed fallback
-        fallback = "input_item" if namespace == "inputs" else "output_item"
-        return Call(
-            f"{zone_ref.name}.{fallback}",
-            [Lit(item.name), Lit(_item_socket_type(item))],
-        )
+        # no typed factory for this socket type — use the runtime-typed form
+        kwargs["type"] = Lit(_item_socket_type(item))
+        return Call(f"{zone_ref.name}.{namespace}.new", [Lit(item.name)], kwargs)
     return Call(
         f"{zone_ref.name}.{_zone_item_method(namespace, item)}",
         [Lit(item.name)],
@@ -5935,8 +6072,9 @@ def _closure_item_call(zone_ref: Ref, namespace: str, item) -> Call:
 @register_emitter("NodeClosureInput")
 def _emit_closure_input(node, ctx: EmitContext) -> _Val:
     """Closure zone: declare ``cz = g.ClosureZone()`` plus one
-    ``cz.inputs.<type>(name)`` line per input item (read in the body) and
-    prepare ``cz.outputs.<type>(name)`` ``>>`` targets for each output item.
+    ``cz.inputs.<type>(name)`` line per input item (read in the body through
+    the handle's ``.output``) and prepare ``cz.outputs.<type>(name)`` handles
+    whose ``.input`` is the ``>>`` target for each output item.
     The input node dissolves into the input-item read expressions; the paired
     output node (``_emit_zone_output``) renders body links as ``expr >> target``
     and dissolves into the ``cz.closure`` result.
@@ -5957,7 +6095,7 @@ def _emit_closure_input(node, ctx: EmitContext) -> _Val:
         if socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            current_map[socket.identifier] = handle
+            current_map[socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
 
@@ -5972,7 +6110,7 @@ def _emit_closure_input(node, ctx: EmitContext) -> _Val:
         if socket.identifier in linked_next:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            targets[socket.identifier] = handle
+            targets[socket.identifier] = Attr(handle, "input")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
 

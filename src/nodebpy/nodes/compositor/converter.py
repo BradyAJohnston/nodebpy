@@ -83,7 +83,7 @@ class AlphaConvert(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         type: InputMenu
         | Literal["To Premultiplied", "To Straight"] = "To Premultiplied",
     ):
@@ -93,14 +93,12 @@ class AlphaConvert(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def to_premultiplied(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)
-    ) -> "AlphaConvert":
+    def to_premultiplied(cls, image: InputColor = None) -> "AlphaConvert":
         """Create Alpha Convert node with type 'To Premultiplied'."""
         return cls(image=image, type="To Premultiplied")
 
     @classmethod
-    def to_straight(cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "AlphaConvert":
+    def to_straight(cls, image: InputColor = None) -> "AlphaConvert":
         """Create Alpha Convert node with type 'To Straight'."""
         return cls(image=image, type="To Straight")
 
@@ -257,7 +255,7 @@ class CombineColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]) -> None:
         self.node.mode = value
 
     @property
@@ -265,7 +263,7 @@ class CombineColor(BaseNode):
         return self.node.ycc_mode
 
     @ycc_mode.setter
-    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]):
+    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]) -> None:
         self.node.ycc_mode = value
 
 
@@ -554,7 +552,7 @@ class ImplicitConversion[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -849,7 +847,7 @@ class IndexSwitch[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -1082,7 +1080,7 @@ class RelativeToPixel(BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -1095,7 +1093,7 @@ class RelativeToPixel(BaseNode):
     def reference_dimension(
         self,
         value: Literal["PER_DIMENSION", "X", "Y", "Greater", "Smaller", "Diagonal"],
-    ):
+    ) -> None:
         self.node.reference_dimension = value
 
 
@@ -1217,7 +1215,7 @@ class SeparateColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]) -> None:
         self.node.mode = value
 
     @property
@@ -1225,7 +1223,7 @@ class SeparateColor(BaseNode):
         return self.node.ycc_mode
 
     @ycc_mode.setter
-    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]):
+    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]) -> None:
         self.node.ycc_mode = value
 
 
@@ -1281,7 +1279,7 @@ class SetAlpha(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         alpha: InputFloat = 1.0,
         type: InputMenu | Literal["Apply Mask", "Replace Alpha"] = "Apply Mask",
     ):
@@ -1292,14 +1290,14 @@ class SetAlpha(BaseNode):
 
     @classmethod
     def apply_mask(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), alpha: InputFloat = 1.0
+        cls, image: InputColor = None, alpha: InputFloat = 1.0
     ) -> "SetAlpha":
         """Create Set Alpha node with type 'Apply Mask'."""
         return cls(image=image, alpha=alpha, type="Apply Mask")
 
     @classmethod
     def replace_alpha(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), alpha: InputFloat = 1.0
+        cls, image: InputColor = None, alpha: InputFloat = 1.0
     ) -> "SetAlpha":
         """Create Set Alpha node with type 'Replace Alpha'."""
         return cls(image=image, alpha=alpha, type="Replace Alpha")

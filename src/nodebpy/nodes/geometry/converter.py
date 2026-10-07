@@ -148,7 +148,7 @@ class AccumulateField[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 1.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"] = "FLOAT",
         domain: Literal[
@@ -166,7 +166,9 @@ class AccumulateField[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]):
+    def data_type(
+        self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
+    ) -> None:
         self.node.data_type = value
 
     @property
@@ -179,7 +181,7 @@ class AccumulateField[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _AccumulateFieldDomainFactory:
@@ -218,13 +220,13 @@ class AccumulateField[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="TRANSFORM"
             )
 
-    point = _AccumulateFieldDomainFactory("POINT")
-    edge = _AccumulateFieldDomainFactory("EDGE")
-    face = _AccumulateFieldDomainFactory("FACE")
-    corner = _AccumulateFieldDomainFactory("CORNER")
-    spline = _AccumulateFieldDomainFactory("CURVE")
-    instance = _AccumulateFieldDomainFactory("INSTANCE")
-    layer = _AccumulateFieldDomainFactory("LAYER")
+    point: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("POINT")
+    edge: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("EDGE")
+    face: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("FACE")
+    corner: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("CORNER")
+    spline: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("CURVE")
+    instance: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("INSTANCE")
+    layer: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("LAYER")
 
 
 class AlignRotationToVector(BaseNode):
@@ -279,7 +281,7 @@ class AlignRotationToVector(BaseNode):
 
     def __init__(
         self,
-        rotation: InputRotation = (0.0, 0.0, 0.0),
+        rotation: InputRotation = None,
         factor: InputFloat = 1.0,
         vector: InputVector = (0.0, 0.0, 1.0),
         *,
@@ -297,7 +299,7 @@ class AlignRotationToVector(BaseNode):
         return self.node.axis
 
     @axis.setter
-    def axis(self, value: Literal["X", "Y", "Z"]):
+    def axis(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.axis = value
 
     @property
@@ -305,7 +307,7 @@ class AlignRotationToVector(BaseNode):
         return self.node.pivot_axis
 
     @pivot_axis.setter
-    def pivot_axis(self, value: Literal["AUTO", "X", "Y", "Z"]):
+    def pivot_axis(self, value: Literal["AUTO", "X", "Y", "Z"]) -> None:
         self.node.pivot_axis = value
 
 
@@ -372,7 +374,7 @@ class AxesToRotation(BaseNode):
         return self.node.primary_axis
 
     @primary.setter
-    def primary(self, value: Literal["X", "Y", "Z"]):
+    def primary(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.primary_axis = value
 
     @property
@@ -380,7 +382,7 @@ class AxesToRotation(BaseNode):
         return self.node.secondary_axis
 
     @secondary.setter
-    def secondary(self, value: Literal["X", "Y", "Z"]):
+    def secondary(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.secondary_axis = value
 
 
@@ -537,7 +539,9 @@ class BitMath(BaseNode):
         return self.node.operation
 
     @operation.setter
-    def operation(self, value: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"]):
+    def operation(
+        self, value: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"]
+    ) -> None:
         self.node.operation = value
 
 
@@ -717,7 +721,7 @@ class BooleanMath(BaseNode):
         value: Literal[
             "AND", "OR", "NOT", "NAND", "NOR", "XNOR", "XOR", "IMPLY", "NIMPLY"
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
 
@@ -803,7 +807,7 @@ class Clamp(BaseNode):
         return self.node.clamp_type
 
     @clamp_type.setter
-    def clamp_type(self, value: Literal["MINMAX", "RANGE"]):
+    def clamp_type(self, value: Literal["MINMAX", "RANGE"]) -> None:
         self.node.clamp_type = value
 
 
@@ -898,8 +902,8 @@ class ClusterByConnected(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         distance: InputFloat = 0.001,
     ):
         super().__init__()
@@ -966,9 +970,9 @@ class ClusterByDistance(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        position: InputVector = None,
         distance: InputFloat = 0.001,
     ):
         super().__init__()
@@ -1014,7 +1018,7 @@ class CombineBundle(_CombineBundleMixin, BaseNode):
         return self.node.define_signature
 
     @define_signature.setter
-    def define_signature(self, value: bool):
+    def define_signature(self, value: bool) -> None:
         self.node.define_signature = value
 
 
@@ -1126,7 +1130,7 @@ class CombineColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 
@@ -1515,7 +1519,7 @@ class EvaluateAtIndex[T](BaseNode):
 
     def __init__(
         self,
-        value: InputAny = 0.0,
+        value: InputAny = None,
         index: InputInteger = 0,
         *,
         domain: Literal[
@@ -1547,7 +1551,7 @@ class EvaluateAtIndex[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     @property
@@ -1576,7 +1580,7 @@ class EvaluateAtIndex[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
     class _EvaluateAtIndexDomainFactory:
@@ -1635,13 +1639,13 @@ class EvaluateAtIndex[T](BaseNode):
                 value, index, domain=self._domain, data_type="FLOAT4X4"
             )
 
-    point = _EvaluateAtIndexDomainFactory("POINT")
-    edge = _EvaluateAtIndexDomainFactory("EDGE")
-    face = _EvaluateAtIndexDomainFactory("FACE")
-    corner = _EvaluateAtIndexDomainFactory("CORNER")
-    spline = _EvaluateAtIndexDomainFactory("CURVE")
-    instance = _EvaluateAtIndexDomainFactory("INSTANCE")
-    layer = _EvaluateAtIndexDomainFactory("LAYER")
+    point: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("POINT")
+    edge: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("EDGE")
+    face: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("FACE")
+    corner: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("CORNER")
+    spline: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("CURVE")
+    instance: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("INSTANCE")
+    layer: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("LAYER")
 
 
 class EvaluateOnDomain[T](BaseNode):
@@ -1715,7 +1719,7 @@ class EvaluateOnDomain[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     @property
@@ -1744,7 +1748,7 @@ class EvaluateOnDomain[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
     class _EvaluateOnDomainDomainFactory:
@@ -1787,13 +1791,15 @@ class EvaluateOnDomain[T](BaseNode):
             """Create 'EvaluateOnDomain' on this domain with 'FLOAT4X4' data type."""
             return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT4X4")
 
-    point = _EvaluateOnDomainDomainFactory("POINT")
-    edge = _EvaluateOnDomainDomainFactory("EDGE")
-    face = _EvaluateOnDomainDomainFactory("FACE")
-    corner = _EvaluateOnDomainDomainFactory("CORNER")
-    spline = _EvaluateOnDomainDomainFactory("CURVE")
-    instance = _EvaluateOnDomainDomainFactory("INSTANCE")
-    layer = _EvaluateOnDomainDomainFactory("LAYER")
+    point: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("POINT")
+    edge: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("EDGE")
+    face: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("FACE")
+    corner: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("CORNER")
+    spline: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("CURVE")
+    instance: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory(
+        "INSTANCE"
+    )
+    layer: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("LAYER")
 
 
 class FieldAverage[T](BaseNode):
@@ -1847,7 +1853,7 @@ class FieldAverage[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -1865,7 +1871,7 @@ class FieldAverage[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -1878,7 +1884,7 @@ class FieldAverage[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldAverageDomainFactory:
@@ -1901,13 +1907,13 @@ class FieldAverage[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldAverageDomainFactory("POINT")
-    edge = _FieldAverageDomainFactory("EDGE")
-    face = _FieldAverageDomainFactory("FACE")
-    corner = _FieldAverageDomainFactory("CORNER")
-    spline = _FieldAverageDomainFactory("CURVE")
-    instance = _FieldAverageDomainFactory("INSTANCE")
-    layer = _FieldAverageDomainFactory("LAYER")
+    point: _FieldAverageDomainFactory = _FieldAverageDomainFactory("POINT")
+    edge: _FieldAverageDomainFactory = _FieldAverageDomainFactory("EDGE")
+    face: _FieldAverageDomainFactory = _FieldAverageDomainFactory("FACE")
+    corner: _FieldAverageDomainFactory = _FieldAverageDomainFactory("CORNER")
+    spline: _FieldAverageDomainFactory = _FieldAverageDomainFactory("CURVE")
+    instance: _FieldAverageDomainFactory = _FieldAverageDomainFactory("INSTANCE")
+    layer: _FieldAverageDomainFactory = _FieldAverageDomainFactory("LAYER")
 
 
 class FieldMinAndMax[T](BaseNode):
@@ -1961,7 +1967,7 @@ class FieldMinAndMax[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -1979,7 +1985,7 @@ class FieldMinAndMax[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -1992,7 +1998,7 @@ class FieldMinAndMax[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldMinAndMaxDomainFactory:
@@ -2023,13 +2029,13 @@ class FieldMinAndMax[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldMinAndMaxDomainFactory("POINT")
-    edge = _FieldMinAndMaxDomainFactory("EDGE")
-    face = _FieldMinAndMaxDomainFactory("FACE")
-    corner = _FieldMinAndMaxDomainFactory("CORNER")
-    spline = _FieldMinAndMaxDomainFactory("CURVE")
-    instance = _FieldMinAndMaxDomainFactory("INSTANCE")
-    layer = _FieldMinAndMaxDomainFactory("LAYER")
+    point: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("POINT")
+    edge: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("EDGE")
+    face: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("FACE")
+    corner: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("CORNER")
+    spline: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("CURVE")
+    instance: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("INSTANCE")
+    layer: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("LAYER")
 
 
 class FieldVariance[T](BaseNode):
@@ -2083,7 +2089,7 @@ class FieldVariance[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -2101,7 +2107,7 @@ class FieldVariance[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -2114,7 +2120,7 @@ class FieldVariance[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldVarianceDomainFactory:
@@ -2137,13 +2143,13 @@ class FieldVariance[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldVarianceDomainFactory("POINT")
-    edge = _FieldVarianceDomainFactory("EDGE")
-    face = _FieldVarianceDomainFactory("FACE")
-    corner = _FieldVarianceDomainFactory("CORNER")
-    spline = _FieldVarianceDomainFactory("CURVE")
-    instance = _FieldVarianceDomainFactory("INSTANCE")
-    layer = _FieldVarianceDomainFactory("LAYER")
+    point: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("POINT")
+    edge: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("EDGE")
+    face: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("FACE")
+    corner: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("CORNER")
+    spline: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("CURVE")
+    instance: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("INSTANCE")
+    layer: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("LAYER")
 
 
 class FieldToList(_FieldToListMixin, BaseNode):
@@ -2230,7 +2236,7 @@ class FilterList[T](BaseNode):
     def __init__(
         self,
         list: InputAny = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         *,
         socket_type: Literal[
             "FLOAT",
@@ -2260,126 +2266,126 @@ class FilterList[T](BaseNode):
 
     @classmethod
     def float(
-        cls, list: InputFloatList = None, selection: InputBoolean = True
+        cls, list: InputFloatList = None, selection: InputBoolean = None
     ) -> "FilterList[FloatSocketList]":
         """Create Filter List with operation 'Float'."""
         return FilterList(socket_type="FLOAT", list=list, selection=selection)
 
     @classmethod
     def integer(
-        cls, list: InputIntegerList = None, selection: InputBoolean = True
+        cls, list: InputIntegerList = None, selection: InputBoolean = None
     ) -> "FilterList[IntegerSocketList]":
         """Create Filter List with operation 'Integer'."""
         return FilterList(socket_type="INT", list=list, selection=selection)
 
     @classmethod
     def boolean(
-        cls, list: InputBooleanList = None, selection: InputBoolean = True
+        cls, list: InputBooleanList = None, selection: InputBoolean = None
     ) -> "FilterList[BooleanSocketList]":
         """Create Filter List with operation 'Boolean'."""
         return FilterList(socket_type="BOOLEAN", list=list, selection=selection)
 
     @classmethod
     def vector(
-        cls, list: InputVectorList = None, selection: InputBoolean = True
+        cls, list: InputVectorList = None, selection: InputBoolean = None
     ) -> "FilterList[VectorSocketList]":
         """Create Filter List with operation 'Vector'."""
         return FilterList(socket_type="VECTOR", list=list, selection=selection)
 
     @classmethod
     def color(
-        cls, list: InputColorList = None, selection: InputBoolean = True
+        cls, list: InputColorList = None, selection: InputBoolean = None
     ) -> "FilterList[ColorSocketList]":
         """Create Filter List with operation 'Color'."""
         return FilterList(socket_type="RGBA", list=list, selection=selection)
 
     @classmethod
     def rotation(
-        cls, list: InputRotationList = None, selection: InputBoolean = True
+        cls, list: InputRotationList = None, selection: InputBoolean = None
     ) -> "FilterList[RotationSocketList]":
         """Create Filter List with operation 'Rotation'."""
         return FilterList(socket_type="ROTATION", list=list, selection=selection)
 
     @classmethod
     def matrix(
-        cls, list: InputMatrixList = None, selection: InputBoolean = True
+        cls, list: InputMatrixList = None, selection: InputBoolean = None
     ) -> "FilterList[MatrixSocketList]":
         """Create Filter List with operation 'Matrix'."""
         return FilterList(socket_type="MATRIX", list=list, selection=selection)
 
     @classmethod
     def string(
-        cls, list: InputStringList = None, selection: InputBoolean = True
+        cls, list: InputStringList = None, selection: InputBoolean = None
     ) -> "FilterList[StringSocketList]":
         """Create Filter List with operation 'String'."""
         return FilterList(socket_type="STRING", list=list, selection=selection)
 
     @classmethod
     def menu(
-        cls, list: InputMenuList = None, selection: InputBoolean = True
+        cls, list: InputMenuList = None, selection: InputBoolean = None
     ) -> "FilterList[MenuSocketList]":
         """Create Filter List with operation 'Menu'."""
         return FilterList(socket_type="MENU", list=list, selection=selection)
 
     @classmethod
     def object(
-        cls, list: InputObjectList = None, selection: InputBoolean = True
+        cls, list: InputObjectList = None, selection: InputBoolean = None
     ) -> "FilterList[ObjectSocketList]":
         """Create Filter List with operation 'Object'."""
         return FilterList(socket_type="OBJECT", list=list, selection=selection)
 
     @classmethod
     def image(
-        cls, list: InputImageList = None, selection: InputBoolean = True
+        cls, list: InputImageList = None, selection: InputBoolean = None
     ) -> "FilterList[ImageSocketList]":
         """Create Filter List with operation 'Image'."""
         return FilterList(socket_type="IMAGE", list=list, selection=selection)
 
     @classmethod
     def geometry(
-        cls, list: InputGeometryList = None, selection: InputBoolean = True
+        cls, list: InputGeometryList = None, selection: InputBoolean = None
     ) -> "FilterList[GeometrySocketList]":
         """Create Filter List with operation 'Geometry'."""
         return FilterList(socket_type="GEOMETRY", list=list, selection=selection)
 
     @classmethod
     def collection(
-        cls, list: InputCollectionList = None, selection: InputBoolean = True
+        cls, list: InputCollectionList = None, selection: InputBoolean = None
     ) -> "FilterList[CollectionSocketList]":
         """Create Filter List with operation 'Collection'."""
         return FilterList(socket_type="COLLECTION", list=list, selection=selection)
 
     @classmethod
     def material(
-        cls, list: InputMaterialList = None, selection: InputBoolean = True
+        cls, list: InputMaterialList = None, selection: InputBoolean = None
     ) -> "FilterList[MaterialSocketList]":
         """Create Filter List with operation 'Material'."""
         return FilterList(socket_type="MATERIAL", list=list, selection=selection)
 
     @classmethod
     def bundle(
-        cls, list: InputBundleList = None, selection: InputBoolean = True
+        cls, list: InputBundleList = None, selection: InputBoolean = None
     ) -> "FilterList[BundleSocketList]":
         """Create Filter List with operation 'Bundle'."""
         return FilterList(socket_type="BUNDLE", list=list, selection=selection)
 
     @classmethod
     def closure(
-        cls, list: InputClosureList = None, selection: InputBoolean = True
+        cls, list: InputClosureList = None, selection: InputBoolean = None
     ) -> "FilterList[ClosureSocketList]":
         """Create Filter List with operation 'Closure'."""
         return FilterList(socket_type="CLOSURE", list=list, selection=selection)
 
     @classmethod
     def font(
-        cls, list: InputFontList = None, selection: InputBoolean = True
+        cls, list: InputFontList = None, selection: InputBoolean = None
     ) -> "FilterList[FontSocketList]":
         """Create Filter List with operation 'Font'."""
         return FilterList(socket_type="FONT", list=list, selection=selection)
 
     @classmethod
     def sound(
-        cls, list: InputSoundList = None, selection: InputBoolean = True
+        cls, list: InputSoundList = None, selection: InputBoolean = None
     ) -> "FilterList[SoundSocketList]":
         """Create Filter List with operation 'Sound'."""
         return FilterList(socket_type="SOUND", list=list, selection=selection)
@@ -2432,7 +2438,7 @@ class FilterList[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
 
@@ -2556,7 +2562,9 @@ class FloatToInteger(BaseNode):
         return self.node.rounding_mode
 
     @rounding_mode.setter
-    def rounding_mode(self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]):
+    def rounding_mode(
+        self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]
+    ) -> None:
         self.node.rounding_mode = value
 
 
@@ -3323,7 +3331,7 @@ class GetBundleItem[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -3335,7 +3343,7 @@ class GetBundleItem[T](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -3940,7 +3948,7 @@ class GetListItem[T, TList](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -3952,7 +3960,7 @@ class GetListItem[T, TList](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -4177,7 +4185,7 @@ class HashValue[T](BaseNode):
         value: Literal[
             "FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -4401,7 +4409,7 @@ class ImplicitConversion[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -4455,8 +4463,8 @@ class IndexOfNearest(BaseNode):
 
     def __init__(
         self,
-        position: InputVector = (0.0, 0.0, 0.0),
-        group_id: InputInteger = 0,
+        position: InputVector = None,
+        group_id: InputInteger = None,
     ):
         super().__init__()
         key_args = {"Position": position, "Group ID": group_id}
@@ -4720,7 +4728,7 @@ class IntegerMath(BaseNode):
             "GCD",
             "LCM",
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
 
@@ -5077,7 +5085,7 @@ class ListLength[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -5197,7 +5205,7 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         steps: InputFloat = 4.0,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         from_min_float3: InputVector = (0.0, 0.0, 0.0),
         from_max_float3: InputVector = (1.0, 1.0, 1.0),
         to_min_float3: InputVector = (0.0, 0.0, 0.0),
@@ -5357,7 +5365,7 @@ class MapRange(BaseNode):
     @classmethod
     def vector(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         from_min: InputVector = (0.0, 0.0, 0.0),
         from_max: InputVector = (1.0, 1.0, 1.0),
         to_min: InputVector = (0.0, 0.0, 0.0),
@@ -5385,7 +5393,7 @@ class MapRange(BaseNode):
         return self.node.clamp
 
     @clamp.setter
-    def clamp(self, value: bool):
+    def clamp(self, value: bool) -> None:
         self.node.clamp = value
 
     @property
@@ -5397,7 +5405,7 @@ class MapRange(BaseNode):
     @interpolation_type.setter
     def interpolation_type(
         self, value: Literal["LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"]
-    ):
+    ) -> None:
         self.node.interpolation_type = value
 
     @property
@@ -5405,7 +5413,7 @@ class MapRange(BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -6077,7 +6085,7 @@ class Math(BaseNode):
             "RADIANS",
             "DEGREES",
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
     @property
@@ -6085,7 +6093,7 @@ class Math(BaseNode):
         return self.node.use_clamp
 
     @use_clamp.setter
-    def use_clamp(self, value: bool):
+    def use_clamp(self, value: bool) -> None:
         self.node.use_clamp = value
 
 
@@ -6531,7 +6539,7 @@ class Mix(BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]):
+    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]) -> None:
         self.node.data_type = value
 
     @property
@@ -6539,7 +6547,7 @@ class Mix(BaseNode):
         return self.node.factor_mode
 
     @factor_mode.setter
-    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]):
+    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]) -> None:
         self.node.factor_mode = value
 
     @property
@@ -6592,7 +6600,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ],
-    ):
+    ) -> None:
         self.node.blend_type = value
 
     @property
@@ -6600,7 +6608,7 @@ class Mix(BaseNode):
         return self.node.clamp_factor
 
     @clamp_factor.setter
-    def clamp_factor(self, value: bool):
+    def clamp_factor(self, value: bool) -> None:
         self.node.clamp_factor = value
 
     @property
@@ -6608,7 +6616,7 @@ class Mix(BaseNode):
         return self.node.clamp_result
 
     @clamp_result.setter
-    def clamp_result(self, value: bool):
+    def clamp_result(self, value: bool) -> None:
         self.node.clamp_result = value
 
 
@@ -6743,8 +6751,8 @@ class PackUVIslands(BaseNode):
 
     def __init__(
         self,
-        uv: InputVector = (0.0, 0.0, 0.0),
-        selection: InputBoolean = True,
+        uv: InputVector = None,
+        selection: InputBoolean = None,
         margin: InputFloat = 0.001,
         rotate: InputBoolean = True,
         method: InputMenu
@@ -6956,7 +6964,7 @@ class RandomValue[T](BaseNode):
         self,
         min: InputAny = 0.0,
         max: InputAny = 1.0,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
         probability: InputFloat = None,
         *,
@@ -6981,7 +6989,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputFloat = 0.0,
         max: InputFloat = 1.0,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[FloatSocket]":
         """Create Random Value with operation 'Float'. Floating-point value"""
@@ -6992,7 +7000,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputInteger = 0,
         max: InputInteger = 100,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[IntegerSocket]":
         """Create Random Value with operation 'Integer'. 32-bit integer"""
@@ -7000,7 +7008,10 @@ class RandomValue[T](BaseNode):
 
     @classmethod
     def boolean(
-        cls, probability: InputFloat = 0.5, id: InputInteger = 0, seed: InputInteger = 0
+        cls,
+        probability: InputFloat = 0.5,
+        id: InputInteger = None,
+        seed: InputInteger = 0,
     ) -> "RandomValue[BooleanSocket]":
         """Create Random Value with operation 'Boolean'. True or false"""
         return RandomValue(
@@ -7012,7 +7023,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputVector = (0.0, 0.0, 0.0),
         max: InputVector = (1.0, 1.0, 1.0),
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[VectorSocket]":
         """Create Random Value with operation 'Vector'. 3D vector with floating-point values"""
@@ -7023,7 +7034,9 @@ class RandomValue[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]):
+    def data_type(
+        self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
+    ) -> None:
         self.node.data_type = value
 
 
@@ -7192,7 +7205,7 @@ class RotateEuler(BaseNode):
 
     def __init__(
         self,
-        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = None,
         rotate_by: InputVector = (0.0, 0.0, 0.0),
         axis: InputVector = None,
         angle: InputFloat = None,
@@ -7217,7 +7230,7 @@ class RotateEuler(BaseNode):
     @classmethod
     def axis_angle(
         cls,
-        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = None,
         axis: InputVector = (0.0, 0.0, 1.0),
         angle: InputFloat = 0.0,
         *,
@@ -7235,7 +7248,7 @@ class RotateEuler(BaseNode):
     @classmethod
     def euler(
         cls,
-        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = None,
         rotate_by: InputVector = (0.0, 0.0, 0.0),
         *,
         space: Literal["OBJECT", "LOCAL"] = "OBJECT",
@@ -7250,7 +7263,7 @@ class RotateEuler(BaseNode):
         return self.node.rotation_type
 
     @rotation_type.setter
-    def rotation_type(self, value: Literal["AXIS_ANGLE", "EULER"]):
+    def rotation_type(self, value: Literal["AXIS_ANGLE", "EULER"]) -> None:
         self.node.rotation_type = value
 
     @property
@@ -7258,7 +7271,7 @@ class RotateEuler(BaseNode):
         return self.node.space
 
     @space.setter
-    def space(self, value: Literal["OBJECT", "LOCAL"]):
+    def space(self, value: Literal["OBJECT", "LOCAL"]) -> None:
         self.node.space = value
 
 
@@ -7323,7 +7336,7 @@ class RotateRotation(BaseNode):
         return self.node.rotation_space
 
     @rotation_space.setter
-    def rotation_space(self, value: Literal["GLOBAL", "LOCAL"]):
+    def rotation_space(self, value: Literal["GLOBAL", "LOCAL"]) -> None:
         self.node.rotation_space = value
 
 
@@ -7680,7 +7693,7 @@ class SeparateBundle(_SeparateBundleMixin, BaseNode):
         return self.node.define_signature
 
     @define_signature.setter
-    def define_signature(self, value: bool):
+    def define_signature(self, value: bool) -> None:
         self.node.define_signature = value
 
 
@@ -7765,7 +7778,7 @@ class SeparateColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 
@@ -8156,9 +8169,9 @@ class SortList[T](BaseNode):
     def __init__(
         self,
         list: InputAny = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
         *,
         socket_type: Literal[
             "FLOAT",
@@ -8195,9 +8208,9 @@ class SortList[T](BaseNode):
     def float(
         cls,
         list: InputFloatList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[FloatSocketList]":
         """Create Sort List with operation 'Float'."""
         return SortList(
@@ -8212,9 +8225,9 @@ class SortList[T](BaseNode):
     def integer(
         cls,
         list: InputIntegerList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[IntegerSocketList]":
         """Create Sort List with operation 'Integer'."""
         return SortList(
@@ -8229,9 +8242,9 @@ class SortList[T](BaseNode):
     def boolean(
         cls,
         list: InputBooleanList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[BooleanSocketList]":
         """Create Sort List with operation 'Boolean'."""
         return SortList(
@@ -8246,9 +8259,9 @@ class SortList[T](BaseNode):
     def vector(
         cls,
         list: InputVectorList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[VectorSocketList]":
         """Create Sort List with operation 'Vector'."""
         return SortList(
@@ -8263,9 +8276,9 @@ class SortList[T](BaseNode):
     def color(
         cls,
         list: InputColorList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ColorSocketList]":
         """Create Sort List with operation 'Color'."""
         return SortList(
@@ -8280,9 +8293,9 @@ class SortList[T](BaseNode):
     def rotation(
         cls,
         list: InputRotationList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[RotationSocketList]":
         """Create Sort List with operation 'Rotation'."""
         return SortList(
@@ -8297,9 +8310,9 @@ class SortList[T](BaseNode):
     def matrix(
         cls,
         list: InputMatrixList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MatrixSocketList]":
         """Create Sort List with operation 'Matrix'."""
         return SortList(
@@ -8314,9 +8327,9 @@ class SortList[T](BaseNode):
     def string(
         cls,
         list: InputStringList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[StringSocketList]":
         """Create Sort List with operation 'String'."""
         return SortList(
@@ -8331,9 +8344,9 @@ class SortList[T](BaseNode):
     def menu(
         cls,
         list: InputMenuList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MenuSocketList]":
         """Create Sort List with operation 'Menu'."""
         return SortList(
@@ -8348,9 +8361,9 @@ class SortList[T](BaseNode):
     def object(
         cls,
         list: InputObjectList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ObjectSocketList]":
         """Create Sort List with operation 'Object'."""
         return SortList(
@@ -8365,9 +8378,9 @@ class SortList[T](BaseNode):
     def image(
         cls,
         list: InputImageList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ImageSocketList]":
         """Create Sort List with operation 'Image'."""
         return SortList(
@@ -8382,9 +8395,9 @@ class SortList[T](BaseNode):
     def geometry(
         cls,
         list: InputGeometryList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[GeometrySocketList]":
         """Create Sort List with operation 'Geometry'."""
         return SortList(
@@ -8399,9 +8412,9 @@ class SortList[T](BaseNode):
     def collection(
         cls,
         list: InputCollectionList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[CollectionSocketList]":
         """Create Sort List with operation 'Collection'."""
         return SortList(
@@ -8416,9 +8429,9 @@ class SortList[T](BaseNode):
     def material(
         cls,
         list: InputMaterialList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MaterialSocketList]":
         """Create Sort List with operation 'Material'."""
         return SortList(
@@ -8433,9 +8446,9 @@ class SortList[T](BaseNode):
     def bundle(
         cls,
         list: InputBundleList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[BundleSocketList]":
         """Create Sort List with operation 'Bundle'."""
         return SortList(
@@ -8450,9 +8463,9 @@ class SortList[T](BaseNode):
     def closure(
         cls,
         list: InputClosureList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ClosureSocketList]":
         """Create Sort List with operation 'Closure'."""
         return SortList(
@@ -8467,9 +8480,9 @@ class SortList[T](BaseNode):
     def font(
         cls,
         list: InputFontList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[FontSocketList]":
         """Create Sort List with operation 'Font'."""
         return SortList(
@@ -8484,9 +8497,9 @@ class SortList[T](BaseNode):
     def sound(
         cls,
         list: InputSoundList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[SoundSocketList]":
         """Create Sort List with operation 'Sound'."""
         return SortList(
@@ -8545,7 +8558,7 @@ class SortList[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
 
@@ -9320,7 +9333,7 @@ class StoreBundleItem[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -9332,7 +9345,7 @@ class StoreBundleItem[T](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -9458,7 +9471,7 @@ class StringToValue[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT"]):
+    def data_type(self, value: Literal["FLOAT", "INT"]) -> None:
         self.node.data_type = value
 
 
@@ -9772,7 +9785,7 @@ class Switch[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.input_type = value
 
 
@@ -10144,8 +10157,8 @@ class UVUnwrap(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        seam: InputBoolean = False,
+        selection: InputBoolean = None,
+        seam: InputBoolean = None,
         margin: InputFloat = 0.001,
         fill_holes: InputBoolean = True,
         method: InputMenu
@@ -10261,5 +10274,5 @@ class ValueToString[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT"]):
+    def data_type(self, value: Literal["FLOAT", "INT"]) -> None:
         self.node.data_type = value

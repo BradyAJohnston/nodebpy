@@ -5,7 +5,7 @@ module a tree is invisible. :func:`to_plot` reproduces what the node editor
 would show — header colours per node class, socket markers coloured and
 shaped by type, value widgets for unlinked inputs, property dropdowns,
 frames, zones and socket-coloured links — from the same estimated geometry
-the arranger works with (:mod:`nodebpy.builder.layout`), so a tree can be
+the arranger works with (:mod:`nodebpy.layout.node_size`), so a tree can be
 reviewed without opening Blender. ``to_plot(..., node=True)`` draws a node
 group the way it appears when *used*: as a single group node with its
 interface sockets and default values.
@@ -27,7 +27,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 import bpy
 
-from ..builder.layout import (
+from ..layout.node_size import (
     HEADER,
     PROPERTY_ROW,
     VECTOR_EXPANDED,
