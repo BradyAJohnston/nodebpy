@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.34.0
+
+### Fixes
+
+- **SDF Grid Boolean round-trips through the exporter** (#246). `g.SDFGridBoolean(grid_1, grid_2=[...], operation=...)` takes its grids, and the exporter writes `g.SDFGridBoolean.union([a, b])` / `.intersect(...)` instead of a constructor call that failed. Grid 2 lists the grids in the order given.
+
 ## v520.33.0 - 2026-10-07
 
 ### Enhancements

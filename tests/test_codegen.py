@@ -2658,6 +2658,25 @@ def test_grid_common_methods_lift():
         assert snippet in code, snippet
 
 
+def test_sdf_grid_boolean_round_trips():
+    """SDF Grid Boolean's multi-input Grid 2 round-trips through the
+    union / intersect factories and the constructor, in input order (#246)."""
+    with TreeBuilder("SDFBoolean") as tree:
+        a = _named_grid(tree)
+        b = g.GetNamedGrid(tree.inputs.geometry("B"), "density").o.grid
+        c = g.GetNamedGrid(tree.inputs.geometry("C"), "density").o.grid
+        g.SDFGridBoolean.union([a, b]) >> tree.outputs.float("U", structure_type="GRID")
+        g.SDFGridBoolean.intersect([a, b, c]) >> tree.outputs.float(
+            "I", structure_type="GRID"
+        )
+        g.SDFGridBoolean.difference(a, [b, c]) >> tree.outputs.float(
+            "D", structure_type="GRID"
+        )
+    code = _assert_roundtrip(tree)
+    assert "g.SDFGridBoolean.union(" in code
+    assert "g.SDFGridBoolean.intersect(" in code
+
+
 def test_grid_method_defers_when_rebuild_loses_structure():
     """A grid whose GRID structure is only *propagated* (an EvaluateClosure
     output) is lost on rebuild — the rebuilt output item carries no GRID
