@@ -164,7 +164,7 @@ def test_field_to_grid():
         _ = ftg.o["test"] >> math
 
         ftg2 = g.FieldToGrid(items={"test_value": 0.3})
-        assert ftg2.i["test_value"].socket.default_value == pytest.approx(0.3)
+        assert ftg2.i["test_value"].default_value == pytest.approx(0.3)
 
     assert len(tree) == 9
     assert len(ftg.node.grid_items) == 6
@@ -485,7 +485,7 @@ def test_menu_switch():
             for name, x in switch.i._items()
         ]
     )
-    assert switch.i["Input_5"].socket.default_value == 5
+    assert switch.i["Input_5"].default_value == 5
 
 
 def test_menu_switch_menu_connection():
@@ -501,7 +501,7 @@ def test_menu_switch_menu_connection():
     assert switch.i["Menu"].links
     assert switch.i["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
     assert switch.i["Menu"].links[0].from_node.input_type == "MENU"
-    assert switch.i["Menu"].socket.default_value == "cube"
+    assert switch.i["Menu"].default_value == "cube"
 
 
 def test_menu_switch_menu_items_empty_default_deferred():
@@ -532,11 +532,11 @@ def test_menu_switch_item_descriptions_tuple_form():
         vec = g.MenuSwitch.vector(
             items={"A": (1.0, 2.0, 3.0), "B": ((4.0, 5.0, 6.0), "described")}
         )
-    assert switch.node.enum_items["Object"].description == "Use the source object"
-    assert switch.node.enum_items["Mesh"].description == ""
-    assert tuple(vec.i["A"].socket.default_value) == (1.0, 2.0, 3.0)
-    assert tuple(vec.i["B"].socket.default_value) == (4.0, 5.0, 6.0)
-    assert vec.node.enum_items["B"].description == "described"
+    assert switch.items["Object"].description == "Use the source object"
+    assert switch.items["Mesh"].description == ""
+    assert tuple(vec.i["A"].default_value) == (1.0, 2.0, 3.0)
+    assert tuple(vec.i["B"].default_value) == (4.0, 5.0, 6.0)
+    assert vec.items["B"].description == "described"
 
 
 def test_menu_switch_item_helper():
@@ -558,7 +558,7 @@ def test_menu_switch_item_helper():
     assert obj.is_selected.socket.type == "BOOLEAN"
     assert obj.is_selected.socket.is_output
     # the first declared item defaults the selection, as the constructor does
-    assert switch.i["Menu"].socket.default_value == "Object"
+    assert switch.i["Menu"].default_value == "Object"
 
 
 def test_menu_switch_item_helper_explicit_selection():
@@ -569,7 +569,7 @@ def test_menu_switch_item_helper_explicit_selection():
         switch.items.new(1.0, "A")
         switch.items.new(tree.inputs.float("In"), "B")
         switch >> tree.outputs.float("Out")
-    assert switch.i["Menu"].socket.default_value == "B"
+    assert switch.i["Menu"].default_value == "B"
 
 
 def test_multi_menu():

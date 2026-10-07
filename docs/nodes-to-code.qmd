@@ -149,9 +149,9 @@ from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 
 with TreeBuilder("Wave Deform") as tree:
-    geo = tree.inputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
     amp = tree.inputs.float("Amplitude", 0.5, min_value=0.0)
-    out = tree.outputs.geometry("Geometry")
+    out = tree.outputs.geometry()
     height = g.Math.sine(g.Position().o.position.x) * amp
     geo >> g.SetPosition(offset=g.CombineXYZ(z=height)) >> out
 
@@ -201,8 +201,8 @@ Each entry records the node's type, location, frame parent and incoming links; o
 
 ```{python}
 with TreeBuilder("Wave Deform") as tree:
-    geo = tree.inputs.geometry("Geometry")
-    out = tree.outputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
+    out = tree.outputs.geometry()
     geo >> g.SetPosition(offset=g.CombineXYZ(z=g.Position().o.position.x)) >> out
 ```
 
@@ -242,9 +242,9 @@ Simulation, repeat and for-each zones are reconstructed using the typed zone ite
 
 ```{python}
 with TreeBuilder("Stack") as tree:
-    out = tree.outputs.geometry("Geometry")
+    out = tree.outputs.geometry()
     zone = g.RepeatZone(5)
-    geo = zone.items.geometry(g.Cube(), "Geometry")
+    geo = zone.items.geometry(g.Cube())
     geo.current >> g.TransformGeometry(translation=(0, 0, 1.1)) >> geo.next
     geo.result >> out
 
@@ -263,7 +263,7 @@ Frames are reconstructed as `with g.Frame("..."):` blocks, including frames nest
 
 ```{python}
 with TreeBuilder("Framed") as tree:
-    geo = tree.inputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
     with g.Frame("Deform"):
         with g.Frame("Warp"):
             warped = geo >> g.SetPosition(offset=(0.0, 0.0, 1.0))
@@ -286,8 +286,8 @@ Each class builds its tree through `ClassName.create_group()`, making it a clean
 
 ```{python}
 with TreeBuilder("Wave Deform") as tree:
-    geo = tree.inputs.geometry("Geometry")
-    out = tree.outputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
+    out = tree.outputs.geometry()
     geo >> g.SetPosition(offset=g.CombineXYZ(z=g.Position().o.position.x)) >> out
 
 code = tree.to_python(top_level="class")
