@@ -1,10 +1,10 @@
 # Agent notes for nodebpy
 
-Skills for AI coding agents live in `skills/`. Load the matching one before starting:
-
-| Task | Skill |
-|---|---|
-| Writing, editing, verifying or porting node trees with nodebpy (Geometry Nodes, shaders, compositor), custom group classes, `to_python`, live re-runs | `skills/nodebpy/SKILL.md` |
+The skill for writing node trees with nodebpy lives in `skills/nodebpy/SKILL.md`
+(a copy of `src/nodebpy/skills/nodebpy`, which ships in the wheel). Load it before
+writing, editing, verifying or porting node trees, custom group classes, `to_python`
+output or live re-runs. `nodebpy lookup search|show|socket` answers "which class,
+which socket, which option" from the installed package.
 
 Development setup, running the tests and regenerating the node classes are covered in
 [CONTRIBUTING.md](CONTRIBUTING.md). Open work and design notes are tracked as GitHub

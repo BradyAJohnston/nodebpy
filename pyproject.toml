@@ -65,6 +65,10 @@ not-subscriptable = "ignore"
 invalid-assignment = "ignore"
 invalid-argument-type = "ignore"
 
+[tool.ruff]
+# The agent skill's Markdown keeps its examples compact and aligned by hand.
+extend-exclude = ["src/nodebpy/skills", "skills"]
+
 [tool.ruff.lint]
 ignore = ["SIM117", "RUF059"]
 

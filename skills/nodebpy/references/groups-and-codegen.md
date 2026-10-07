@@ -48,7 +48,7 @@ with g.tree("Jitter Demo", clear=True) as tree:
 - Output sockets of the group node are reached like any node: `Jitter().o.geometry`.
 - Also available: `CustomShaderGroup`, `CustomCompositorGroup` (from `nodebpy.builder`).
 - Class options: `_name` (required), `_color_tag`, `_warning_propagation`,
-  `_tree_properties = {"description": "tooltip"}`.
+  `_tree_properties = {"description": "tooltip", "is_modifier": True}`.
 - `Jitter.create_group()` builds (or returns) the bpy tree without a surrounding context.
 - Groups can nest: use one group class inside another's `_build_group`.
 - **Caching**: `_build_group` runs once per `_name` per Blender session. If you change the
@@ -129,16 +129,19 @@ Lower-level pieces, if you need them: `stash_groups`, `preserve_modifier_inputs`
 
 Blender's bundled "Essentials" node groups (Array, Smooth by Angle, hair tools, ...) are
 ordinary classes in `g`: `g.Cube() >> g.SmoothByAngle(angle=0.6) >> g.Array(count=4)`.
-Each is appended once from Blender's bundled library and reused. Their `lookup.py`
-bl_idname is `GeometryNodeGroup`.
+Each is appended once from Blender's bundled library and reused. `nodebpy lookup search`
+lists them with bl_idname `GeometryNodeGroup`.
 
 For a project whose node groups ship as a `.blend` asset library generated from Python
-(the Molecular Nodes pattern), see the nodebpy docs page "assets" and the CLI:
+(the Molecular Nodes pattern), see the nodebpy docs page "assets" and the `nodebpy`
+command (`python -m nodebpy` works too; `python -m nodebpy.assets` is deprecated):
 
 ```bash
-uv run -m nodebpy.assets build <sources_dir> <out.blend>   # python -> .blend
-uv run -m nodebpy.assets dump <in.blend> <sources_dir>     # .blend -> python
-uv run -m nodebpy.assets check                             # CI: build then dump reproduces sources
+nodebpy build <sources_dir> <out.blend>        # python -> .blend
+nodebpy dump <in.blend> <sources_dir>          # .blend -> python
+nodebpy dump --api-only <in.blend> <pkg_dir>   # typed classes only, no recipe
+nodebpy check                                  # CI: build then dump reproduces sources
+nodebpy textconv <in.blend>                    # the dump as text, for git diff
 ```
 
 Configuration lives in `[tool.nodebpy.assets]` in pyproject.toml. Python `#` comments

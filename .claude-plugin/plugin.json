@@ -1,0 +1,13 @@
+{
+  "name": "nodebpy",
+  "version": "520.32.0",
+  "description": "Write, edit and verify Blender node trees (Geometry Nodes, shaders, compositor) as Python with nodebpy.",
+  "author": {
+    "name": "Brady Johnston",
+    "url": "https://github.com/BradyAJohnston"
+  },
+  "homepage": "https://bradyajohnston.github.io/nodebpy",
+  "repository": "https://github.com/BradyAJohnston/nodebpy",
+  "license": "GPL-3.0-or-later",
+  "keywords": ["blender", "geometry-nodes", "shader", "compositor", "python"]
+}

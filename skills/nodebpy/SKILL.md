@@ -25,15 +25,14 @@ the Blender version nodebpy targets: nodebpy versions are `BLENDER.MINOR.PATCH`,
 `520.x` wants Blender/bpy 5.2+. Python 3.13.
 
 ```bash
-uv add nodebpy "bpy==5.2.*" networkx matplotlib   # networkx: default layout, matplotlib: to_plot
+uv add nodebpy "bpy==5.2.*" matplotlib   # matplotlib only for tree.to_plot()
 BLENDER_USER_EXTENSIONS=/nonexistent uv run python build_tree.py
 ```
 
 - `BLENDER_USER_EXTENSIONS=/nonexistent` stops an installed Blender extension (e.g.
   Molecular Nodes) bundling an older nodebpy wheel from shadowing the one in the venv.
   Also `import nodebpy` before `import bpy`.
-- Without networkx the layout silently falls back to "simple" with a warning; trees
-  still build.
+- Layout needs no extra package: trees are arranged when the `with` block exits.
 - A headless session starts from the factory scene (a `Cube` object exists). Nothing is
   saved unless you call `bpy.ops.wm.save_as_mainfile(filepath=...)`.
 - Don't name your scripts after stdlib modules (`inspect.py`, `types.py`, ...): the
@@ -89,16 +88,18 @@ with g.tree("Scatter Cubes", clear=True) as tree:
   readable form: `vec.length()`, `vec.normalize()`, `vec.rotate(rot)`, `vec.distance(p)`,
   `f.map_range(0, 1, -1, 1)`, `(pos.z > 0.5).switch.float(a, b)`, `rot.rotate(by)`,
   `rot.to_euler()`, `color.r`, `matrix.translation`, `string.split(",")`. List every
-  method on a socket type with `python scripts/lookup.py socket Vector` (section 3).
+  method on a socket type with `nodebpy lookup socket Vector` (section 3).
 - **Call methods on the value that flows on down the chain.** The socket you are
   transforming is the subject: `pos.transform(world)` (Transform Point), not
   `g.TransformPoint(pos, world).o.vector`; `world_pos.z`, not
-  `g.SeparateXYZ(world_pos).o.z`; `g.SelfObject().o.self_object.transform()` for the
+  `g.SeparateXYZ(world_pos).o.z`; `g.SelfObject().o.self_object.matrix()` for the
   object's matrix, not `g.ObjectInfo(g.SelfObject()).o.transform`. Reach for the node
   class only when no socket method covers it or you need several of its outputs.
-  Note `vec.transform(m)` applies translation (it is a point transform); for a
-  *direction* such as a gravity or normal vector use `m.transform_direction(vec)`
-  (Transform Direction) so the object's location does not leak into it.
+  `vec.transform(m)` applies translation (it is a point transform); for a *direction*
+  such as gravity or a normal use `vec.transform_direction(m)` (Transform Direction) so
+  the object's location does not leak into it. The two selector factories,
+  `fac.mix.float(a, b)` and `(x > 0).switch.float(a, b)`, are the deliberate exceptions:
+  they sit on the factor or condition and return the mixed or chosen value.
 - **Per-domain field methods** replace most statistic/evaluate nodes. On any field
   socket, `.point`, `.face`, `.edge`, `.corner`, `.spline`, `.instance`, `.layer` give:
   `.min(group)`, `.max(group)`, `.mean(group)`, `.median(group)`, `.std_dev(group)`,
@@ -144,9 +145,10 @@ Reach for these first:
 | Combine rotations | `g.RandomRotation().o.rotation.rotate((0, 0, pi))`, `rot.rotate(by, rotation_space="LOCAL")`, or `g.RotateRotation(rotation, rotate_by=...)` | Adding Euler angles |
 
 Euler tuples and vector sockets convert implicitly into rotation sockets, so
-`rotation=(0, 0, pi)` works and an explicit Euler to Rotation node is optional. More generally: check the bundled Essentials groups (`lookup.py search`
-lists them with bl_idname `GeometryNodeGroup`) before building a common operation from
-primitives. They are what Blender users expect to see.
+`rotation=(0, 0, pi)` works and an explicit Euler to Rotation node is optional. More
+generally: check the bundled Essentials groups (`nodebpy lookup search` lists them with
+bl_idname `GeometryNodeGroup`) before building a common operation from primitives. They
+are what Blender users expect to see.
 
 Plain Python functions that take and return sockets are the way to factor repeated
 sub-graphs; for a sub-graph that should appear as one group node, write a
@@ -158,17 +160,18 @@ Guessing class names, socket names and enum strings is the main source of errors
 Look them up instead; it is fast:
 
 ```bash
-python scripts/lookup.py search "named attribute"      # class, bl_idname, summary
-python scripts/lookup.py show StoreNamedAttribute      # args, enum options, variants, outputs
-python scripts/lookup.py show Mix --tree shader
-python scripts/lookup.py socket Rotation               # methods on a socket type
-python scripts/lookup.py socket                        # list socket types
+nodebpy lookup search "named attribute"      # class, bl_idname, summary
+nodebpy lookup show StoreNamedAttribute      # args, enum options, variants, outputs
+nodebpy lookup show Mix --tree shader
+nodebpy lookup socket Rotation               # methods on a socket type
+nodebpy lookup socket                        # list socket types
 ```
 
-(Run it with the same `uv run` / env var as your build script; the path is relative to
-this skill's directory.) `print(g.SomeNode.__doc__)` gives the same information in
-numpydoc form. When you know the bl_idname from an existing tree
-(`node.bl_idname == "GeometryNodeSetPosition"`), search for it directly.
+`nodebpy` is the console script of the installed package (`uv run nodebpy ...` in a
+uv project, or `python -m nodebpy ...`), so it always describes the version you have.
+`print(g.SomeNode.__doc__)` gives the same information in numpydoc form. When you know
+the bl_idname from an existing tree (`node.bl_idname == "GeometryNodeSetPosition"`),
+search for it directly.
 
 Other sources, in order of usefulness:
 - the nodebpy tests, which are runnable examples of every idiom: `tests/test_usecases.py`,
@@ -229,8 +232,11 @@ reporting success. Pick whichever of these fit the task:
   reuses the datablock called "Name" (creating it if missing) and empties it, so
   modifiers and group nodes that point at it stay attached. Without `clear=True`, the
   same name makes a second tree `Name.001` and the modifier still shows the old one.
-  `s.tree(...)` and `c.tree(...)` take `clear=` too. For a tree you already hold:
-  `TreeBuilder(existing_bpy_tree, clear=True)`.
+  `s.tree(...)`, `s.material(...)` and `c.tree(...)` take `clear=` too. For a tree you
+  already hold: `TreeBuilder(existing_bpy_tree, clear=True)`.
+- A group meant to be added as a modifier needs `is_modifier=True`
+  (`g.tree("Name", is_modifier=True)`), and a node tool `is_tool=True`; both are also
+  properties on the builder. Rebuilding with `clear=True` keeps the flags.
 - `clear=True` keeps Geometry Nodes modifier input values: they are carried over by
   socket name, so keep existing input names unchanged when editing a tree a user has
   already tuned.

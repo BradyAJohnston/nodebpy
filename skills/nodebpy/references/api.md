@@ -19,9 +19,9 @@ Idioms beyond the core ones in SKILL.md. Every snippet runs inside a
 
 | Call | Builds | Notes |
 |---|---|---|
-| `g.tree(name, *, collapse=False, arrange="sugiyama", clear=False)` | Geometry node group | No `fake_user`; use `TreeBuilder.geometry(name, fake_user=True)` if needed. |
+| `g.tree(name, *, collapse=False, arrange="sugiyama", fake_user=False, clear=False, is_modifier=None, is_tool=None)` | Geometry node group | `g.tree` is `TreeBuilder.geometry`; `is_modifier=True` for a modifier group. |
 | `s.tree(name, *, fake_user=False, clear=False, ...)` | Shader node group | |
-| `s.material(name, *, fake_user=False, ...)` | Material; `.material` is the `bpy.types.Material` | No `clear`; see SKILL.md section 6. |
+| `s.material(name, *, fake_user=False, clear=False, ...)` | Material; `.material` is the `bpy.types.Material` | See SKILL.md section 6. |
 | `c.tree(name, *, fake_user=False, clear=False, ...)` | Compositor node group | |
 | `TreeBuilder(bpy_tree_or_name, tree_type="GeometryNodeTree", clear=False, ...)` | Wrap an existing tree or make one | Also `TreeBuilder.geometry/.shader/.compositor(...)`. |
 
@@ -62,17 +62,21 @@ sep.o.y >> g.Math.sine()      # link a specific output
 `socket.default_value` the value on an unlinked input.
 
 Methods by socket type (all return new sockets/nodes). This is a highlight list; the
-complete, current list for any type comes from `python scripts/lookup.py socket <Type>`.
+complete, current list for any type comes from `nodebpy lookup socket <Type>`.
 
 - **Vector**: `.x .y .z` (shared Separate XYZ), `.length()`, `.dot(v)`, `.cross(v)`,
   `.distance(p)`, `.normalize()`, `.project(v)`, `.reflect(n)`, `.scale(s)`,
   `.map_range(...)`, `.rotate(rotation)` (Rotate Vector; `rotation` may be an Euler
-  tuple), `.transform(matrix)`, `.align_rotation(...)`.
+  tuple), `.transform(matrix)` (as a point: translation applies),
+  `.transform_direction(matrix)` (as a direction: it does not), `.align_rotation(...)`.
 - **Float / Integer**: `.sin()`, `.clamp(min, max)`, `.map_range(from_min, from_max, to_min, to_max)`,
   `.to_string()`, `.mix.color(a, b)`.
 - **Boolean**: `.switch.float(false, true)`, `.switch.geometry(...)`, `.switch.vector(...)`.
 - **Color**: `.r .g .b .a`.
 - **Matrix**: `.translation`, `.rotation`, `.scale`, `.invert()`, `.determinant()`, `.svd()`.
+- **Object**: `.matrix(space)`, `.location(space)`, `.rotation(space)`, `.scale(space)`,
+  `.geometry(space, as_instance)` read the object through Object Info
+  (`space` is `"ORIGINAL"` or `"RELATIVE"`); **Collection**: `.instances(...)`.
 - **String**: `.format({...})`, `.find(s)` -> `(first, count)`, `.slice(...)`,
   `.starts_with(...)`, `.split(...)`, `.to_float()`.
 - **Rotation**: `.rotate(by, rotation_space="LOCAL")` (Rotate Rotation), `.invert()`,
@@ -136,28 +140,38 @@ subscriptable. `with tree.panel("Name"):` makes a panel holding inputs and outpu
 
 ## 6. Zones
 
+Every items-driven node and zone exposes its items as one collection: the typed
+methods take **the value first, then an optional name**, and name the item after the
+linked source socket when no name is given (`zone.items.geometry(g.Cube())` is named
+"Mesh"). `items.new(value, name, type="FLOAT")` is the runtime-typed form, and the
+collection supports `len(items)`, iteration and `items[0]` / `items["Name"]`. Each
+method returns an `Item` handle whose `.input` is the socket the item is fed through and
+`.output` the socket it is read from; `>> item.input` continues the chain from `.output`.
+
 **Repeat**
 
 ```python
 zone = g.RepeatZone(10)                       # iteration count (can be linked)
-geo = zone.items.geometry("Geometry", g.Cube())   # second arg links the initial value
+geo = zone.items.geometry(g.Cube(), "Geometry")   # the value links the initial state
 offset = g.RandomValue.vector(seed=zone.iteration)
 geo.current >> g.SetPosition(offset=offset * 0.1) >> geo.next
 geo.result >> tree.outputs.geometry("Geometry")
 ```
 
 A `ZoneItem` has four sockets: `.initial` (input node input), `.current` (read inside
-the zone), `.next` (write inside the zone), `.result` (after the zone). Factories:
-`zone.items.float/integer/boolean/vector/color/rotation/matrix/string/geometry/bundle`,
-plus datablock types on repeat zones only. `zone.item(name, initial, type="GEOMETRY")`
-is the string-typed form.
+the zone), `.next` (write inside the zone), `.result` (after the zone). `>> geo.initial`
+continues from `geo.current` and `>> geo.next` from `geo.result`, so a zone body can
+be one chain: `g.Cube() >> geo.initial >> g.SetShadeSmooth() >> geo.next >> out`.
+Methods: `zone.items.float/integer/boolean/vector/color/rotation/matrix/string/geometry/bundle`,
+plus datablock types on repeat zones only; omit the value to declare an unlinked item
+(`zone.items.float(name="Count")`).
 
 **Simulation**: same item API; `sim.delta_time` gives the step.
 
 ```python
 sim = g.SimulationZone()
-geo = sim.items.geometry("Geometry", g.Points(100))
-vel = sim.items.vector("Velocity", (0, 0, 0))
+geo = sim.items.geometry(g.Points(100), "Geometry")
+vel = sim.items.vector((0, 0, 0), "Velocity")
 new_vel = vel.current + sim.delta_time * (0, 0, -9.8)
 new_vel >> vel.next
 geo.current >> g.SetPosition(offset=new_vel * sim.delta_time) >> geo.next
@@ -170,27 +184,35 @@ at frame 1 shows the initial state.
 **For each element**
 
 ```python
-zone = g.ForEachGeometryElementZone(geometry, selection=True, domain="POINT")
-pos = zone.inputs.vector("Pos", g.Position())       # .input (field in) / .output (value in body)
-zone.main.float("Out", pos.output.x)                 # per-element result written back
-zone.generated.geometry("Gen", g.Cube(size=0.1))     # geometry generated per element
-# zone.index, zone.element; results on zone.output.o.<name>, default generated at zone.output.o.generation_0
+zone = g.ForEachGeometryElementZone.face(geometry, selection=True)   # or domain="FACE"
+pos = zone.items.vector(g.Position(), "Pos")         # .input (field in) / .output (value in body)
+zone.main_items.float(pos.output.x, "Out")           # per-element result written back
+zone.generated_items.geometry(g.Cube(size=0.1), "Gen")   # geometry generated per element
+# zone.index, zone.element; results on zone.output.o.<name>; the default generated
+# geometry is zone.generation (.input to feed, .output to read)
 ```
 
 **Closure**: `cz = g.ClosureZone(); a = cz.inputs.geometry("Geo"); out = cz.outputs.geometry("Out")`;
-evaluate with `g.EvaluateClosure(cz.closure).inputs.geometry("Geometry", g.Cube())`.
+read `a.output` in the body and feed `>> out.input`. Evaluate with
+`g.EvaluateClosure(cz.closure).inputs.geometry(g.Cube(), "Geometry")` and read the
+results from `.outputs.<type>("Name").output`.
 
 ## 7. Item nodes
 
 ```python
 cap = g.CaptureAttribute.face(g.Cube())
-normal = cap.items.vector("Normal", g.Normal())
-cap >> g.SetPosition(offset=normal.output * 0.1)   # .output is the captured field
+normal = cap.items.vector(g.Normal())                # named "Normal" after its source
+cap >> g.SetPosition(offset=normal.output * 0.1)     # .output is the captured field
 ```
 
-Dict form: `g.CaptureAttribute(geo, items={"Pos": g.Position(), "Mask": "BOOLEAN"})` (a type
-name string declares an unlinked item). `g.Bake().items.geometry("Geo", g.Cube())`.
-`g.FieldToGrid.float().items.float("Density", 0.5)` returns `.field` / `.grid`.
+Constructor form: `g.CaptureAttribute(geo, items={"Pos": g.Position(), "Mask": "BOOLEAN"})`
+(a type name string declares an unlinked item) or `items=[g.Position(), g.Normal()]`
+(named after the sources). `g.Bake().items.geometry(g.Cube(), "Geo")`.
+`g.FieldToGrid.float().items.float(0.5, "Density")` and `g.FieldToList(10).items.vector(pos)`
+return handles whose `.input` is the field and `.output` the grid or list.
+`g.CombineBundle().items.float(0.5, "a")` (socket on `.input`) and
+`g.SeparateBundle(bundle).items.float("a")` (socket on `.output`) declare bundle items;
+`g.FormatString("{x}", items={"x": 1.0})` likewise.
 
 ## 8. Switches
 
@@ -198,20 +220,24 @@ name string declares an unlinked item). `g.Bake().items.geometry("Geo", g.Cube()
 g.Switch.geometry(condition, false_geo, true_geo)
 (value > 0.5).switch.float(0.0, 1.0)
 g.IndexSwitch.geometry(index, [g.Cube(), g.IcoSphere(), g.Cone()])
-g.IndexSwitch.float(items=range(10))
+g.IndexSwitch.float(items=range(10))            # or switch.items.new(value) afterwards
 mode = tree.inputs.menu("Shape", "Cube")
 g.MenuSwitch.geometry(mode, {"Cube": g.Cube(), "Sphere": g.UVSphere()})
 ```
 
-MenuSwitch items may be `(value, "description")` tuples; `switch.item("Name", value)` returns
-a `MenuItem` with `.is_selected` (a boolean socket).
+MenuSwitch items may be `(value, "description")` tuples;
+`switch.items.new(value, "Name", description="...")` returns a `MenuItem` with
+`.is_selected` (a boolean socket). The first item declared becomes the default selection.
 
 ## 9. Layout options
 
-- `arrange="sugiyama"` (default, needs networkx), `"simple"`, or `None` to keep positions.
-- `SugiyamaOptions(direction="BALANCED", add_reroutes=False, margin=(30, 30), ...)` and
-  `SimpleOptions(spacing=(50, 25))` from `nodebpy` for fine control.
-- `nodebpy.arrange(bpy_tree, method)` re-arranges any tree, including hand-made ones.
+- `arrange="sugiyama"` (default), `"simple"`, or `None` to keep positions. No extra
+  package is needed.
+- `SugiyamaOptions(margin=..., direction=..., socket_alignment=..., reroutes="none"|"blocked"|"all",
+  straighten_trunk=True, pin_group_output=True, snap_to_grid=True, seed=0, ...)` from
+  `nodebpy` for fine control; pass it as `arrange=`.
+- `nodebpy.arrange(bpy_tree, method, selected_only=False)` re-arranges any tree,
+  including hand-made ones.
 - `collapse=True` collapses nodes (compact trees).
 
 ## 10. Shader and compositor specifics
