@@ -57,12 +57,14 @@ from mathutils import Euler
 
 from ..types import (
     SOCKET_TYPES,
+    InputAny,
     InputBoolean,
     InputBundle,
     InputClosure,
     InputCollection,
     InputColor,
     InputFloat,
+    InputFloatGrid,
     InputFloatList,
     InputFont,
     InputGeometry,
@@ -77,6 +79,7 @@ from ..types import (
     InputSound,
     InputString,
     InputVector,
+    InputVectorGrid,
 )
 from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
 from ._utils import _deprecated, _NodeLike, _output_socket_type, _SocketLike
@@ -85,11 +88,14 @@ from .mixins import LinkingMixin, OperatorMixin
 if TYPE_CHECKING:
     from ..nodes import compositor, geometry, shader
     from ..nodes.geometry import (
+        BoneInfo,
+        CameraInfo,
         CombineMatrix,
         CombineTransform,
         FieldToGrid,
         GridInfo,
         GridToPoints,
+        ImageInfo,
         IntegerMath,
         MatchString,
         Math,
@@ -127,6 +133,33 @@ class ResultAxisAngle[
 
     axis: VectorResult
     angle: FloatResult
+
+
+class ResultSpherical[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)](
+    NamedTuple
+):
+    """Spherical coordinates returned by `VectorSocket.to_spherical()`."""
+
+    r: FloatResult
+    phi: FloatResult
+    theta: FloatResult
+
+
+class ResultCylindrical[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)](
+    NamedTuple
+):
+    """Cylindrical coordinates returned by `VectorSocket.to_cylindrical()`."""
+
+    r: FloatResult
+    phi: FloatResult
+    z: FloatResult
+
+
+class ResultCollectionChildren(NamedTuple):
+    """Children returned by `CollectionSocket.children()`."""
+
+    collections: CollectionSocketList
+    objects: ObjectSocketList
 
 
 class ResultStringFind[
@@ -430,6 +463,35 @@ class _GridMeanMixin(Socket):
         ).o.grid
 
 
+class _GridAdvectMixin(Socket):
+    def advect(
+        self,
+        velocity: InputVectorGrid,
+        time_step: InputFloat = 1.0,
+        integration_scheme: InputMenu
+        | Literal[
+            "Semi-Lagrangian",
+            "Midpoint",
+            "Runge-Kutta 3",
+            "Runge-Kutta 4",
+            "MacCormack",
+            "BFECC",
+        ] = "Runge-Kutta 3",
+        limiter: InputMenu | Literal["None", "Clamp", "Revert"] = "Clamp",
+    ) -> Self:
+        """Move the grid's values along the *velocity* grid over *time_step*."""
+        from ..nodes.geometry import AdvectGrid
+
+        return AdvectGrid(
+            self.socket,
+            velocity,
+            time_step,
+            integration_scheme,
+            limiter,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid
+
+
 class _FloatGridOperatorMixin(Socket):
     def gradient(self) -> VectorSocketGrid:
         """Calculate the direction and magnitude of the change in values of a scalar grid."""
@@ -482,6 +544,24 @@ class _FloatGridOperatorMixin(Socket):
         from ..nodes.geometry import SDFGridOffset
 
         return SDFGridOffset(self.socket, distance=distance).o.grid  # ty: ignore[invalid-argument-type]
+
+    def sdf_union(self, *others: InputFloatGrid) -> FloatSocketGrid:
+        """Union of this signed distance field with *others*."""
+        from ..nodes.geometry import SDFGridBoolean
+
+        return SDFGridBoolean.union([self.socket, *others]).o.grid  # ty: ignore[invalid-argument-type]
+
+    def sdf_intersect(self, *others: InputFloatGrid) -> FloatSocketGrid:
+        """Intersection of this signed distance field with *others*."""
+        from ..nodes.geometry import SDFGridBoolean
+
+        return SDFGridBoolean.intersect([self.socket, *others]).o.grid  # ty: ignore[invalid-argument-type]
+
+    def sdf_difference(self, *others: InputFloatGrid) -> FloatSocketGrid:
+        """This signed distance field with *others* subtracted."""
+        from ..nodes.geometry import SDFGridBoolean
+
+        return SDFGridBoolean.difference(self.socket, others).o.grid  # ty: ignore[invalid-argument-type]
 
     def to_mesh(
         self, threshold: InputFloat = 0.1, adaptivity: InputFloat = 0.0
@@ -540,6 +620,29 @@ class _GridSocketMixin[T, TG: BaseSocket](Socket):
         self,
     ) -> T:
         return self._info().o.background_value
+
+    def set_background(
+        self, background: InputAny, update_inactive: InputBoolean = False
+    ) -> Self:
+        """Set the grid's background value, optionally also on inactive voxels."""
+        from ..nodes.geometry import SetGridBackground
+
+        return SetGridBackground(
+            self.socket,
+            background,
+            update_inactive,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid
+
+    def set_transform(self, matrix: InputMatrix) -> Self:
+        """Set the grid's transform from index to object space."""
+        from ..nodes.geometry import SetGridTransform
+
+        return SetGridTransform(
+            self.socket,
+            matrix,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid
 
     def sample(
         self,
@@ -850,11 +953,42 @@ def _dispatch_vector_compare(
     return Socket._dispatch_compare(cast("Socket", self), other, operation)
 
 
+class _HashMixin(BaseSocket):
+    def hash(self, seed: InputInteger = 0) -> IntegerSocket:
+        """Hash this value to a pseudo-random integer, varied by *seed*."""
+        self._assert_output("hash")
+        from ..nodes.geometry import HashValue
+
+        return HashValue(self.socket, seed, data_type=self._socket_dtype).o.hash  # ty: ignore[invalid-argument-type]
+
+
+_BLUR_DATA_TYPES = {
+    "VALUE": "FLOAT",
+    "INT": "INT",
+    "VECTOR": "FLOAT_VECTOR",
+    "RGBA": "FLOAT_COLOR",
+}
+
+
+class _BlurMixin(BaseSocket):
+    def blur(self, iterations: InputInteger = 1, weight: InputFloat = 1.0) -> Self:
+        """Smooth this field by mixing each element with its neighbours, *iterations* times."""
+        self._assert_output("blur")
+        from ..nodes.geometry import BlurAttribute
+
+        return BlurAttribute(
+            self.socket,
+            iterations,
+            weight,
+            data_type=_BLUR_DATA_TYPES[self.socket.type],  # ty: ignore[invalid-argument-type]
+        ).o.value
+
+
 class _VectorMixin[
     FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList),
     VectorResult: (VectorSocket, VectorSocketGrid, VectorSocketList),
     RotationResult: (RotationSocket, RotationSocketList),
-](BaseSocket):
+](_HashMixin, _BlurMixin, BaseSocket):
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketVector
@@ -911,6 +1045,109 @@ class _VectorMixin[
         """Multiply by *multiplier* and then add *addend*, per component. A float broadcasts to all components."""
         self._assert_output("mul_add")
         return self._vmath.multiply_add(self.socket, multiplier, addend).o.vector  # ty: ignore[invalid-return-type]
+
+    def min(self, value: InputVector) -> VectorResult:
+        """Per-component minimum of this vector and *value*."""
+        self._assert_output("min")
+        return self._vmath.minimum(self.socket, value).o.vector  # ty: ignore[invalid-return-type]
+
+    def max(self, value: InputVector) -> VectorResult:
+        """Per-component maximum of this vector and *value*."""
+        self._assert_output("max")
+        return self._vmath.maximum(self.socket, value).o.vector  # ty: ignore[invalid-return-type]
+
+    def floor(self) -> VectorResult:
+        """Round each component down to the nearest integer."""
+        self._assert_output("floor")
+        return self._vmath.floor(self.socket).o.vector  # ty: ignore[invalid-return-type]
+
+    def ceil(self) -> VectorResult:
+        """Round each component up to the nearest integer."""
+        self._assert_output("ceil")
+        return self._vmath.ceil(self.socket).o.vector  # ty: ignore[invalid-return-type]
+
+    def round(self) -> VectorResult:
+        """Round each component to the nearest integer."""
+        self._assert_output("round")
+        return self._vmath.round(self.socket).o.vector  # ty: ignore[invalid-return-type]
+
+    def fraction(self) -> VectorResult:
+        """The fractional part of each component."""
+        self._assert_output("fraction")
+        return self._vmath.fraction(self.socket).o.vector  # ty: ignore[invalid-return-type]
+
+    def sign(self) -> VectorResult:
+        """The sign of each component, either `-1`, `0` or `1`."""
+        self._assert_output("sign")
+        return self._vmath.sign(self.socket).o.vector  # ty: ignore[invalid-return-type]
+
+    def snap(self, increment: InputVector) -> VectorResult:
+        """Round each component down to a multiple of *increment*."""
+        self._assert_output("snap")
+        return self._vmath.snap(self.socket, increment).o.vector  # ty: ignore[invalid-return-type]
+
+    def wrap(self, min: InputVector, max: InputVector) -> VectorResult:
+        """Wrap each component into the *[min, max]* range, repeating cyclically."""
+        self._assert_output("wrap")
+        # the node's second input is Max and its third Min
+        return self._vmath.wrap(self.socket, vector_001=max, vector_002=min).o.vector  # ty: ignore[invalid-return-type]
+
+    def sin(self) -> VectorResult:
+        """The sine of each component."""
+        self._assert_output("sin")
+        return self._vmath.sine(self.socket).o.vector  # ty: ignore[invalid-return-type]
+
+    def cos(self) -> VectorResult:
+        """The cosine of each component."""
+        self._assert_output("cos")
+        return self._vmath.cosine(self.socket).o.vector  # ty: ignore[invalid-return-type]
+
+    def tan(self) -> VectorResult:
+        """The tangent of each component."""
+        self._assert_output("tan")
+        return self._vmath.tangent(self.socket).o.vector  # ty: ignore[invalid-return-type]
+
+    def faceforward(
+        self, incident: InputVector, reference: InputVector
+    ) -> VectorResult:
+        """This vector if *incident* points against *reference*, otherwise its negation."""
+        self._assert_output("faceforward")
+        return self._vmath.faceforward(self.socket, incident, reference).o.vector  # ty: ignore[invalid-return-type]
+
+    def refract(self, normal: InputVector, ior: InputFloat) -> VectorResult:
+        """Refract this incident vector through a surface with *normal* and index of refraction *ior*."""
+        self._assert_output("refract")
+        return self._vmath.refract(self.socket, normal, ior).o.vector  # ty: ignore[invalid-return-type]
+
+    def to_spherical(self) -> ResultSpherical[FloatResult]:
+        """Convert to spherical coordinates `(r, phi, theta)`."""
+        self._assert_output("to_spherical")
+        from ..nodes.geometry import SeparateSpherical
+
+        node = SeparateSpherical(self.socket)
+        return ResultSpherical(node.o.r, node.o.phi, node.o.theta)  # ty: ignore[invalid-argument-type]
+
+    def to_cylindrical(self) -> ResultCylindrical[FloatResult]:
+        """Convert to cylindrical coordinates `(r, phi, z)`."""
+        self._assert_output("to_cylindrical")
+        from ..nodes.geometry import SeparateCylindrical
+
+        node = SeparateCylindrical(self.socket)
+        return ResultCylindrical(node.o.r, node.o.phi, node.o.z)  # ty: ignore[invalid-argument-type]
+
+    def project_point(self, matrix: InputMatrix) -> VectorResult:
+        """Project this point by *matrix*, dividing by the resulting w component."""
+        self._assert_output("project_point")
+        from ..nodes.geometry import ProjectPoint
+
+        return ProjectPoint(self.socket, matrix).o.vector  # ty: ignore[invalid-return-type]
+
+    def euler_to_rotation(self) -> RotationResult:
+        """Read this vector as XYZ Euler angles and convert it to a rotation."""
+        self._assert_output("euler_to_rotation")
+        from ..nodes.geometry import EulerToRotation
+
+        return EulerToRotation(self.socket).o.rotation  # ty: ignore[invalid-return-type]
 
     def length(self) -> FloatResult:
         """Get the length of this vector as a `FloatSocket`"""
@@ -1083,6 +1320,23 @@ class _VectorMixin[
 
         def scale(self, scale: InputFloat) -> Self: ...
         def mul_add(self, multiplier: InputVector, addend: InputVector) -> Self: ...
+        def min(self, value: InputVector) -> Self: ...
+        def max(self, value: InputVector) -> Self: ...
+        def floor(self) -> Self: ...
+        def ceil(self) -> Self: ...
+        def round(self) -> Self: ...
+        def fraction(self) -> Self: ...
+        def sign(self) -> Self: ...
+        def snap(self, increment: InputVector) -> Self: ...
+        def wrap(self, min: InputVector, max: InputVector) -> Self: ...
+        def sin(self) -> Self: ...
+        def cos(self) -> Self: ...
+        def tan(self) -> Self: ...
+        def faceforward(
+            self, incident: InputVector, reference: InputVector
+        ) -> Self: ...
+        def refract(self, normal: InputVector, ior: InputFloat) -> Self: ...
+        def project_point(self, matrix: InputMatrix) -> Self: ...
         def normalize(self) -> Self: ...
         def cross(self, other: InputVector) -> Self: ...
         def project(self, other: InputVector) -> Self: ...
@@ -1114,7 +1368,15 @@ class _VectorMixin[
         def __ge__(self, other: Any) -> BooleanSocket: ...
 
 
-class _ColorMixin(BaseSocket):
+_COLOR_BLEND_TYPES: dict[str, Literal["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE"]] = {
+    "add": "ADD",
+    "subtract": "SUBTRACT",
+    "multiply": "MULTIPLY",
+    "divide": "DIVIDE",
+}
+
+
+class _ColorMixin(_HashMixin, _BlurMixin, BaseSocket):
     """Color-specific properties (.r, .g, .b, .a)."""
 
     socket: NodeSocketColor
@@ -1265,13 +1527,32 @@ class _ColorMixin(BaseSocket):
         else:
             return 4
 
-    # Colours behave like vectors for arithmetic — share the vector dispatch so
-    # ``-col``, ``abs(col)`` and ``col // x`` use Vector Math (not scalar Math).
+    def gamma(self, gamma: InputFloat) -> ColorSocket:
+        """Apply a gamma correction, raising each RGB channel to the power *gamma*."""
+        self._assert_output("gamma")
+        from ..nodes.geometry import Gamma
+
+        return Gamma(self.socket, gamma).o.color
+
+    # + - * / between two colours use Mix Color, which keeps the alpha of the
+    # left operand. With a scalar or vector operand, or for the operators Mix
+    # has no blend mode for, colours behave like vectors and use Vector Math.
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> VectorSocket:
-        return _dispatch_vector_math(self.socket, other, operation, reverse)
+    ) -> ColorSocket | VectorSocket:
+        blend_type = _COLOR_BLEND_TYPES.get(operation)
+        is_color = _output_socket_type(other) == "RGBA" or (
+            isinstance(other, (list, tuple)) and len(other) == 4
+        )
+        if blend_type is None or not is_color:
+            return _dispatch_vector_math(self.socket, other, operation, reverse)
+        from ..nodes.geometry import Mix
+
+        a, b = (other, self.socket) if reverse else (self.socket, other)
+        return Mix(
+            1.0, a_color=a, b_color=b, data_type="RGBA", blend_type=blend_type
+        ).o.result_color
 
     def _dispatch_unary(self, operation: str) -> VectorSocket:
         return _dispatch_vector_unary(self.socket, operation)
@@ -1410,7 +1691,7 @@ class _BooleanMixin(BaseSocket):
 class _RotationMixin[
     FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList),
     VectorResult: (VectorSocket, VectorSocketGrid, VectorSocketList),
-](BaseSocket):
+](_HashMixin, BaseSocket):
     """Rotation-specific methods."""
 
     socket: NodeSocketRotation
@@ -1515,7 +1796,7 @@ class _FloatMixDataTypeFactory:
 
 
 class _FloatMixin[IntegerResult: (IntegerSocket, IntegerSocketGrid, IntegerSocketList)](
-    BaseSocket
+    _HashMixin, _BlurMixin, BaseSocket
 ):
     """Float-specific properties (.x, .y, .z) and dispatch."""
 
@@ -1573,6 +1854,30 @@ class _FloatMixin[IntegerResult: (IntegerSocket, IntegerSocketGrid, IntegerSocke
         """Create Math with operation 'Maximum'. The maximum from self and value"""
         self._assert_output("max")
         return self._math.maximum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
+    def smooth_min(self, value: InputFloat, distance: InputFloat) -> Self:
+        """The minimum of self and *value*, blended smoothly over *distance*."""
+        self._assert_output("smooth_min")
+        return self._math.smooth_minimum(self.socket, value, distance).o.value  # ty: ignore[invalid-return-type]
+
+    def smooth_max(self, value: InputFloat, distance: InputFloat) -> Self:
+        """The maximum of self and *value*, blended smoothly over *distance*."""
+        self._assert_output("smooth_max")
+        return self._math.smooth_maximum(self.socket, value, distance).o.value  # ty: ignore[invalid-return-type]
+
+    def inverse_sqrt(self) -> Self:
+        """Return `1 / sqrt(self)`."""
+        self._assert_output("inverse_sqrt")
+        return self._math.inverse_square_root(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def is_close(
+        self, other: InputFloat, epsilon: InputFloat = 0.0001
+    ) -> BooleanSocket:
+        """Whether self and *other* differ by at most *epsilon*."""
+        self._assert_output("is_close")
+        from ..nodes.geometry import Compare
+
+        return Compare.float.equal(self.socket, other, epsilon=epsilon).o.result
 
     def sin(self) -> Self:
         "Create a Math node with operation 'Sine'. The sine of self"
@@ -1723,7 +2028,7 @@ class _FloatMixin[IntegerResult: (IntegerSocket, IntegerSocketGrid, IntegerSocke
 
 
 class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)](
-    BaseSocket
+    _HashMixin, _BlurMixin, BaseSocket
 ):
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""
 
@@ -1751,6 +2056,52 @@ class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)
         """Create IntegerMath with operation 'Maximum'. The maximum from self and value"""
         self._assert_output("max")
         return self._imath.maximum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
+    def divide_round(self, divisor: InputInteger) -> Self:
+        """Divide by *divisor*, rounding to the nearest integer."""
+        self._assert_output("divide_round")
+        return self._imath.divide_round(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
+
+    def divide_ceiling(self, divisor: InputInteger) -> Self:
+        """Divide by *divisor*, rounding up."""
+        self._assert_output("divide_ceiling")
+        return self._imath.divide_ceiling(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
+
+    def gcd(self, value: InputInteger) -> Self:
+        """Greatest common divisor of self and *value*."""
+        self._assert_output("gcd")
+        return self._imath.greatest_common_divisor(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
+    def lcm(self, value: InputInteger) -> Self:
+        """Least common multiple of self and *value*."""
+        self._assert_output("lcm")
+        return self._imath.least_common_multiple(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
+    def shift(self, amount: InputInteger) -> Self:
+        """Shift the bits left by *amount*, or right when *amount* is negative.
+
+        Right shifts are logical, filling with zeros, so a negative value
+        turns positive, unlike Python's ``>>``.
+        """
+        self._assert_output("shift")
+        from ..nodes.geometry import BitMath
+
+        return BitMath.shift(self.socket, amount).o.value  # ty: ignore[invalid-return-type]
+
+    def rotate(self, amount: InputInteger) -> Self:
+        """Rotate the 32 bits left by *amount*, or right when *amount* is negative;
+        bits shifted off one end come back at the other."""
+        self._assert_output("rotate")
+        from ..nodes.geometry import BitMath
+
+        return BitMath.rotate(self.socket, amount).o.value  # ty: ignore[invalid-return-type]
+
+    def to_float(self) -> FloatResult:
+        """Convert to a float with an Implicit Conversion node."""
+        self._assert_output("to_float")
+        from ..nodes.geometry import ImplicitConversion
+
+        return ImplicitConversion.float(self.socket).o.value  # ty: ignore[invalid-return-type]
 
     def modulo(self, divisor: InputInteger) -> Self:
         """Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*."""
@@ -1863,7 +2214,7 @@ class _StringMixin[
     StringResult: (StringSocket, StringSocketList),
     BooleanResult: (BooleanSocket, BooleanSocketGrid, BooleanSocketList),
     IntegerResult: (IntegerSocket, IntegerSocketGrid, IntegerSocketList),
-](BaseSocket):
+](_HashMixin, BaseSocket):
     """String-specific methods (match, slice, join, etc.)."""
 
     socket: NodeSocketString
@@ -1975,7 +2326,7 @@ class _MatrixMixin[
     RotationResult: (RotationSocket, RotationSocketList),
     FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList),
     MatrixResult: (MatrixSocket, MatrixSocketList),
-](BaseSocket):
+](_HashMixin, BaseSocket):
     """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
 
     socket: NodeSocketMatrix
@@ -2267,6 +2618,24 @@ class _FloatConvertDatatypeMixin[
 
         return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer  # ty: ignore[invalid-return-type]
 
+    # Python's round() and math.floor/ceil/trunc return integers, so these
+    # convert with Float To Integer; .round()/.floor()/... keep a float.
+    # Float To Integer rounds halves away from zero, where Python's round()
+    # rounds them to even (round(2.5) == 2).
+    def __round__(self, ndigits: None = None) -> IntegerResult:
+        if ndigits is not None:
+            raise TypeError("round() on a socket does not take ndigits; use .snap()")
+        return self.to_integer("ROUND")
+
+    def __floor__(self) -> IntegerResult:
+        return self.to_integer("FLOOR")
+
+    def __ceil__(self) -> IntegerResult:
+        return self.to_integer("CEILING")
+
+    def __trunc__(self) -> IntegerResult:
+        return self.to_integer("TRUNCATE")
+
 
 class _IntegerConvertDatatypeMixin[StringResult: (StringSocket, StringSocketList)](
     Socket
@@ -2348,6 +2717,7 @@ class FloatSocketGrid(
     _GridSocketMixin[FloatSocket, "FloatSocketGrid"],
     _FloatGridOperatorMixin,
     _GridMeanMixin,
+    _GridAdvectMixin,
 ):
     """Runtime float grid socket wrapper."""
 
@@ -2433,6 +2803,7 @@ class VectorSocketGrid(
     _GridSocketMixin[VectorSocket, "VectorSocketGrid"],
     _VectorGridOperatorMixin,
     _GridMeanMixin,
+    _GridAdvectMixin,
 ):
     """Runtime vector grid socket wrapper."""
 
@@ -2521,7 +2892,10 @@ class IntegerVectorSocket(
 
 
 class IntegerSocketGrid(
-    _IntegerMixin, _GridSocketMixin[IntegerSocket, "IntegerSocketGrid"], _GridMeanMixin
+    _IntegerMixin,
+    _GridSocketMixin[IntegerSocket, "IntegerSocketGrid"],
+    _GridMeanMixin,
+    _GridAdvectMixin,
 ):
     """Runtime integer grid socket wrapper."""
 
@@ -2857,6 +3231,20 @@ class GeometrySocket(Socket):
 
     socket: NodeSocketGeometry
 
+    def bundle(self) -> BundleSocket:
+        """The bundle stored on this geometry."""
+        self._assert_output("bundle")
+        from ..nodes.geometry import GetGeometryBundle
+
+        return GetGeometryBundle(self.socket).o.bundle
+
+    def set_bundle(self, bundle: InputBundle) -> GeometrySocket:
+        """This geometry with *bundle* stored on it."""
+        self._assert_output("set_bundle")
+        from ..nodes.geometry import SetGeometryBundle
+
+        return SetGeometryBundle(self.socket, bundle).o.geometry
+
     def realize_instances(
         self,
         selection: InputBoolean = True,
@@ -2884,6 +3272,24 @@ class _ObjectMixin(Socket):
 
 class ObjectSocket(_ObjectMixin, _DefaultValueMixin[bpy.types.Object]):
     """Runtime object socket wrapper."""
+
+    def camera_info(self) -> CameraInfo:
+        """Camera Info for this object; read its outputs, e.g. ``.o.focal_length``."""
+        self._assert_output("camera_info")
+        from ..nodes.geometry import CameraInfo
+
+        return CameraInfo(self.socket)
+
+    def bone_info(
+        self,
+        bone_name: InputString,
+        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
+    ) -> BoneInfo:
+        """Bone Info for *bone_name* on this armature; read its outputs, e.g. ``.o.pose``."""
+        self._assert_output("bone_info")
+        from ..nodes.geometry import BoneInfo
+
+        return BoneInfo(self.socket, bone_name, transform_space=transform_space)
 
     @property
     def _info(self) -> type[ObjectInfo]:
@@ -3007,6 +3413,13 @@ class _MaterialSocketMixin(Socket):
 class MaterialSocket(_MaterialSocketMixin, _DefaultValueMixin[bpy.types.Material]):
     """Runtime material socket wrapper."""
 
+    def selection(self) -> BooleanSocket:
+        """Whether each face uses this material."""
+        self._assert_output("selection")
+        from ..nodes.geometry import MaterialSelection
+
+        return MaterialSelection(self.socket).o.selection
+
 
 class MaterialSocketList(_MaterialSocketMixin, _ListMixin[MaterialSocket]):
     """List of material sockets."""
@@ -3018,6 +3431,13 @@ class _ImageSocketMixin(Socket):
 
 class ImageSocket(_ImageSocketMixin, _DefaultValueMixin[bpy.types.Image]):
     """Runtime image socket wrapper."""
+
+    def info(self, frame: InputInteger = 0) -> ImageInfo:
+        """Image Info for this image at *frame*; read its outputs, e.g. ``.o.width``."""
+        self._assert_output("info")
+        from ..nodes.geometry import ImageInfo
+
+        return ImageInfo(self.socket, frame)
 
 
 class ImageSocketList(_ImageSocketMixin, _ListMixin[ImageSocket]):
@@ -3065,9 +3485,83 @@ class CollectionSocket(
             transform_space=transform_space,
         ).o.instances
 
+    def children(self, recursive: InputBoolean = False) -> ResultCollectionChildren:
+        """The child collections and objects, as lists; *recursive* includes nested ones."""
+        self._assert_output("children")
+        from ..nodes.geometry import CollectionChildren
+
+        node = CollectionChildren(self.socket, recursive)
+        return ResultCollectionChildren(node.o.collections, node.o.objects)
+
 
 class CollectionSocketList(_CollectionSocketMixin, _ListMixin[CollectionSocket]):
     """List of collection sockets."""
+
+
+class _BundleGetFactory:
+    """``bundle.get.<type>(path)`` — the item at *path*, read as that type."""
+
+    def __init__(self, socket: NodeSocketBundle):
+        self._socket = socket
+
+    def _get(self, socket_type: str, path: InputString) -> Any:
+        from ..nodes.geometry import GetBundleItem
+
+        return getattr(GetBundleItem, socket_type)(self._socket, path).o.item
+
+    def float(self, path: InputString) -> FloatSocket:
+        return self._get("float", path)
+
+    def integer(self, path: InputString) -> IntegerSocket:
+        return self._get("integer", path)
+
+    def boolean(self, path: InputString) -> BooleanSocket:
+        return self._get("boolean", path)
+
+    def vector(self, path: InputString) -> VectorSocket:
+        return self._get("vector", path)
+
+    def color(self, path: InputString) -> ColorSocket:
+        return self._get("color", path)
+
+    def rotation(self, path: InputString) -> RotationSocket:
+        return self._get("rotation", path)
+
+    def matrix(self, path: InputString) -> MatrixSocket:
+        return self._get("matrix", path)
+
+    def string(self, path: InputString) -> StringSocket:
+        return self._get("string", path)
+
+    def menu(self, path: InputString) -> MenuSocket:
+        return self._get("menu", path)
+
+    def object(self, path: InputString) -> ObjectSocket:
+        return self._get("object", path)
+
+    def image(self, path: InputString) -> ImageSocket:
+        return self._get("image", path)
+
+    def geometry(self, path: InputString) -> GeometrySocket:
+        return self._get("geometry", path)
+
+    def collection(self, path: InputString) -> CollectionSocket:
+        return self._get("collection", path)
+
+    def material(self, path: InputString) -> MaterialSocket:
+        return self._get("material", path)
+
+    def bundle(self, path: InputString) -> BundleSocket:
+        return self._get("bundle", path)
+
+    def closure(self, path: InputString) -> ClosureSocket:
+        return self._get("closure", path)
+
+    def font(self, path: InputString) -> FontSocket:
+        return self._get("font", path)
+
+    def sound(self, path: InputString) -> SoundSocket:
+        return self._get("sound", path)
 
 
 class _BundleSocketMixin(Socket):
@@ -3076,6 +3570,64 @@ class _BundleSocketMixin(Socket):
 
 class BundleSocket(_BundleSocketMixin):
     """Runtime bundle socket wrapper."""
+
+    @property
+    def get(self) -> _BundleGetFactory:
+        """Read the item at a path as a given type: ``bundle.get.float("path")``."""
+        self._assert_output("get")
+        return _BundleGetFactory(self.socket)
+
+    def has(self, path: InputString) -> BooleanSocket:
+        """Whether the bundle has an item at *path*."""
+        self._assert_output("has")
+        from ..nodes.geometry import GetBundleItem
+
+        return GetBundleItem(self.socket, path).o.exists
+
+    def store(self, path: InputString, value: InputAny) -> BundleSocket:
+        """This bundle with *value* stored at *path*; the item type follows *value*."""
+        self._assert_output("store")
+        from ..nodes.geometry import StoreBundleItem
+        from .items import _infer_value_type
+        from .node import _value_socket_type
+
+        socket_type = _value_socket_type(value) or _infer_value_type(value)
+        if socket_type is None:
+            raise TypeError(f"Cannot infer a bundle item type from {value!r}")
+        return StoreBundleItem(
+            self.socket,
+            path,
+            value,
+            socket_type=socket_type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.bundle
+
+    def join(self, *others: BundleSocket | BaseNode | NodeSocketBundle) -> BundleSocket:
+        """Join this bundle with *others*; on a duplicate path the later bundle wins."""
+        self._assert_output("join")
+        from ..nodes.geometry import JoinBundle
+
+        node = JoinBundle()
+        for bundle in (self.socket, *others):
+            node._link_from(*node._find_best_socket_pair(bundle, node.i["Bundle"]))
+        return node.o.bundle
+
+    def __or__(self, other: Any) -> BundleSocket:
+        return self.join(other)
+
+    def paths(
+        self,
+        mode: InputMenu | Literal["All", "Bundle Type", "Data Type"] = "All",
+        pattern_mode: InputMenu | Literal["Exact", "Wildcard"] = "Exact",
+        bundle_type: InputString = "",
+        data_type: InputMenu = "Float",
+    ) -> StringSocketList:
+        """The paths of the items in this bundle and any nested bundles."""
+        self._assert_output("paths")
+        from ..nodes.geometry import GetNestedBundlePaths
+
+        return GetNestedBundlePaths(
+            self.socket, mode, pattern_mode, bundle_type, data_type
+        ).o.paths
 
 
 class BundleSocketList(_BundleSocketMixin, _ListMixin[BundleSocket]):

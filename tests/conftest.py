@@ -1,3 +1,4 @@
+import re
 import sys
 from pathlib import Path
 
@@ -97,4 +98,6 @@ def clean_and_save(request):
         ("-", "subtract"),
     ):
         name = name.replace(key, value)
+    # characters Windows forbids in file names, e.g. "<lambda>" in a test id
+    name = re.sub(r'[<>:"|?\\]', "_", name)
     bpy.ops.wm.save_as_mainfile(filepath=str(BLEND_DIR / f"{name}.blend"))
