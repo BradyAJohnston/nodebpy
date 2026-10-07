@@ -69,7 +69,7 @@ def _signature_lines(fn, names_only: bool = False) -> list[str]:
     """One entry per parameter, with a ``*`` marker before keyword-only ones."""
     try:
         sig = inspect.signature(fn)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError):  # pragma: no cover - C-implemented callables
         return []
     hints: dict = {}
     if not names_only:
@@ -180,7 +180,7 @@ def socket(kind: str | None) -> list[str]:
         elif callable(static) or isinstance(static, (classmethod, staticmethod)):
             params = _signature_lines(getattr(cls, attr), names_only=True)
             lines.append(f"  .{attr}({', '.join(params)})".ljust(40) + f" {first[:70]}")
-        else:
+        else:  # pragma: no cover - a plain factory object on a socket class
             subs = [x for x in dir(static) if not x.startswith("_")]
             lines.append(f"  .{attr}.{{{','.join(subs)}}}()"[:110])
     return lines
