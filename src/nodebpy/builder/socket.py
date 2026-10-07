@@ -198,6 +198,15 @@ class BaseSocket:
         self._interface_identifier: str = ""
         self._builder_node: BaseNode | None = None
 
+    # A socket's value is only known when the tree runs, so Python can't branch
+    # on it: max(a, b), `if a > 0:` and `a or b` would all treat it as true.
+    def __bool__(self) -> bool:
+        raise TypeError(
+            "The truth value of a socket is decided when the tree runs, not in "
+            "Python, so it can't be used in `if`, `and`/`or`, `max()` or `min()`. "
+            "Use .max()/.min() or a Switch node."
+        )
+
     @property
     def node(self) -> Node:
         assert self.socket.node is not None

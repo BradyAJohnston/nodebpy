@@ -25,6 +25,7 @@ Integer operators now evaluate to what Python gives for the same values, checked
 - **Integer `%` is floored modulo**, as in Python and as float `%` already was: `-7 % 3` is `2`, not `-1`. `integer.modulo()` follows; Integer Math's truncated `MODULO` is still `g.IntegerMath.modulo()`.
 - **Integer `/` is true division**: `i / j` builds a float Math divide and returns a `FloatSocket`. Use `//` for integer division.
 - **Color + color, -, \* and / use Mix**, returning a `ColorSocket` that keeps the left color's alpha; they used Vector Math and dropped alpha. A color with a scalar or vector operand still uses Vector Math and returns a vector.
+- **`bool()` on a socket raises `TypeError`** (#242). A socket's value is only known when the tree runs, but sockets were always truthy, so `max(a, b)` returned `b` (leaving a stray Compare node), `max(a, 5)` returned `5`, and `if a > 0:` always ran. Use `a.max(b)` / `a.min(b)` or a Switch node, and `is not None` to check a socket exists. Nodes keep normal truthiness.
 
 ### Fixes
 

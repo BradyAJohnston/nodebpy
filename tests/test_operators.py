@@ -1124,3 +1124,30 @@ def test_scalar_socket_with_vector_tuple_uses_vector_math(expr, operation, scala
         result = expr(scalar())
         assert result.node.bl_idname == "ShaderNodeVectorMath"
         assert result.node.operation == operation
+
+
+class TestSocketTruthValue:
+    """A socket's value is only known when the tree runs, so Python can't
+    branch on it: bool() on a socket raises instead of silently treating it
+    as true (#242). Nodes keep normal truthiness."""
+
+    def test_builtins_that_branch_on_a_socket_raise(self):
+        with g.tree("SocketTruth"):
+            a = g.Value(1.0).o.value
+            b = g.Value(2.0).o.value
+            for expression in (
+                lambda: max(a, b),
+                lambda: min(a, 5),
+                lambda: bool(a > 0),
+                lambda: a > 0 and b,
+            ):
+                with pytest.raises(TypeError, match=r"\.max\(\)/\.min\(\)"):
+                    expression()
+
+    def test_nodes_and_identity_checks_still_work(self):
+        with g.tree("SocketIdentity"):
+            node = g.Value(1.0)
+            a = node.o.value
+            assert node  # only sockets refuse bool()
+            assert a is not None
+            assert a in [a]
