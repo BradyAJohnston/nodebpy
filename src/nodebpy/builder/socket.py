@@ -1727,11 +1727,9 @@ class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)
         return IntegerMath
 
     def clamp(self, min: InputInteger = 0, max: InputInteger = 1) -> Self:
-        """Clamp the value to *[min, max]*."""
+        """Clamp the value to *[min, max]*. There isn't a built-in node for this, so it uses .max().min()"""
         self._assert_output("clamp")
-        return self._imath.minimum(
-            self._imath.maximum(self.socket, min).o.value, max
-        ).o.value  # ty: ignore[invalid-return-type]
+        return self.max(min).min(max)
 
     def min(self, value: InputInteger) -> Self:
         """Create IntegerMath with operation 'Minimum'. The minimum from self and value"""
