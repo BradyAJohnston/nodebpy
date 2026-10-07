@@ -328,6 +328,25 @@ def test_default_does_not_snapshot_positions():
     assert "layout_snapshot" not in code
 
 
+def test_with_form_emits_modifier_and_tool_flags():
+    """The modifier/tool flags are constructor options, so the with form
+    carries them (the class form keeps them in _tree_properties)."""
+    with TreeBuilder("Flagged", is_modifier=True, is_tool=True) as tree:
+        tree.inputs.geometry("Geometry") >> tree.outputs.geometry("Geometry")
+    code = to_python(tree, format=False)
+    assert (
+        'with TreeBuilder("Flagged", is_modifier=True, is_tool=True) as tree:' in code
+    )
+    assert "is_modifier" not in to_python(TreeBuilder("Unflagged"), format=False)
+
+    _force_fresh_group_build()
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"]
+    assert rebuilt.tree is not tree.tree
+    assert rebuilt.is_modifier and rebuilt.is_tool
+
+
 def test_in_place_emits_clear_and_rebuilds_same_datablock():
     """in_place=True adds clear=True to the header, so running the source
     twice rebuilds the exported datablock instead of creating copies."""
