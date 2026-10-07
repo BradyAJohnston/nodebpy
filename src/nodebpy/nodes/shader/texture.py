@@ -88,7 +88,7 @@ class EnvironmentTexture(BaseNode):
         self.node.interpolation = value
 
 
-class IesTexture(BaseNode):
+class IESTexture(BaseNode):
     """
     Match real world lights with IES files, which store the directional intensity distribution of light sources
 
@@ -149,7 +149,7 @@ class IesTexture(BaseNode):
     @classmethod
     def internal(
         cls, vector: InputVector = None, strength: InputFloat = 1.0
-    ) -> "IesTexture":
+    ) -> "IESTexture":
         """Create IES Texture with operation 'Internal'. Use internal text data-block"""
         return cls(mode="INTERNAL", vector=vector, strength=strength)
 
@@ -160,7 +160,7 @@ class IesTexture(BaseNode):
         strength: InputFloat = 1.0,
         *,
         filepath: str = "",
-    ) -> "IesTexture":
+    ) -> "IESTexture":
         """Create IES Texture with operation 'External'. Use external .ies file"""
         return cls(mode="EXTERNAL", vector=vector, strength=strength, filepath=filepath)
 

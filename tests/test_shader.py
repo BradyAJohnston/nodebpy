@@ -97,7 +97,7 @@ def test_material_node_cartoon():
         mat.nodes.clear()
         output = s.MaterialOutput(surface=s.Attribute.geometry("Color").o.color)
         attr = s.Attribute.geometry("sec_struct")
-        aov = s.AovOutput(value=attr, aov_name="sec_struct")
+        aov = s.AOVOutput(value=attr, aov_name="sec_struct")
 
     assert (
         output.node.inputs["Surface"].links[0].from_node.bl_idname

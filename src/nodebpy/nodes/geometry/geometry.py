@@ -7511,7 +7511,7 @@ class SetMeshNormal(BaseNode):
         self.node.domain = value
 
 
-class SetNurbsOrder(BaseNode):
+class SetNURBSOrder(BaseNode):
     """
     Control how many curve control points influence each evaluated point by changing the "nurbs_order" attribute
 
@@ -7573,7 +7573,7 @@ class SetNurbsOrder(BaseNode):
         self._establish_links(**key_args)
 
 
-class SetNurbsWeight(BaseNode):
+class SetNURBSWeight(BaseNode):
     """
     Control the influence of each NURBS control point on the curve by changing the "nurbs_weight" attribute
 
@@ -9832,7 +9832,7 @@ class UVSphere(BaseNode):
         self._establish_links(**key_args)
 
 
-class XpbdSolver(BaseNode):
+class XPBDSolver(BaseNode):
     """
     Simulate physics using the XPBD framework
 

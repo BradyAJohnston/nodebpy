@@ -19,7 +19,7 @@ from ...types import (
 )
 
 
-class AovOutput(BaseNode):
+class AOVOutput(BaseNode):
     """
         Arbitrary Output Variables.
     Provide custom render passes for arbitrary shader node outputs
