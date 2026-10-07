@@ -1579,7 +1579,7 @@ wheels = [
 
 [[package]]
 name = "nodebpy"
-version = "520.32.1"
+version = "520.33.0"
 source = { editable = "." }
 
 [package.optional-dependencies]
