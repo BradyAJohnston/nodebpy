@@ -25,8 +25,10 @@ from nodebpy.builder import (
     Socket,
     TreeBuilder,
     VectorSocket,
+    VectorSocketList,
 )
-from nodebpy.builder.items import Item
+from nodebpy.builder.items import Item, MenuItem
+from nodebpy.nodes.geometry.zone import ZoneItem
 
 
 def readme_example() -> TreeBuilder[GeometryNodeTree]:
@@ -97,7 +99,25 @@ def manual_nodes() -> None:
         )
 
         cap = g.CaptureAttribute(cube)
-        assert_type(cap.items.float("x", pos.o.position.x), Item[FloatSocket])
+        assert_type(cap.items.float(pos.o.position.x, "x"), Item[FloatSocket])
+        assert_type(cap.items.float(pos.o.position.x).output, FloatSocket)
+        assert_type(cap.items.new(1.0).input, Socket)
+        assert_type(cap.items["x"], Item)
+        for item in cap.items:
+            assert_type(item.output, Socket)
+
+        menu = g.MenuSwitch.float()
+        assert_type(menu.items.new(1.0, "A"), MenuItem[FloatSocket])
+        assert_type(menu.items.new(1.0, "B").is_selected, BooleanSocket)
+
+        lst = g.FieldToList(3).items.vector(pos)
+        assert_type(lst, Item[VectorSocket, VectorSocketList])
+        assert_type(lst.output, VectorSocketList)
+
+        bundle = g.CombineBundle()
+        assert_type(bundle.items.float(1.0, "a").input, FloatSocket)
+        parts = g.SeparateBundle(bundle)
+        assert_type(parts.items.float("a").output, FloatSocket)
 
         stat = g.AttributeStatistic.point.float(cube, attribute=pos.o.position.x)
         assert_type(stat, g.AttributeStatistic[FloatSocket])
@@ -117,6 +137,10 @@ def grids() -> None:
         grid = g.FieldToGrid.float(None)
         assert_type(grid, g.FieldToGrid[FloatSocketGrid])
         assert_type(grid.i.topology, FloatSocketGrid)
+        density = grid.items.float(0.5, "Density")
+        assert_type(density, Item[FloatSocket, FloatSocketGrid])
+        assert_type(density.input, FloatSocket)
+        assert_type(density.output, FloatSocketGrid)
         sdf = g.SDFGridBoolean.union([grid.i.topology])
         assert_type(sdf.o.grid, FloatSocketGrid)
 
@@ -127,7 +151,20 @@ def zones() -> None:
         assert_type(zone.iteration, IntegerSocket)
         input_node, output_node = zone
         _ = (input_node, output_node)
+        geo = zone.items.geometry()
+        assert_type(geo, ZoneItem[GeometrySocket])
+        assert_type(geo.initial, GeometrySocket)
+        assert_type(geo.result, GeometrySocket)
+        assert_type(zone.items["Geometry"], ZoneItem)
         zone.output.o.geometry >> tree.outputs.geometry()
+
+        for_each = g.ForEachGeometryElementZone(g.Cube())
+        assert_type(for_each.items.vector(g.Position()).output, VectorSocket)
+        assert_type(for_each.main_items.float().input, FloatSocket)
+        assert_type(for_each.generated_items.geometry().output, GeometrySocket)
+        closure = g.ClosureZone()
+        assert_type(closure.inputs.geometry("Geo").output, GeometrySocket)
+        assert_type(closure.outputs.float("Out").input, FloatSocket)
 
 
 class OffsetGroup(CustomGeometryGroup):

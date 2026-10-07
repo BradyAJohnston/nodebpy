@@ -524,7 +524,8 @@ def test_socket_accessor():
         cube = g.Cube()
         sim = g.SimulationZone()
         (
-            sim.input.capture(cube)
+            cube
+            >> sim.items.geometry().initial
             >> g.TransformGeometry(translation=g.CombineXYZ(y=sim.delta_time))
             >> sim.output
             >> tree.outputs.geometry("MovedCube")
@@ -1400,9 +1401,9 @@ def test_vector_socket_new_methods():
         assert result.node.operation == "REFLECT"
 
         ftl = g.FieldToList(10)
-        veclist = ftl.vector(vec)
-        assert ftl.i["VECTOR"].links
-        assert ftl.i["VECTOR"].links[0].from_node == vec.node
+        veclist = ftl.items.vector(vec).output
+        assert ftl.i["Position"].links
+        assert ftl.i["Position"].links[0].from_node == vec.node
         sorted = veclist.sort(veclist.length())
         assert isinstance(sorted, VectorSocketList)
         node = sorted.builder_node
@@ -1415,7 +1416,7 @@ def test_vector_socket_new_methods():
             node.i.sort_weight.links[0].from_node.bl_idname == g.VectorMath._bl_idname
         )
 
-        list = ftl.float(1.0)
+        list = ftl.items.float(1.0).output
         assert isinstance(list, FloatSocketList)
         assert list.node.bl_idname == g.FieldToList._bl_idname
 

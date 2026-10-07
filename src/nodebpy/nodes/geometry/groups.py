@@ -298,7 +298,7 @@ class GeometryPrincipalComponents(CustomGeometryGroup):
             shortest_axis = tree.outputs.vector("Shortest Axis")
 
         geo = geo >> CaptureAttribute.point()
-        pca = PrincipalComponents(position=geo.capture(position))
+        pca = PrincipalComponents(position=geo.items.vector(position).output)
 
         SampleIndex.point.vector(geo, pca.o.group_center) >> center
         SampleIndex.point.quaternion(geo, pca.o.rotation) >> rotation

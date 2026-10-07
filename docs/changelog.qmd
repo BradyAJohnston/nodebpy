@@ -6,6 +6,10 @@ title: Changelog
 
 ### Enhancements
 
+- **One way to add items.** Every items-driven node (Capture Attribute, Bake, Field to Grid, Field to List, Format String, Combine/Separate Bundle, Closure to List, Evaluate Closure, Index Switch, Menu Switch and the zones) exposes its items as one collection, `node.items` (`zone.main_items`/`zone.generated_items` on the for-each zone, `inputs`/`outputs` on closures). The typed methods take the value first, `items.float(value, "Name")`, and name the item after the linked source socket when no name is given; `items.new(value, name, type=...)` is the runtime-typed form. `len(items)`, iteration and `items[0]`/`items["Name"]` return the same `Item` handles the methods do (#159, #200).
+- **Items chain.** `>> item.input` links into an item and continues from `item.output`, and on simulation/repeat zones `>> item.initial` continues from `current` and `>> item.next` from `result`, so a zone body reads as one chain (#162).
+- `Item[InT, OutT]` carries a socket class per role, so Field to Grid and Field to List items are `Item[FloatSocket, FloatSocketGrid]` and `Item[FloatSocket, FloatSocketList]`; the bundle, closure and Format String items return `Item` handles too, with the socket on `.input` or `.output`.
+- Constructors' `items=` also accept an iterable of values, named after their sources: `CaptureAttribute(geo, items=[g.Position(), g.Normal()])`.
 - **`nodebpy` command** — the asset CLI is now a `nodebpy` console script (also `python -m nodebpy`): `nodebpy dump`, `build`, `ensure`, `check` and `plot`. `nodebpy dump --api-only` writes the typed asset classes alone, one module per asset with no recipe (formerly the flag-based `python -m nodebpy.assets [-b … -o …]`); `--no-docstrings` keeps them terse. Under a full Blender, run `blender -b -P .../nodebpy/__main__.py -- <subcommand>`.
 - **`nodebpy textconv`** — prints a `.blend`'s assets as their dumped Python source, so git can diff asset libraries: set `*.blend diff=blend` in `.gitattributes` and `git config diff.blend.textconv "nodebpy textconv"`. Git LFS pointers are smudged automatically.
 
@@ -26,6 +30,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Deprecations
 
+- The pre-530 name-first order `items.float("Name", value)` is accepted with a `DeprecationWarning` for non-string item types (a string first argument can only be a name there); string and menu items must move to `items.string(value, "Name")` now. `add_item`, `add_items`, `capture`, `zone.item`, `zone.main_item`, `zone.generated_item`, `capture_generated`, `add_generated_item`, `input_item`, `output_item`, `MenuSwitch.item`, the for-each `inputs`/`main`/`generated` factories, Field to List's per-type node methods, its older `fields=` constructor argument and Field to Grid's `capture_*` methods forward to the collections with a `DeprecationWarning` and are removed in 530.
 - The `python -m nodebpy.assets` entry point is deprecated and will be removed in nodebpy 530. It forwards to `nodebpy` with a `FutureWarning`: subcommands unchanged (`nodebpy dump …`), the flag-based form to `nodebpy dump --api-only …`. Regenerating nodebpy's own essentials classes moved to `python -m gen`. The `nodebpy.assets` module itself is unaffected.
 - Dumped sources now name `nodebpy build` in their header comment. Re-dump checked-in sources after upgrading, or `nodebpy check` reports them as differing.
 
@@ -41,6 +46,10 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Breaking Changes
 
+- `SeparateBundle`, `ClosureToList`, `EvaluateClosure.outputs` and `ClosureZone.inputs` factories return `Item` handles instead of the socket; read it from `.output` (`.input` for `CombineBundle`, `EvaluateClosure.inputs` and `ClosureZone.outputs`).
+- `GridItem` is gone; a Field to Grid item is `Item[FloatSocket, FloatSocketGrid]` with `.input` and `.output` in place of `.field` and `.grid`.
+- `FormatString.items` is the item collection, not a dict of every input socket; the socket is `items["Name"].input`.
+- Unnamed Field to List items are named after their type ("Vector") rather than the type constant ("VECTOR").
 - `SugiyamaOptions` fields are now `margin`, `direction`, `socket_alignment`, `reroutes`, `stack_collapsed`, `fit_collapsed_widths`, `straighten_trunk`, `pin_group_output`, `pin_group_input`, `frames_as_stages`, `balance_heights`, `pack_components`, `seed`, `snap_to_grid`.
 - `optimize_sizes` is renamed `fit_collapsed_widths` and `sequential_frames` is renamed `frames_as_stages`. The asset build's `--optimize-sizes` and `--no-sequential-frames` flags keep their names.
 - `add_reroutes=True` becomes `reroutes="all"`. `build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.
@@ -60,6 +69,10 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Breaking Changes
 
+- `SeparateBundle`, `ClosureToList`, `EvaluateClosure.outputs` and `ClosureZone.inputs` factories return `Item` handles instead of the socket; read it from `.output` (`.input` for `CombineBundle`, `EvaluateClosure.inputs` and `ClosureZone.outputs`).
+- `GridItem` is gone; a Field to Grid item is `Item[FloatSocket, FloatSocketGrid]` with `.input` and `.output` in place of `.field` and `.grid`.
+- `FormatString.items` is the item collection, not a dict of every input socket; the socket is `items["Name"].input`.
+- Unnamed Field to List items are named after their type ("Vector") rather than the type constant ("VECTOR").
 - Building a group node now goes through the instance method `_create_group()` instead of the `create_group()` classmethod. Calling `create_group()` works as before, but subclasses that overrode it to customise how the tree is made should override `_create_group()` instead.
 
 ### Fixes
@@ -92,6 +105,10 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Breaking Changes
 
+- `SeparateBundle`, `ClosureToList`, `EvaluateClosure.outputs` and `ClosureZone.inputs` factories return `Item` handles instead of the socket; read it from `.output` (`.input` for `CombineBundle`, `EvaluateClosure.inputs` and `ClosureZone.outputs`).
+- `GridItem` is gone; a Field to Grid item is `Item[FloatSocket, FloatSocketGrid]` with `.input` and `.output` in place of `.field` and `.grid`.
+- `FormatString.items` is the item collection, not a dict of every input socket; the socket is `items["Name"].input`.
+- Unnamed Field to List items are named after their type ("Vector") rather than the type constant ("VECTOR").
 - Shader `Mix` variants take `(factor, a, b)`, so positional `s.Mix.color(f, x)` now sets A instead of B. The geometry `Mix` is now generated.
 - Factory and parameter renames: `input_4x4_matrix` factories are now `matrix`, `GaborTexture.type_2d` / `type_3d`, and variant parameters drop type suffixes and `_001` counters (`MapRange.vector(from_min, …)`, `TrimCurve.length(start, end)`). The leaked `face_corner` / `input_4x4_matrix` factories on field nodes are removed.
 - `ColorRamp`'s `color_interpolation` defaults to `LINEAR` to match Blender, and `items` defaults to Blender's black-to-white stops; empty `items` raises `ValueError`.
@@ -189,6 +206,10 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Breaking Changes
 
+- `SeparateBundle`, `ClosureToList`, `EvaluateClosure.outputs` and `ClosureZone.inputs` factories return `Item` handles instead of the socket; read it from `.output` (`.input` for `CombineBundle`, `EvaluateClosure.inputs` and `ClosureZone.outputs`).
+- `GridItem` is gone; a Field to Grid item is `Item[FloatSocket, FloatSocketGrid]` with `.input` and `.output` in place of `.field` and `.grid`.
+- `FormatString.items` is the item collection, not a dict of every input socket; the socket is `items["Name"].input`.
+- Unnamed Field to List items are named after their type ("Vector") rather than the type constant ("VECTOR").
 - **`nodebpy.builder.arrange` module renamed to `nodebpy.builder.layout`** — the name `arrange` is now the `arrange()` function at both `nodebpy.arrange` and `nodebpy.builder.arrange`, so `import nodebpy.builder.arrange` (and the pre-v520.1.0 `import nodebpy.arrange`) raise `ModuleNotFoundError`. Every helper keeps its name and signature under `nodebpy.builder.layout` (`arrange_tree`, `build_dependency_graph`, `topological_sort`, `organize_into_columns`, `calculate_node_dimensions`, `position_nodes_in_columns`, `position_reroutes`); `arrange_tree` is also exported from `nodebpy.builder`. A shim module cannot be provided because importing it would rebind the package attribute and shadow the function.
 
 ### Enhancements

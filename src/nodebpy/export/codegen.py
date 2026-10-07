@@ -4985,7 +4985,7 @@ _UNSET = object()
 #
 # Nodes with typed per-item factories (CaptureAttribute / Bake / FieldToGrid)
 # are emitted statement-form instead: one constructor line plus one
-# ``node.items.<type>(name, value)`` line per item, with a handle variable
+# ``node.items.<type>(value, name)`` line per item, with a handle variable
 # whenever the item's output is read. The typed factory encodes the item type,
 # so declarations can never drift to a different inferred type.
 # ---------------------------------------------------------------------------
@@ -5023,7 +5023,6 @@ _CAPTURE_ITEM_METHOD = {
 class _TypedItemsNodeSpec(_ItemsNodeSpec):
     label: str = "node"  # variable name stem
     method_map: dict[str, str] | None = None  # item type → factory method
-    output_attr: str = "output"  # handle attribute for the item's output
     fixed_outputs: tuple[tuple[str, str], ...] = ()  # (output id, accessor path)
 
 
@@ -5057,7 +5056,6 @@ _TYPED_ITEMS_NODE_SPECS = {
             "VECTOR": "vector",
             "BOOLEAN": "boolean",
         },
-        output_attr="grid",
     ),
 }
 
@@ -5154,7 +5152,7 @@ for _items_bl_idname in _ITEMS_NODE_SPECS:
 
 def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
     """A variable-items node with typed per-item factories, statement-form:
-    one constructor line plus one ``<var>.items.<type>(name, value)`` line
+    one constructor line plus one ``<var>.items.<type>(value, name)`` line
     per item, binding a handle variable whenever the item's output is read.
 
     Bails (falls through) when a fixed input the call cannot express is
@@ -5199,19 +5197,13 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
     }
     consumed = {link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())}
     for in_socket, out_socket, item in zip(item_inputs, item_outputs, items):
-        args: list[Expr] = [Lit(item.name)]
-        link = ctx.input_link(node, in_socket.identifier)
-        if link is not None:
-            args.append(_zone_value_expr(ctx, link))
-        else:
-            default = _significant_default(in_socket)
-            if default is not None:
-                args.append(Lit(default))
-        call = Call(f"{ref.name}.items.{method_map[_item_socket_type(item)]}", args)
+        args, kwargs = _item_decl_args(ctx, node, item, in_socket)
+        method = method_map[_item_socket_type(item)]
+        call = Call(f"{ref.name}.items.{method}", args, kwargs)
         if out_socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            outputs[out_socket.identifier] = Attr(handle, spec.output_attr)
+            outputs[out_socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs=outputs)
@@ -5328,27 +5320,41 @@ def _emit_viewer(node, ctx: EmitContext) -> Expr | _Val | None:
 
 
 def _bundle_item_call(
-    receiver: str, item, args: list[Expr], method_map: dict[str, str]
+    receiver: str,
+    item,
+    args: list[Expr],
+    method_map: dict[str, str],
+    kwargs: dict[str, Expr] | None = None,
 ) -> Call:
     """One typed-factory declaration call for a bundle/closure item."""
-    kwargs: dict[str, Expr] = {}
+    kwargs = dict(kwargs or {})
     if getattr(item, "structure_type", "AUTO") != "AUTO":
         kwargs["structure_type"] = Lit(item.structure_type)
     return Call(f"{receiver}.{method_map[item.socket_type]}", args, kwargs)
 
 
-def _item_value_args(ctx: EmitContext, node, item, socket) -> list[Expr]:
-    """Declaration arguments for one value-taking item: the name, plus the
-    linked source or a significant literal default."""
-    args: list[Expr] = [Lit(item.name)]
-    link = ctx.input_link(node, socket.identifier)
+def _item_decl_args(
+    ctx: EmitContext, node, item, socket
+) -> tuple[list[Expr], dict[str, Expr]]:
+    """Declaration arguments for one value-taking item: the linked source
+    or a significant literal default first, then the name, which becomes
+    the ``name=`` keyword when there is no value."""
+    return _decl_args(ctx.input_link(node, socket.identifier), socket, item.name, ctx)
+
+
+def _decl_args(
+    link: _Link | None, default_socket, name: str, ctx: EmitContext
+) -> tuple[list[Expr], dict[str, Expr]]:
+    value: Expr | None = None
     if link is not None:
-        args.append(_zone_value_expr(ctx, link))
-    else:
-        default = _significant_default(socket)
+        value = _zone_value_expr(ctx, link)
+    elif default_socket is not None:
+        default = _significant_default(default_socket)
         if default is not None:
-            args.append(Lit(default))
-    return args
+            value = Lit(default)
+    if value is None:
+        return [], {"name": Lit(name)}
+    return [value, Lit(name)], {}
 
 
 def _combine_bundle_dict(node, ctx: EmitContext) -> Expr:
@@ -5372,7 +5378,7 @@ def _combine_bundle_dict(node, ctx: EmitContext) -> Expr:
 @register_emitter("NodeCombineBundle")
 def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     """CombineBundle's inputs are its bundle items: emit the constructor
-    plus one typed ``.items.<type>(name, value)`` line per item, preserving
+    plus one typed ``.items.<type>(value, name)`` line per item, preserving
     unlinked defaults and non-AUTO structure types. Falls back to the
     items-dict constructor for item types without a typed factory."""
     items = list(node.bundle_items)
@@ -5389,8 +5395,10 @@ def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     ctor = Call("g.CombineBundle", kwargs=kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     for socket, item in zip(_prefixed_sockets(node, "Item_"), items):
-        args = _item_value_args(ctx, node, item, socket)
-        call = _bundle_item_call(f"{ref.name}.items", item, args, _SWITCH_METHOD)
+        args, kwargs = _item_decl_args(ctx, node, item, socket)
+        call = _bundle_item_call(
+            f"{ref.name}.items", item, args, _SWITCH_METHOD, kwargs
+        )
         ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs={"Bundle": Attr(ref, "o.bundle")})
 
@@ -5439,7 +5447,7 @@ def _emit_separate_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
         if socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            outputs[socket.identifier] = handle
+            outputs[socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs=outputs)
@@ -5503,7 +5511,7 @@ def _emit_closure_to_list(node, ctx: EmitContext) -> Expr | _Val | None:
         if socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            outputs[socket.identifier] = handle
+            outputs[socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs=outputs)
@@ -5541,10 +5549,10 @@ def _evaluate_closure_dict(node, ctx: EmitContext) -> Expr:
 @register_emitter("NodeEvaluateClosure")
 def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
     """EvaluateClosure feeds values into a closure and reads results: emit
-    the constructor plus one typed ``.inputs.<type>(name, value)`` line per
-    input item and one ``.outputs.<type>(name)`` line per output item (the
-    handle variable *is* the typed result socket). Falls back to the
-    items-dict constructor for item types without a typed factory."""
+    the constructor plus one typed ``.inputs.<type>(value, name)`` line per
+    input item and one ``.outputs.<type>(name)`` line per output item, whose
+    handle's ``.output`` is the result socket. Falls back to the items-dict
+    constructor for item types without a typed factory."""
     in_items = list(node.input_items)
     out_items = list(node.output_items)
     ctx.used_aliases.add("g")
@@ -5562,8 +5570,10 @@ def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
     ctor = Call("g.EvaluateClosure", args, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     for socket, item in zip(_prefixed_sockets(node, "Item_"), in_items):
-        value_args = _item_value_args(ctx, node, item, socket)
-        call = _bundle_item_call(f"{ref.name}.inputs", item, value_args, _SWITCH_METHOD)
+        args, kwargs = _item_decl_args(ctx, node, item, socket)
+        call = _bundle_item_call(
+            f"{ref.name}.inputs", item, args, _SWITCH_METHOD, kwargs
+        )
         ctx.pending_lines.append(f"    {call.render()}")
     outputs: dict[str, Expr] = {}
     consumed = {link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())}
@@ -5574,7 +5584,7 @@ def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
         if socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            outputs[socket.identifier] = handle
+            outputs[socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
     return _Val(None, outputs=outputs)
@@ -5676,7 +5686,7 @@ for _group_bl_idname in _GROUP_BASES:
 # expressed as two independent constructors: the wrapper owns the pairing
 # and the shared item collections. The input-node emitter declares the zone
 # wrapper plus one typed-factory handle line per item (``zone.items.float``,
-# ``zone.inputs.vector``, …) and dissolves the
+# ``zone.main_items.vector``, …) and dissolves the
 # input node into per-output handle expressions (``h.current``); the
 # output-node emitter renders its incoming links as ``expr >> h.next``
 # statements at its own topological position and dissolves into
@@ -5789,14 +5799,9 @@ def _emit_zone_items(
     # counters that stop matching the collection after a UI reorder — sorting
     # by them would rebuild reordered items in their original positions.
     for plan in plans:
-        args: list[Expr] = [Lit(plan.item.name)]
-        kwargs: dict[str, Expr] = {}
-        if plan.value_link is not None:
-            args.append(_zone_value_expr(ctx, plan.value_link))
-        elif plan.default_socket is not None:
-            default = _significant_default(plan.default_socket)
-            if default is not None:
-                args.append(Lit(default))
+        args, kwargs = _decl_args(
+            plan.value_link, plan.default_socket, plan.item.name, ctx
+        )
         kwargs.update(plan.extra_kwargs)
         call = Call(f"{zone_ref.name}.{plan.method}", args, kwargs)
 
@@ -5950,7 +5955,7 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
     for i, item in enumerate(out_node.input_items):
         plans.append(
             _ZoneItemPlan(
-                method=_zone_item_method("inputs", item),
+                method=_zone_item_method("items", item),
                 item=item,
                 value_link=ctx.input_link(node, in_inputs[i].identifier),
                 default_socket=in_inputs[i],
@@ -5966,7 +5971,7 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
     for i, item in enumerate(out_node.main_items):
         plans.append(
             _ZoneItemPlan(
-                method=_zone_item_method("main", item),
+                method=_zone_item_method("main_items", item),
                 item=item,
                 value_link=None,
                 default_socket=main_inputs[i],
@@ -5987,7 +5992,7 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
             extra["domain"] = Lit(item.domain)
         plans.append(
             _ZoneItemPlan(
-                method=_zone_item_method("generated", item),
+                method=_zone_item_method("generated_items", item),
                 item=item,
                 value_link=None,
                 default_socket=gen_inputs[i],
@@ -6047,12 +6052,9 @@ def _closure_item_call(zone_ref: Ref, namespace: str, item) -> Call:
     if getattr(item, "structure_type", "AUTO") != "AUTO":
         kwargs["structure_type"] = Lit(item.structure_type)
     if _item_socket_type(item) not in _SWITCH_METHOD:
-        # no typed factory for this socket type — use the string-typed fallback
-        fallback = "input_item" if namespace == "inputs" else "output_item"
-        return Call(
-            f"{zone_ref.name}.{fallback}",
-            [Lit(item.name), Lit(_item_socket_type(item))],
-        )
+        # no typed factory for this socket type — use the runtime-typed form
+        kwargs["type"] = Lit(_item_socket_type(item))
+        return Call(f"{zone_ref.name}.{namespace}.new", [Lit(item.name)], kwargs)
     return Call(
         f"{zone_ref.name}.{_zone_item_method(namespace, item)}",
         [Lit(item.name)],
@@ -6063,8 +6065,9 @@ def _closure_item_call(zone_ref: Ref, namespace: str, item) -> Call:
 @register_emitter("NodeClosureInput")
 def _emit_closure_input(node, ctx: EmitContext) -> _Val:
     """Closure zone: declare ``cz = g.ClosureZone()`` plus one
-    ``cz.inputs.<type>(name)`` line per input item (read in the body) and
-    prepare ``cz.outputs.<type>(name)`` ``>>`` targets for each output item.
+    ``cz.inputs.<type>(name)`` line per input item (read in the body through
+    the handle's ``.output``) and prepare ``cz.outputs.<type>(name)`` handles
+    whose ``.input`` is the ``>>`` target for each output item.
     The input node dissolves into the input-item read expressions; the paired
     output node (``_emit_zone_output``) renders body links as ``expr >> target``
     and dissolves into the ``cz.closure`` result.
@@ -6085,7 +6088,7 @@ def _emit_closure_input(node, ctx: EmitContext) -> _Val:
         if socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            current_map[socket.identifier] = handle
+            current_map[socket.identifier] = Attr(handle, "output")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
 
@@ -6100,7 +6103,7 @@ def _emit_closure_input(node, ctx: EmitContext) -> _Val:
         if socket.identifier in linked_next:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
-            targets[socket.identifier] = handle
+            targets[socket.identifier] = Attr(handle, "input")
         else:
             ctx.pending_lines.append(f"    {call.render()}")
 
