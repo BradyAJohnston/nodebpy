@@ -308,6 +308,28 @@ def test_nested_tree_panel_reuses_by_parent():
     assert sockets["C"].parent == inner  # reused, not duplicated
 
 
+def test_modifier_and_tool_flags():
+    with g.tree("Flags", is_modifier=True) as tree:
+        pass
+    assert tree.is_modifier and tree.tree.is_modifier
+    assert not tree.is_tool
+    tree.is_tool = True
+    assert tree.tree.is_tool
+
+    # None leaves an existing group's flags alone when rebuilding in place
+    with g.tree("Flags", clear=True) as same:
+        pass
+    assert same.tree is tree.tree
+    assert same.is_modifier and same.is_tool
+    with g.tree("Flags", clear=True, is_modifier=False) as same:
+        pass
+    assert not same.is_modifier and same.is_tool
+
+    with TreeBuilder("Plain", is_tool=True) as plain:
+        pass
+    assert plain.is_tool and not plain.is_modifier
+
+
 def test_clear_rebuilds_existing_tree_in_place():
     with g.tree("Rebuild In Place") as tree:
         (

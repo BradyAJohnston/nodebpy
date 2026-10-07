@@ -1137,7 +1137,11 @@ class TreeBuilder[TreeT: NodeTree]:
         ignore_visibility: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        is_modifier: bool | None = None,
+        is_tool: bool | None = None,
     ):
+        # ``is_modifier``/``is_tool`` flag a geometry node group for use as a
+        # modifier or as a node tool; None leaves the tree's flags as they are.
         # ``clear`` rebuilds in place: the tree is emptied (nodes, links and
         # interface) before the body runs, keeping the datablock so modifiers,
         # group nodes and pinned editors that reference it stay attached. With
@@ -1167,6 +1171,11 @@ class TreeBuilder[TreeT: NodeTree]:
             self.tree.nodes.clear()
             self.tree.interface.clear()
 
+        if is_modifier is not None:
+            self.is_modifier = is_modifier
+        if is_tool is not None:
+            self.is_tool = is_tool
+
         self._menu_defaults: list[_MenuDefault] = []
         self._exited = False
         self.inputs: InputInterfaceContext = InputInterfaceContext(self)
@@ -1187,8 +1196,14 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        is_modifier: bool | None = None,
+        is_tool: bool | None = None,
     ) -> TreeBuilder[GeometryNodeTree]:
-        """Create a geometry node tree."""
+        """Create a geometry node tree.
+
+        ``is_modifier`` and ``is_tool`` flag the group for use as a modifier
+        or as a node tool; ``None`` leaves an existing group's flags alone.
+        """
         return cast(
             "TreeBuilder[GeometryNodeTree]",
             cls(
@@ -1199,6 +1214,8 @@ class TreeBuilder[TreeT: NodeTree]:
                 fake_user=fake_user,
                 split_inputs=split_inputs,
                 clear=clear,
+                is_modifier=is_modifier,
+                is_tool=is_tool,
             ),
         )
 
@@ -1263,6 +1280,24 @@ class TreeBuilder[TreeT: NodeTree]:
     @fake_user.setter
     def fake_user(self, value: bool) -> None:
         self.tree.use_fake_user = value
+
+    @property
+    def is_modifier(self) -> bool:
+        """Whether the group can be used as a Geometry Nodes modifier."""
+        return getattr(self.tree, "is_modifier", False)
+
+    @is_modifier.setter
+    def is_modifier(self, value: bool) -> None:
+        self.tree.is_modifier = value  # ty: ignore[unresolved-attribute]
+
+    @property
+    def is_tool(self) -> bool:
+        """Whether the group can be used as a node tool."""
+        return getattr(self.tree, "is_tool", False)
+
+    @is_tool.setter
+    def is_tool(self, value: bool) -> None:
+        self.tree.is_tool = value  # ty: ignore[unresolved-attribute]
 
     def to_python(
         self,

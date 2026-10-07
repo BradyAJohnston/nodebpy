@@ -3868,6 +3868,12 @@ def to_python(
             ctor_args.append("arrange=None")
         if in_place:
             ctor_args.append("clear=True")
+        # The modifier/tool flags are constructor options; the other tree
+        # properties only the class form carries.
+        tree_props = _tree_prop_overrides(node_tree)
+        for flag in ("is_modifier", "is_tool"):
+            if tree_props.get(flag):
+                ctor_args.append(f"{flag}=True")
         lines.append(f"with {constructor}({', '.join(ctor_args)}) as tree:")
         lines.extend(_assemble_tree_body(emission))
 
