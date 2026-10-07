@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.33.1
+
+### Enhancements
+
+- **`vector.mul_add(multiplier, addend)`** — Vector Math Multiply Add as a vector method, mirroring `float.mul_add()`; a float multiplier or addend broadcasts to all components. Both arguments are required, as the node's zero defaults would return a zero vector. The exporter emits the method.
+
 ## v520.33.0 - 2026-10-07
 
 ### Enhancements
