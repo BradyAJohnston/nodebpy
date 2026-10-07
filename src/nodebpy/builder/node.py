@@ -238,6 +238,10 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         elif isinstance(value, _NodeLike):
             target_type = target.type if not named else self.i._get(target).type
             self._link_from(value.o._best_match(target_type), target)
+        elif getattr(value, "_as_rshift_target", None) is not None:
+            # an item handle stands for its output socket (and says so when
+            # it has none)
+            self._link_from(cast(Any, value)._default_output_socket, target)
         else:
             # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
             # but this needs to be a more generic solution for sockets which aren't available

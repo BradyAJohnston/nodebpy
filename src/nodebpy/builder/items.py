@@ -184,6 +184,8 @@ def _resolve_source(
     """The source socket, its socket type and the item name for a linkable.
 
     The name is the source socket's unless one is given."""
+    if isinstance(value, Item):
+        value = value.output
     accessor = getattr(value, "o", None)
     if accessor is None and not isinstance(value, (NodeSocket, _SocketLike)):
         raise TypeError(f"{value!r} is not a socket, node or default value")
@@ -199,6 +201,7 @@ def _resolve_source(
 
 _InT = TypeVar("_InT", bound=BaseSocket, default=Socket)
 _OutT = TypeVar("_OutT", bound=BaseSocket, default=_InT)
+_RShiftT = TypeVar("_RShiftT")
 
 
 class Item(Generic[_InT, _OutT]):
@@ -209,9 +212,14 @@ class Item(Generic[_InT, _OutT]):
     from. The type parameters are the socket classes of the two roles; one
     parameter means both roles share it, none means plain :class:`Socket`.
 
-    Linking into ``input`` with ``>>`` continues the chain from ``output``::
+    The handle stands in for its sockets: as a value or on the left of
+    ``>>`` it is ``output``, on the right of ``>>`` it is ``input``, and the
+    chain then continues from ``output``::
 
-        g.Position() >> capture.items.vector().input >> g.SetPosition()
+        g.Position() >> capture.items.vector() >> g.SetPosition()
+        g.SetPosition(position=capture.items.vector(g.Position()))
+
+    An item with only one side raises for the side it does not have.
 
     Holds the item's collection index rather than the bpy item itself:
     bpy collection item references are invalidated when the collection
@@ -259,6 +267,23 @@ class Item(Generic[_InT, _OutT]):
         return cast(
             "_OutT", _wrap_socket(self._items._item_socket(self._item, output=True))
         )
+
+    # -- the handle as a link source or target --
+
+    @property
+    def _default_output_socket(self) -> NodeSocket:
+        return self.output.socket
+
+    @property
+    def _default_input_socket(self) -> NodeSocket:
+        return self.input.socket
+
+    def _as_rshift_target(self) -> _InT:
+        return self.input
+
+    def __rshift__(self, other: _RShiftT) -> _RShiftT:
+        """``item >> target`` links from the item's output socket."""
+        return cast("_RShiftT", self.output >> cast(Any, other))
 
 
 def _chained(socket: NodeSocket, continues: bool, follow) -> Socket:

@@ -101,6 +101,8 @@ def manual_nodes() -> None:
         cap = g.CaptureAttribute(cube)
         assert_type(cap.items.float(pos.o.position.x, "x"), Item[FloatSocket])
         assert_type(cap.items.float(pos.o.position.x).output, FloatSocket)
+        assert_type(pos.o.position.x >> cap.items.float(), FloatSocket)
+        assert_type(cap.items.float() >> g.Math.add(1.0), g.Math)
         assert_type(cap.items.new(1.0).input, Socket)
         assert_type(cap.items["x"], Item)
         for item in cap.items:

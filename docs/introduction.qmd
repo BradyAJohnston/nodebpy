@@ -154,7 +154,18 @@ Several regular nodes are also driven by dynamic item collections — Capture At
 - `EvaluateClosure(closure).inputs.geometry(source, "Geo")` and `.outputs.vector("Force")` declare the closure-call signature; the result socket is `item.output`.
 - `MenuSwitch.float().items.new(0.5, "Option", description="...")` and `IndexSwitch.float().items.new(0.5)` add switch items, typed by the switch's data type.
 
-Linking into `item.input` with `>>` continues the chain from `item.output`. The bundle and closure factories also accept `structure_type=` for non-`"AUTO"` socket shapes.
+A handle stands in for its sockets, so it can be used where a socket is expected: as a node argument or on the left of `>>` it is `item.output`, on the right of `>>` it is `item.input`, and the chain then continues from `item.output`. An item with only one side (a Separate Bundle item has only an output, a Combine Bundle item only an input) raises when the other side is asked for. Zone state items have two inputs and two outputs, so they keep asking for the role: `initial`, `current`, `next` or `result`.
+
+```{python}
+with g.tree() as tree:
+    cap = g.CaptureAttribute(g.Cube())
+    pos = g.Position() >> cap.items.vector()
+    cap.o.geometry >> g.SetPosition(position=pos * 2) >> tree.outputs.geometry()
+
+tree
+```
+
+The bundle and closure factories also accept `structure_type=` for non-`"AUTO"` socket shapes.
 
 ```{python}
 with g.tree() as tree:

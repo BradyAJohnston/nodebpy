@@ -1,6 +1,6 @@
 from abc import ABC
 from collections.abc import Iterable, Iterator, Mapping
-from typing import TYPE_CHECKING, ClassVar, TypeVar, cast
+from typing import TYPE_CHECKING, ClassVar, NoReturn, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -151,6 +151,28 @@ class ZoneItem(Item[_SocketT]):
     def result(self) -> _SocketT:
         """Output-node output socket — read the item after the zone."""
         return self.output
+
+    # A state item has two inputs and two outputs, so the handle itself
+    # cannot stand for a socket: name the role.
+    def _no_role(self, side: str) -> NoReturn:
+        raise TypeError(
+            f"{self!r} has two {side} sockets; link through .initial / .current / "
+            ".next / .result rather than the handle"
+        )
+
+    @property
+    def _default_output_socket(self) -> bpy.types.NodeSocket:
+        self._no_role("output")
+
+    @property
+    def _default_input_socket(self) -> bpy.types.NodeSocket:
+        self._no_role("input")
+
+    def _as_rshift_target(self) -> _SocketT:
+        self._no_role("input")
+
+    def __rshift__(self, other: object) -> NoReturn:
+        self._no_role("output")
 
 
 class _ZonePair:
