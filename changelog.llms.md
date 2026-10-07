@@ -1,5 +1,11 @@
 # Changelog
 
+## v520.34.1
+
+### Fixes
+
+- **The exporter passes a menu interface default at creation** (`tree.inputs.menu("Menu", "Tetrahedral")`) instead of assigning `default_value` after the tree body. The builder already defers menu defaults until the consuming Menu Switch exists.
+
 ## v520.34.0
 
 ### Enhancements
