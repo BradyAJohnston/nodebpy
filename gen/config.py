@@ -101,6 +101,10 @@ def class_name_for(display_name: str, bl_idname: str, config: TreeTypeConfig) ->
         "Bsdf": "BSDF",
         "Svd": "SVD",
         "Bw": "BW",
+        "Xpbd": "XPBD",
+        "Ies": "IES",
+        "Nurbs": "NURBS",
+        "Aov": "AOV",
     }
     for prefix in config.class_name_prefix_strips:
         replacements[prefix] = ""

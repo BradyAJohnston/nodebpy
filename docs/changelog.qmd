@@ -47,6 +47,7 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Breaking Changes
 
+- Generated node classes now keep Blender's acronyms: `XpbdSolver`, `SetNurbsOrder`, `SetNurbsWeight`, `IesTexture` and `AovOutput` are `XPBDSolver`, `SetNURBSOrder`, `SetNURBSWeight`, `IESTexture` and `AOVOutput` (#201).
 - `SeparateBundle`, `ClosureToList`, `EvaluateClosure.outputs` and `ClosureZone.inputs` factories return `Item` handles instead of the socket; read it from `.output` (`.input` for `CombineBundle`, `EvaluateClosure.inputs` and `ClosureZone.outputs`).
 - `GridItem` is gone; a Field to Grid item is `Item[FloatSocket, FloatSocketGrid]` with `.input` and `.output` in place of `.field` and `.grid`.
 - `FormatString.items` is the item collection, not a dict of every input socket; the socket is `items["Name"].input`.

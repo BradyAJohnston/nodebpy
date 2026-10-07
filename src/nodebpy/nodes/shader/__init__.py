@@ -118,7 +118,7 @@ from .manual import (
     tree,
 )
 from .output import (
-    AovOutput,
+    AOVOutput,
     LightOutput,
     LineStyleOutput,
     MaterialOutput,
@@ -151,7 +151,7 @@ from .shader import (
 )
 from .texture import (
     EnvironmentTexture,
-    IesTexture,
+    IESTexture,
     ImageTexture,
     SkyTexture,
 )
@@ -166,9 +166,9 @@ from .vector import (
 )
 
 __all__ = (
+    "AOVOutput",
     "AddShader",
     "AmbientOcclusion",
-    "AovOutput",
     "Attribute",
     "Background",
     "Bevel",
@@ -212,7 +212,7 @@ __all__ = (
     "HairBSDF",
     "Holdout",
     "HueSaturationValue",
-    "IesTexture",
+    "IESTexture",
     "ImageTexture",
     "ImplicitConversion",
     "Integer",
