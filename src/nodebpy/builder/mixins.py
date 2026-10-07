@@ -10,14 +10,17 @@ from ._registry import _wrap_socket
 from ._utils import SocketError, _resolve_promotion, _SocketLike
 
 _RShiftT = TypeVar("_RShiftT")
+_OutT = TypeVar("_OutT", bound="BaseSocket")
 
 if TYPE_CHECKING:
     from ..nodes.geometry import CombineTransform
     from ..nodes.geometry.converter import BooleanMath
     from ..types import InputLinkable
     from .accessor import SocketAccessor
+    from .items import Item
     from .node import BaseNode
     from .socket import (
+        BaseSocket,
         BooleanSocket,
         FloatSocket,
         MatrixSocket,
@@ -367,6 +370,8 @@ class LinkingMixin:
     @overload
     def __rshift__(self, other: None) -> Self: ...
     @overload
+    def __rshift__(self, other: Item[Any, _OutT]) -> _OutT: ...
+    @overload
     def __rshift__(self, other: _RShiftT) -> _RShiftT: ...
     def __rshift__(self, other: _RShiftT | None) -> _RShiftT | Self:
         """Chain nodes using >> operator. Links output to input.
@@ -387,6 +392,10 @@ class LinkingMixin:
         """
         if other is None:
             return self
+        as_target = getattr(other, "_as_rshift_target", None)
+        if as_target is not None:
+            # an item handle stands for its input socket on the right of >>
+            return self >> as_target()
         if isinstance(other, _SocketLike):
             source = self._default_output_socket
             target = other.socket

@@ -200,3 +200,60 @@ def test_deprecated_entry_points_still_work():
             assert fe.output.capture_generated(g.Index(), name="e").socket.is_output
         assert all(w.category is DeprecationWarning for w in caught)
         assert len(caught) == 31
+
+
+def test_handle_stands_in_for_its_sockets():
+    with g.tree() as tree:
+        cap = g.CaptureAttribute(g.Cube())
+        pos = (
+            g.Position() >> cap.items.vector()
+        )  # right of >>: input, continues from output
+        assert isinstance(pos, VectorSocket) and pos.socket.is_output
+        fac = cap.items.float(0.5, "Fac")
+        node = g.SetPosition(cap.o.geometry, position=pos * 2, offset=fac)  # as a value
+        assert node.i.offset.socket.links[0].from_socket == fac.output.socket
+        out = fac >> g.Math.add(1.0)  # left of >>: output
+        assert out.i.value.socket.links[0].from_socket == fac.output.socket
+        node >> tree.outputs.geometry()
+
+        sep = g.SeparateBundle(g.CombineBundle(items={"a": 1.0}), items={"a": "FLOAT"})
+        a = sep.items["a"]
+        scaled = g.Math.multiply(a, 2.0)  # output-only item as a value
+        assert scaled.i.value.socket.links[0].from_socket == a.output.socket
+        with pytest.raises(AttributeError, match="no input socket"):
+            g.Value() >> a
+
+        cb = g.CombineBundle()
+        b = cb.items.float(name="b")
+        target = g.Value() >> b  # input-only item: links in, nothing to continue from
+        assert isinstance(target, FloatSocket) and not target.socket.is_output
+        with pytest.raises(AttributeError, match="no output socket"):
+            b >> g.Math.add(1.0)
+        with pytest.raises(AttributeError, match="no output socket"):
+            g.Math.add(b, 1.0)
+
+
+def test_handle_as_an_item_value():
+    with g.tree():
+        cap = g.CaptureAttribute(g.Cube())
+        fac = cap.items.float(name="Fac")
+        bake = g.Bake()
+        copied = bake.items.float(fac)  # a handle as an item value is its output
+        assert copied.name == "Fac"
+        assert copied.input.socket.links[0].from_socket == fac.output.socket
+
+
+def test_zone_items_require_a_role():
+    with g.tree():
+        zone = g.RepeatZone(2)
+        geo = zone.items.geometry()
+        with pytest.raises(TypeError, match="two output sockets"):
+            geo >> g.SetShadeSmooth()
+        with pytest.raises(TypeError, match="two input sockets"):
+            g.Cube() >> geo
+        with pytest.raises(TypeError, match="two output sockets"):
+            g.SetShadeSmooth(geo)
+        # the for-each item kinds are ordinary two-role items
+        fe = g.ForEachGeometryElementZone(g.Cube())
+        index = g.Index() >> fe.items.integer()
+        assert index.socket.is_output and index.socket.node == fe.input.node

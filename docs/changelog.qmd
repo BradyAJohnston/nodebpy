@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.32.1
+
+### Enhancements
+
+- **Item handles link like sockets.** An `Item` can be passed as a node argument or used on either side of `>>`: as a value or on the left it is `item.output`, on the right it is `item.input`, and the chain continues from `item.output`. One-sided items (a Separate Bundle item has only an output, a Combine Bundle item only an input) raise for the side they lack, and zone state items keep asking for `initial`, `current`, `next` or `result`. Code that fed a bundle item straight into a node, which 520.32.0 broke by returning handles, works again without `.output`.
+
 ## v520.32.0 - 2026-10-07
 
 ### Enhancements
