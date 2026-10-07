@@ -1326,7 +1326,7 @@ class JoinGeometry(BaseNode):
     def __init__(self, geometry: Iterable[InputGeometry] = ()):
         super().__init__()
         for source in reversed(list(geometry)):
-            assert source
+            assert source is not None
             if isinstance(source, Default):
                 continue  # a fallback marker: nothing to link
             self._link(*self._find_best_socket_pair(source, self))
@@ -2141,7 +2141,7 @@ class SDFGridBoolean(BaseNode):
         # Grid 2 is multi-input: link in reverse so the socket lists the
         # grids in the order given (later links sort first), as JoinGeometry.
         for grid in reversed(list(grid_2)):
-            assert grid
+            assert grid is not None
             self._link_from(*self._find_best_socket_pair(grid, self.i["Grid 2"]))
 
     @classmethod

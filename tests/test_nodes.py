@@ -2292,9 +2292,9 @@ def test_string_split():
         )
         assert len(ftl.node.list_items) == 3
 
-        assert ftl.i.pos
-        assert ftl.i.idx
-        assert ftl.i.num
+        assert ftl.i.pos is not None
+        assert ftl.i.idx is not None
+        assert ftl.i.num is not None
 
         assert isinstance(ftl.i.pos, VectorSocket)
         assert isinstance(ftl.o.pos, VectorSocketList)

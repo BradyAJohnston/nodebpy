@@ -1041,7 +1041,7 @@ def test_socket_builder_reference(snapshot):
     with g.tree() as tree:
         position = g.Position()
         pos = position.o.position
-        assert pos.builder_node
+        assert pos.builder_node is not None
         assert pos.builder_node.node == position.node
 
         _node = pos.builder_node.node
