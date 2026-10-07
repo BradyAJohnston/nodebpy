@@ -1773,6 +1773,10 @@ def _parse_args(argv: list[str] | None = None):
         ),
     )
     sub = parser.add_subparsers(dest="command", required=True)
+    from nodebpy import _lookup, _skill
+
+    _lookup.add_parser(sub)
+    _skill.add_parser(sub)
 
     dump = sub.add_parser(
         "dump",
@@ -2020,7 +2024,7 @@ def _parse_args(argv: list[str] | None = None):
     )
 
     args = parser.parse_args(argv)
-    if args.command not in ("plot", "textconv"):
+    if args.command not in ("plot", "textconv", "lookup", "skill"):
         # Fill positionals and flags from the nearest pyproject's
         # [tool.nodebpy.assets] table; explicit arguments always win.
         apply_config(args)
@@ -2073,9 +2077,17 @@ def _build_command(args) -> None:
 
 def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapper
     """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``,
-    ``plot`` and ``textconv`` subcommands."""
+    ``plot``, ``textconv``, ``lookup`` and ``skill`` subcommands."""
     args = _parse_args(argv)
-    if args.command == "dump":
+    if args.command == "lookup":
+        from nodebpy import _lookup
+
+        _lookup.run(args)
+    elif args.command == "skill":
+        from nodebpy import _skill
+
+        _skill.run(args)
+    elif args.command == "dump":
         _dump_command(args)
     elif args.command == "ensure":
         if is_stale(args.blend, args.source, args.resources, stamp_options(args)):
