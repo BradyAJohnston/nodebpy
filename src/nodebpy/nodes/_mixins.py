@@ -9,7 +9,6 @@ bespoke behaviour lives here.
 
 from __future__ import annotations
 
-import warnings
 from collections.abc import Iterable, Mapping
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
@@ -361,9 +360,7 @@ class _FieldToListMixin(ItemsMixin):
     ):
         super().__init__()
         if fields is not None:
-            warnings.warn(
-                "'fields' is deprecated, use 'items'", DeprecationWarning, stacklevel=2
-            )
+            _deprecated("FieldToList(fields=)", "FieldToList(items=)")
             items = fields
         self.items._add_all(items)
         self._establish_links(Count=count)
