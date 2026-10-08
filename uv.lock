@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -1591,7 +1591,7 @@ wheels = [
 
 [[package]]
 name = "nodebpy"
-version = "520.34.1"
+version = "520.35.0"
 source = { editable = "." }
 
 [package.optional-dependencies]
