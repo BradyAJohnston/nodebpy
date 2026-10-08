@@ -3,6 +3,7 @@
 [![Run
 Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml)
 [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy)
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://app.codspeed.io/BradyAJohnston/nodebpy?utm_source=badge)
 
 Build node trees in Blender more elegantly with Python code. Geometry Nodes, Shader Nodes and Compositor nodes are all fully supported, with type hints and IDE auto-completion throughout.
 
