@@ -16,6 +16,7 @@ from .asset import (
     PackageLibrary,
     asset_group_base,
     build_from_source,
+    link_assets,
 )
 from .items import Item, ItemsMixin, MenuItem
 from .mixins import LinkingMixin, OperatorMixin
@@ -162,5 +163,6 @@ __all__ = [
     "default_split_inputs",
     "default_sugiyama_options",
     "denormalize_name",
+    "link_assets",
     "normalize_name",
 ]

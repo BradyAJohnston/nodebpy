@@ -127,22 +127,67 @@ class _AssetGroupMixin:
         cls = type(self)
         if _build_from_source_depth and cls._has_build_source():
             return super()._create_group()  # ty: ignore[unresolved-attribute]
+        group = link_assets(cls).get(cls)
+        if group is None:  # no library on disk, build from the recipe instead
+            return super()._create_group()  # ty: ignore[unresolved-attribute]
+        return group
+
+
+def link_assets(*groups: type[_AssetGroupMixin]) -> dict[type, Any]:
+    """Link several asset groups, reading each asset library once.
+
+    Creating an asset group reads its whole ``.blend`` library, which costs the
+    same however few groups are taken from it. Linking the groups a tree is about
+    to use up front, in one read per library, avoids paying that for each one;
+    the groups' nodes then reuse the linked trees.
+
+    Groups already in the file (same name and tree type) are reused, and groups
+    that would build from their ``_build_group`` source (inside
+    :func:`build_from_source`, or with no library on disk) are skipped.
+
+    Returns
+    -------
+    dict
+        The node tree for each linked or reused group class.
+
+    Raises
+    ------
+    FileNotFoundError
+        A group without a build recipe has no library on disk.
+    KeyError
+        A library does not contain the requested group.
+    """
+    trees: dict[type, Any] = {}
+    to_link: dict[str, list[type[_AssetGroupMixin]]] = {}
+    for cls in groups:
+        if _build_from_source_depth and cls._has_build_source():
+            continue
         existing = bpy.data.node_groups.get(cls._asset_name)
         if existing is not None and existing.bl_idname == cls._tree_idname:
-            return existing
+            trees[cls] = existing
+            continue
         path = cls._library.path()
         if not os.path.exists(path):
             if cls._has_build_source():
-                return super()._create_group()  # ty: ignore[unresolved-attribute]
+                continue
             raise FileNotFoundError(f"Asset library not found: {path}")
+        to_link.setdefault(path, []).append(cls)
+
+    for path, classes in to_link.items():
+        names = list(dict.fromkeys(cls._asset_name for cls in classes))
         with bpy.data.libraries.load(path, link=True, pack=True, assets_only=True) as (  # ty: ignore[invalid-context-manager]
             src,
             dst,
         ):
-            if cls._asset_name not in src.node_groups:
-                raise KeyError(f"Node group {cls._asset_name!r} not found in {path}")
-            dst.node_groups = [cls._asset_name]
-        return dst.node_groups[0]
+            for name in names:
+                if name not in src.node_groups:
+                    raise KeyError(f"Node group {name!r} not found in {path}")
+            # a copy: Blender swaps the names in this list for the linked trees
+            dst.node_groups = list(names)
+        linked = dict(zip(names, dst.node_groups))
+        for cls in classes:
+            trees[cls] = linked[cls._asset_name]
+    return trees
 
 
 class AssetGeometryGroup(_AssetGroupMixin, CustomGeometryGroup):
@@ -179,6 +224,7 @@ __all__ = [
     "PackageLibrary",
     "asset_group_base",
     "build_from_source",
+    "link_assets",
 ]
 
 # Public alias for the mixin, for type hints / isinstance in generated code.

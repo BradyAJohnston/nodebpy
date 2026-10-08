@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.35.0
+
+### Enhancements
+
+- **`link_assets(*groups)`** links the node groups of several asset classes with one read of each `.blend` library, and returns the tree for each class. Creating an asset group reads its whole library, a fixed cost however few groups it takes, so linking the groups a tree will use up front avoids paying it for each one. Groups already in the file are reused, and groups that build from source are skipped, as when creating a single group, which now goes through `link_assets`.
+
 ## v520.34.1
 
 ### Fixes
