@@ -68,6 +68,7 @@ data.
 | `priority.py` | Link priorities: the trunk and the zone spines |
 | `ranking.py` | Rank: a column for every node |
 | `balancing.py` | Shorten the tallest columns |
+| `feeders.py` | Keep each feeder beside the node it feeds |
 | `ordering.py` | Order: the order within each column |
 | `placement.py` | Place: a height for every node (Brandes-Köpf) |
 | `spacing.py` | An x for every column |
@@ -113,15 +114,18 @@ picture. The rest prepare for one or clean up.
 | `remove_reroutes` | Take out the tree's own reroutes | `reroutes="all"` | `realize.py` |
 | `contract_stacks` | Make each stack of collapsed nodes one node | `stack_collapsed` | `stacking.py` |
 | **`rank`** | Give every node a column | always | `ranking.py` |
+| `move_feeders_right` | Move each node whose links out all go to one node of its frame to the column just before that node | always | `feeders.py` |
 | `balance_heights` | Move feeder chains left out of the tallest columns | `balance_heights` | `balancing.py` |
 | `pin_group_nodes` | Group Output to the last column (`pin_group_output`), Group Input to the first (`pin_group_input`) | always | `sugiyama.py` |
 | `merge_edges` | Let the long links from one output share dummy nodes | always | `long_links.py` |
 | `insert_dummy_nodes` | Split long links with a dummy node per column | always | `long_links.py` |
 | `add_columns` | List the nodes of each column | always | `build.py` |
 | **`order`** | Order each column to reduce crossings | always | `ordering.py` |
+| `tuck_feeders` | Put each moved feeder next to another node of its column feeding the same node | always | `feeders.py` |
 | `add_frame_borders` | Border nodes above and below each frame, per column | always | `sugiyama.py`, `model.py` |
 | **`place`** | Give every node its height | always | `placement.py` |
 | `pull_feeders` | Move each node whose links all go to one node level with that node, as far as its column allows | always | `placement.py` |
+| `pull_up_feeders` | Move each tucked feeder against the node it was tucked next to | always | `feeders.py` |
 | `snap_rows` | Move each node to its nearest grid row | `snap_to_grid` | `snapping.py` |
 | `dissolve_dummy_nodes` | Drop the dummy nodes | `reroutes="none"` | `reroutes.py` |
 | `align_reroutes` | Line reroutes and dummy nodes up with the sockets they join | always | `reroutes.py` |

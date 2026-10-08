@@ -288,6 +288,31 @@ def value_chain() -> NodeTree:
     return tree
 
 
+def summed_samples() -> NodeTree:
+    """Six samples, each a Math node fed twice by one Group Input, summed by
+    a chain of Add nodes. Ideal: the Adds are one row and each sample sits
+    under it, in the column before the Add it feeds."""
+    tree = _tree("summed_samples")
+    tree.interface.new_socket("Value", in_out="INPUT", socket_type="NodeSocketFloat")
+    tree.interface.new_socket("Sum", in_out="OUTPUT", socket_type="NodeSocketFloat")
+    group_input = tree.nodes.new("NodeGroupInput")
+    samples = []
+    for _ in range(6):
+        sample = _math(tree, "MULTIPLY")
+        tree.links.new(group_input.outputs[0], sample.inputs[0])
+        tree.links.new(group_input.outputs[0], sample.inputs[1])
+        samples.append(sample)
+    total = samples[0]
+    for sample in samples[1:]:
+        add = _math(tree)
+        tree.links.new(total.outputs[0], add.inputs[0])
+        tree.links.new(sample.outputs[0], add.inputs[1])
+        total = add
+    group_output = tree.nodes.new("NodeGroupOutput")
+    tree.links.new(total.outputs[0], group_output.inputs[0])
+    return tree
+
+
 CASES: dict[str, Callable[[], NodeTree]] = {
     case.__name__: case
     for case in (
@@ -303,6 +328,7 @@ CASES: dict[str, Callable[[], NodeTree]] = {
         zones,
         annotated,
         value_chain,
+        summed_samples,
     )
 }
 

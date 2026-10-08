@@ -13,6 +13,7 @@ from .common import Vec2, f32
 from .config import LayoutState, SugiyamaOptions
 from .dna import bNodeTree
 from .edits import Edit, LayoutResult, MoveNode
+from .feeders import move_feeders_right, pull_up_feeders, tuck_feeders
 from .long_links import insert_dummy_nodes, merge_links
 from .model import (
     ClusterGraph,
@@ -134,6 +135,7 @@ def default_pipeline() -> Pipeline:
                 phase="rank",
                 provides={F.RANKED},
             ),
+            Step("move_feeders_right", move_feeders_right, requires={F.RANKED}),
             Step(
                 "balance_heights",
                 lambda L: balance_column_heights(L.G, L.CG.S, L.state),
@@ -165,6 +167,7 @@ def default_pipeline() -> Pipeline:
                 provides={F.ORDERED},
             ),
             # Positions along the columns.
+            Step("tuck_feeders", tuck_feeders, requires={F.ORDERED}),
             Step(
                 "add_frame_borders",
                 _add_frame_borders,
@@ -183,6 +186,7 @@ def default_pipeline() -> Pipeline:
                 lambda L: pull_feeders(L.G, L.state),
                 requires={F.Y},
             ),
+            Step("pull_up_feeders", pull_up_feeders, requires={F.Y}),
             Step(
                 "snap_rows",
                 snap_rows,
