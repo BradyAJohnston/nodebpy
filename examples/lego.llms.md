@@ -12,6 +12,8 @@ A reusable brick group with studs and holes, used to rebuild a mesh out of brick
 
 Suzanne built from 1 × 1 bricks.
 
+[Download .blend](images/lego.blend) The scene in this image: the node trees, materials, camera and lights.
+
 This builds on [Voxelize](../examples/voxelize.llms.md): instead of a plain cube, every grid point gets a brick with a stud on top and a matching hole underneath. The brick is its own node group, written as a `CustomGeometryGroup` class, so it shows up in the tree as a single **LEGO Brick** node and can be reused in any other tree.
 
 ``` python

@@ -14,6 +14,8 @@ A tree node group, a handful of variants built in a Python loop, and a forest pl
 
 A few hundred conifers on rolling terrain.
 
+[Download .blend](images/forest.blend) The scene in this image: the node trees, materials, camera and lights.
+
 There are three layers to this one. A **Tree** group builds a single conifer from a few proportions and a seed. The modifier builds five variants of it, then plants them over a noise-displaced terrain, picking one of the variants for each spot.
 
 ``` python

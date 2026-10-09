@@ -8,7 +8,7 @@
 
 <meta name="description" content="Rebuild any mesh out of cubes by sampling a volume on a regular grid.">
 
-<title>Voxelize – nodebpy 520.35.0</title>
+<title>Voxelize – nodebpy 520.35.1</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -176,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.35.0</span>
+    <span class="navbar-title">nodebpy 520.35.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -307,8 +307,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Suzanne rebuilt from 5 cm cubes.</figcaption>
 </figure>
 </div>
+<p><a href="images/voxelize.blend" class="btn btn-primary btn-sm" download="voxelize.blend">Download .blend</a> The scene in this image: the node trees, materials, camera and lights.</p>
 <p>The mesh is turned into a volume, the volume is sampled with points on a regular grid, and a cube is placed on each point. Because every step takes one geometry and hands one on, the whole tree is a single <code>&gt;&gt;</code> chain from the group input to the group output.</p>
-<div id="7148ec2e" class="cell" data-execution_count="1">
+<div id="44081119" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Voxelize"</span>, is_modifier<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> tree:</span>
@@ -338,9 +339,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="node-tree" class="level2">
 <h2 class="anchored" data-anchor-id="node-tree">Node tree</h2>
-<div id="42253b2b" class="cell" data-execution_count="2">
+<div id="caa5089d" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
-<div id="gnwr-f5475d348dad41f6b311f23c1fef2648" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-8fefbc9f6b814b8fbfa36565931caa8b" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -350,7 +351,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-f5475d348dad41f6b311f23c1fef2648"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-8fefbc9f6b814b8fbfa36565931caa8b"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>

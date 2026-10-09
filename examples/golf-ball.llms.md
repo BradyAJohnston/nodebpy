@@ -12,6 +12,8 @@ Dimple a sphere with a proximity field and shade it with a procedural material.
 
 A dimpled golf ball with a speckled, slightly rough surface.
 
+[Download .blend](images/golf_ball.blend) The scene in this image: the node trees, materials, camera and lights.
+
 A coarse icosphere supplies one point per dimple. A dense icosphere is pushed inwards wherever it is close to one of those points, and the depth of the push follows a smooth profile from the centre of the dimple to its rim. The script builds the material as well as the geometry.
 
 ``` python

@@ -616,7 +616,7 @@ VoronoiTexture(
     exponent=0.5,
     randomness=1.0,
     *,
-    voronoi_dimensions='3D',
+    voronoi_dimensions=None,
     distance='EUCLIDEAN',
     feature='F1',
     normalize=False,

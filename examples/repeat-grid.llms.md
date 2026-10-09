@@ -10,6 +10,8 @@ Lay out copies of any geometry in rows and columns, spaced by its own bounding b
 
 Twelve Suzannes, spaced by their own size.
 
+[Download .blend](images/repeat_grid.blend) The scene in this image: the node trees, materials, camera and lights.
+
 The size of each cell comes from the input geometry itself, so swapping the object for a bigger or smaller one keeps the copies from overlapping without touching the settings.
 
 ``` python

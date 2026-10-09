@@ -14,6 +14,8 @@ Visualise a vector field with arrows, coloured by an attribute read in the mater
 
 A vortex drawn as a grid of arrows, warm where it is strongest.
 
+[Download .blend](images/arrow_field.blend) The scene in this image: the node trees, materials, camera and lights.
+
 A grid of points samples a vortex: a field that swirls around the Z axis and is strongest near it. Each point gets an arrow that points along the field and is scaled by its strength, and the material colours the arrows by the same strength.
 
 ``` python

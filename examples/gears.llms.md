@@ -12,6 +12,8 @@ A gear group driven by tooth count and module, and a train of gears that mesh an
 
 Four gears of different sizes, meshing in a chain.
 
+[Download .blend](images/gears.blend) The scene in this image: the node trees, materials, camera and lights.
+
 A **Gear** group draws one spur gear from its tooth count and *module*, the size of a tooth. Gears with the same module always mesh, so the modifier can place a chain of them from nothing more than a list of tooth counts and directions, and turn the whole chain with a single `Spin` input.
 
 ``` python
@@ -73,8 +75,9 @@ class Gear(CustomGeometryGroup):
 
 
 # each gear in the train: its tooth count and the direction it sits in,
-# seen from the gear before it
-TRAIN = [(24, 0.0), (12, 0.0), (18, 1.9), (10, 0.4)]
+# seen from the gear before it. Neighbours turn in opposite directions, so
+# gears two apart turn the same way and must not touch, or the train locks.
+TRAIN = [(24, 0.0), (12, 0.6), (18, -0.4), (10, 0.9)]
 
 with g.tree("Gear Train", is_modifier=True) as tree:
     module = tree.inputs.float("Module", 0.1, min_value=0.0)
@@ -113,7 +116,7 @@ with g.tree("Gear Train", is_modifier=True) as tree:
 - The angle and radius become a position with `angle.cos()` and `angle.sin()`, socket methods that add Math nodes.
 - A smaller circle for the bore is joined to the outline, and Fill Curve’s even-odd rule turns the pair into a ring. Extrude Mesh gives it thickness.
 
-**The train.** The loop over `TRAIN` runs in Python. It works out each gear’s centre from the previous gear’s, and the starting angle that puts a gap of the new gear where a tooth of the previous one points. Those are plain floats; the only socket is `spin`, which each gear multiplies by its speed ratio, `-previous / teeth` times the previous gear’s ratio. The sign flips at every mesh.
+**The train.** The loop over `TRAIN` runs in Python. It works out each gear’s centre from the previous gear’s, and the starting angle that puts a gap of the new gear where a tooth of the previous one points. Neighbouring gears turn in opposite directions, so gears two apart turn the same way; the directions in `TRAIN` zig-zag to keep those apart, since if they touched the train would lock. The positions and angles are plain floats; the only socket is `spin`, which each gear multiplies by its speed ratio, `-previous / teeth` times the previous gear’s ratio. The sign flips at every mesh.
 
 Mixing Python arithmetic and sockets is the useful idea here: anything known while the script runs stays a Python number, and only values that can change from the modifier panel become nodes. The tree has four Gear nodes and a few Math nodes, not a node for every intermediate number.
 

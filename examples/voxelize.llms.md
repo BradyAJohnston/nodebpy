@@ -12,6 +12,8 @@ Rebuild any mesh out of cubes by sampling a volume on a regular grid.
 
 Suzanne rebuilt from 5 cm cubes.
 
+[Download .blend](images/voxelize.blend) The scene in this image: the node trees, materials, camera and lights.
+
 The mesh is turned into a volume, the volume is sampled with points on a regular grid, and a cube is placed on each point. Because every step takes one geometry and hands one on, the whole tree is a single `>>` chain from the group input to the group output.
 
 ``` python

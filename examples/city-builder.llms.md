@@ -12,6 +12,8 @@ Draw roads with a curve and fill the space between them with buildings.
 
 Three Bézier roads through a block of randomly sized buildings.
 
+[Download .blend](images/city_builder.blend) The scene in this image: the node trees, materials, camera and lights.
+
 The modifier goes on a curve object: each spline is a road. Building lots are scattered over a grid, any lot too close to a road is removed, and a box of random size is placed on each lot that is left. Drawing a new road in Edit Mode clears a path through the city straight away.
 
 ``` python

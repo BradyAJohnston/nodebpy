@@ -10,6 +10,8 @@ Break a mesh into its faces and throw them outwards under gravity with a simulat
 
 An icosphere eight frames after it burst.
 
+[Download .blend](images/explosion.blend) The scene in this image: the node trees, materials, camera and lights.
+
 Every face of the mesh is split off as its own fragment and given a launch velocity along its normal. A simulation zone then moves the fragments a little each frame and pulls them down with gravity. Play the timeline from the first frame to see it.
 
 ``` python
