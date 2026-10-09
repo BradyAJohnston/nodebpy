@@ -102,12 +102,16 @@ def test_generated_constructor_keeps_fresh_properties(module, tree_type):
     The constructor assigns every property it takes, so a default read from RNA
     instead of a fresh node silently overrides what the node's init function
     sets (Ambient Occlusion's 16 samples, Mix's Clamp Factor, Noise Texture's
-    Normalize).
+    Normalize). Enums are compared too, since some start differently in each
+    kind of tree (Noise and Voronoi Texture are 2D in the compositor).
     """
     base_props = {p.identifier for p in bpy.types.Node.bl_rna.properties}
     # which output is active and which menu item is selected in the UI list are
     # state of the tree, not settings of the node
     tree_state = {"is_active_output", "active_index"}
+    # nodebpy's Menu Switch takes its type from the factory (MenuSwitch.float)
+    # and defaults to FLOAT, where Blender picks one per tree
+    by_design = {("MenuSwitch", "data_type")}
     mismatches = []
     with TreeBuilder(bpy.data.node_groups.new("props", tree_type)) as tree:
         for cls in _node_classes(module):
@@ -117,14 +121,20 @@ def test_generated_constructor_keeps_fresh_properties(module, tree_type):
                 continue  # not available in this tree type
             built = cls().node
             for prop in fresh.bl_rna.properties:
-                if prop.identifier in base_props | tree_state or prop.type not in (
-                    "BOOLEAN",
-                    "INT",
-                    "FLOAT",
+                if (
+                    prop.identifier in base_props | tree_state
+                    or (cls.__name__, prop.identifier) in by_design
+                    or prop.is_readonly
+                    or prop.type not in ("BOOLEAN", "INT", "FLOAT", "ENUM")
                 ):
                     continue
                 expected = getattr(fresh, prop.identifier)
                 actual = getattr(built, prop.identifier)
-                if _as_f32(expected) != _as_f32(actual):
+                if prop.type == "ENUM":
+                    if expected != actual:
+                        mismatches.append(
+                            (cls.__name__, prop.identifier, expected, actual)
+                        )
+                elif _as_f32(expected) != _as_f32(actual):
                     mismatches.append((cls.__name__, prop.identifier, expected, actual))
     assert not mismatches

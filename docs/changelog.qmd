@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.35.1
+
+### Fixes
+
+- **`c.VoronoiTexture()` starts 2D in the compositor**, as Blender does, instead of 3D; Noise Texture got the same fix in 520.35.0.
+
 ## v520.35.0
 
 ### Enhancements
