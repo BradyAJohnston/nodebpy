@@ -252,13 +252,14 @@ def collect_property_info(node, node_type):
 #   temperature and tint sockets through the color management config and
 #   writes them back to those sockets. A default would be config-specific and
 #   would be overwritten by the socket defaults anyway.
-# - Noise Texture starts 2D in the compositor and 3D elsewhere, and one class
-#   serves both trees.
+# - Noise, White Noise and Voronoi Texture start 2D in the compositor and 3D
+#   elsewhere, and one class serves both trees.
 OPTIONAL_PROPERTIES = {
     "is_active_output",
     "input_whitepoint",
     "output_whitepoint",
     "noise_dimensions",
+    "voronoi_dimensions",
 }
 
 

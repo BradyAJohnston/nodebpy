@@ -1118,7 +1118,7 @@ class VoronoiTexture(BaseNode):
         exponent: InputFloat = 0.5,
         randomness: InputFloat = 1.0,
         *,
-        voronoi_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        voronoi_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
         distance: Literal[
             "EUCLIDEAN", "MANHATTAN", "CHEBYCHEV", "MINKOWSKI"
         ] = "EUCLIDEAN",
@@ -1139,7 +1139,8 @@ class VoronoiTexture(BaseNode):
             "Exponent": exponent,
             "Randomness": randomness,
         }
-        self.voronoi_dimensions = voronoi_dimensions
+        if voronoi_dimensions is not None:
+            self.voronoi_dimensions = voronoi_dimensions
         self.distance = distance
         self.feature = feature
         self.normalize = normalize
