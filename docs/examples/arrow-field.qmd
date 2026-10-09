@@ -1,0 +1,39 @@
+---
+title: Arrow Field
+description: Visualise a vector field with arrows, coloured by an attribute read in the material.
+image: images/arrow_field.png
+categories: [geonodes, fields, materials, instancing]
+---
+
+![A vortex drawn as a grid of arrows, warm where it is strongest.](images/arrow_field.png)
+
+A grid of points samples a vortex: a field that swirls around the Z axis and is strongest near it.
+Each point gets an arrow that points along the field and is scaled by its strength, and the material colours the arrows by the same strength.
+
+```{python}
+{{< include code/arrow_field.py >}}
+```
+
+## How it works
+
+- **The arrow** comes from `arrow()`, a Python function that joins a cylinder and a cone into a unit arrow pointing up Z. Calling a function like this adds its nodes to whichever tree is open at the time.
+- **The field** is written as ordinary vector arithmetic. `position.cross((0, 0, -1))` is a vector at right angles to the position, which makes the swirl, and dividing by `position.length() ** 2 + 0.5` makes it fall off away from the centre. Each operator adds a Vector Math or Math node.
+- **Strength** is the field's length divided by its largest value over all points, `field.length().point.max()`. The `.point` domain methods (`.max()`, `.mean()`, `.total()` and others) add the matching statistic node evaluated on the point domain.
+- **Instancing.** Align Rotation to Vector turns each arrow's Z axis along the field, and the strength, remapped to between 0.3 and 1, sets its scale.
+- **Colour.** The strength is stored as a point attribute before instancing, which carries it onto each instance. The material reads it with `s.Attribute.instancer("strength")`, the instancer type being the one that reads attributes stored on instances, and maps it through a three-stop Color Ramp. The ramp's stops are a list of `(position, colour)` pairs.
+
+## Node trees
+
+```{python}
+#| echo: false
+tree
+```
+
+```{python}
+#| echo: false
+material
+```
+
+## Original
+
+Based on the arrow field in [`demos/arrows.py`](https://github.com/al1brn/geonodes/blob/main/demos/arrows.py) in geonodes ([write-up](https://github.com/al1brn/geonodes/blob/main/docs/demos/arrows.md)), which also offers several head shapes through closures and a menu, and builds arrows from cartesian, polar or spherical coordinates.

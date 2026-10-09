@@ -8,6 +8,10 @@ title: Changelog
 
 - **`link_assets(*groups)`** links the node groups of several asset classes with one read of each `.blend` library, and returns the tree for each class. Creating an asset group reads its whole library, a fixed cost however few groups it takes, so linking the groups a tree will use up front avoids paying it for each one. Groups already in the file are reused, and groups that build from source are skipped, as when creating a single group, which now goes through `link_assets`.
 
+### Documentation
+
+- **An [Examples](examples/index.qmd) gallery** of nine complete trees ported from Geometry Script and geonodes (voxelize, LEGO bricks, a city builder, a golf ball, a forest, a gear train, an explosion simulation and more), each with its script, a render, its node tree and a link to the original. `docs/examples/render.py` renders the images with Cycles as a Quarto pre-render step, and re-renders only the examples that changed.
+
 ## v520.34.1
 
 ### Fixes

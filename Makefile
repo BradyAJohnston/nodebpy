@@ -21,6 +21,11 @@ format:
 	uv run ty check --fix src
 	uv run ruff format
 
+# Render the example images (only those whose example or shot changed);
+# `make docs` also does this through the quarto pre-render step.
+examples:
+	uv run python docs/examples/render.py
+
 docs:
 	cd docs && uv run quartodoc build
 	cd docs && uv run quartodoc interlinks

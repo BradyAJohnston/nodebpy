@@ -1,0 +1,60 @@
+---
+title: Forest
+description: A tree node group, a handful of variants built in a Python loop, and a forest planted on noisy hills.
+image: images/forest.png
+categories: [geonodes, custom groups, materials, instancing]
+---
+
+![A few hundred conifers on rolling terrain.](images/forest.png)
+
+There are three layers to this one.
+A **Tree** group builds a single conifer from a few proportions and a seed.
+The modifier builds five variants of it, then plants them over a noise-displaced terrain, picking one of the variants for each spot.
+
+```{python}
+{{< include code/forest.py >}}
+```
+
+## How it works
+
+**Materials.** `mottled()` is a plain Python function that returns a socket: a noise texture remapped to a factor and used to mix two colours.
+Calling it three times, once with the results of the other two, gives the foliage its green and brown patches without repeating the same four nodes by hand.
+Helper functions like this are the simplest way to factor out a sub-graph that is only used inside one tree.
+
+**The tree.** The trunk is a cone. The crown is a unit icosphere stretched into shape in one Set Position:
+
+- `position.z.map_range(...)` gives a width that shrinks from the bottom of the sphere to the top, and `Conic` sets how much;
+- multiplying by `g.RandomValue.vector(0.8, 1.2, seed=seed)` makes each seed a little lumpier in a different way;
+- adding `g.CombineXYZ(z=height - crown / 2)` lifts the crown to the top of the trunk.
+
+Every expression in that `position=` argument is evaluated on the icosphere's own points, which is why `position` can be used on both sides.
+
+**Variants.** `Tree(height, width, seed=i)` adds a group node, so the list comprehension adds five of them, one per entry in `SHAPES`, and `g.GeometryToInstance(*variants)` gathers them into one instances geometry.
+The loop runs in Python while the tree is built: the result is five group nodes in the tree, not a loop in Blender.
+With `pick_instance=True`, Instance on Points uses `instance_index` to pick one of the five for each point, and the index range comes from `len(SHAPES)`, so adding a variant to the list is the only change needed.
+
+**Planting.** Poisson-disc distribution keeps the trees at least `Spacing` apart. Each tree gets a random turn about Z and a random scale, each with its own seed offset so the three random values are independent.
+
+## Node trees
+
+The modifier:
+
+```{python}
+#| echo: false
+tree
+```
+
+Inside the **A Tree** group:
+
+```{python}
+#| echo: false
+from nodebpy import TreeBuilder
+
+TreeBuilder(Tree.create_group())
+```
+
+## Original
+
+Ported from [`demos/forest.py`](https://github.com/al1brn/geonodes/blob/main/demos/forest.py) in geonodes.
+The original builds the variants with a For Each Element zone over the points of a mesh line, so the number of variants can be a modifier input.
+Here the count is fixed when the script runs, which is all a Python loop can do, and in exchange each variant can be given its own proportions directly.
