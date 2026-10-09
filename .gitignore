@@ -20,3 +20,4 @@ docs/objects.json
 /docs/_variables.yml
 tests/plots/*.png
 .coverage
+docs/examples/images/

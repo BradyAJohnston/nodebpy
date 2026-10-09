@@ -1,7 +1,9 @@
 project:
   type: website
   output-dir: _build
-  pre-render: _config.py
+  pre-render:
+    - _config.py
+    - examples/render.py
 
 website:
   title: "nodebpy {{< var version >}}"
@@ -22,6 +24,8 @@ website:
           - nodes-to-code.qmd
           - using.qmd
           - comparisons.qmd
+      - href: examples/index.qmd
+        text: Examples
       - href: reference/
         text: Reference
       - href: changelog.qmd

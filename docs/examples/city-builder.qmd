@@ -1,0 +1,37 @@
+---
+title: City Builder
+description: Draw roads with a curve and fill the space between them with buildings.
+image: images/city_builder.png
+categories: [Geometry Script, curves, proximity]
+---
+
+![Three Bézier roads through a block of randomly sized buildings.](images/city_builder.png)
+
+The modifier goes on a curve object: each spline is a road.
+Building lots are scattered over a grid, any lot too close to a road is removed, and a box of random size is placed on each lot that is left.
+Drawing a new road in Edit Mode clears a path through the city straight away.
+
+```{python}
+{{< include code/city_builder.py >}}
+```
+
+## How it works
+
+- **Roads.** Curve to Mesh sweeps a straight profile, as wide as `Road Width`, along every spline. The profile's ends are built from the input with `g.CombineXYZ(x=...)`, and `road_width / 2` is a Math node made by the `/` operator.
+- **Lots.** Distribute Points on Faces scatters points on a grid. Geometry Proximity measures how far each point is from the nearest point on the evaluated road curves, and `distance < road_width` creates a Compare node whose result selects the points to delete.
+- **Buildings.** The cube is moved up by half its height first, so when it is scaled on a lot it grows upwards from the ground rather than in both directions. Random Value in vector mode gives each building its own footprint and height between `Size Min` and `Size Max`.
+- **Materials.** The roads get an asphalt material created in the same script with `s.material`. The buildings take theirs from the `Material` input.
+
+`with tree.inputs.panel("City"):` groups inputs into a collapsible panel in the modifier, and `with g.Frame("Roads"):` puts every node created in the block into a frame, so the tree's layout follows the script's structure.
+
+## Node tree
+
+```{python}
+#| echo: false
+tree
+```
+
+## Original
+
+Ported from the [City Builder tutorial](https://carson-katri.github.io/geometry-script/tutorials/city-builder.html) and [`City Builder.py`](https://github.com/carson-katri/geometry-script/blob/main/examples/City%20Builder.py) in Geometry Script.
+The original `yield`s the roads and buildings so they are joined automatically; here the two results are named variables passed to an explicit Join Geometry.

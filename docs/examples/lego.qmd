@@ -1,0 +1,49 @@
+---
+title: Mesh to LEGO
+description: A reusable brick group with studs and holes, used to rebuild a mesh out of bricks.
+image: images/lego.png
+categories: [Geometry Script, custom groups, mesh boolean]
+---
+
+![Suzanne built from 1 × 1 bricks.](images/lego.png)
+
+This builds on [Voxelize](voxelize.qmd): instead of a plain cube, every grid point gets a brick with a stud on top and a matching hole underneath.
+The brick is its own node group, written as a `CustomGeometryGroup` class, so it shows up in the tree as a single **LEGO Brick** node and can be reused in any other tree.
+
+```{python}
+{{< include code/lego.py >}}
+```
+
+## How it works
+
+**The brick group.** A `CustomGeometryGroup` subclass names the group with `_name`, exposes its inputs through `__init__` and builds the inside in `_build_group`.
+The group's tree is built the first time the class is used, then cached, so the many brick instances all point at one group.
+
+- One cylinder is the stud. It is moved up to sit on the cube's top face and, separately, moved down to cut a hole of the same shape into the base. Using `stud` on the left of two different `>>` chains links its output to both transforms.
+- `g.MeshBoolean.union` and `g.MeshBoolean.difference` are class methods that create a Mesh Boolean node with the operation already set. Their second argument is a list because `Mesh 2` is a multi-input socket.
+- `Count X` and `Count Y` lay out several cells as a larger brick by instancing a cell along a line, then that row along a second line. Merge by Distance welds the shared faces into one mesh.
+
+**The modifier.** `LegoBrick(size)` inside the `with g.tree(...)` block adds a group node to the tree, and `>>` connects its `Brick` output to the instance input like any built-in node.
+The bricks are realized and merged so the result is one mesh, then the `Material` input is applied with Set Material.
+
+## Node trees
+
+The modifier:
+
+```{python}
+#| echo: false
+tree
+```
+
+Inside the **LEGO Brick** group:
+
+```{python}
+#| echo: false
+from nodebpy import TreeBuilder
+
+TreeBuilder(LegoBrick.create_group())
+```
+
+## Original
+
+Ported from [`Mesh to LEGO.py`](https://github.com/carson-katri/geometry-script/blob/main/examples/Mesh%20to%20LEGO.py) in Geometry Script, where the brick is a second `@tree` function called from the first.

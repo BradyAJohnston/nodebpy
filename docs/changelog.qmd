@@ -10,10 +10,14 @@ title: Changelog
 
 ### Fixes
 
-- **Node properties default to what Blender sets on a new node.** The generated constructors took their property defaults from RNA, which is not what many nodes start with, and then assigned them, so a node built with nodebpy differed from the same node added in the editor. **This changes what existing code builds** where it relied on the old defaults: Mix now has Clamp Factor on, Map Range has Clamp on, Noise Texture has Normalize on, Resample Curve keeps its last segment, Magic Texture has a turbulence depth of 2, Ambient Occlusion takes 16 samples (it was 1, so AO did almost nothing) and Bevel 4, Sky Texture's turbidity and ground albedo are 2.2 and 0.3, the Transform Gizmo enables all its axes, and in the compositor Defocus, File Output, Color Balance's white points and Image's frame range and auto refresh match Blender. Pass the old value explicitly to keep the previous behaviour, e.g. `g.Mix.float(..., clamp_factor=False)`. Exported code no longer spells out these values for untouched nodes.
+- **Node properties default to what Blender sets on a new node.** The generated constructors took their property defaults from RNA, which is not what many nodes start with, and then assigned them, so a node built with nodebpy differed from the same node added in the editor. **This changes what existing code builds** where it relied on the old defaults: Mix now has Clamp Factor on, Map Range has Clamp on, Noise Texture has Normalize on, Resample Curve keeps its last segment, Magic Texture has a turbulence depth of 2, Ambient Occlusion takes 16 samples (it was 1, so AO did almost nothing) and Bevel 4, Sky Texture's turbidity and ground albedo are 2.2 and 0.3, the Transform Gizmo enables all its axes, and in the compositor Defocus, File Output and Image's frame range and auto refresh match Blender. Pass the old value explicitly to keep the previous behaviour, e.g. `g.Mix.float(..., clamp_factor=False)`. Exported code no longer spells out these values for untouched nodes.
 - **Outputs leave the active output to Blender.** `is_active_output` is only set when passed, so the first output of each type stays active, as in the editor, and exported code spells it out only when a tree has more than one output of that type.
 - **`c.NoiseTexture()` starts 2D in the compositor**, as Blender does, instead of 3D.
 - **Color Balance keeps a `input_whitepoint` / `output_whitepoint` argument.** The white points are stored in the temperature and tint inputs, whose defaults used to overwrite the argument.
+
+### Documentation
+
+- **An [Examples](examples/index.qmd) gallery** of nine complete trees ported from Geometry Script and geonodes (voxelize, LEGO bricks, a city builder, a golf ball, a forest, a gear train, an explosion simulation and more), each with its script, a render, its node tree and a link to the original. `docs/examples/render.py` renders the images with Cycles as a Quarto pre-render step, and re-renders only the examples that changed.
 
 ## v520.34.1
 
