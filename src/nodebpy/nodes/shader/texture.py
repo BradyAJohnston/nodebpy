@@ -330,8 +330,8 @@ class SkyTexture(BaseNode):
         aerosol_density: float = 1.0,
         ozone_density: float = 1.0,
         sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
-        turbidity: float = 0.0,
-        ground_albedo: float = 0.0,
+        turbidity: float = 2.2,
+        ground_albedo: float = 0.3,
     ):
         super().__init__()
         key_args = {"Vector": vector}
@@ -412,7 +412,7 @@ class SkyTexture(BaseNode):
         vector: InputVector = None,
         *,
         sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
-        turbidity: float = 0.0,
+        turbidity: float = 2.2,
     ) -> "SkyTexture":
         """Create Sky Texture with operation 'Preetham'. Preetham 1999 (Legacy)"""
         return cls(
@@ -428,8 +428,8 @@ class SkyTexture(BaseNode):
         vector: InputVector = None,
         *,
         sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
-        turbidity: float = 0.0,
-        ground_albedo: float = 0.0,
+        turbidity: float = 2.2,
+        ground_albedo: float = 0.3,
     ) -> "SkyTexture":
         """Create Sky Texture with operation 'Hosek / Wilkie'. Hosek / Wilkie 2012 (Legacy)"""
         return cls(

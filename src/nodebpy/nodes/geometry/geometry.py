@@ -5083,7 +5083,7 @@ class ResampleCurve(BaseNode):
         count: InputInteger = 10,
         length: InputFloat = 0.1,
         *,
-        keep_last_segment: bool = False,
+        keep_last_segment: bool = True,
     ):
         super().__init__()
         key_args = {

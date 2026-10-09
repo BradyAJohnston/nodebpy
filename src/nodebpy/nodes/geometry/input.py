@@ -542,9 +542,7 @@ class Color(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(
-        self, value: tuple[float, float, float, float] = (0.735, 0.735, 0.735, 1.0)
-    ):
+    def __init__(self, value: tuple[float, float, float, float] = (0.5, 0.5, 0.5, 1.0)):
         super().__init__()
         key_args = {}
         self.value = value
@@ -2300,7 +2298,7 @@ class Integer(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, integer: int = 1):
+    def __init__(self, integer: int = 0):
         super().__init__()
         key_args = {}
         self.integer = integer

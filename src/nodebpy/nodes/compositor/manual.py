@@ -117,11 +117,11 @@ class Image(BaseNode):
     def __init__(
         self,
         image: Image | None = None,
-        frame_duration: int = 0,
-        frame_start: int = 0,
+        frame_duration: int = 1,
+        frame_start: int = 1,
         frame_offset: int = 0,
         use_cyclic: bool = False,
-        use_auto_refresh: bool = False,
+        use_auto_refresh: bool = True,
         layer: str | None = None,
         view: str | None = None,
     ):

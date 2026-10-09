@@ -115,7 +115,7 @@ class LightOutput(BaseNode):
         self,
         surface: InputShader = None,
         *,
-        is_active_output: bool = False,
+        is_active_output: bool = True,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()
@@ -198,7 +198,7 @@ class LineStyleOutput(BaseNode):
         alpha: InputFloat = 1.0,
         alpha_fac: InputFloat = 1.0,
         *,
-        is_active_output: bool = False,
+        is_active_output: bool = True,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
         blend_type: Literal[
             "MIX",
@@ -381,7 +381,7 @@ class MaterialOutput(BaseNode):
         displacement: InputVector = None,
         thickness: InputFloat = None,
         *,
-        is_active_output: bool = False,
+        is_active_output: bool = True,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()
@@ -455,7 +455,7 @@ class WorldOutput(BaseNode):
         surface: InputShader = None,
         volume: InputShader = None,
         *,
-        is_active_output: bool = False,
+        is_active_output: bool = True,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()

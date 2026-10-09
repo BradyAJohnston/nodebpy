@@ -684,7 +684,7 @@ class MagicTexture(BaseNode):
         scale: InputFloat = 5.0,
         distortion: InputFloat = 1.0,
         *,
-        turbulence_depth: int = 0,
+        turbulence_depth: int = 2,
     ):
         super().__init__()
         key_args = {"Vector": vector, "Scale": scale, "Distortion": distortion}
@@ -810,7 +810,7 @@ class NoiseTexture(BaseNode):
             "FBM",
             "HETERO_TERRAIN",
         ] = "FBM",
-        normalize: bool = False,
+        normalize: bool = True,
     ):
         super().__init__()
         key_args = {
@@ -920,7 +920,7 @@ class NoiseTexture(BaseNode):
         distortion: InputFloat = 0.0,
         *,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
-        normalize: bool = False,
+        normalize: bool = True,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'fBM'. The standard fractal Perlin noise"""
         return cls(

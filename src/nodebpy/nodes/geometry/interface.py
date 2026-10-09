@@ -442,7 +442,7 @@ class GroupOutput(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, is_active_output: bool = False):
+    def __init__(self, is_active_output: bool = True):
         super().__init__()
         key_args = {}
         self.is_active_output = is_active_output
@@ -595,15 +595,15 @@ class TransformGizmo(BaseNode):
         position: InputVector = (0.0, 0.0, 0.0),
         rotation: InputRotation = (0.0, 0.0, 0.0),
         *,
-        use_translation_x: bool = False,
-        use_translation_y: bool = False,
-        use_translation_z: bool = False,
-        use_rotation_x: bool = False,
-        use_rotation_y: bool = False,
-        use_rotation_z: bool = False,
-        use_scale_x: bool = False,
-        use_scale_y: bool = False,
-        use_scale_z: bool = False,
+        use_translation_x: bool = True,
+        use_translation_y: bool = True,
+        use_translation_z: bool = True,
+        use_rotation_x: bool = True,
+        use_rotation_y: bool = True,
+        use_rotation_z: bool = True,
+        use_scale_x: bool = True,
+        use_scale_y: bool = True,
+        use_scale_z: bool = True,
     ):
         super().__init__()
         key_args = {"Value": value, "Position": position, "Rotation": rotation}

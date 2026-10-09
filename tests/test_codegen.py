@@ -163,10 +163,10 @@ def test_non_default_property():
 def test_factory_skips_props_it_does_not_take():
     """A prop Blender hides for the factory's variant forces the constructor."""
     with TreeBuilder("NoiseNormalize") as tree:
-        g.NoiseTexture(noise_type="RIDGED_MULTIFRACTAL", normalize=True)
+        g.NoiseTexture(noise_type="RIDGED_MULTIFRACTAL", normalize=False)
     code = to_python(tree)
     assert "g.NoiseTexture.ridged_multifractal(" not in code
-    assert "normalize=True" in code
+    assert "normalize=False" in code
 
 
 def test_default_property_omitted():
