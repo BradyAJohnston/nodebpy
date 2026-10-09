@@ -56,8 +56,9 @@ class Gear(CustomGeometryGroup):
 
 
 # each gear in the train: its tooth count and the direction it sits in,
-# seen from the gear before it
-TRAIN = [(24, 0.0), (12, 0.0), (18, 1.9), (10, 0.4)]
+# seen from the gear before it. Neighbours turn in opposite directions, so
+# gears two apart turn the same way and must not touch, or the train locks.
+TRAIN = [(24, 0.0), (12, 0.6), (18, -0.4), (10, 0.9)]
 
 with g.tree("Gear Train", is_modifier=True) as tree:
     module = tree.inputs.float("Module", 0.1, min_value=0.0)

@@ -2,9 +2,9 @@
 
 Each example is run in its own Blender (``bpy``) process, attached as a Geometry
 Nodes modifier to the object described in ``SHOTS`` below and rendered with Cycles
-to ``docs/examples/images/<name>.png``. An image is only re-rendered when the
-example, its shot or this script changes, so running it before every docs build is
-cheap. Quarto runs it as a ``pre-render`` step; it can also be run by hand:
+to ``docs/examples/images/<name>.png``, next to ``<name>.blend`` holding the scene
+as rendered. An example is only re-rendered when it, its shot, this script or
+nodebpy's source changes, so running it before every docs build is cheap. Quarto runs it as a ``pre-render`` step; it can also be run by hand:
 
     uv run python docs/examples/render.py              # stale images only
     uv run python docs/examples/render.py gears --force
@@ -259,6 +259,16 @@ def render_one(name: str, out: Path) -> None:
 
     _stage(obj, shot)
 
+    # the scene as rendered, for the page's download button; a simulation has
+    # no cache in a new file, so it is saved at the start for playback
+    if shot.frame > 1:
+        scene.frame_set(1)
+    bpy.ops.wm.save_as_mainfile(
+        filepath=str(out.with_suffix(".blend")), copy=True, compress=True
+    )
+    for frame in range(2, shot.frame + 1):
+        scene.frame_set(frame)
+
     scene.render.filepath = str(out)
     bpy.ops.render.render(write_still=True)
 
@@ -304,6 +314,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.force
         or cache.get(name) != _digest(name, source)
         or not (IMAGES / f"{name}.png").exists()
+        or not (IMAGES / f"{name}.blend").exists()
     ]
     if not todo:
         return 0

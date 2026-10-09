@@ -7,6 +7,8 @@ categories: [geonodes, custom groups, materials, instancing]
 
 ![A few hundred conifers on rolling terrain.](images/forest.png)
 
+[Download .blend](images/forest.blend){.btn .btn-primary .btn-sm download="forest.blend"} The scene in this image: the node trees, materials, camera and lights.
+
 There are three layers to this one.
 A **Tree** group builds a single conifer from a few proportions and a seed.
 The modifier builds five variants of it, then plants them over a noise-displaced terrain, picking one of the variants for each spot.
