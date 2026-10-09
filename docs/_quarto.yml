@@ -4,6 +4,9 @@ project:
   pre-render:
     - _config.py
     - examples/render.py
+  # the .blend behind each example image, for its download button
+  resources:
+    - examples/images/*.blend
 
 website:
   title: "nodebpy {{< var version >}}"

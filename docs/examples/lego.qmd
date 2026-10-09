@@ -7,6 +7,8 @@ categories: [Geometry Script, custom groups, mesh boolean]
 
 ![Suzanne built from 1 × 1 bricks.](images/lego.png)
 
+[Download .blend](images/lego.blend){.btn .btn-primary .btn-sm download="lego.blend"} The scene in this image: the node trees, materials, camera and lights.
+
 This builds on [Voxelize](voxelize.qmd): instead of a plain cube, every grid point gets a brick with a stud on top and a matching hole underneath.
 The brick is its own node group, written as a `CustomGeometryGroup` class, so it shows up in the tree as a single **LEGO Brick** node and can be reused in any other tree.
 
