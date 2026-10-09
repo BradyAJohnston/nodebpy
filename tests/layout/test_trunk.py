@@ -125,6 +125,36 @@ def test_trunk_stays_straight_when_long_links_get_reroutes():
     assert len(set(_tops(_by_type(tree, "GeometryNodeSetPosition")))) == 1
 
 
+def test_chain_of_values_is_one_row():
+    """Without flow sockets a chain through first inputs still has a
+    trunk: each node takes the chain over its other input."""
+    tree = cases.arranged("value_chain")
+    assert len(set(_tops(_by_type(tree, "ShaderNodeMath")))) == 1
+
+
+def test_summed_samples_hang_under_the_adds():
+    """The Adds summing a chain of samples are one row, and each sample
+    sits in the column before the Add it feeds, the samples one row below
+    the Adds."""
+    tree = cases.arranged("summed_samples")
+    maths = _by_type(tree, "ShaderNodeMath")
+    adds = [n for n in maths if n.operation == "ADD"]
+    samples = [n for n in maths if n.operation == "MULTIPLY"]
+    assert len(set(_tops(adds))) == 1
+
+    for add in adds[1:]:
+        (link,) = (k for k in tree.links if k.to_socket == add.inputs[1])
+        before = max(
+            (a for a in adds if a.location.x < add.location.x),
+            key=lambda a: a.location.x,
+        )
+        assert link.from_node.location.x == before.location.x
+
+    below = [s for s in samples if s.location.y < adds[0].location.y]
+    assert len(below) >= len(adds) - 1
+    assert len(set(_tops(below))) == 1
+
+
 def test_fork_that_merges_again_is_symmetric():
     """A fork into three branches that merge again: the fork, the middle
     branch and the merge are level, the other branches the same distance

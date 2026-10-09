@@ -165,9 +165,15 @@ def _align_column(
         for j, v in enumerate(col):
             align(j, v, options[j])
 
-    # Then every node still unaligned, with a median predecessor.
-    for j, v in enumerate(col):
-        align(j, v, _medians(candidates[j]))
+    # Then every node still unaligned, with a median predecessor. Heavier
+    # links are tried first, so of two medians a node takes the one across
+    # the heavier link, and of two nodes wanting one predecessor the one
+    # across the heavier link gets it. A chain through first inputs then
+    # stays a row in all four runs.
+    medians = [_medians(preds) for preds in candidates]
+    for level in sorted({c[2] for m in medians for c in m}, reverse=True):
+        for j, v in enumerate(col):
+            align(j, v, [c for c in medians[j] if c[2] >= level])
 
 
 def horizontal_alignment(
