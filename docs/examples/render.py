@@ -29,6 +29,7 @@ HERE = Path(__file__).resolve().parent
 CODE = HERE / "code"
 IMAGES = HERE / "images"
 CACHE = IMAGES / ".hashes.json"
+SOURCE = HERE.parents[1] / "src" / "nodebpy"
 
 
 @dataclass
@@ -77,8 +78,16 @@ SHOTS = {
 WIDTH, HEIGHT = 960, 600
 
 
-def _digest(name: str) -> str:
+def _source_digest() -> bytes:
+    """nodebpy's own source, since a change there can change what an example builds."""
     h = hashlib.sha256()
+    for path in sorted(SOURCE.rglob("*.py")):
+        h.update(path.read_bytes())
+    return h.digest()
+
+
+def _digest(name: str, source: bytes) -> str:
+    h = hashlib.sha256(source)
     h.update((CODE / f"{name}.py").read_bytes())
     h.update(json.dumps(asdict(SHOTS[name]), sort_keys=True).encode())
     h.update(Path(__file__).read_bytes())
@@ -138,7 +147,7 @@ def _clay(occlusion: float):
     with s.material("Clay") as clay:
         color = (0.62, 0.6, 0.57, 1.0)
         if occlusion:
-            ao = s.AmbientOcclusion(distance=occlusion, samples=16).o.ao
+            ao = s.AmbientOcclusion(distance=occlusion).o.ao
             color = (ao**3).mix.color((0.03, 0.03, 0.035, 1.0), color)
         s.PrincipledBSDF(base_color=color, roughness=0.55) >> s.MaterialOutput()
     return clay.material
@@ -288,11 +297,12 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, ValueError):
         cache = {}
 
+    source = _source_digest()
     todo = [
         name
         for name in (args.names or SHOTS)
         if args.force
-        or cache.get(name) != _digest(name)
+        or cache.get(name) != _digest(name, source)
         or not (IMAGES / f"{name}.png").exists()
     ]
     if not todo:
@@ -328,7 +338,7 @@ def main(argv: list[str] | None = None) -> int:
     with ThreadPoolExecutor(args.jobs) as pool:
         for name, code, seconds, output in pool.map(run, todo):
             if code == 0:
-                cache[name] = _digest(name)
+                cache[name] = _digest(name, source)
                 print(f"rendered {name} in {seconds:.0f}s")
             else:
                 failed.append(name)

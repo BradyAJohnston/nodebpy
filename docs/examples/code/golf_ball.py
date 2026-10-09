@@ -10,7 +10,7 @@ with s.material("Golf Ball") as material:
     color = white.mix.color((0.69, 0.70, 0.67, 1.0), (0.91, 0.91, 0.87, 1.0))
 
     # darken the inside of each dimple so the pattern reads at a distance
-    occlusion = s.AmbientOcclusion(distance=0.05, samples=16).o.ao
+    occlusion = s.AmbientOcclusion(distance=0.05).o.ao
     color = (occlusion**2).mix.color((0.3, 0.3, 0.29, 1.0), color)
 
     (

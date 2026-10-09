@@ -18,13 +18,13 @@ jobs:
         uses: astral-sh/setup-uv@v4
         with:
           version: "latest"
-      # rendered example images are keyed on the examples and the render script;
-      # render.py re-renders only those whose sources changed
+      # rendered example images are keyed on the examples, the render script and
+      # nodebpy's source; render.py re-renders only those whose inputs changed
       - name: Cache example renders
         uses: actions/cache@v4
         with:
           path: docs/examples/images
-          key: example-renders-${{ hashFiles('docs/examples/code/*.py', 'docs/examples/render.py') }}
+          key: example-renders-${{ hashFiles('docs/examples/code/*.py', 'docs/examples/render.py', 'src/nodebpy/**/*.py') }}
           restore-keys: example-renders-
 
       - name: Build Docs

@@ -6,10 +6,14 @@ from nodebpy.builder import CustomGeometryGroup
 from nodebpy.types import InputFloat, InputInteger
 
 
-def mottled(scale, a, b, spread=0.2):
-    """Blend two colors through a noise texture of the given scale."""
+def mottled(scale, a, b, middle=0.5, spread=0.2):
+    """Patches of ``b`` over ``a``, through a noise texture of the given scale.
+
+    The noise is normalized to around 0.5, so a higher ``middle`` gives fewer,
+    smaller patches of ``b``.
+    """
     noise = s.NoiseTexture(scale=scale).o.fac
-    return noise.map_range(0.5 - spread, 0.5 + spread).mix.color(a, b)
+    return noise.map_range(middle - spread, middle + spread).mix.color(a, b)
 
 
 with s.material("Bark") as bark:
@@ -19,9 +23,10 @@ with s.material("Bark") as bark:
     )
 
 with s.material("Foliage") as foliage:
-    greens = mottled(37.0, (0.002, 0.035, 0.015, 1.0), (0.001, 0.427, 0.015, 1.0))
+    dark, light = (0.002, 0.035, 0.015, 1.0), (0.001, 0.427, 0.015, 1.0)
+    greens = mottled(37.0, dark, light, middle=0.65)
     browns = mottled(20.0, (0.209, 0.168, 0.004, 1.0), (0.264, 0.033, 0.013, 1.0))
-    color = mottled(5.0, greens, browns, spread=0.1)
+    color = mottled(5.0, greens, browns, middle=0.6, spread=0.05)
     s.PrincipledBSDF(base_color=color, roughness=0.9) >> s.MaterialOutput()
 
 with s.material("Ground") as ground:
@@ -96,7 +101,7 @@ SHAPES = [(6, 0.3), (7, 0.25), (8, 0.3), (9, 0.2), (10, 0.22)]
 with g.tree("Forest", is_modifier=True) as tree:
     size = tree.inputs.float("Size", 40.0, min_value=0.0, subtype="DISTANCE")
     spacing = tree.inputs.float("Spacing", 2.0, min_value=0.1, subtype="DISTANCE")
-    hills = tree.inputs.float("Hills", 4.0, subtype="DISTANCE")
+    hills = tree.inputs.float("Hills", 8.0, subtype="DISTANCE")
     seed = tree.inputs.integer("Seed")
 
     with g.Frame("Terrain"):
