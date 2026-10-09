@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.34.1</span>
+    <span class="navbar-title">nodebpy 520.35.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -226,6 +226,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../examples/index.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
   <li class="nav-item">
     <a class="nav-link" href="../reference/"> 
 <span class="menu-text">Reference</span></a>
@@ -7398,7 +7402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb207-12"><a href="#cb207-12" aria-hidden="true" tabindex="-1"></a>    to_max_float3<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb207-13"><a href="#cb207-13" aria-hidden="true" tabindex="-1"></a>    steps_float3<span class="op">=</span>(<span class="fl">4.0</span>, <span class="fl">4.0</span>, <span class="fl">4.0</span>),</span>
 <span id="cb207-14"><a href="#cb207-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb207-15"><a href="#cb207-15" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb207-15"><a href="#cb207-15" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb207-16"><a href="#cb207-16" aria-hidden="true" tabindex="-1"></a>    interpolation_type<span class="op">=</span><span class="st">'LINEAR'</span>,</span>
 <span id="cb207-17"><a href="#cb207-17" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
 <span id="cb207-18"><a href="#cb207-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -7580,7 +7584,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb208-5"><a href="#cb208-5" aria-hidden="true" tabindex="-1"></a>    to_min<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb208-6"><a href="#cb208-6" aria-hidden="true" tabindex="-1"></a>    to_max<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb208-7"><a href="#cb208-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb208-8"><a href="#cb208-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb208-8"><a href="#cb208-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb208-9"><a href="#cb208-9" aria-hidden="true" tabindex="-1"></a>    interpolation_type<span class="op">=</span><span class="st">'LINEAR'</span>,</span>
 <span id="cb208-10"><a href="#cb208-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Map Range with operation ‘Float’. Floating-point value</p>
@@ -7594,7 +7598,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb209-5"><a href="#cb209-5" aria-hidden="true" tabindex="-1"></a>    to_min<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb209-6"><a href="#cb209-6" aria-hidden="true" tabindex="-1"></a>    to_max<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb209-7"><a href="#cb209-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb209-8"><a href="#cb209-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb209-8"><a href="#cb209-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb209-9"><a href="#cb209-9" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
 <span id="cb209-10"><a href="#cb209-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Map Range with operation ‘Linear’. Linear interpolation between From Min and From Max values</p>
@@ -7608,7 +7612,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb210-5"><a href="#cb210-5" aria-hidden="true" tabindex="-1"></a>    to_min<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb210-6"><a href="#cb210-6" aria-hidden="true" tabindex="-1"></a>    to_max<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb210-7"><a href="#cb210-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb210-8"><a href="#cb210-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb210-8"><a href="#cb210-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb210-9"><a href="#cb210-9" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
 <span id="cb210-10"><a href="#cb210-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Map Range with operation ‘Smooth Step’. Smooth Hermite edge interpolation between From Min and From Max values</p>
@@ -7622,7 +7626,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb211-5"><a href="#cb211-5" aria-hidden="true" tabindex="-1"></a>    to_min<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb211-6"><a href="#cb211-6" aria-hidden="true" tabindex="-1"></a>    to_max<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb211-7"><a href="#cb211-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb211-8"><a href="#cb211-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb211-8"><a href="#cb211-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb211-9"><a href="#cb211-9" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
 <span id="cb211-10"><a href="#cb211-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Map Range with operation ‘Smoother Step’. Smoother Hermite edge interpolation between From Min and From Max values</p>
@@ -7637,7 +7641,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb212-6"><a href="#cb212-6" aria-hidden="true" tabindex="-1"></a>    to_max<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb212-7"><a href="#cb212-7" aria-hidden="true" tabindex="-1"></a>    steps<span class="op">=</span><span class="fl">4.0</span>,</span>
 <span id="cb212-8"><a href="#cb212-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb212-9"><a href="#cb212-9" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb212-9"><a href="#cb212-9" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb212-10"><a href="#cb212-10" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
 <span id="cb212-11"><a href="#cb212-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Map Range with operation ‘Stepped Linear’. Stepped linear interpolation between From Min and From Max values</p>
@@ -7651,7 +7655,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb213-5"><a href="#cb213-5" aria-hidden="true" tabindex="-1"></a>    to_min<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
 <span id="cb213-6"><a href="#cb213-6" aria-hidden="true" tabindex="-1"></a>    to_max<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb213-7"><a href="#cb213-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb213-8"><a href="#cb213-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb213-8"><a href="#cb213-8" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb213-9"><a href="#cb213-9" aria-hidden="true" tabindex="-1"></a>    interpolation_type<span class="op">=</span><span class="st">'LINEAR'</span>,</span>
 <span id="cb213-10"><a href="#cb213-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Map Range with operation ‘Vector’. 3D vector with floating-point values</p>
@@ -8598,7 +8602,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb259-13"><a href="#cb259-13" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
 <span id="cb259-14"><a href="#cb259-14" aria-hidden="true" tabindex="-1"></a>    factor_mode<span class="op">=</span><span class="st">'UNIFORM'</span>,</span>
 <span id="cb259-15"><a href="#cb259-15" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
-<span id="cb259-16"><a href="#cb259-16" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb259-16"><a href="#cb259-16" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb259-17"><a href="#cb259-17" aria-hidden="true" tabindex="-1"></a>    clamp_result<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb259-18"><a href="#cb259-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Mix values by a factor</p>
@@ -8773,7 +8777,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb260-5"><a href="#cb260-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb260-6"><a href="#cb260-6" aria-hidden="true" tabindex="-1"></a>    factor_mode<span class="op">=</span><span class="st">'UNIFORM'</span>,</span>
 <span id="cb260-7"><a href="#cb260-7" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
-<span id="cb260-8"><a href="#cb260-8" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb260-8"><a href="#cb260-8" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb260-9"><a href="#cb260-9" aria-hidden="true" tabindex="-1"></a>    clamp_result<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb260-10"><a href="#cb260-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Mix with operation ‘Color’.</p>
@@ -8787,7 +8791,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb261-5"><a href="#cb261-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb261-6"><a href="#cb261-6" aria-hidden="true" tabindex="-1"></a>    factor_mode<span class="op">=</span><span class="st">'UNIFORM'</span>,</span>
 <span id="cb261-7"><a href="#cb261-7" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
-<span id="cb261-8"><a href="#cb261-8" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb261-8"><a href="#cb261-8" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb261-9"><a href="#cb261-9" aria-hidden="true" tabindex="-1"></a>    clamp_result<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb261-10"><a href="#cb261-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Mix with operation ‘Float’.</p>
@@ -8801,7 +8805,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb262-5"><a href="#cb262-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb262-6"><a href="#cb262-6" aria-hidden="true" tabindex="-1"></a>    factor_mode<span class="op">=</span><span class="st">'UNIFORM'</span>,</span>
 <span id="cb262-7"><a href="#cb262-7" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
-<span id="cb262-8"><a href="#cb262-8" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb262-8"><a href="#cb262-8" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb262-9"><a href="#cb262-9" aria-hidden="true" tabindex="-1"></a>    clamp_result<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb262-10"><a href="#cb262-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Mix with operation ‘Rotation’.</p>
@@ -8815,7 +8819,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb263-5"><a href="#cb263-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb263-6"><a href="#cb263-6" aria-hidden="true" tabindex="-1"></a>    factor_mode<span class="op">=</span><span class="st">'UNIFORM'</span>,</span>
 <span id="cb263-7"><a href="#cb263-7" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
-<span id="cb263-8"><a href="#cb263-8" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb263-8"><a href="#cb263-8" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb263-9"><a href="#cb263-9" aria-hidden="true" tabindex="-1"></a>    clamp_result<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb263-10"><a href="#cb263-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Mix with operation ‘Vector’.</p>

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Dimple a sphere with a proximity field and shade it with a procedural material.">
+
+<title>Golf Ball – nodebpy 520.35.0</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-f2d0871641e9fa8bbf4b5fa23e868b66.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script type="module">
+    // Re-highlight code blocks with Shiki (the TextMate-grammar engine VS Code
+    // uses) for richer tokens than Pandoc's skylighting: function calls,
+    // attribute access, keyword arguments, etc. Pandoc's highlighting is kept
+    // in the HTML as a no-JS fallback and replaced here on load.
+    //
+    // To change colors, swap "dracula" for any theme from
+    // https://shiki.style/themes, or add/edit `tokenColors` rules below
+    // (scope reference: https://macromates.com/manual/en/language_grammars).
+    import { codeToHtml, bundledThemes } from "https://esm.sh/shiki@3";
+
+    const dracula = (await bundledThemes["dracula-soft"]()).default;
+    const theme = {
+        ...dracula,
+        name: "dracula-nodebpy",
+        tokenColors: [
+            ...dracula.tokenColors,
+            // Dracula ships no rule for Python call expressions; color them like
+            // function definitions so g.Cube() / tree.inputs.integer() pop.
+            {
+                scope: "meta.function-call.generic.python",
+                settings: { foreground: "#50FA7B" },
+            },
+        ],
+    };
+
+    async function rehighlight(pre) {
+        const code = pre.querySelector("code");
+        const lang = [...pre.classList].find(
+            (c) => !["sourceCode", "code-with-copy"].includes(c),
+        );
+        if (!code || !lang) return;
+        try {
+            const html = await codeToHtml(code.textContent.replace(/\n$/, ""), {
+                lang,
+                theme,
+            });
+            const shikiPre = new DOMParser()
+                .parseFromString(html, "text/html")
+                .querySelector("pre");
+            code.innerHTML = shikiPre.querySelector("code").innerHTML;
+            pre.style.backgroundColor = shikiPre.style.backgroundColor;
+            pre.style.color = shikiPre.style.color;
+        } catch {
+            // Unknown language for Shiki — keep Pandoc's highlighting.
+        }
+    }
+
+    await Promise.all(
+        [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
+    );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">nodebpy 520.35.0</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Documentation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-documentation">    
+        <li>
+    <a class="dropdown-item" href="../introduction.html">
+ <span class="dropdown-text">Writing Node Trees</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../operators.html">
+ <span class="dropdown-text">Math Operators</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../custom-node-groups.html">
+ <span class="dropdown-text">Custom Node Groups</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../assets.html">
+ <span class="dropdown-text">Asset Node Groups</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../nodes-to-code.html">
+ <span class="dropdown-text">Nodes to Code</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../using.html">
+ <span class="dropdown-text">Using <code>nodebpy</code></span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../comparisons.html">
+ <span class="dropdown-text">Comparing the API</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../examples/index.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../changelog.html"> 
+<span class="menu-text">Changelog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/BradyAJohnston/nodebpy"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link active" data-scroll-target="#how-it-works">How it works</a></li>
+  <li><a href="#node-trees" id="toc-node-trees" class="nav-link" data-scroll-target="#node-trees">Node trees</a></li>
+  <li><a href="#original" id="toc-original" class="nav-link" data-scroll-target="#original">Original</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Golf Ball</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">geonodes</div>
+    <div class="quarto-category">materials</div>
+    <div class="quarto-category">fields</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Dimple a sphere with a proximity field and shade it with a procedural material.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/golf_ball.png" class="img-fluid figure-img"></p>
+<figcaption>A dimpled golf ball with a speckled, slightly rough surface.</figcaption>
+</figure>
+</div>
+<p>A coarse icosphere supplies one point per dimple. A dense icosphere is pushed inwards wherever it is close to one of those points, and the depth of the push follows a smooth profile from the centre of the dimple to its rim. The script builds the material as well as the geometry.</p>
+<div id="70824ad6" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> shader <span class="im">as</span> s</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> s.material(<span class="st">"Golf Ball"</span>) <span class="im">as</span> material:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    coords <span class="op">=</span> s.TextureCoordinate().o.<span class="bu">object</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    grain <span class="op">=</span> s.NoiseTexture(coords, scale<span class="op">=</span><span class="fl">180.0</span>, detail<span class="op">=</span><span class="fl">3.0</span>, roughness<span class="op">=</span><span class="fl">0.65</span>).o.fac</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    micro <span class="op">=</span> s.NoiseTexture(coords, scale<span class="op">=</span><span class="fl">650.0</span>, detail<span class="op">=</span><span class="fl">2.0</span>).o.fac</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    white <span class="op">=</span> grain.map_range(<span class="fl">0.25</span>, <span class="fl">0.75</span>, interpolation_type<span class="op">=</span><span class="st">"SMOOTHSTEP"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> white.mix.color((<span class="fl">0.69</span>, <span class="fl">0.70</span>, <span class="fl">0.67</span>, <span class="fl">1.0</span>), (<span class="fl">0.91</span>, <span class="fl">0.91</span>, <span class="fl">0.87</span>, <span class="fl">1.0</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># darken the inside of each dimple so the pattern reads at a distance</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    occlusion <span class="op">=</span> s.AmbientOcclusion(distance<span class="op">=</span><span class="fl">0.05</span>).o.ao</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> (occlusion<span class="op">**</span><span class="dv">2</span>).mix.color((<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.29</span>, <span class="fl">1.0</span>), color)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    (</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        s.PrincipledBSDF(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>            base_color<span class="op">=</span>color,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>            roughness<span class="op">=</span>grain.map_range(<span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="fl">0.32</span>, <span class="fl">0.46</span>),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            normal<span class="op">=</span>s.Bump(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>                height<span class="op">=</span>grain <span class="op">*</span> <span class="fl">0.7</span> <span class="op">+</span> micro <span class="op">*</span> <span class="fl">0.3</span>, strength<span class="op">=</span><span class="fl">0.16</span>, distance<span class="op">=</span><span class="fl">0.0025</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> s.MaterialOutput()</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Golf Ball"</span>, is_modifier<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> tree:</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Radius"</span>, <span class="fl">1.0</span>, min_value<span class="op">=</span><span class="fl">0.0</span>, subtype<span class="op">=</span><span class="st">"DISTANCE"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs.panel(<span class="st">"Dimples"</span>):</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        layout <span class="op">=</span> tree.inputs.integer(<span class="st">"Layout"</span>, <span class="dv">4</span>, min_value<span class="op">=</span><span class="dv">1</span>, max_value<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>        width <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Width"</span>, <span class="fl">0.075</span>, min_value<span class="op">=</span><span class="fl">0.0</span>, subtype<span class="op">=</span><span class="st">"DISTANCE"</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        depth <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Depth"</span>, <span class="fl">0.012</span>, min_value<span class="op">=</span><span class="fl">0.0</span>, subtype<span class="op">=</span><span class="st">"DISTANCE"</span>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># one dimple centred on each vertex of a coarse icosphere</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    centers <span class="op">=</span> g.IcoSphere(radius, subdivisions<span class="op">=</span>layout) <span class="op">&gt;&gt;</span> g.MeshToPoints()</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    distance <span class="op">=</span> g.GeometryProximity(centers, target_element<span class="op">=</span><span class="st">"POINTS"</span>).o.distance</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    profile <span class="op">=</span> distance.map_range(</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.0</span>, width, <span class="fl">1.0</span>, <span class="fl">0.0</span>, interpolation_type<span class="op">=</span><span class="st">"SMOOTHERSTEP"</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># push the dense surface inwards along its normal</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    inwards <span class="op">=</span> g.Position().o.position.normalize() <span class="op">*</span> <span class="op">-</span>(profile <span class="op">*</span> depth)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    (</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>        g.IcoSphere(radius, subdivisions<span class="op">=</span><span class="dv">7</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(offset<span class="op">=</span>inwards)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetShadeSmooth()</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetMaterial(material<span class="op">=</span>material.material)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Geometry"</span>)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="how-it-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
+<p><strong>Geometry.</strong></p>
+<ul>
+<li>Geometry Proximity returns, for every vertex of the dense sphere, the distance to the nearest dimple centre.</li>
+<li><code>distance.map_range(0.0, width, 1.0, 0.0, interpolation_type="SMOOTHERSTEP")</code> turns that distance into a profile that is 1 at the centre and falls smoothly to 0 at the rim. Socket methods such as <code>map_range</code> add the matching node and return its result.</li>
+<li>The surface is pushed in along the direction from the centre, <code>g.Position().o.position.normalize()</code>, scaled by the profile and the <code>Depth</code> input. On a sphere centred at the origin that direction is the normal.</li>
+<li><code>Layout</code> is the subdivision level of the coarse sphere. Blender counts the plain icosahedron as level 1, so level 4 gives 642 dimples, close to a real ball’s 300 to 500.</li>
+</ul>
+<p><strong>Material.</strong> <code>s.material("Golf Ball")</code> builds a material the same way <code>g.tree</code> builds a node tree. Two noise textures at different scales make the grain of the cover: they drive the colour, the roughness and a Bump node. An Ambient Occlusion node darkens the inside of each dimple, so the pattern still reads when the ball is small on screen. <code>grain.map_range(...).mix.color(a, b)</code> uses the remapped value as the factor of a Mix node in colour mode, which reads in the same order as the data flows. In the geometry tree, <code>material.material</code> is the <code>bpy.types.Material</code>, passed straight to Set Material.</p>
+</section>
+<section id="node-trees" class="level2">
+<h2 class="anchored" data-anchor-id="node-trees">Node trees</h2>
+<div id="53797e95" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div id="gnwr-e240e01d216546358fb5c7ffabcf8678" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-e240e01d216546358fb5c7ffabcf8678"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
+</div>
+</div>
+<div id="cab26ccd" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div id="gnwr-294bb0d50e3649249835f524e90bec8a" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-294bb0d50e3649249835f524e90bec8a"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
+</div>
+</div>
+</section>
+<section id="original" class="level2">
+<h2 class="anchored" data-anchor-id="original">Original</h2>
+<p>Ported from the golf ball in <a href="https://github.com/al1brn/geonodes/blob/main/demos/balls.py"><code>demos/balls.py</code></a> in geonodes, which builds the same material and the same proximity-driven displacement.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

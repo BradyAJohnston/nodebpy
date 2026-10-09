@@ -34,7 +34,7 @@ AmbientOcclusion(
     distance=1.0,
     normal=None,
     *,
-    samples=0,
+    samples=16,
     inside=False,
     only_local=False,
 )
@@ -85,7 +85,7 @@ Note: For Cycles, this may slow down renders significantly
 ### Bevel
 
 ``` python
-Bevel(radius=0.05, normal=None, *, samples=0)
+Bevel(radius=0.05, normal=None, *, samples=4)
 ```
 
     Generates normals with round corners.

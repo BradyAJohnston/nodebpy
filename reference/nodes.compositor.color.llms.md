@@ -180,8 +180,8 @@ ColorBalance(
     output_temperature=6500.0,
     output_tint=10.0,
     *,
-    input_whitepoint=(0.735, 0.735, 0.735),
-    output_whitepoint=(0.735, 0.735, 0.735),
+    input_whitepoint=None,
+    output_whitepoint=None,
 )
 ```
 
@@ -244,8 +244,8 @@ lift_gamma_gain(
     base_gain=1.0,
     color_gain=(1.0, 1.0, 1.0, 1.0),
     *,
-    input_whitepoint=(0.735, 0.735, 0.735),
-    output_whitepoint=(0.735, 0.735, 0.735),
+    input_whitepoint=None,
+    output_whitepoint=None,
 )
 ```
 
@@ -264,8 +264,8 @@ offset_power_slope_asc_cdl(
     base_slope=1.0,
     color_slope=(1.0, 1.0, 1.0, 1.0),
     *,
-    input_whitepoint=(0.735, 0.735, 0.735),
-    output_whitepoint=(0.735, 0.735, 0.735),
+    input_whitepoint=None,
+    output_whitepoint=None,
 )
 ```
 
@@ -282,8 +282,8 @@ white_point(
     output_temperature=6500.0,
     output_tint=10.0,
     *,
-    input_whitepoint=(0.735, 0.735, 0.735),
-    output_whitepoint=(0.735, 0.735, 0.735),
+    input_whitepoint=None,
+    output_whitepoint=None,
 )
 ```
 

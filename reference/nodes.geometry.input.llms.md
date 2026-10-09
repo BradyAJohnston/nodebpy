@@ -380,7 +380,7 @@ Retrieve geometry instances from a collection
 ### Color
 
 ``` python
-Color(value=(0.735, 0.735, 0.735, 1.0))
+Color(value=(0.5, 0.5, 0.5, 1.0))
 ```
 
 Output a color value chosen with the color picker widget
@@ -1646,7 +1646,7 @@ Retrieve the full transformation of each instance in the geometry
 ### Integer
 
 ``` python
-Integer(integer=1)
+Integer(integer=0)
 ```
 
 Provide an integer value that can be connected to other nodes in the tree

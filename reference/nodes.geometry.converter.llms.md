@@ -3274,7 +3274,7 @@ MapRange(
     to_max_float3=(1.0, 1.0, 1.0),
     steps_float3=(4.0, 4.0, 4.0),
     *,
-    clamp=False,
+    clamp=True,
     interpolation_type='LINEAR',
     data_type='FLOAT',
 )
@@ -3333,7 +3333,7 @@ float(
     to_min=0.0,
     to_max=1.0,
     *,
-    clamp=False,
+    clamp=True,
     interpolation_type='LINEAR',
 )
 ```
@@ -3350,7 +3350,7 @@ linear(
     to_min=0.0,
     to_max=1.0,
     *,
-    clamp=False,
+    clamp=True,
     data_type='FLOAT',
 )
 ```
@@ -3367,7 +3367,7 @@ smooth_step(
     to_min=0.0,
     to_max=1.0,
     *,
-    clamp=False,
+    clamp=True,
     data_type='FLOAT',
 )
 ```
@@ -3384,7 +3384,7 @@ smoother_step(
     to_min=0.0,
     to_max=1.0,
     *,
-    clamp=False,
+    clamp=True,
     data_type='FLOAT',
 )
 ```
@@ -3402,7 +3402,7 @@ stepped_linear(
     to_max=1.0,
     steps=4.0,
     *,
-    clamp=False,
+    clamp=True,
     data_type='FLOAT',
 )
 ```
@@ -3419,7 +3419,7 @@ vector(
     to_min=(0.0, 0.0, 0.0),
     to_max=(1.0, 1.0, 1.0),
     *,
-    clamp=False,
+    clamp=True,
     interpolation_type='LINEAR',
 )
 ```
@@ -4005,7 +4005,7 @@ Mix(
     data_type='FLOAT',
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```
@@ -4061,7 +4061,7 @@ color(
     *,
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```
@@ -4078,7 +4078,7 @@ float(
     *,
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```
@@ -4095,7 +4095,7 @@ rotation(
     *,
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```
@@ -4112,7 +4112,7 @@ vector(
     *,
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```

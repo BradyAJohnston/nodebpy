@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.34.1</span>
+    <span class="navbar-title">nodebpy 520.35.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -226,6 +226,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../examples/index.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
   <li class="nav-item">
     <a class="nav-link" href="../reference/"> 
 <span class="menu-text">Reference</span></a>
@@ -866,7 +870,7 @@ i.value : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.output.LightOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.output.LightOutput">LightOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>LightOutput(surface<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, is_active_output<span class="op">=</span><span class="va">False</span>, target<span class="op">=</span><span class="st">'ALL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>LightOutput(surface<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, is_active_output<span class="op">=</span><span class="va">None</span>, target<span class="op">=</span><span class="st">'ALL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output light information to a light object</p>
 <section id="parameters-1" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
@@ -956,7 +960,7 @@ i.value : FloatSocket
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    alpha_fac<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ALL'</span>,</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    use_alpha<span class="op">=</span><span class="va">False</span>,</span>
@@ -1096,7 +1100,7 @@ i.value : FloatSocket
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    displacement<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    thickness<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ALL'</span>,</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output surface material information for use in rendering</p>
@@ -1215,7 +1219,7 @@ i.value : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.output.WorldOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.output.WorldOutput">WorldOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>WorldOutput(surface<span class="op">=</span><span class="va">None</span>, volume<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, is_active_output<span class="op">=</span><span class="va">False</span>, target<span class="op">=</span><span class="st">'ALL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>WorldOutput(surface<span class="op">=</span><span class="va">None</span>, volume<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, is_active_output<span class="op">=</span><span class="va">None</span>, target<span class="op">=</span><span class="st">'ALL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output light color information to the scene’s World</p>
 <section id="parameters-4" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>

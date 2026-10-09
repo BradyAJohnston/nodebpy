@@ -15,8 +15,8 @@
 FileOutput(
     directory='',
     file_name='',
-    save_as_render=False,
-    use_file_extension=False,
+    save_as_render=True,
+    use_file_extension=True,
 )
 ```
 

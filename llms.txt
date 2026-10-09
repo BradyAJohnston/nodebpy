@@ -1,4 +1,4 @@
-# nodebpy 520.34.1
+# nodebpy 520.35.0
 
 ## Pages
 
@@ -37,11 +37,21 @@
 - [default_split_inputs](reference/default_split_inputs.llms.md)
 - [Custom Node Groups](custom-node-groups.llms.md)
 - [Changelog](changelog.llms.md)
+- [Explosion](examples/explosion.llms.md)
+- [Examples](examples/index.llms.md)
+- [Repeat Grid](examples/repeat-grid.llms.md)
+- [Mesh to LEGO](examples/lego.llms.md)
+- [Forest](examples/forest.llms.md)
 - [Using `nodebpy`](using.llms.md)
 - [Node API Design](node-api.llms.md)
 - [Comparing the API](comparisons.llms.md)
 - [index](index.llms.md)
 - [Asset Node Groups](assets.llms.md)
+- [Golf Ball](examples/golf-ball.llms.md)
+- [City Builder](examples/city-builder.llms.md)
+- [Gear Train](examples/gears.llms.md)
+- [Voxelize](examples/voxelize.llms.md)
+- [Arrow Field](examples/arrow-field.llms.md)
 - [Writing Node Trees](introduction.llms.md)
 - [Nodes to Code](nodes-to-code.llms.md)
 - [export.to_plot](reference/export.to_plot.llms.md)

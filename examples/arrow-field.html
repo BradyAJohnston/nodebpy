@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Visualise a vector field with arrows, coloured by an attribute read in the material.">
+
+<title>Arrow Field – nodebpy 520.35.0</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-f2d0871641e9fa8bbf4b5fa23e868b66.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script type="module">
+    // Re-highlight code blocks with Shiki (the TextMate-grammar engine VS Code
+    // uses) for richer tokens than Pandoc's skylighting: function calls,
+    // attribute access, keyword arguments, etc. Pandoc's highlighting is kept
+    // in the HTML as a no-JS fallback and replaced here on load.
+    //
+    // To change colors, swap "dracula" for any theme from
+    // https://shiki.style/themes, or add/edit `tokenColors` rules below
+    // (scope reference: https://macromates.com/manual/en/language_grammars).
+    import { codeToHtml, bundledThemes } from "https://esm.sh/shiki@3";
+
+    const dracula = (await bundledThemes["dracula-soft"]()).default;
+    const theme = {
+        ...dracula,
+        name: "dracula-nodebpy",
+        tokenColors: [
+            ...dracula.tokenColors,
+            // Dracula ships no rule for Python call expressions; color them like
+            // function definitions so g.Cube() / tree.inputs.integer() pop.
+            {
+                scope: "meta.function-call.generic.python",
+                settings: { foreground: "#50FA7B" },
+            },
+        ],
+    };
+
+    async function rehighlight(pre) {
+        const code = pre.querySelector("code");
+        const lang = [...pre.classList].find(
+            (c) => !["sourceCode", "code-with-copy"].includes(c),
+        );
+        if (!code || !lang) return;
+        try {
+            const html = await codeToHtml(code.textContent.replace(/\n$/, ""), {
+                lang,
+                theme,
+            });
+            const shikiPre = new DOMParser()
+                .parseFromString(html, "text/html")
+                .querySelector("pre");
+            code.innerHTML = shikiPre.querySelector("code").innerHTML;
+            pre.style.backgroundColor = shikiPre.style.backgroundColor;
+            pre.style.color = shikiPre.style.color;
+        } catch {
+            // Unknown language for Shiki — keep Pandoc's highlighting.
+        }
+    }
+
+    await Promise.all(
+        [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
+    );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">nodebpy 520.35.0</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Documentation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-documentation">    
+        <li>
+    <a class="dropdown-item" href="../introduction.html">
+ <span class="dropdown-text">Writing Node Trees</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../operators.html">
+ <span class="dropdown-text">Math Operators</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../custom-node-groups.html">
+ <span class="dropdown-text">Custom Node Groups</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../assets.html">
+ <span class="dropdown-text">Asset Node Groups</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../nodes-to-code.html">
+ <span class="dropdown-text">Nodes to Code</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../using.html">
+ <span class="dropdown-text">Using <code>nodebpy</code></span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../comparisons.html">
+ <span class="dropdown-text">Comparing the API</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../examples/index.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../changelog.html"> 
+<span class="menu-text">Changelog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/BradyAJohnston/nodebpy"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link active" data-scroll-target="#how-it-works">How it works</a></li>
+  <li><a href="#node-trees" id="toc-node-trees" class="nav-link" data-scroll-target="#node-trees">Node trees</a></li>
+  <li><a href="#original" id="toc-original" class="nav-link" data-scroll-target="#original">Original</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Arrow Field</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">geonodes</div>
+    <div class="quarto-category">fields</div>
+    <div class="quarto-category">materials</div>
+    <div class="quarto-category">instancing</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Visualise a vector field with arrows, coloured by an attribute read in the material.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/arrow_field.png" class="img-fluid figure-img"></p>
+<figcaption>A vortex drawn as a grid of arrows, warm where it is strongest.</figcaption>
+</figure>
+</div>
+<p>A grid of points samples a vortex: a field that swirls around the Z axis and is strongest near it. Each point gets an arrow that points along the field and is scaled by its strength, and the material colours the arrows by the same strength.</p>
+<div id="421b1f46" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> shader <span class="im">as</span> s</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> arrow(vertices):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""A unit-length arrow pointing up Z, built from a shaft and a head."""</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    shaft <span class="op">=</span> g.Cylinder(vertices, radius<span class="op">=</span><span class="fl">0.05</span>, depth<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    head <span class="op">=</span> g.Cone(vertices, radius_bottom<span class="op">=</span><span class="fl">0.12</span>, depth<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> g.JoinGeometry(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>            shaft <span class="op">&gt;&gt;</span> g.TransformGeometry(translation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.35</span>)),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            head <span class="op">&gt;&gt;</span> g.TransformGeometry(translation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.7</span>)),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> s.material(<span class="st">"Arrow"</span>) <span class="im">as</span> material:</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    strength <span class="op">=</span> s.Attribute.instancer(<span class="st">"strength"</span>).o.fac</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    ramp <span class="op">=</span> s.ColorRamp(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        strength,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        items<span class="op">=</span>[</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>            (<span class="fl">0.0</span>, (<span class="fl">0.05</span>, <span class="fl">0.15</span>, <span class="fl">0.6</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>            (<span class="fl">0.5</span>, (<span class="fl">0.1</span>, <span class="fl">0.7</span>, <span class="fl">0.6</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            (<span class="fl">1.0</span>, (<span class="fl">1.0</span>, <span class="fl">0.5</span>, <span class="fl">0.05</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    s.PrincipledBSDF(base_color<span class="op">=</span>ramp, roughness<span class="op">=</span><span class="fl">0.4</span>) <span class="op">&gt;&gt;</span> s.MaterialOutput()</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Arrow Field"</span>, is_modifier<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> tree:</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    size <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Size"</span>, <span class="fl">6.0</span>, min_value<span class="op">=</span><span class="fl">0.0</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    count <span class="op">=</span> tree.inputs.integer(<span class="st">"Count"</span>, <span class="dv">15</span>, min_value<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    scale <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Arrow Scale"</span>, <span class="fl">0.5</span>, min_value<span class="op">=</span><span class="fl">0.0</span>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    vertices <span class="op">=</span> tree.inputs.integer(<span class="st">"Arrow Vertices"</span>, <span class="dv">12</span>, min_value<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> g.Frame(<span class="st">"Vortex"</span>):</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># swirl around Z, strongest near the axis</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>        position <span class="op">=</span> g.Position().o.position</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>        field <span class="op">=</span> position.cross((<span class="dv">0</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)) <span class="op">/</span> (position.length() <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> <span class="fl">0.5</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>        strength <span class="op">=</span> field.length() <span class="op">/</span> field.length().point.<span class="bu">max</span>()</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    points <span class="op">=</span> (</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>        g.Grid(size, size, count, count)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToPoints()</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.StoreNamedAttribute.point.<span class="bu">float</span>(name<span class="op">=</span><span class="st">"strength"</span>, value<span class="op">=</span>strength)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    (</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>        points</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>            instance<span class="op">=</span>arrow(vertices),</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>            rotation<span class="op">=</span>g.AlignRotationToVector(vector<span class="op">=</span>field),</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>            scale<span class="op">=</span>strength.map_range(<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.3</span>, <span class="fl">1.0</span>) <span class="op">*</span> scale,</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetMaterial(material<span class="op">=</span>material.material)</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Geometry"</span>)</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="how-it-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
+<ul>
+<li><strong>The arrow</strong> comes from <code>arrow()</code>, a Python function that joins a cylinder and a cone into a unit arrow pointing up Z. Calling a function like this adds its nodes to whichever tree is open at the time.</li>
+<li><strong>The field</strong> is written as ordinary vector arithmetic. <code>position.cross((0, 0, -1))</code> is a vector at right angles to the position, which makes the swirl, and dividing by <code>position.length() ** 2 + 0.5</code> makes it fall off away from the centre. Each operator adds a Vector Math or Math node.</li>
+<li><strong>Strength</strong> is the field’s length divided by its largest value over all points, <code>field.length().point.max()</code>. The <code>.point</code> domain methods (<code>.max()</code>, <code>.mean()</code>, <code>.total()</code> and others) add the matching statistic node evaluated on the point domain.</li>
+<li><strong>Instancing.</strong> Align Rotation to Vector turns each arrow’s Z axis along the field, and the strength, remapped to between 0.3 and 1, sets its scale.</li>
+<li><strong>Colour.</strong> The strength is stored as a point attribute before instancing, which carries it onto each instance. The material reads it with <code>s.Attribute.instancer("strength")</code>, the instancer type being the one that reads attributes stored on instances, and maps it through a three-stop Color Ramp. The ramp’s stops are a list of <code>(position, colour)</code> pairs.</li>
+</ul>
+</section>
+<section id="node-trees" class="level2">
+<h2 class="anchored" data-anchor-id="node-trees">Node trees</h2>
+<div id="bf8e37d7" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div id="gnwr-5b4205252d21469b9d987e028f47999a" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-5b4205252d21469b9d987e028f47999a"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
+</div>
+</div>
+<div id="b97516ec" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div id="gnwr-efb4041aa7c3418d8d27840311a51cbb" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-efb4041aa7c3418d8d27840311a51cbb"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
+</div>
+</div>
+</section>
+<section id="original" class="level2">
+<h2 class="anchored" data-anchor-id="original">Original</h2>
+<p>Based on the arrow field in <a href="https://github.com/al1brn/geonodes/blob/main/demos/arrows.py"><code>demos/arrows.py</code></a> in geonodes (<a href="https://github.com/al1brn/geonodes/blob/main/docs/demos/arrows.md">write-up</a>), which also offers several head shapes through closures and a menu, and builds arrows from cartesian, polar or spherical coordinates.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

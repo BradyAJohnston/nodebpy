@@ -50,7 +50,7 @@ Provide custom render passes for arbitrary shader node outputs
 ### LightOutput
 
 ``` python
-LightOutput(surface=None, *, is_active_output=False, target='ALL')
+LightOutput(surface=None, *, is_active_output=None, target='ALL')
 ```
 
 Output light information to a light object
@@ -88,7 +88,7 @@ LineStyleOutput(
     alpha=1.0,
     alpha_fac=1.0,
     *,
-    is_active_output=False,
+    is_active_output=None,
     target='ALL',
     blend_type='MIX',
     use_alpha=False,
@@ -140,7 +140,7 @@ MaterialOutput(
     displacement=None,
     thickness=None,
     *,
-    is_active_output=False,
+    is_active_output=None,
     target='ALL',
 )
 ```
@@ -180,7 +180,7 @@ Output surface material information for use in rendering
 ### WorldOutput
 
 ``` python
-WorldOutput(surface=None, volume=None, *, is_active_output=False, target='ALL')
+WorldOutput(surface=None, volume=None, *, is_active_output=None, target='ALL')
 ```
 
 Output light color information to the scene’s World

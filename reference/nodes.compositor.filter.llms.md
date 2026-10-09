@@ -354,10 +354,10 @@ Defocus(
     *,
     bokeh='CIRCLE',
     angle=0.0,
-    f_stop=0.0,
-    blur_max=0.0,
-    use_zbuffer=True,
-    z_scale=0.0,
+    f_stop=128.0,
+    blur_max=16.0,
+    use_zbuffer=False,
+    z_scale=1.0,
 )
 ```
 

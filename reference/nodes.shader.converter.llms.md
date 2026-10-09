@@ -228,7 +228,7 @@ Mix(
     data_type='FLOAT',
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```
@@ -283,7 +283,7 @@ color(
     *,
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```
@@ -300,7 +300,7 @@ float(
     *,
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```
@@ -317,7 +317,7 @@ vector(
     *,
     factor_mode='UNIFORM',
     blend_type='MIX',
-    clamp_factor=False,
+    clamp_factor=True,
     clamp_result=False,
 )
 ```

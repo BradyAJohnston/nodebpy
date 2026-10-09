@@ -182,8 +182,8 @@ SkyTexture(
     aerosol_density=1.0,
     ozone_density=1.0,
     sun_direction=(0.0, 0.0, 1.0),
-    turbidity=0.0,
-    ground_albedo=0.0,
+    turbidity=2.2,
+    ground_albedo=0.3,
 )
 ```
 
@@ -234,8 +234,8 @@ hosek_wilkie(
     vector=None,
     *,
     sun_direction=(0.0, 0.0, 1.0),
-    turbidity=0.0,
-    ground_albedo=0.0,
+    turbidity=2.2,
+    ground_albedo=0.3,
 )
 ```
 
@@ -262,7 +262,7 @@ Create Sky Texture with operation ‘Multiple Scattering’. Multiple scattering
 ##### preetham
 
 ``` python
-preetham(vector=None, *, sun_direction=(0.0, 0.0, 1.0), turbidity=0.0)
+preetham(vector=None, *, sun_direction=(0.0, 0.0, 1.0), turbidity=2.2)
 ```
 
 Create Sky Texture with operation ‘Preetham’. Preetham 1999 (Legacy)

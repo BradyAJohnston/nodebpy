@@ -3297,7 +3297,7 @@ ResampleCurve(
     count=10,
     length=0.1,
     *,
-    keep_last_segment=False,
+    keep_last_segment=True,
 )
 ```
 

@@ -392,7 +392,7 @@ Sample values from an image texture
 ### MagicTexture
 
 ``` python
-MagicTexture(vector=None, scale=5.0, distortion=1.0, *, turbulence_depth=0)
+MagicTexture(vector=None, scale=5.0, distortion=1.0, *, turbulence_depth=2)
 ```
 
 Generate a psychedelic color texture
@@ -445,9 +445,9 @@ NoiseTexture(
     gain=1.0,
     distortion=0.0,
     *,
-    noise_dimensions='3D',
+    noise_dimensions=None,
     noise_type='FBM',
-    normalize=False,
+    normalize=True,
 )
 ```
 
@@ -501,8 +501,8 @@ fbm(
     lacunarity=2.0,
     distortion=0.0,
     *,
-    noise_dimensions='3D',
-    normalize=False,
+    noise_dimensions=None,
+    normalize=True,
 )
 ```
 
@@ -520,7 +520,7 @@ hetero_terrain(
     offset=0.0,
     distortion=0.0,
     *,
-    noise_dimensions='3D',
+    noise_dimensions=None,
 )
 ```
 
@@ -539,7 +539,7 @@ hybrid_multifractal(
     gain=1.0,
     distortion=0.0,
     *,
-    noise_dimensions='3D',
+    noise_dimensions=None,
 )
 ```
 
@@ -556,7 +556,7 @@ multifractal(
     lacunarity=2.0,
     distortion=0.0,
     *,
-    noise_dimensions='3D',
+    noise_dimensions=None,
 )
 ```
 
@@ -575,7 +575,7 @@ ridged_multifractal(
     gain=1.0,
     distortion=0.0,
     *,
-    noise_dimensions='3D',
+    noise_dimensions=None,
 )
 ```
 
@@ -791,7 +791,7 @@ Create Wave Texture with operation ‘Rings’. Use wave texture in rings
 ### WhiteNoiseTexture
 
 ``` python
-WhiteNoiseTexture(vector=None, w=0.0, *, noise_dimensions='3D')
+WhiteNoiseTexture(vector=None, w=0.0, *, noise_dimensions=None)
 ```
 
 Calculate a random value or color based on an input seed
