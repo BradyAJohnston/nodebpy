@@ -802,7 +802,7 @@ class NoiseTexture(BaseNode):
         gain: InputFloat = 1.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
         noise_type: Literal[
             "MULTIFRACTAL",
             "RIDGED_MULTIFRACTAL",
@@ -824,7 +824,8 @@ class NoiseTexture(BaseNode):
             "Gain": gain,
             "Distortion": distortion,
         }
-        self.noise_dimensions = noise_dimensions
+        if noise_dimensions is not None:
+            self.noise_dimensions = noise_dimensions
         self.noise_type = noise_type
         self.normalize = normalize
         self._establish_links(**key_args)
@@ -839,7 +840,7 @@ class NoiseTexture(BaseNode):
         lacunarity: InputFloat = 2.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Multifractal'. More uneven result (varies with location), more similar to a real terrain"""
         return cls(
@@ -865,7 +866,7 @@ class NoiseTexture(BaseNode):
         gain: InputFloat = 1.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Ridged Multifractal'. Create sharp peaks"""
         return cls(
@@ -893,7 +894,7 @@ class NoiseTexture(BaseNode):
         gain: InputFloat = 1.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Hybrid Multifractal'. Create peaks and valleys with different roughness values"""
         return cls(
@@ -919,7 +920,7 @@ class NoiseTexture(BaseNode):
         lacunarity: InputFloat = 2.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
         normalize: bool = True,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'fBM'. The standard fractal Perlin noise"""
@@ -946,7 +947,7 @@ class NoiseTexture(BaseNode):
         offset: InputFloat = 0.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Hetero Terrain'. Similar to Hybrid Multifractal creates a heterogeneous terrain, but with the likeness of river channels"""
         return cls(
@@ -1435,11 +1436,12 @@ class WhiteNoiseTexture(BaseNode):
         vector: InputVector = None,
         w: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ):
         super().__init__()
         key_args = {"Vector": vector, "W": w}
-        self.noise_dimensions = noise_dimensions
+        if noise_dimensions is not None:
+            self.noise_dimensions = noise_dimensions
         self._establish_links(**key_args)
 
     @property

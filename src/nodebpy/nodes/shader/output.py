@@ -115,14 +115,15 @@ class LightOutput(BaseNode):
         self,
         surface: InputShader = None,
         *,
-        is_active_output: bool = True,
+        is_active_output: bool | None = None,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()
         key_args = {"Surface": surface}
-        self.is_active_output = is_active_output
         self.target = target
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:
@@ -198,7 +199,7 @@ class LineStyleOutput(BaseNode):
         alpha: InputFloat = 1.0,
         alpha_fac: InputFloat = 1.0,
         *,
-        is_active_output: bool = True,
+        is_active_output: bool | None = None,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
         blend_type: Literal[
             "MIX",
@@ -231,12 +232,13 @@ class LineStyleOutput(BaseNode):
             "Alpha": alpha,
             "Alpha Fac": alpha_fac,
         }
-        self.is_active_output = is_active_output
         self.target = target
         self.blend_type = blend_type
         self.use_alpha = use_alpha
         self.use_clamp = use_clamp
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:
@@ -381,7 +383,7 @@ class MaterialOutput(BaseNode):
         displacement: InputVector = None,
         thickness: InputFloat = None,
         *,
-        is_active_output: bool = True,
+        is_active_output: bool | None = None,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()
@@ -391,9 +393,10 @@ class MaterialOutput(BaseNode):
             "Displacement": displacement,
             "Thickness": thickness,
         }
-        self.is_active_output = is_active_output
         self.target = target
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:
@@ -455,14 +458,15 @@ class WorldOutput(BaseNode):
         surface: InputShader = None,
         volume: InputShader = None,
         *,
-        is_active_output: bool = True,
+        is_active_output: bool | None = None,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()
         key_args = {"Surface": surface, "Volume": volume}
-        self.is_active_output = is_active_output
         self.target = target
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:

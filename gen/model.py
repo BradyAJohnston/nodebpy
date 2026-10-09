@@ -222,6 +222,8 @@ class PropertyInfo:
     # Every identifier the RNA enum declares (the stubs type the property with
     # this full set); ``enum_items`` holds only the values usable on this node.
     enum_all: list[str] = field(default_factory=list)
+    # Left to Blender unless passed; see ``OPTIONAL_PROPERTIES`` in introspect.
+    optional: bool = False
 
     def enum_values_to_literal(self) -> str:
         if not self.enum_items:
@@ -256,6 +258,8 @@ class PropertyInfo:
         return type
 
     def format_property_argument(self) -> str:
+        if self.optional:
+            return f"{self.format_name()}: {self.type_hint()} | None = None"
         match self.prop_type:
             case "ENUM":
                 default = f'"{self.default}"'

@@ -225,6 +225,7 @@ def collect_property_info(node, node_type):
                     enum_items=usable_values,
                     default=default,
                     enum_all=[item.identifier for item in prop.enum_items],
+                    optional=prop_identifier in OPTIONAL_PROPERTIES,
                 )
             )
         elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
@@ -235,9 +236,30 @@ def collect_property_info(node, node_type):
                     prop_type=prop.type,
                     subtype=prop.subtype,
                     default=_initial_value(node, prop),
+                    optional=prop.identifier in OPTIONAL_PROPERTIES,
                 )
             )
     return properties
+
+
+# Properties the constructor leaves alone unless they are passed (default
+# ``None``), and then assigns after the sockets.
+# - Which output is active is decided for the whole tree: Blender keeps the
+#   first active output of each type and activates a new one only when none is,
+#   while setting the property to True takes over from the others. Assigning it
+#   in every constructor would make the newest output the active one.
+# - Color Balance's white points are not stored: RNA computes them from the
+#   temperature and tint sockets through the color management config and
+#   writes them back to those sockets. A default would be config-specific and
+#   would be overwritten by the socket defaults anyway.
+# - Noise Texture starts 2D in the compositor and 3D elsewhere, and one class
+#   serves both trees.
+OPTIONAL_PROPERTIES = {
+    "is_active_output",
+    "input_whitepoint",
+    "output_whitepoint",
+    "noise_dimensions",
+}
 
 
 def _initial_value(node, prop):

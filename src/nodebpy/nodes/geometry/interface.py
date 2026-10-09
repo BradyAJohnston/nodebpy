@@ -442,11 +442,13 @@ class GroupOutput(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, is_active_output: bool = True):
+    def __init__(self, is_active_output: bool | None = None):
         super().__init__()
         key_args = {}
-        self.is_active_output = is_active_output
+
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:

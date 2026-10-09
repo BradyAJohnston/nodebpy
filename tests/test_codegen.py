@@ -3740,3 +3740,38 @@ def test_probe_trees_keeps_one_emptied_tree_per_type_then_removes_it():
         assert second == (first, 0)
         assert "__nodebpy_codegen_probe__" in bpy.data.node_groups
     assert set(bpy.data.node_groups.keys()) == before
+
+
+def _active_outputs(tree):
+    return [n.name for n in tree.nodes if getattr(n, "is_active_output", False)]
+
+
+def test_first_output_stays_active():
+    """Like the editor, a second output of the same type does not take over."""
+    with TreeBuilder.shader("Two Outputs") as tree:
+        first = s.MaterialOutput(surface=s.PrincipledBSDF())
+        s.MaterialOutput(surface=s.Emission())
+    assert _active_outputs(tree.tree) == [first.node.name]
+
+
+def test_single_output_exports_without_active_flag():
+    with TreeBuilder.shader("One Output") as tree:
+        s.MaterialOutput(surface=s.PrincipledBSDF())
+    assert "is_active_output" not in to_python(tree)
+
+
+def test_active_output_round_trips():
+    """A later output made active is rebuilt as the active one."""
+    with TreeBuilder.shader("Second Active") as tree:
+        s.MaterialOutput(surface=s.PrincipledBSDF())
+        second = s.MaterialOutput(surface=s.Emission(), is_active_output=True)
+    assert _active_outputs(tree.tree) == [second.node.name]
+    code = to_python(tree, format=False)
+    assert code.count("is_active_output=True") == 1
+    ns: dict = {}
+    exec(code, ns)
+    active = _active_outputs(ns["tree"].tree)
+    assert len(active) == 1
+    assert ns["tree"].tree.nodes[active[0]].inputs[0].links[0].from_node.bl_idname == (
+        "ShaderNodeEmission"
+    )
