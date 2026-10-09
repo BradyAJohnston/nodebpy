@@ -616,10 +616,10 @@ class Defocus(BaseNode):
             "OCTAGON", "HEPTAGON", "HEXAGON", "PENTAGON", "SQUARE", "TRIANGLE", "CIRCLE"
         ] = "CIRCLE",
         angle: float = 0.0,
-        f_stop: float = 0.0,
-        blur_max: float = 0.0,
-        use_zbuffer: bool = True,
-        z_scale: float = 0.0,
+        f_stop: float = 128.0,
+        blur_max: float = 16.0,
+        use_zbuffer: bool = False,
+        z_scale: float = 1.0,
     ):
         super().__init__()
         key_args = {"Image": image, "Z": z}

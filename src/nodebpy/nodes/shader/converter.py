@@ -409,7 +409,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ):
         super().__init__()
@@ -461,7 +461,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Float'."""
@@ -505,7 +505,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Vector'."""
@@ -549,7 +549,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Color'."""

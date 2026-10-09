@@ -146,12 +146,28 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     # renamed to avoid colliding with a same-named socket (AxesToRotation's
     # ``primary_axis`` enum becomes ``primary`` because the Vector socket owns
     # ``primary_axis``).
+    def _optional_call(prop) -> str:
+        name = prop.format_name()
+        return f"        if {name} is not None:\n            self.{name} = {name}"
+
     property_calls = []
     for prop in node_info.properties:
         param_name = prop.format_name()
-        property_calls.append(f"""        self.{param_name} = {param_name}""")
+        if prop.optional and prop.prop_type == "ENUM":
+            # an enum can decide which sockets exist, so it goes before them
+            property_calls.append(_optional_call(prop))
+        elif not prop.optional:
+            property_calls.append(f"""        self.{param_name} = {param_name}""")
 
     property_setting = "\n".join(property_calls)
+
+    # Other optional properties go after the sockets, so a value derived from
+    # sockets (Color Balance's white points) is not overwritten by their defaults.
+    optional_setting = "".join(
+        "\n" + _optional_call(prop)
+        for prop in node_info.properties
+        if prop.optional and prop.prop_type != "ENUM"
+    )
 
     if _extra_sockets:
         # When there are enum-state-dependent sockets, set properties first so the
@@ -314,7 +330,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         init_return = " -> None" if init_signature == "(self)" else ""
         init_block = f"""    def __init__{init_signature}{init_return}:
         super().__init__(){init_body}
-        self._establish_links(**key_args)
+        self._establish_links(**key_args){optional_setting}
 """
 
     extra_body = f"\n{custom.extra_body}\n" if custom and custom.extra_body else ""

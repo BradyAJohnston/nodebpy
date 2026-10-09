@@ -5212,7 +5212,7 @@ class MapRange(BaseNode):
         to_max_float3: InputVector = (1.0, 1.0, 1.0),
         steps_float3: InputVector = (4.0, 4.0, 4.0),
         *,
-        clamp: bool = False,
+        clamp: bool = True,
         interpolation_type: Literal[
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
         ] = "LINEAR",
@@ -5247,7 +5247,7 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         *,
-        clamp: bool = False,
+        clamp: bool = True,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
     ) -> "MapRange":
         """Create Map Range with operation 'Linear'. Linear interpolation between From Min and From Max values"""
@@ -5272,7 +5272,7 @@ class MapRange(BaseNode):
         to_max: InputFloat = 1.0,
         steps: InputFloat = 4.0,
         *,
-        clamp: bool = False,
+        clamp: bool = True,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
     ) -> "MapRange":
         """Create Map Range with operation 'Stepped Linear'. Stepped linear interpolation between From Min and From Max values"""
@@ -5297,7 +5297,7 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         *,
-        clamp: bool = False,
+        clamp: bool = True,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
     ) -> "MapRange":
         """Create Map Range with operation 'Smooth Step'. Smooth Hermite edge interpolation between From Min and From Max values"""
@@ -5321,7 +5321,7 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         *,
-        clamp: bool = False,
+        clamp: bool = True,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
     ) -> "MapRange":
         """Create Map Range with operation 'Smoother Step'. Smoother Hermite edge interpolation between From Min and From Max values"""
@@ -5345,7 +5345,7 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         *,
-        clamp: bool = False,
+        clamp: bool = True,
         interpolation_type: Literal[
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
         ] = "LINEAR",
@@ -5371,7 +5371,7 @@ class MapRange(BaseNode):
         to_min: InputVector = (0.0, 0.0, 0.0),
         to_max: InputVector = (1.0, 1.0, 1.0),
         *,
-        clamp: bool = False,
+        clamp: bool = True,
         interpolation_type: Literal[
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
         ] = "LINEAR",
@@ -6335,7 +6335,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ):
         super().__init__()
@@ -6387,7 +6387,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Float'."""
@@ -6431,7 +6431,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Vector'."""
@@ -6475,7 +6475,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Color'."""
@@ -6519,7 +6519,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ] = "MIX",
-        clamp_factor: bool = False,
+        clamp_factor: bool = True,
         clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Rotation'."""

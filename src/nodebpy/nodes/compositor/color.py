@@ -386,8 +386,8 @@ class ColorBalance(BaseNode):
         output_temperature: InputFloat = 6500.0,
         output_tint: InputFloat = 10.0,
         *,
-        input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
-        output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        input_whitepoint: tuple[float, float, float] | None = None,
+        output_whitepoint: tuple[float, float, float] | None = None,
     ):
         super().__init__()
         key_args = {
@@ -411,9 +411,12 @@ class ColorBalance(BaseNode):
             "Output Temperature": output_temperature,
             "Output Tint": output_tint,
         }
-        self.input_whitepoint = input_whitepoint
-        self.output_whitepoint = output_whitepoint
+
         self._establish_links(**key_args)
+        if input_whitepoint is not None:
+            self.input_whitepoint = input_whitepoint
+        if output_whitepoint is not None:
+            self.output_whitepoint = output_whitepoint
 
     @classmethod
     def lift_gamma_gain(
@@ -427,8 +430,8 @@ class ColorBalance(BaseNode):
         base_gain: InputFloat = 1.0,
         color_gain: InputColor = (1.0, 1.0, 1.0, 1.0),
         *,
-        input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
-        output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        input_whitepoint: tuple[float, float, float] | None = None,
+        output_whitepoint: tuple[float, float, float] | None = None,
     ) -> "ColorBalance":
         """Create Color Balance node with type 'Lift/Gamma/Gain'."""
         return cls(
@@ -457,8 +460,8 @@ class ColorBalance(BaseNode):
         base_slope: InputFloat = 1.0,
         color_slope: InputColor = (1.0, 1.0, 1.0, 1.0),
         *,
-        input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
-        output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        input_whitepoint: tuple[float, float, float] | None = None,
+        output_whitepoint: tuple[float, float, float] | None = None,
     ) -> "ColorBalance":
         """Create Color Balance node with type 'Offset/Power/Slope (ASC-CDL)'."""
         return cls(
@@ -485,8 +488,8 @@ class ColorBalance(BaseNode):
         output_temperature: InputFloat = 6500.0,
         output_tint: InputFloat = 10.0,
         *,
-        input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
-        output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        input_whitepoint: tuple[float, float, float] | None = None,
+        output_whitepoint: tuple[float, float, float] | None = None,
     ) -> "ColorBalance":
         """Create Color Balance node with type 'White Point'."""
         return cls(

@@ -15,7 +15,7 @@ import pytest
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import BaseNode
+from nodebpy.builder import BaseNode, TreeBuilder
 from nodebpy.export.codegen import _normalize, to_python
 
 
@@ -85,3 +85,46 @@ def test_fresh_nodes_export_without_default_kwargs():
     assert "_arc_1 = g.Arc(sweep_angle=3.0)" in lines
     assert "_mesh_to_points = g.MeshToPoints()" in lines
     assert "_set_position = g.SetPosition()" in lines
+
+
+@pytest.mark.parametrize(
+    ("module", "tree_type"),
+    [
+        (g, "GeometryNodeTree"),
+        (s, "ShaderNodeTree"),
+        (c, "CompositorNodeTree"),
+    ],
+    ids=["geometry", "shader", "compositor"],
+)
+def test_generated_constructor_keeps_fresh_properties(module, tree_type):
+    """A node built with no arguments has the properties of one added in the UI.
+
+    The constructor assigns every property it takes, so a default read from RNA
+    instead of a fresh node silently overrides what the node's init function
+    sets (Ambient Occlusion's 16 samples, Mix's Clamp Factor, Noise Texture's
+    Normalize).
+    """
+    base_props = {p.identifier for p in bpy.types.Node.bl_rna.properties}
+    # which output is active and which menu item is selected in the UI list are
+    # state of the tree, not settings of the node
+    tree_state = {"is_active_output", "active_index"}
+    mismatches = []
+    with TreeBuilder(bpy.data.node_groups.new("props", tree_type)) as tree:
+        for cls in _node_classes(module):
+            try:
+                fresh = tree.tree.nodes.new(cls._bl_idname)
+            except RuntimeError:
+                continue  # not available in this tree type
+            built = cls().node
+            for prop in fresh.bl_rna.properties:
+                if prop.identifier in base_props | tree_state or prop.type not in (
+                    "BOOLEAN",
+                    "INT",
+                    "FLOAT",
+                ):
+                    continue
+                expected = getattr(fresh, prop.identifier)
+                actual = getattr(built, prop.identifier)
+                if _as_f32(expected) != _as_f32(actual):
+                    mismatches.append((cls.__name__, prop.identifier, expected, actual))
+    assert not mismatches

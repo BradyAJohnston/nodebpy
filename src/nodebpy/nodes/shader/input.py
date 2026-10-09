@@ -78,7 +78,7 @@ class AmbientOcclusion(BaseNode):
         distance: InputFloat = 1.0,
         normal: InputVector = None,
         *,
-        samples: int = 0,
+        samples: int = 16,
         inside: bool = False,
         only_local: bool = False,
     ):
@@ -164,7 +164,7 @@ class Bevel(BaseNode):
         radius: InputFloat = 0.05,
         normal: InputVector = None,
         *,
-        samples: int = 0,
+        samples: int = 4,
     ):
         super().__init__()
         key_args = {"Radius": radius, "Normal": normal}

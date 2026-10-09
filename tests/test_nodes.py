@@ -1836,9 +1836,9 @@ def test_geometry_nodes():
         assert res.i.mode.default_value == "Count"
         res.i.mode.default_value = "Length"
         assert res.i.mode.default_value == "Length"
-        assert not res.keep_last_segment
-        res.keep_last_segment = True
         assert res.keep_last_segment
+        res.keep_last_segment = False
+        assert not res.keep_last_segment
 
         ray = g.Raycast.boolean()
         assert ray.data_type == "BOOLEAN"
@@ -1923,10 +1923,10 @@ def test_compositor_node_image():
         im = bpy.data.images.new("test", width=100, height=100)
         node = c.Image(image=im)
         assert node.node.bl_idname == "CompositorNodeImage"
-        assert node.frame_duration == 0
+        assert node.frame_duration == 1
         node.frame_duration = 10
         assert node.frame_duration == 10
-        assert node.frame_start == 0
+        assert node.frame_start == 1
         node.frame_start = 10
         assert node.frame_start == 10
         assert node.frame_offset == 0
@@ -1935,9 +1935,9 @@ def test_compositor_node_image():
         assert not node.use_cyclic
         node.use_cyclic = True
         assert node.use_cyclic
-        assert not node.use_auto_refresh
-        node.use_auto_refresh = True
         assert node.use_auto_refresh
+        node.use_auto_refresh = False
+        assert not node.use_auto_refresh
         assert not node.has_layers
         assert node.image == im
         node.image = None
@@ -2490,7 +2490,7 @@ def test_node_enum_property_getters():
         mix = g.Mix.float()
         assert mix.factor_mode == "UNIFORM"
         assert mix.blend_type == "MIX"
-        assert mix.clamp_factor is False
+        assert mix.clamp_factor is True
         assert mix.clamp_result is False
 
 

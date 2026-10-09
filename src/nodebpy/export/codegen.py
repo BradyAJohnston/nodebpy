@@ -1555,9 +1555,63 @@ def _non_default_props(node, cls: type) -> dict[str, Any]:
             current = getattr(node, rna_name)
         except AttributeError:
             continue
+        if rna_name == "is_active_output":
+            if current and _has_sibling_output(node):
+                result[name] = True
+            continue
+        if rna_name in _DERIVED_PROPS:
+            continue
+        if param.default is None:
+            # left to Blender unless passed, so compare with what Blender sets
+            # on a new node in this kind of tree (Noise Texture is 2D in the
+            # compositor and 3D elsewhere)
+            fresh = _fresh_property(node, rna_name)
+            if fresh is not _UNKNOWN and current == fresh:
+                continue
+            result[name] = current
+            continue
         if current != param.default:
             result[name] = current
     return result
+
+
+_UNKNOWN = object()
+_FRESH_PROPERTIES: dict[tuple[str, str, str], object] = {}
+
+
+def _fresh_property(node, rna_name: str) -> object:
+    """``rna_name`` on a freshly added node of this type in this kind of tree."""
+    tree_idname = getattr(getattr(node, "id_data", None), "bl_idname", "")
+    key = (tree_idname, node.bl_idname, rna_name)
+    if key not in _FRESH_PROPERTIES:
+
+        def probe(probe_tree) -> object:
+            return getattr(probe_tree.nodes.new(node.bl_idname), rna_name)
+
+        _FRESH_PROPERTIES[key] = _with_probe_tree(tree_idname, probe, _UNKNOWN)
+    return _FRESH_PROPERTIES[key]
+
+
+# Properties RNA computes from the node's sockets rather than storing: Color
+# Balance's white points are its temperature and tint inputs, which are
+# exported as sockets already.
+_DERIVED_PROPS = frozenset({"input_whitepoint", "output_whitepoint"})
+
+
+def _has_sibling_output(node) -> bool:
+    """Whether the tree holds another output node of the same type.
+
+    Constructors leave ``is_active_output`` to Blender, which makes the first
+    output of each type active, so it only needs spelling out when there is a
+    choice. Setting it to True deactivates the others, so the active output is
+    rebuilt whatever order the nodes are created in.
+    """
+    tree = getattr(node, "id_data", None)
+    if tree is None:
+        return False
+    return any(
+        other.bl_idname == node.bl_idname and other != node for other in tree.nodes
+    )
 
 
 # ---------------------------------------------------------------------------

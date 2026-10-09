@@ -11,7 +11,7 @@ from mathutils import Euler, Vector
 
 from .config import TREE_TYPES
 from .model import EnumInfo, NodeInfo, PropertyInfo, SocketInfo
-from .util import normalize_name
+from .util import fmt_float, normalize_name
 
 
 def _collect_socket_menu_items(socket: bpy.types.NodeSocket) -> list[str]:
@@ -225,28 +225,61 @@ def collect_property_info(node, node_type):
                     enum_items=usable_values,
                     default=default,
                     enum_all=[item.identifier for item in prop.enum_items],
+                    optional=prop_identifier in OPTIONAL_PROPERTIES,
                 )
             )
         elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
-            default = prop.default if prop.type != "STRING" else ""
-            if prop.subtype == "COLOR":
-                default = (0.735, 0.735, 0.735, 1.0)
-                if len(prop.default_array) == 3:
-                    default = (0.735, 0.735, 0.735)
-            if prop.subtype in ["EULER", "XYZ"]:
-                default = (0.0, 0.0, 0.0)
-            if prop.subtype in ["DIRECTION"]:
-                default = (0.0, 0.0, 1.0)
             properties.append(
                 PropertyInfo(
                     identifier=prop.identifier,
                     name=prop.name,
                     prop_type=prop.type,
                     subtype=prop.subtype,
-                    default=default,
+                    default=_initial_value(node, prop),
+                    optional=prop.identifier in OPTIONAL_PROPERTIES,
                 )
             )
     return properties
+
+
+# Properties the constructor leaves alone unless they are passed (default
+# ``None``), and then assigns after the sockets.
+# - Which output is active is decided for the whole tree: Blender keeps the
+#   first active output of each type and activates a new one only when none is,
+#   while setting the property to True takes over from the others. Assigning it
+#   in every constructor would make the newest output the active one.
+# - Color Balance's white points are not stored: RNA computes them from the
+#   temperature and tint sockets through the color management config and
+#   writes them back to those sockets. A default would be config-specific and
+#   would be overwritten by the socket defaults anyway.
+# - Noise Texture starts 2D in the compositor and 3D elsewhere, and one class
+#   serves both trees.
+OPTIONAL_PROPERTIES = {
+    "is_active_output",
+    "input_whitepoint",
+    "output_whitepoint",
+    "noise_dimensions",
+}
+
+
+def _initial_value(node, prop):
+    """The value a property has on a freshly added node.
+
+    The generated constructor assigns every property, so its default must be
+    what Blender sets when the node is added, not ``prop.default``: many nodes
+    set their own values in their init function (Ambient Occlusion starts with
+    16 samples against an RNA default of 0, Mix with Clamp Factor on, Noise
+    Texture with Normalize on).
+    """
+    if prop.type == "STRING":
+        # a fresh node can hold machine-specific strings (the File Output
+        # directory is the user's temp dir), which must not end up in the code
+        return ""
+    value = getattr(node, prop.identifier)
+    if prop.type == "FLOAT" and getattr(prop, "is_array", False):
+        # float32 values read back with float64 noise; keep the literal short
+        return tuple(float(fmt_float(v)) for v in value)
+    return value
 
 
 # Introspecting a node spins up and tears down a temporary node group, which is
