@@ -113,3 +113,38 @@ def test_legacy_entry_without_a_library_points_at_gen(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["prog"])
     with pytest.raises(SystemExit, match="python -m gen"):
         legacy_main()
+
+
+def test_lookup_search_show_and_socket(capsys):
+    main(["lookup", "search", "named attribute", "--tree", "geometry"])
+    out = capsys.readouterr().out
+    assert "g.StoreNamedAttribute" in out and "GeometryNodeStoreNamedAttribute" in out
+
+    main(["lookup", "show", "StoreNamedAttribute"])
+    out = capsys.readouterr().out
+    assert "constructor:" in out
+    assert "geometry: " in out  # constructor parameters are listed with their types
+    assert "StoreNamedAttribute.{" in out  # the domain/data-type factory variants
+    assert "outputs: o.geometry" in out
+
+    main(["lookup", "show", "Math"])
+    assert "Math.add(" in capsys.readouterr().out
+    main(["lookup", "show", "Bake"])  # a variadic constructor
+    assert "**kwargs" in capsys.readouterr().out
+
+    main(["lookup", "socket", "Vector"])
+    out = capsys.readouterr().out
+    assert out.startswith("VectorSocket") and ".normalize()" in out
+    main(["lookup", "socket"])
+    assert "socket types:" in capsys.readouterr().out
+
+
+def test_lookup_misses_say_so(capsys):
+    main(["lookup", "search", "zzzz-no-such-node"])
+    assert "no node class matches" in capsys.readouterr().out
+    main(["lookup", "show", "NoSuchNode"])
+    assert "no class 'NoSuchNode'" in capsys.readouterr().out
+    main(["lookup", "socket", "Nope"])
+    assert "no socket type 'Nope'" in capsys.readouterr().out
+    with pytest.raises(SystemExit):
+        main(["lookup", "show"])

@@ -43,6 +43,22 @@ with g.tree("AnotherTree", collapse=True, is_modifier=True) as tree:
 - Python's arithmetic, comparison and boolean operators create the matching `Math` / `VectorMath` / `Compare` / `BooleanMath` nodes: `g.Value(1.0) * 2 + (0, 0, 1)`.
 - Existing node trees — including ones wired up by hand in the GUI — can be exported back to `nodebpy` source with `to_python()`.
 
+## Agent skill
+
+nodebpy ships an [Agent Skill](https://agentskills.io) that teaches AI coding agents to
+write, check and port node trees with it. Install it into any skills-aware agent
+(Claude Code, Codex, Cursor, Copilot, OpenCode and others) from the repository:
+
+```sh
+npx skills add BradyAJohnston/nodebpy
+```
+
+Claude Code can also take it as a plugin (`/plugin marketplace add BradyAJohnston/nodebpy`,
+then `/plugin install nodebpy@nodebpy`), and the installed package carries the same
+skill, matched to its version: `nodebpy skill install` copies it into `~/.claude/skills`
+and `nodebpy skill path` prints where it is. `nodebpy lookup search|show|socket` is the
+lookup the skill uses to find classes, sockets and options.
+
 ## Documentation
 
 Guides and the full node reference live at [bradyajohnston.github.io/nodebpy](https://bradyajohnston.github.io/nodebpy):

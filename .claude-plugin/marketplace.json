@@ -1,0 +1,15 @@
+{
+  "name": "nodebpy",
+  "description": "The nodebpy agent skill: Blender node trees as Python.",
+  "owner": {
+    "name": "Brady Johnston",
+    "url": "https://github.com/BradyAJohnston"
+  },
+  "plugins": [
+    {
+      "name": "nodebpy",
+      "source": "./",
+      "description": "Write, edit and verify Blender node trees (Geometry Nodes, shaders, compositor) as Python with nodebpy."
+    }
+  ]
+}

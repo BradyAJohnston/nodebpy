@@ -2,6 +2,13 @@ generate:
 	uv run python -m gen
 	make format
 
+# Refresh the repository-root copy of the agent skill from the package source.
+.PHONY: skills
+skills:
+	rm -rf skills/nodebpy
+	mkdir -p skills
+	cp -r src/nodebpy/skills/nodebpy skills/nodebpy
+
 # Regenerate the socket draw-order table from Blender's node declarations
 # (network: sparse-clones the tag matching the installed bpy).
 socket-order:
