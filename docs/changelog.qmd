@@ -12,6 +12,7 @@ title: Changelog
 - **`g.RotateEuler` warns that Blender deprecates it** ("Use the Rotate Rotation node instead"), pointing at the line that builds it.
 - **Items on the Viewer, File Output and Raycast nodes.** `g.Viewer().items.<type>(value, name)` adds values to view (every socket type), `c.FileOutput().items.color(image, "Beauty")` adds the inputs to write out, and the shader `s.Raycast().items.float("height")` samples an attribute where the ray hits, the item's output being the value read (a color item also has an `"<name> Alpha"` output). They round-trip through `to_python`, which now writes the Viewer's items with their names instead of re-linking them with `>>`.
 - **`s.ClosureZone`**: the closure zone works in shader trees, so the shader module now exports it.
+- **Tuples that hold sockets feed vector, rotation and color inputs.** `g.Cube(size=(1, 1, height))`, `position + (0, 0, height)` and item values build a Combine XYZ (or the tree's Combine Color) from the tuple and link it in; this used to raise a bpy `TypeError`. A tuple of the wrong length, or a socket for a shader color's alpha (shader colors have none), raises a `SocketError` naming the parts.
 
 ### Fixes
 

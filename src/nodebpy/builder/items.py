@@ -19,6 +19,7 @@ from bpy.types import ID, Node, NodeSocket
 from mathutils import Euler
 
 from ..types import _is_default_value
+from ._combine import holds_sockets, link_combined
 from ._registry import _wrap_socket
 from ._utils import _deprecated, _SocketLike
 from .node import DynamicInputsMixin, _match_compatible_data
@@ -151,6 +152,8 @@ def _set_item_default(owner, socket: NodeSocket, value: Any) -> None:
         from .tree import _MenuDefault
 
         owner.tree._menu_defaults.append(_MenuDefault(socket, value))
+    elif holds_sockets(value):
+        link_combined(owner.tree, socket, value)
     else:
         socket.default_value = value  # ty: ignore[unresolved-attribute]
 
