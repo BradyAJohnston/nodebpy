@@ -241,6 +241,7 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "Legacy",
     ],
     manually_defined=(
+        "IndexSwitch",
         "MenuSwitch",
         "Frame",
         "tree",

@@ -4,8 +4,10 @@ from or to a socket the node's settings hide raises instead of doing nothing."""
 import pytest
 
 from nodebpy import TreeBuilder
+from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy.builder._utils import SocketError
+from nodebpy.export import to_python
 
 
 def _sources(tree, node):
@@ -88,3 +90,44 @@ def test_linking_a_hidden_output_raises():
         dot = g.VectorMath.dot_product((1, 0, 0), (0, 1, 0))
         with pytest.raises(RuntimeError, match=r"no 'Vector' output.*\['Value'\]"):
             dot.o.vector >> g.SetPosition(offset=...)
+
+
+def test_compositor_index_switch_takes_the_type_of_its_items():
+    """The compositor's Index Switch is the same node, with fewer types."""
+    with c.tree() as tree:
+        floats = c.IndexSwitch(items=[c.Value(), c.Value()])
+        vectors = c.IndexSwitch(items=[c.CombineXYZ(), c.CombineXYZ()])
+        ints = c.IndexSwitch(items=[1, 2])
+    assert (floats.data_type, vectors.data_type, ints.data_type) == (
+        "FLOAT",
+        "VECTOR",
+        "INT",
+    )
+    # left at Color, the values would have been converted to colours
+    assert {link.to_socket.type for link in tree.tree.links} == {"VALUE", "VECTOR"}
+
+
+def test_compositor_index_switch_defaults_to_color():
+    with c.tree():
+        assert c.IndexSwitch().data_type == "RGBA"
+        assert c.IndexSwitch.integer_vector(items=[(1, 2, 3)]).data_type == (
+            "INT_VECTOR"
+        )
+        assert not hasattr(c.IndexSwitch, "geometry")
+
+
+def test_a_type_the_tree_does_not_switch_raises():
+    with g.tree():
+        mesh = g.Cube().o.mesh.socket
+    with c.tree():
+        with pytest.raises(SocketError, match="can't switch GEOMETRY.*INT_VECTOR"):
+            c.IndexSwitch(items=[mesh])
+
+
+def test_compositor_index_switch_exports_with_its_alias():
+    with c.tree() as tree:
+        c.IndexSwitch.integer_vector(items=[(1, 2, 3)])
+        c.IndexSwitch(items=[c.Value()])
+    code = to_python(tree)
+    assert "c.IndexSwitch.integer_vector(" in code
+    assert "c.IndexSwitch.float(" in code
