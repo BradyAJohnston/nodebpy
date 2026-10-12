@@ -148,7 +148,7 @@ def test_removed_step_is_gone_and_an_unknown_name_is_an_error():
 @pytest.mark.parametrize(
     ("removed", "broken", "fact"),
     [
-        ("rank", "balance_heights", "ranked"),
+        ("rank", "move_feeders_right", "ranked"),
         ("insert_dummy_nodes", "order", "proper"),
         ("add_columns", "order", "columns"),
         ("add_frame_borders", "place", "borders"),

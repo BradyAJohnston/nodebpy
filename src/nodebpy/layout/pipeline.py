@@ -81,6 +81,12 @@ class Layout:
     """Centre of the nodes before the layout; the result is centred there."""
     node_stacks: list[NodeStack] = field(default_factory=list)
     """Stacks of collapsed nodes contracted into one node for the layout."""
+    moved_feeders: set[Node] = field(default_factory=set)
+    """Feeders moved to the column just before the node they feed
+    (:mod:`.feeders`)."""
+    tucked_feeders: dict[Node, tuple[Node, bool]] = field(default_factory=dict)
+    """Of those, the ones put next to another node of their column feeding
+    the same node: that node, and whether the feeder is below it."""
 
     @property
     def G(self) -> LayoutGraph[Node]:
