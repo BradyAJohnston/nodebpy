@@ -15,7 +15,7 @@ from collections.abc import Iterable
 
 from .common import REROUTE_DIM, REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
-from .digraph import LayoutGraph, Link, topological_sort
+from .digraph import LayoutGraph, topological_sort
 from .model import Cluster, Node, Socket, clusters_around
 
 _MAX_MOVES = 500
@@ -106,15 +106,20 @@ def _fit_to_height(
     None when no move helps or ``_MAX_MOVES`` is reached.
 
     A move is scored by the change it makes to the columns it touches,
-    rather than by measuring every column again."""
+    rather than by measuring every column again. Sockets are counted by
+    number, as hashing a :class:`Socket` is most of the cost of a move."""
     ranks = dict(ranks)
     sequence = state.frame_sequence
     margin = state.margin.y
-    links = list(G.all_links())
-    links_of: defaultdict[Node, list[Link[Node]]] = defaultdict(list)
-    for k in links:
-        links_of[k.fromnode].append(k)
-        links_of[k.tonode].append(k)
+    socket_ids: dict[Socket | None, int] = {}
+    links = [
+        (k.fromnode, k.tonode, socket_ids.setdefault(k.fromsock, len(socket_ids)))
+        for k in G.all_links()
+    ]
+    links_of: defaultdict[Node, list[int]] = defaultdict(list)
+    for i, (u, v, _) in enumerate(links):
+        links_of[u].append(i)
+        links_of[v].append(i)
 
     for _ in range(_MAX_MOVES):
         node_height: defaultdict[int, float] = defaultdict(float)
@@ -124,10 +129,10 @@ def _fit_to_height(
             counts[r] += 1
         # Per column, the sockets of the long links passing through, with
         # how many links each socket sends through.
-        passing: defaultdict[int, Counter[Socket]] = defaultdict(Counter)
-        for k in links:
-            for r in range(ranks[k.fromnode] + 1, ranks[k.tonode]):
-                passing[r][k.fromsock] += 1
+        passing: defaultdict[int, Counter[int]] = defaultdict(Counter)
+        for u, v, socket in links:
+            for r in range(ranks[u] + 1, ranks[v]):
+                passing[r][socket] += 1
 
         heights = {
             r: _column_height(node_height[r], counts[r], len(passing[r]), margin)
@@ -153,21 +158,22 @@ def _fit_to_height(
             # What the move changes, per column.
             d_height: defaultdict[int, float] = defaultdict(float)
             d_count: defaultdict[int, int] = defaultdict(int)
-            d_passing: defaultdict[int, Counter[Socket]] = defaultdict(Counter)
+            d_passing: defaultdict[int, Counter[int]] = defaultdict(Counter)
             for w in moved:
                 r = ranks[w]
                 d_height[r] -= w.height
                 d_height[r - 1] += w.height
                 d_count[r] -= 1
                 d_count[r - 1] += 1
-            for k in {k for w in moved for k in links_of[w]}:
-                a, b = ranks[k.fromnode], ranks[k.tonode]
+            for i in {i for w in moved for i in links_of[w]}:
+                fromnode, tonode, socket = links[i]
+                a, b = ranks[fromnode], ranks[tonode]
                 for r in range(a + 1, b):
-                    d_passing[r][k.fromsock] -= 1
-                a -= k.fromnode in moved
-                b -= k.tonode in moved
+                    d_passing[r][socket] -= 1
+                a -= fromnode in moved
+                b -= tonode in moved
                 for r in range(a + 1, b):
-                    d_passing[r][k.fromsock] += 1
+                    d_passing[r][socket] += 1
 
             shoot = current
             for r in d_height.keys() | d_passing.keys():
