@@ -214,12 +214,13 @@ _DOMAINS: dict[str, str] = {
 def _domain_factory_typed(
     node_name: str,
     data_types: list[str],
-    index: str | None = "group_index",
+    index: str | None = "group_id",
 ) -> str:
     """Build a nested ``<node>.<domain>.<dtype>()`` factory as class-body source.
 
     ``data_types`` are Blender ``data_type`` enum values; ``index`` names the
-    optional per-element index parameter (``None`` if the node has none). Each
+    optional per-element index parameter (``None`` if the node has none); a
+    ``group_id`` one still accepts its old name ``group_index``. Each
     method returns the parameterised node type (e.g. ``AccumulateField[FloatSocket]``)
     for precise typing — which is why they self-reference the class and are built
     here rather than in a shared mixin.
@@ -236,8 +237,12 @@ def _domain_factory_typed(
     for dtype in data_types:
         method, socket = _DATA_TYPE[dtype]
         input_type = "Input" + socket.replace("Socket", "")
+        lines.append("")
+        if index == "group_id":
+            lines.append(
+                f'        @_renamed_params({{"group_index": "group_id"}}, "{node_name}.<domain>.{method}")'
+            )
         lines += [
-            "",
             f'        def {method}(self, value: {input_type} = None{idx_param}) -> "{node_name}[{socket}]":',
             f'            """Create \'{node_name}\' on this domain with \'{dtype}\' data type."""',
             f'            return {node_name}(value{idx_arg}, domain=self._domain, data_type="{dtype}")',
@@ -249,10 +254,16 @@ def _domain_factory_typed(
     return "\n".join(lines)
 
 
+_GROUP_ID_FACTORY_IMPORTS = (
+    "from ...types import _AttributeDomains",
+    "from ...builder._utils import _renamed_params",
+)
+
+
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeAccumulateField",
-        imports=("from ...types import _AttributeDomains",),
+        imports=_GROUP_ID_FACTORY_IMPORTS,
         suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed(
             "AccumulateField", ["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
@@ -285,7 +296,7 @@ register_customization(
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldAverage",
-        imports=("from ...types import _AttributeDomains",),
+        imports=_GROUP_ID_FACTORY_IMPORTS,
         suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed("FieldAverage", ["FLOAT", "FLOAT_VECTOR"]),
     )
@@ -295,7 +306,7 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldMinAndMax",
         class_name="FieldMinAndMax",  # Blender display name is "Field Min & Max"
-        imports=("from ...types import _AttributeDomains",),
+        imports=_GROUP_ID_FACTORY_IMPORTS,
         suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed(
             "FieldMinAndMax", ["FLOAT", "INT", "FLOAT_VECTOR"]
@@ -327,7 +338,7 @@ register_customization(
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldVariance",
-        imports=("from ...types import _AttributeDomains",),
+        imports=_GROUP_ID_FACTORY_IMPORTS,
         suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed("FieldVariance", ["FLOAT", "FLOAT_VECTOR"]),
     )

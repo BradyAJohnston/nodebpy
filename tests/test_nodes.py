@@ -111,6 +111,33 @@ def test_vector_dimensions_keep_hidden_components():
     assert tuple(default.node.vector) == (0.0, 0.0)
 
 
+def test_input_params_named_after_sockets():
+    with g.tree():
+        ramp = g.ColorRamp(factor=0.25)
+        proximity = g.GeometryProximity(geometry=g.Points(), sample_position=(1, 2, 3))
+    assert ramp.node.inputs["Fac"].default_value == 0.25
+    assert tuple(proximity.node.inputs["Source Position"].default_value) == (1, 2, 3)
+    assert proximity.node.inputs["Target"].is_linked
+
+
+def test_renamed_input_params_still_accept_old_names():
+    with g.tree():
+        with pytest.warns(
+            DeprecationWarning, match=r"ColorRamp\(fac=\.\.\.\).*factor="
+        ):
+            ramp = g.ColorRamp(fac=0.25)  # ty: ignore[unknown-argument]
+        with pytest.warns(DeprecationWarning, match="group_id="):
+            acc = g.AccumulateField.point.float(1.0, group_index=g.Index())  # ty: ignore[unknown-argument]
+        with pytest.raises(TypeError, match="both fac= and factor="):
+            g.ColorRamp(fac=0.25, factor=0.5)  # ty: ignore[unknown-argument]
+    with c.tree():
+        with pytest.warns(DeprecationWarning, match=r"Filter\.kirsch\(fac=\.\.\.\)"):
+            flt = c.Filter.kirsch(fac=0.5)  # ty: ignore[unknown-argument]
+    assert ramp.node.inputs["Fac"].default_value == 0.25
+    assert acc.node.inputs["Group Index"].is_linked
+    assert flt.node.inputs["Fac"].default_value == 0.5
+
+
 def test_socket_selection():
     with g.tree("AnotherTree"):
         pos = g.SetPosition()

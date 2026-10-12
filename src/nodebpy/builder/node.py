@@ -27,7 +27,13 @@ from bpy.types import (
 
 from ..types import SOCKET_COMPATIBILITY, Default, InputAny
 from ._combine import holds_sockets, link_combined
-from ._utils import SocketError, _NodeLike, _SocketLike, enum_value_error
+from ._utils import (
+    SocketError,
+    _accept_renamed,
+    _NodeLike,
+    _SocketLike,
+    enum_value_error,
+)
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
@@ -97,6 +103,20 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     _default_input_id: str | None = None
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
+    # Parameters renamed after their socket's display name, per method (old
+    # name -> new name); the old name keeps working with a DeprecationWarning.
+    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {}
+
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        super().__init_subclass__(**kwargs)
+        for method, renames in cls.__dict__.get("_renamed_params", {}).items():
+            label = cls.__name__ if method == "__init__" else f"{cls.__name__}.{method}"
+            attr = cls.__dict__[method]
+            if isinstance(attr, classmethod):
+                func = _accept_renamed(attr.__func__, renames, label)
+                setattr(cls, method, classmethod(func))
+            else:
+                setattr(cls, method, _accept_renamed(attr, renames, label))
 
     def __init__(self, node: Node | None = None):
         tree = (

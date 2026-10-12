@@ -5,8 +5,9 @@ import keyword
 import re
 import unicodedata
 import warnings
-from functools import cache
-from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
+from collections.abc import Callable
+from functools import cache, wraps
+from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
 
 import bpy
 from bpy.types import NodeSocket
@@ -248,3 +249,29 @@ def _deprecated(old: str, new: str) -> None:
         DeprecationWarning,
         stacklevel=3,
     )
+
+
+def _accept_renamed[**P, R](
+    func: Callable[P, R], renames: dict[str, str], label: str
+) -> Callable[P, R]:
+    """Wrap ``func`` so each old keyword in ``renames`` (old -> new) still
+    works, with a deprecation warning, as its new name."""
+
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> R:
+        for old, new in renames.items():
+            if old in kwargs:
+                if new in kwargs:
+                    raise TypeError(f"{label}() got both {old}= and {new}=")
+                _deprecated(f"{label}({old}=...)", f"{new}=")
+                kwargs[new] = kwargs.pop(old)
+        return func(*args, **kwargs)
+
+    return cast("Callable[P, R]", wrapper)
+
+
+def _renamed_params[**P, R](
+    renames: dict[str, str], label: str
+) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    """Decorator form of :func:`_accept_renamed`."""
+    return lambda func: _accept_renamed(func, renames, label)

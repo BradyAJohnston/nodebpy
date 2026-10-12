@@ -166,7 +166,7 @@ class ColorRamp(BaseNode):
 
     Parameters
     ----------
-    fac : InputFloat
+    factor : InputFloat
         Factor: Which is used to sample the ColorRamp for the output color.
     items : Iterable[tuple[float, tuple[float, float, float float]] | tuple[float, float, float, float, float]]
         Iterable of items which contain (position, color) which position being a
@@ -178,22 +178,25 @@ class ColorRamp(BaseNode):
 
     Inputs
     ------
-    i.fac : FloatSocket
+    i.factor : FloatSocket
         Factor: The input value between `0..1` which maps to the final color value.
 
     Outputs
     -------
     o.color : ColorSocket
-        Color: The mapped color value based in the input `fac`.
+        Color: The mapped color value based in the input `factor`.
     o.alpha : FloatSocket
-        Alpha: The mapped alpha of the color based on the input `fac`.
+        Alpha: The mapped alpha of the color based on the input `factor`.
     """
 
     _bl_idname = "ShaderNodeValToRGB"
     node: bpy.types.ShaderNodeValToRGB
+    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
+        "__init__": {"fac": "factor"}
+    }
 
     class _Inputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     class _Outputs(SocketAccessor):
@@ -211,7 +214,7 @@ class ColorRamp(BaseNode):
 
     def __init__(
         self,
-        fac: InputFloat = 0.5,
+        factor: InputFloat = 0.5,
         *,
         items: Iterable[
             tuple[float, tuple[float, float, float, float]]
@@ -222,7 +225,7 @@ class ColorRamp(BaseNode):
         mode: _ColorModes = "RGB",
     ):
         super().__init__()
-        key_args = {"Fac": fac}
+        key_args = {"Fac": factor}
         stops = sorted(() if items is None else items, key=lambda item: item[0])
         if not stops:
             raise ValueError("ColorRamp requires at least one item")

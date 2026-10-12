@@ -59,9 +59,9 @@ def build_shader_tree(arrange=None) -> TreeBuilder:
     with TreeBuilder.shader("BenchShader", arrange=arrange) as tree:
         coord = s.TextureCoordinate()
         noise = s.NoiseTexture(vector=coord.o.object, scale=5.0)
-        ramp = s.ColorRamp(fac=noise.o.fac)
+        ramp = s.ColorRamp(factor=noise.o.factor)
         mix = s.MixShader(
-            fac=noise.o.fac,
+            factor=noise.o.factor,
             shader=s.PrincipledBSDF(base_color=ramp.o.color),
             shader_001=s.Emission(),
         )

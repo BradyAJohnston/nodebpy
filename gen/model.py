@@ -359,6 +359,52 @@ class NodeInfo:
     type_socket_enums: list[EnumInfo] = field(default_factory=list)
 
     @property
+    def all_input_sockets(self) -> list[SocketInfo]:
+        """Every input socket the node has in any enum state, by first appearance."""
+        sockets: dict[str, SocketInfo] = {}
+        for socket in self.inputs:
+            sockets.setdefault(socket.identifier, socket)
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                for socket in enum.sockets:
+                    sockets.setdefault(socket.identifier, socket)
+        for enum in self.type_socket_enums:
+            for socket in enum.sockets:
+                sockets.setdefault(socket.identifier, socket)
+        return list(sockets.values())
+
+    @property
+    def input_param_names(self) -> dict[str, str]:
+        """The constructor parameter (and ``i.<name>`` attribute) for each
+        input socket, by identifier.
+
+        Named after the socket's display name, as for outputs (Color Ramp's
+        ``Fac`` input is ``factor``). A name shared by several inputs in any
+        state (Mix's ``A_Float``/``A_Vector``), one that would shadow a
+        property parameter, or one that lands on another socket's parameter
+        keeps the identifier.
+        """
+        sockets = self.all_input_sockets
+        reserved = {prop.format_name() for prop in self.properties} | {"self", "cls"}
+        names = Counter(s.name for s in sockets)
+        params = {s.identifier: normalize_name(s.identifier) for s in sockets}
+        for s in sockets:
+            name = normalize_name(s.name)
+            if names[s.name] == 1 and name.isidentifier() and name not in reserved:
+                params[s.identifier] = name
+        while True:
+            counts = Counter(params.values())
+            clashes = [
+                ident
+                for ident, param in params.items()
+                if counts[param] > 1 and param != normalize_name(ident)
+            ]
+            if not clashes:
+                return params
+            for ident in clashes:
+                params[ident] = normalize_name(ident)
+
+    @property
     def output_attr_names(self) -> dict[str, str]:
         """The ``o.<name>`` accessor attribute for each output, by identifier.
 
@@ -662,14 +708,28 @@ class NodeInfo:
         config: TreeTypeConfig | None = None,
         suppress: frozenset[str] = frozenset(),
         suppress_props: frozenset[str] = frozenset(),
+        renamed: dict[str, dict[str, str]] | None = None,
     ) -> str:
         """Generate @classmethod convenience methods for enum operations.
 
         ``suppress`` names factory methods to omit and ``suppress_props`` enum
         properties whose factories are all omitted (a registered customization
-        replaces them).
+        replaces them). ``renamed`` collects, per factory, the parameters
+        renamed after their socket's display name (old name -> new name).
         """
         methods = []
+        input_params_by_id = self.input_param_names
+
+        def record(method_name: str, renames: dict[str, str], params: list[str]):
+            taken = {param.split(":")[0].strip() for param in params}
+            renames = {
+                old: new
+                for old, new in renames.items()
+                if old != new and old not in taken
+            }
+            if renamed is not None and renames:
+                renamed[method_name] = renames
+
         cls_name = self.class_name_for_config(config) if config else self.class_name
 
         for prop in self.properties:
@@ -695,9 +755,13 @@ class NodeInfo:
                 call_params = []
 
                 param_names = variant_param_names(enum.sockets)
+                renames: dict[str, str] = {}
                 for socket in enum.sockets:
-                    socket_name = get_socket_param_name(socket)
+                    socket_name = input_params_by_id[socket.identifier]
                     param_name = param_names[socket.identifier]
+                    if socket_name != normalize_name(socket.identifier):
+                        renames[param_name] = socket_name
+                        param_name = socket_name
 
                     if (
                         param_name
@@ -764,6 +828,7 @@ class NodeInfo:
 
                 if method_name in suppress:
                     continue
+                record(method_name, renames, input_params)
 
                 method = f'''
     @classmethod
@@ -791,9 +856,13 @@ class NodeInfo:
             call_params = []
 
             param_names = variant_param_names(enum.sockets)
+            renames = {}
             for socket in enum.sockets:
-                socket_name = get_socket_param_name(socket)
+                socket_name = input_params_by_id[socket.identifier]
                 param_name = param_names[socket.identifier]
+                if socket_name != normalize_name(socket.identifier):
+                    renames[param_name] = socket_name
+                    param_name = socket_name
 
                 if param_name and param_name != "" and param_name != type_param_name:
                     input_params.append(
@@ -821,6 +890,7 @@ class NodeInfo:
 
             if method_name in suppress:
                 continue
+            record(method_name, renames, input_params)
 
             method = f'''
     @classmethod

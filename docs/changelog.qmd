@@ -10,6 +10,7 @@ title: Changelog
 - **`g.Vector` and `g.IntegerVector` take values that aren't 3D**: `g.Vector((1.0, 2.0), vector_dimensions=2)` and `g.Vector((1.0, 2.0, 3.0, 4.0), vector_dimensions=4)` raised a bpy `ValueError`, since the value was written before the dimensions were changed.
 - **Output accessors are named after the socket name Blender shows**, as `to_python` writes them, rather than the socket's identifier: `NoiseTexture().o.factor` (was `o.fac`), `Points().o.points`, `SetShadeSmooth().o.mesh`, `SetSplineCyclic().o.curve`, `Selection().o.boolean`. A name shared by several outputs keeps the identifier. The old names still work at runtime but no longer type-check.
 - **The shader `Attribute` node is generated** instead of hand-written, so it picks up `o.factor` and stays in sync with Blender. `s.Attribute.geometry("Color")` still takes the attribute name positionally.
+- **Input parameters are named after the socket name Blender shows** too, in constructors, factories, `i.<name>` and `to_python`: `g.ColorRamp(factor=...)` (was `fac=`), `g.GeometryProximity(geometry=..., sample_position=...)` (was `target=`, `source_position=`), `g.AccumulateField.point.float(value, group_id=...)` (was `group_index=`), `c.BrightnessContrast(brightness=...)` (was `bright=`), and the Glare, Keying, Color Spill and other compositor inputs that carried a prefix Blender doesn't show. The old keywords still work but raise a `DeprecationWarning`; they will be removed in nodebpy 530.
 
 ## v520.36.0
 
