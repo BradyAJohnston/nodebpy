@@ -20,6 +20,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     class_name = node_info.class_name_for_config(config)
     custom = _CUSTOMIZATIONS.get(node_info.bl_idname)
     suppress = custom.suppress if custom else frozenset()
+    output_names = node_info.output_attr_names
 
     # A node is generic when its output and/or input sockets change type across
     # enum values, with all varying sockets on a side sharing one type per value
@@ -224,6 +225,8 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
                         return_type = f"{return_type}List"
                     break
             attr_name = normalize_name(socket.identifier)
+            if prefix == "o":
+                attr_name = output_names[socket.identifier]
             desc = socket.description if socket.description else socket.name
             lines.append(f"{prefix}.{attr_name} : {return_type}")
             lines.append(f"    {desc}")
@@ -278,7 +281,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     output_annotations = []
     for socket in node_info.outputs:
         if outputs_generic and socket.identifier in varying_outputs:
-            attr_name = normalize_name(socket.identifier)
+            attr_name = output_names[socket.identifier]
             doc = socket.description or socket.name
             if socket.identifier in varying_grid_outputs:
                 param = "SGrid"
@@ -291,7 +294,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
                 ann += f'\n        """{doc}"""'
             output_annotations.append(ann)
         else:
-            output_annotations.append(socket.format_accessor_annotation())
+            output_annotations.append(
+                socket.format_accessor_annotation(output_names[socket.identifier])
+            )
 
     outputs_base = generic_base if outputs_generic else "(SocketAccessor)"
     if output_annotations:

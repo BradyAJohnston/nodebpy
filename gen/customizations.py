@@ -405,3 +405,24 @@ register_customization(
         self.vector_dimensions = vector_dimensions""",
     )
 )
+
+# Attribute's factories take the attribute name positionally, as in
+# ``s.Attribute.geometry("Color")``.
+register_customization(
+    NodeCustomization(
+        bl_idname="ShaderNodeAttribute",
+        suppress_factories_for=frozenset({"attribute_type"}),
+        extra_body="\n\n".join(
+            f'''    @classmethod
+    def {method}(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation '{label}'."""
+        return cls(attribute_type="{value}", attribute_name=attribute_name)'''
+            for method, label, value in (
+                ("geometry", "Geometry", "GEOMETRY"),
+                ("object", "Object", "OBJECT"),
+                ("instancer", "Instancer", "INSTANCER"),
+                ("view_layer", "View Layer", "VIEW_LAYER"),
+            )
+        ),
+    )
+)

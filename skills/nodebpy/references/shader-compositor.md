@@ -20,7 +20,7 @@ in several modules behind different nodes; import each module where it is used.
 
 ```python
 with s.material("Rust", clear=True) as mat:        # starts empty; re-runs rebuild in place
-    noise = s.NoiseTexture(scale=8.0).o.fac
+    noise = s.NoiseTexture(scale=8.0).o.factor
     rust = s.Mix.color(noise, (0.3, 0.1, 0.05, 1.0), (0.6, 0.25, 0.1, 1.0))
     s.PrincipledBSDF(base_color=rust, roughness=noise.map_range(0, 1, 0.4, 0.9)) >> s.MaterialOutput()
 
@@ -37,7 +37,7 @@ run makes `Rust.001`.
 with s.tree("Stripes", clear=True) as tree:
     a = tree.inputs.color("Color A")
     b = tree.inputs.color("Color B")
-    wave = s.WaveTexture(scale=tree.inputs.float("Scale", 6.0)).o.fac
+    wave = s.WaveTexture(scale=tree.inputs.float("Scale", 6.0)).o.factor
     wave.mix.color(a, b) >> tree.outputs.color("Color")
 ```
 

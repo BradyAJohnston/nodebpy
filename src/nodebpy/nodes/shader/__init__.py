@@ -87,6 +87,7 @@ from .group import (
 )
 from .input import (
     AmbientOcclusion,
+    Attribute,
     Bevel,
     CameraData,
     Color,
@@ -107,7 +108,6 @@ from .input import (
     Wireframe,
 )
 from .manual import (
-    Attribute,
     ClosureZone,
     Float,
     Frame,

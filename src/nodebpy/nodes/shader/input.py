@@ -115,6 +115,99 @@ class AmbientOcclusion(BaseNode):
         self.node.only_local = value
 
 
+class Attribute(BaseNode):
+    """
+    Retrieve attributes attached to objects or geometry
+
+    Outputs
+    -------
+    o.color : ColorSocket
+        Color
+    o.vector : VectorSocket
+        Vector
+    o.factor : FloatSocket
+        Factor
+    o.alpha : FloatSocket
+        Alpha
+    """
+
+    _bl_idname = "ShaderNodeAttribute"
+    node: bpy.types.ShaderNodeAttribute
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+        vector: VectorSocket
+        """Vector"""
+        factor: FloatSocket
+        """Factor"""
+        alpha: FloatSocket
+        """Alpha"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        attribute_type: Literal[
+            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"
+        ] = "GEOMETRY",
+        attribute_name: str = "",
+    ):
+        super().__init__()
+        key_args = {}
+        self.attribute_type = attribute_type
+        self.attribute_name = attribute_name
+        self._establish_links(**key_args)
+
+    @property
+    def attribute_type(
+        self,
+    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]:
+        return self.node.attribute_type
+
+    @attribute_type.setter
+    def attribute_type(
+        self, value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]
+    ) -> None:
+        self._set_enum("attribute_type", value)
+
+    @property
+    def attribute_name(self) -> str:
+        return self.node.attribute_name
+
+    @attribute_name.setter
+    def attribute_name(self, value: str) -> None:
+        self.node.attribute_name = value
+
+    @classmethod
+    def geometry(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Geometry'."""
+        return cls(attribute_type="GEOMETRY", attribute_name=attribute_name)
+
+    @classmethod
+    def object(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Object'."""
+        return cls(attribute_type="OBJECT", attribute_name=attribute_name)
+
+    @classmethod
+    def instancer(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Instancer'."""
+        return cls(attribute_type="INSTANCER", attribute_name=attribute_name)
+
+    @classmethod
+    def view_layer(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'View Layer'."""
+        return cls(attribute_type="VIEW_LAYER", attribute_name=attribute_name)
+
+
 class Bevel(BaseNode):
     """
         Generates normals with round corners.
@@ -378,7 +471,7 @@ class Fresnel(BaseNode):
 
         Outputs
         -------
-        o.fac : FloatSocket
+        o.factor : FloatSocket
             Factor
     """
 
@@ -392,7 +485,7 @@ class Fresnel(BaseNode):
         """Normal"""
 
     class _Outputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -1122,7 +1215,7 @@ class Wireframe(BaseNode):
 
         Outputs
         -------
-        o.fac : FloatSocket
+        o.factor : FloatSocket
             Factor
     """
 
@@ -1134,7 +1227,7 @@ class Wireframe(BaseNode):
         """Size"""
 
     class _Outputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:

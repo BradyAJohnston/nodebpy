@@ -12,7 +12,7 @@ def mottled(scale, a, b, middle=0.5, spread=0.2):
     The noise is normalized to around 0.5, so a higher ``middle`` gives fewer,
     smaller patches of ``b``.
     """
-    noise = s.NoiseTexture(scale=scale).o.fac
+    noise = s.NoiseTexture(scale=scale).o.factor
     return noise.map_range(middle - spread, middle + spread).mix.color(a, b)
 
 
@@ -105,7 +105,7 @@ with g.tree("Forest", is_modifier=True) as tree:
     seed = tree.inputs.integer("Seed")
 
     with g.Frame("Terrain"):
-        bumps = g.NoiseTexture(scale=0.05).o.fac - 0.5
+        bumps = g.NoiseTexture(scale=0.05).o.factor - 0.5
         terrain = (
             g.Grid(size, size, 80, 80)
             >> g.SetPosition(offset=g.CombineXYZ(z=bumps * hills))

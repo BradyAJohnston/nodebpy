@@ -15,7 +15,7 @@ def arrow(vertices):
 
 
 with s.material("Arrow") as material:
-    strength = s.Attribute.instancer("strength").o.fac
+    strength = s.Attribute.instancer("strength").o.factor
     ramp = s.ColorRamp(
         strength,
         items=[

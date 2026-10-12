@@ -4053,7 +4053,7 @@ class Points(BaseNode):
 
     Outputs
     -------
-    o.geometry : GeometrySocket
+    o.points : GeometrySocket
         Points
     """
 
@@ -4069,7 +4069,7 @@ class Points(BaseNode):
         """Radius"""
 
     class _Outputs(SocketAccessor):
-        geometry: GeometrySocket
+        points: GeometrySocket
         """Points"""
 
     if TYPE_CHECKING:
@@ -7966,7 +7966,7 @@ class SetShadeSmooth(BaseNode):
 
     Outputs
     -------
-    o.geometry : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -7982,7 +7982,7 @@ class SetShadeSmooth(BaseNode):
         """Shade Smooth"""
 
     class _Outputs(SocketAccessor):
-        geometry: GeometrySocket
+        mesh: GeometrySocket
         """Mesh"""
 
     if TYPE_CHECKING:
@@ -8072,7 +8072,7 @@ class SetSplineCyclic(BaseNode):
 
     Outputs
     -------
-    o.geometry : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -8088,7 +8088,7 @@ class SetSplineCyclic(BaseNode):
         """Cyclic"""
 
     class _Outputs(SocketAccessor):
-        geometry: GeometrySocket
+        curve: GeometrySocket
         """Curve"""
 
     if TYPE_CHECKING:
@@ -8134,7 +8134,7 @@ class SetSplineResolution(BaseNode):
 
     Outputs
     -------
-    o.geometry : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -8150,7 +8150,7 @@ class SetSplineResolution(BaseNode):
         """Resolution"""
 
     class _Outputs(SocketAccessor):
-        geometry: GeometrySocket
+        curve: GeometrySocket
         """Curve"""
 
     if TYPE_CHECKING:

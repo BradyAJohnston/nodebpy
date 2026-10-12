@@ -36,8 +36,8 @@ def test_name_inferred_from_source_or_type():
     with g.tree():
         cap = g.CaptureAttribute(g.Cube())
         assert cap.items.vector(g.Position()).name == "Position"
-        assert cap.items.float(g.NoiseTexture().o.fac).name == "Factor"
-        assert cap.items.float(g.NoiseTexture().o.fac, "Noise").name == "Noise"
+        assert cap.items.float(g.NoiseTexture().o.factor).name == "Factor"
+        assert cap.items.float(g.NoiseTexture().o.factor, "Noise").name == "Noise"
         assert cap.items.float(1.0).name == "Value"
         assert cap.items.integer().name == "Integer"
         assert cap.items.new(2).name == "Integer.001"  # Blender suffixes duplicates

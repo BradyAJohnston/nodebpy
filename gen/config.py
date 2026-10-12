@@ -233,7 +233,6 @@ SHADER_CONFIG = TreeTypeConfig(
         "RepeatInput",
         "RepeatOutput",
         "RepeatZone",
-        "Attribute",
         "Frame",
         "tree",
         "Float",
