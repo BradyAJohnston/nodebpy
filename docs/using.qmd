@@ -47,6 +47,26 @@ result.created   # every node group the run added
 
 Pair it with `to_python(in_place=True)`, whose header rebuilds the exported tree in the same datablock (see [Nodes to Code](nodes-to-code.qmd#in-place)).
 
+## Checking a build with `nodebpy run`
+
+`nodebpy run` runs a script that builds node trees and reports what it built in a few lines, which keeps a build, check and fix loop cheap, by hand or for a coding agent:
+
+```bash
+nodebpy run build_tree.py --object Cube
+```
+
+```
+built material 'Gold': 2 nodes, 1 link
+built 'Scatter Cubes' (geometry, modifier): 7 nodes, 7 links; in (Count: Int = 50, Scale: Float = 0.1) -> out (Geometry: Geometry)
+object 'Cube' (Scatter Cubes): 50 instances
+  bounds (-0.93, -0.936, -0.957)..(0.987, 0.903, 0.854)
+```
+
+Each tree the script built is listed, new or rebuilt in place. With `--object`, the last geometry tree (or the one named by `--tree`) is added to that object as a Geometry Nodes modifier, creating the object if needed, and its evaluated geometry, bounds and node warnings are reported. `--frame` steps the scene to a frame first, so simulations advance, and `--blend` opens a file first.
+An error is reported as its message and the line of the script that raised it; `--traceback` adds the full traceback, and the command exits with status 1.
+
+Inside Blender, `nodebpy.report.run("build_tree.py", object="Cube")` prints and returns the same report. It runs the script through `run_source`, so group classes rebuild and modifier input values are kept.
+
 ## Using multiple versions
 
 If you use `nodebpy` in your add-on you likely support multiple versions of Blender.
