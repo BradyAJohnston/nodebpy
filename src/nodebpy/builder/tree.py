@@ -1255,9 +1255,11 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        scene: bool = False,
     ) -> TreeBuilder[CompositorNodeTree]:
-        """Create a compositor node tree."""
-        return cast(
+        """Create a compositor node tree; ``scene=True`` also makes it the
+        active scene's compositor."""
+        builder = cast(
             "TreeBuilder[CompositorNodeTree]",
             cls(
                 name,
@@ -1269,6 +1271,11 @@ class TreeBuilder[TreeT: NodeTree]:
                 clear=clear,
             ),
         )
+        if scene:
+            active = bpy.context.scene
+            assert active is not None, "no active scene to set the compositor on"
+            active.compositing_node_group = builder.tree
+        return builder
 
     @property
     def nodes(self) -> Nodes:
@@ -1893,6 +1900,44 @@ class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
             ignore_visibility=ignore_visibility,
             clear=True,
         )
+
+
+class WorldBuilder(TreeBuilder[ShaderNodeTree]):
+    """Builds a world's node tree, as :class:`MaterialBuilder` does a
+    material's; ``world`` is the ``bpy.types.World``."""
+
+    def __init__(
+        self,
+        name: str = "World",
+        *,
+        collapse: bool = False,
+        arrange: ArrangeMethod = "sugiyama",
+        fake_user: bool = False,
+        ignore_visibility: bool = False,
+        clear: bool = False,
+        scene: bool = False,
+    ):
+        # With ``clear`` an existing world of that name is rebuilt in place (a
+        # scene using it keeps it). A new world's default Background and World
+        # Output nodes are removed so the body builds from empty.
+        world = bpy.data.worlds.get(name) if clear else None
+        if world is None:
+            world = bpy.data.worlds.new(name)
+        assert world is not None and world.node_tree is not None
+        self.world = world
+        self.world.use_fake_user = fake_user
+        super().__init__(
+            world.node_tree,
+            collapse=collapse,
+            arrange=arrange,
+            fake_user=fake_user,
+            ignore_visibility=ignore_visibility,
+            clear=True,
+        )
+        if scene:
+            active = bpy.context.scene
+            assert active is not None, "no active scene to set the world on"
+            active.world = world
 
 
 def _unavailable_message(socket: NodeSocket) -> str:

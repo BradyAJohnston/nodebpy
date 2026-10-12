@@ -238,6 +238,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "tree",
         "Float",
         "material",
+        "world",
     ),
     class_name_prefix_strips=[
         "ShaderNode",

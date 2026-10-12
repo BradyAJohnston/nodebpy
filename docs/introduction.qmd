@@ -180,3 +180,26 @@ with g.tree() as tree:
 
 tree
 ```
+
+## Materials, Worlds and the Compositor
+
+Shader and compositor trees have their own modules, `nodebpy.shader` and `nodebpy.compositor`, with the nodes those trees accept.
+`s.material(name)` builds a material and `s.world(name)` a world, in the same way `g.tree(name)` builds a node group; `clear=True` rebuilds an existing one in place, so whatever uses it keeps it.
+A world built with `scene=True` becomes the active scene's world, and a compositor group built with `c.tree(name, scene=True)` the scene's compositor.
+
+```{python}
+from nodebpy import compositor as c
+from nodebpy import shader as s
+
+with s.material("Gold", clear=True) as gold:
+    s.PrincipledBSDF(base_color=(1.0, 0.77, 0.34, 1.0), metallic=1.0, roughness=0.2) >> s.MaterialOutput()
+
+with s.world("Studio", clear=True, scene=True) as studio:
+    s.Background(color=(0.05, 0.06, 0.08, 1.0), strength=1.0) >> s.WorldOutput()
+
+with c.tree("Soft Glow", clear=True, scene=True) as glow:
+    image = glow.inputs.color("Image")
+    c.Mix.color(0.3, image, c.Blur(image, size=(20, 20)), blend_type="SCREEN") >> glow.outputs.color("Image")
+
+gold.material, studio.world, glow.tree
+```
