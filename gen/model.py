@@ -324,6 +324,12 @@ class PropertyInfo:
         )
         ignore = "  # ty: ignore[invalid-return-type]" if needs_ignore else ""
         setter_ignore = "  # ty: ignore[invalid-assignment]" if dynamic_enum else ""
+        # enum setters suggest the closest options when Blender rejects a value
+        setter = (
+            f'self._set_enum("{self.identifier}", value)'
+            if self.prop_type == "ENUM"
+            else f"self.node.{self.identifier} = value{setter_ignore}"
+        )
         return f"""    @property
 
     def {name}(self) -> {getter_type}:
@@ -331,7 +337,7 @@ class PropertyInfo:
 
     @{name}.setter
     def {name}(self, value: {setter_type}) -> None:
-        self.node.{self.identifier} = value{setter_ignore}
+        {setter}
 """
 
 

@@ -542,7 +542,7 @@ class RenderLayers(BaseNode):
 
     @layer.setter
     def layer(self, value: str) -> None:
-        self.node.layer = value  # ty: ignore[invalid-assignment]
+        self._set_enum("layer", value)
 
 
 class SceneTime(BaseNode):

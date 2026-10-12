@@ -137,7 +137,7 @@ class DialGizmo(BaseNode):
 
     @color_id.setter
     def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]) -> None:
-        self.node.color_id = value
+        self._set_enum("color_id", value)
 
 
 class EnableOutput[T](BaseNode):
@@ -390,7 +390,7 @@ class EnableOutput[T](BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GroupInput(BaseNode):
@@ -530,7 +530,7 @@ class LinearGizmo(BaseNode):
 
     @color_id.setter
     def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]) -> None:
-        self.node.color_id = value
+        self._set_enum("color_id", value)
 
     @property
     def draw_style(self) -> Literal["ARROW", "CROSS", "BOX"]:
@@ -538,7 +538,7 @@ class LinearGizmo(BaseNode):
 
     @draw_style.setter
     def draw_style(self, value: Literal["ARROW", "CROSS", "BOX"]) -> None:
-        self.node.draw_style = value
+        self._set_enum("draw_style", value)
 
 
 class TransformGizmo(BaseNode):
@@ -770,4 +770,4 @@ class Warning(BaseNode):
 
     @warning_type.setter
     def warning_type(self, value: Literal["ERROR", "WARNING", "INFO"]) -> None:
-        self.node.warning_type = value
+        self._set_enum("warning_type", value)

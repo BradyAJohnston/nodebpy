@@ -252,6 +252,8 @@ class EvaluateAtIndex(BaseNode):
 ```
 
 They are set during the class construction, but can also be set and changed afterwards.
+A value the node doesn't have raises a `TypeError` that lists its options and suggests the closest, so `g.Math(operation="SUBSTRACT")` asks "Did you mean 'SUBTRACT'?".
+Menu sockets such as Resample Curve's `mode` do the same.
 
 ```{python}
 with g.tree() as tree:

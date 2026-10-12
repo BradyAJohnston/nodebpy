@@ -173,7 +173,7 @@ class ActiveElement(BaseNode):
 
     @domain.setter
     def domain(self, value: Literal["POINT", "EDGE", "FACE", "LAYER"]) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class BoneInfo(BaseNode):
@@ -258,7 +258,7 @@ class BoneInfo(BaseNode):
 
     @transform_space.setter
     def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]) -> None:
-        self.node.transform_space = value
+        self._set_enum("transform_space", value)
 
 
 class Boolean(BaseNode):
@@ -512,7 +512,7 @@ class CollectionInfo(BaseNode):
 
     @transform_space.setter
     def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]) -> None:
-        self.node.transform_space = value
+        self._set_enum("transform_space", value)
 
 
 class Color(BaseNode):
@@ -1619,7 +1619,7 @@ class HandleTypeSelection(_HandleModeMixin, BaseNode):
 
     @handle_type.setter
     def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]) -> None:
-        self.node.handle_type = value
+        self._set_enum("handle_type", value)
 
     def __init__(
         self,
@@ -2735,7 +2735,7 @@ class NamedAttribute[T](BaseNode):
             "FLOAT4X4",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class NamedLayerSelection(BaseNode):
@@ -2907,7 +2907,7 @@ class ObjectInfo(BaseNode):
 
     @transform_space.setter
     def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]) -> None:
-        self.node.transform_space = value
+        self._set_enum("transform_space", value)
 
 
 class OffsetCornerInFace(BaseNode):

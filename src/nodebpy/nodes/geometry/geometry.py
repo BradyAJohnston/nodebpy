@@ -227,7 +227,7 @@ class Arc(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["POINTS", "RADIUS"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class Bake(_BakeMixin, BaseNode):
@@ -442,7 +442,7 @@ class BezierSegment(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["POSITION", "OFFSET"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class Cone(BaseNode):
@@ -619,7 +619,7 @@ class Cone(BaseNode):
 
     @fill_type.setter
     def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]) -> None:
-        self.node.fill_type = value
+        self._set_enum("fill_type", value)
 
 
 class ConvexHull(BaseNode):
@@ -862,7 +862,7 @@ class CurveCircle(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["POINTS", "RADIUS"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class CurveLength(BaseNode):
@@ -1008,7 +1008,7 @@ class CurveLine(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["POINTS", "DIRECTION"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class CurveToMesh(BaseNode):
@@ -1185,7 +1185,7 @@ class CurveToPoints(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["EVALUATED", "COUNT", "LENGTH"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class CurvesToGreasePencil(BaseNode):
@@ -1414,7 +1414,7 @@ class Cylinder(BaseNode):
 
     @fill_type.setter
     def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]) -> None:
-        self.node.fill_type = value
+        self._set_enum("fill_type", value)
 
 
 class DeformCurvesOnSurface(BaseNode):
@@ -1625,7 +1625,7 @@ class DeleteGeometry(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["ALL", "EDGE_FACE", "ONLY_FACE"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
     @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]:
@@ -1635,7 +1635,7 @@ class DeleteGeometry(BaseNode):
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class DistributePointsOnFaces(BaseNode):
@@ -1753,7 +1753,7 @@ class DistributePointsOnFaces(BaseNode):
 
     @distribute_method.setter
     def distribute_method(self, value: Literal["RANDOM", "POISSON"]) -> None:
-        self.node.distribute_method = value
+        self._set_enum("distribute_method", value)
 
     @property
     def use_legacy_normal(self) -> bool:
@@ -1964,7 +1964,7 @@ class DuplicateElements(BaseNode):
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"]
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class EdgePathsToCurves(BaseNode):
@@ -2183,7 +2183,7 @@ class ExtrudeMesh(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["VERTICES", "EDGES", "FACES"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class FillCurve(BaseNode):
@@ -2486,7 +2486,7 @@ class GeometryProximity(BaseNode):
 
     @target_element.setter
     def target_element(self, value: Literal["POINTS", "EDGES", "FACES"]) -> None:
-        self.node.target_element = value
+        self._set_enum("target_element", value)
 
 
 class GetGeometryBundle(BaseNode):
@@ -3287,7 +3287,7 @@ class MergeLayers(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["MERGE_BY_NAME", "MERGE_BY_ID"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class MergePoints(BaseNode):
@@ -3671,7 +3671,7 @@ class MeshCircle(BaseNode):
 
     @fill_type.setter
     def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]) -> None:
-        self.node.fill_type = value
+        self._set_enum("fill_type", value)
 
 
 class MeshLine(BaseNode):
@@ -3787,7 +3787,7 @@ class MeshLine(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["OFFSET", "END_POINTS"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
     @property
     def count_mode(self) -> Literal["TOTAL", "RESOLUTION"]:
@@ -3795,7 +3795,7 @@ class MeshLine(BaseNode):
 
     @count_mode.setter
     def count_mode(self, value: Literal["TOTAL", "RESOLUTION"]) -> None:
-        self.node.count_mode = value
+        self._set_enum("count_mode", value)
 
 
 class MeshToCurve(BaseNode):
@@ -3874,7 +3874,7 @@ class MeshToCurve(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["EDGES", "FACES"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class MeshToPoints(BaseNode):
@@ -4026,7 +4026,7 @@ class MeshToPoints(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["VERTICES", "EDGES", "FACES", "CORNERS"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class Points(BaseNode):
@@ -4490,7 +4490,7 @@ class Quadrilateral(BaseNode):
         self,
         value: Literal["RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"],
     ) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class Raycast[T](BaseNode):
@@ -4782,7 +4782,7 @@ class Raycast[T](BaseNode):
             "FLOAT4X4",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class RealizeInstances(BaseNode):
@@ -5332,7 +5332,7 @@ class SampleNearest(BaseNode):
 
     @domain.setter
     def domain(self, value: Literal["POINT", "EDGE", "FACE", "CORNER"]) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class SampleNearestSurface[T](BaseNode):
@@ -5590,7 +5590,7 @@ class SampleNearestSurface[T](BaseNode):
             "FLOAT4X4",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SampleUVSurface[T](BaseNode):
@@ -5826,7 +5826,7 @@ class SampleUVSurface[T](BaseNode):
             "FLOAT4X4",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class ScaleElements(BaseNode):
@@ -5964,7 +5964,7 @@ class ScaleElements(BaseNode):
 
     @domain.setter
     def domain(self, value: Literal["FACE", "EDGE"]) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class ScaleInstances(BaseNode):
@@ -6226,7 +6226,7 @@ class SeparateGeometry(BaseNode):
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class SetCurveNormal(BaseNode):
@@ -6714,7 +6714,7 @@ class SetGreasePencilColor(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["STROKE", "FILL"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class SetGreasePencilDepth(BaseNode):
@@ -6772,7 +6772,7 @@ class SetGreasePencilDepth(BaseNode):
 
     @depth_order.setter
     def depth_order(self, value: Literal["2D", "3D"]) -> None:
-        self.node.depth_order = value
+        self._set_enum("depth_order", value)
 
 
 class SetGreasePencilSoftness(BaseNode):
@@ -6956,7 +6956,7 @@ class SetHandlePositions(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["LEFT", "RIGHT"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class SetHandleType(_HandleModeMixin, BaseNode):
@@ -7037,7 +7037,7 @@ class SetHandleType(_HandleModeMixin, BaseNode):
 
     @handle_type.setter
     def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]) -> None:
-        self.node.handle_type = value
+        self._set_enum("handle_type", value)
 
     def __init__(
         self,
@@ -7500,7 +7500,7 @@ class SetMeshNormal(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
     @property
     def domain(self) -> Literal["POINT", "FACE", "CORNER"]:
@@ -7508,7 +7508,7 @@ class SetMeshNormal(BaseNode):
 
     @domain.setter
     def domain(self, value: Literal["POINT", "FACE", "CORNER"]) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class SetNURBSOrder(BaseNode):
@@ -7931,7 +7931,7 @@ class SetSelection[T](BaseNode):
 
     @domain.setter
     def domain(self, value: Literal["POINT", "EDGE", "FACE", "CURVE"]) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
     @property
     def selection_type(self) -> Literal["BOOLEAN", "FLOAT"]:
@@ -7939,7 +7939,7 @@ class SetSelection[T](BaseNode):
 
     @selection_type.setter
     def selection_type(self, value: Literal["BOOLEAN", "FLOAT"]) -> None:
-        self.node.selection_type = value
+        self._set_enum("selection_type", value)
 
 
 class SetShadeSmooth(BaseNode):
@@ -8045,7 +8045,7 @@ class SetShadeSmooth(BaseNode):
 
     @domain.setter
     def domain(self, value: Literal["EDGE", "FACE"]) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class SetSplineCyclic(BaseNode):
@@ -8268,7 +8268,7 @@ class SetSplineType(BaseNode):
     def spline_type(
         self, value: Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"]
     ) -> None:
-        self.node.spline_type = value
+        self._set_enum("spline_type", value)
 
 
 class SortElements(BaseNode):
@@ -8439,7 +8439,7 @@ class SortElements(BaseNode):
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE"]
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class Spiral(BaseNode):
@@ -8736,7 +8736,7 @@ class SplitToInstances(BaseNode):
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class Star(BaseNode):
@@ -9763,7 +9763,7 @@ class TrimCurve(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["FACTOR", "LENGTH"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class UVSphere(BaseNode):

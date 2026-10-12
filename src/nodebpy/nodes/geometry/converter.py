@@ -171,7 +171,7 @@ class AccumulateField[T](BaseNode):
     def data_type(
         self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def domain(
@@ -184,7 +184,7 @@ class AccumulateField[T](BaseNode):
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
     class _AccumulateFieldDomainFactory:
         def __init__(self, domain: _AttributeDomains):
@@ -302,7 +302,7 @@ class AlignRotationToVector(BaseNode):
 
     @axis.setter
     def axis(self, value: Literal["X", "Y", "Z"]) -> None:
-        self.node.axis = value
+        self._set_enum("axis", value)
 
     @property
     def pivot_axis(self) -> Literal["AUTO", "X", "Y", "Z"]:
@@ -310,7 +310,7 @@ class AlignRotationToVector(BaseNode):
 
     @pivot_axis.setter
     def pivot_axis(self, value: Literal["AUTO", "X", "Y", "Z"]) -> None:
-        self.node.pivot_axis = value
+        self._set_enum("pivot_axis", value)
 
 
 class AxesToRotation(BaseNode):
@@ -377,7 +377,7 @@ class AxesToRotation(BaseNode):
 
     @primary.setter
     def primary(self, value: Literal["X", "Y", "Z"]) -> None:
-        self.node.primary_axis = value
+        self._set_enum("primary_axis", value)
 
     @property
     def secondary(self) -> Literal["X", "Y", "Z"]:
@@ -385,7 +385,7 @@ class AxesToRotation(BaseNode):
 
     @secondary.setter
     def secondary(self, value: Literal["X", "Y", "Z"]) -> None:
-        self.node.secondary_axis = value
+        self._set_enum("secondary_axis", value)
 
 
 class AxisAngleToRotation(BaseNode):
@@ -544,7 +544,7 @@ class BitMath(BaseNode):
     def operation(
         self, value: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"]
     ) -> None:
-        self.node.operation = value
+        self._set_enum("operation", value)
 
 
 class Blackbody(BaseNode):
@@ -724,7 +724,7 @@ class BooleanMath(BaseNode):
             "AND", "OR", "NOT", "NAND", "NOR", "XNOR", "XOR", "IMPLY", "NIMPLY"
         ],
     ) -> None:
-        self.node.operation = value
+        self._set_enum("operation", value)
 
 
 class Clamp(BaseNode):
@@ -810,7 +810,7 @@ class Clamp(BaseNode):
 
     @clamp_type.setter
     def clamp_type(self, value: Literal["MINMAX", "RANGE"]) -> None:
-        self.node.clamp_type = value
+        self._set_enum("clamp_type", value)
 
 
 class ClosureToList(_ClosureToListMixin, BaseNode):
@@ -1133,7 +1133,7 @@ class CombineColor(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class CombineMatrix(BaseNode):
@@ -1554,7 +1554,7 @@ class EvaluateAtIndex[T](BaseNode):
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
     @property
     def data_type(
@@ -1583,7 +1583,7 @@ class EvaluateAtIndex[T](BaseNode):
             "FLOAT4X4",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     class _EvaluateAtIndexDomainFactory:
         def __init__(self, domain: _AttributeDomains):
@@ -1722,7 +1722,7 @@ class EvaluateOnDomain[T](BaseNode):
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
     @property
     def data_type(
@@ -1751,7 +1751,7 @@ class EvaluateOnDomain[T](BaseNode):
             "FLOAT4X4",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     class _EvaluateOnDomainDomainFactory:
         def __init__(self, domain: _AttributeDomains):
@@ -1874,7 +1874,7 @@ class FieldAverage[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def domain(
@@ -1887,7 +1887,7 @@ class FieldAverage[T](BaseNode):
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
     class _FieldAverageDomainFactory:
         def __init__(self, domain: _AttributeDomains):
@@ -1988,7 +1988,7 @@ class FieldMinAndMax[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def domain(
@@ -2001,7 +2001,7 @@ class FieldMinAndMax[T](BaseNode):
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
     class _FieldMinAndMaxDomainFactory:
         def __init__(self, domain: _AttributeDomains):
@@ -2110,7 +2110,7 @@ class FieldVariance[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def domain(
@@ -2123,7 +2123,7 @@ class FieldVariance[T](BaseNode):
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
     class _FieldVarianceDomainFactory:
         def __init__(self, domain: _AttributeDomains):
@@ -2441,7 +2441,7 @@ class FilterList[T](BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.socket_type = value
+        self._set_enum("socket_type", value)
 
 
 class FindInString(BaseNode):
@@ -2567,7 +2567,7 @@ class FloatToInteger(BaseNode):
     def rounding_mode(
         self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]
     ) -> None:
-        self.node.rounding_mode = value
+        self._set_enum("rounding_mode", value)
 
 
 class FormatString(_FormatStringMixin, BaseNode):
@@ -3334,7 +3334,7 @@ class GetBundleItem[T](BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.socket_type = value
+        self._set_enum("socket_type", value)
 
     @property
     def structure_type(
@@ -3346,7 +3346,7 @@ class GetBundleItem[T](BaseNode):
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
     ) -> None:
-        self.node.structure_type = value
+        self._set_enum("structure_type", value)
 
 
 class GetListItem[T, TList](BaseNode):
@@ -3951,7 +3951,7 @@ class GetListItem[T, TList](BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.socket_type = value
+        self._set_enum("socket_type", value)
 
     @property
     def structure_type(
@@ -3963,7 +3963,7 @@ class GetListItem[T, TList](BaseNode):
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
     ) -> None:
-        self.node.structure_type = value
+        self._set_enum("structure_type", value)
 
 
 class GetNestedBundlePaths(BaseNode):
@@ -4188,7 +4188,7 @@ class HashValue[T](BaseNode):
             "FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class ImplicitConversion[T](BaseNode):
@@ -4412,7 +4412,7 @@ class ImplicitConversion[T](BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class IndexOfNearest(BaseNode):
@@ -4731,7 +4731,7 @@ class IntegerMath(BaseNode):
             "LCM",
         ],
     ) -> None:
-        self.node.operation = value
+        self._set_enum("operation", value)
 
 
 class InvertMatrix(BaseNode):
@@ -5088,7 +5088,7 @@ class ListLength[T](BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class MapRange(BaseNode):
@@ -5408,7 +5408,7 @@ class MapRange(BaseNode):
     def interpolation_type(
         self, value: Literal["LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"]
     ) -> None:
-        self.node.interpolation_type = value
+        self._set_enum("interpolation_type", value)
 
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
@@ -5416,7 +5416,7 @@ class MapRange(BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class MatchString(BaseNode):
@@ -6088,7 +6088,7 @@ class Math(BaseNode):
             "DEGREES",
         ],
     ) -> None:
-        self.node.operation = value
+        self._set_enum("operation", value)
 
     @property
     def use_clamp(self) -> bool:
@@ -6542,7 +6542,7 @@ class Mix(BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def factor_mode(self) -> Literal["UNIFORM", "NON_UNIFORM"]:
@@ -6550,7 +6550,7 @@ class Mix(BaseNode):
 
     @factor_mode.setter
     def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]) -> None:
-        self.node.factor_mode = value
+        self._set_enum("factor_mode", value)
 
     @property
     def blend_type(
@@ -6603,7 +6603,7 @@ class Mix(BaseNode):
             "VALUE",
         ],
     ) -> None:
-        self.node.blend_type = value
+        self._set_enum("blend_type", value)
 
     @property
     def clamp_factor(self) -> bool:
@@ -7039,7 +7039,7 @@ class RandomValue[T](BaseNode):
     def data_type(
         self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class ReplaceString(BaseNode):
@@ -7266,7 +7266,7 @@ class RotateEuler(_DeprecatedNodeMixin, BaseNode):
 
     @rotation_type.setter
     def rotation_type(self, value: Literal["AXIS_ANGLE", "EULER"]) -> None:
-        self.node.rotation_type = value
+        self._set_enum("rotation_type", value)
 
     @property
     def space(self) -> Literal["OBJECT", "LOCAL"]:
@@ -7274,7 +7274,7 @@ class RotateEuler(_DeprecatedNodeMixin, BaseNode):
 
     @space.setter
     def space(self, value: Literal["OBJECT", "LOCAL"]) -> None:
-        self.node.space = value
+        self._set_enum("space", value)
 
     _replacement = "g.RotateRotation"
 
@@ -7341,7 +7341,7 @@ class RotateRotation(BaseNode):
 
     @rotation_space.setter
     def rotation_space(self, value: Literal["GLOBAL", "LOCAL"]) -> None:
-        self.node.rotation_space = value
+        self._set_enum("rotation_space", value)
 
 
 class RotateVector(BaseNode):
@@ -7783,7 +7783,7 @@ class SeparateColor(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class SeparateMatrix(BaseNode):
@@ -8563,7 +8563,7 @@ class SortList[T](BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.socket_type = value
+        self._set_enum("socket_type", value)
 
 
 class SplitString(BaseNode):
@@ -9338,7 +9338,7 @@ class StoreBundleItem[T](BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.socket_type = value
+        self._set_enum("socket_type", value)
 
     @property
     def structure_type(
@@ -9350,7 +9350,7 @@ class StoreBundleItem[T](BaseNode):
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
     ) -> None:
-        self.node.structure_type = value
+        self._set_enum("structure_type", value)
 
 
 class StringLength(BaseNode):
@@ -9476,7 +9476,7 @@ class StringToValue[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class Switch[T](_SwitchMixin, BaseNode):
@@ -9758,7 +9758,7 @@ class Switch[T](_SwitchMixin, BaseNode):
             "SOUND",
         ],
     ) -> None:
-        self.node.input_type = value
+        self._set_enum("input_type", value)
 
 
 class TagFilter(BaseNode):
@@ -10247,4 +10247,4 @@ class ValueToString[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)

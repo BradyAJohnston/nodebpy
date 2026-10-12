@@ -83,7 +83,7 @@ class Script(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["INTERNAL", "EXTERNAL"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
     @property
     def use_auto_update(self) -> bool:
