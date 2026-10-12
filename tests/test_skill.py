@@ -6,6 +6,8 @@ import re
 import tomllib
 from pathlib import Path
 
+import pytest
+
 from nodebpy import _skill
 from nodebpy.__main__ import main
 
@@ -72,3 +74,68 @@ def test_skill_cli_path_and_install(tmp_path, capsys):
     # installing again replaces the copy rather than failing
     main(["skill", "install", "--to", str(tmp_path)])
     assert "installed" in capsys.readouterr().out
+
+
+# Names the code fragments in the skill assume, as a user's script would have them.
+_FRAGMENT_PRELUDE = """
+geometry = tree.inputs.geometry("Geometry")
+condition = tree.inputs.boolean("Condition")
+value = tree.inputs.float("Value")
+index = tree.inputs.integer("Index")
+height = tree.inputs.float("Height")
+pos = g.Position().o.position
+if "mod.properties" in __block__:
+    tree.inputs.integer("Count")
+    mod = obj.modifiers.new("GN", "NODES")
+    mod.node_group = tree.tree
+"""
+# Blocks that show what to run against a user's own tree or source.
+_NEEDS_USER_DATA = ('bpy.data.node_groups["My Tree"]', "code_string", 'ns["tree"]')
+
+
+def _skill_blocks():
+    for path in sorted(_skill.SKILL_DIR.rglob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        for i, block in enumerate(re.findall(r"```python\n(.*?)```", text, re.DOTALL)):
+            yield pytest.param(block, id=f"{path.name}-{i}")
+
+
+@pytest.mark.parametrize("block", list(_skill_blocks()))
+def test_skill_code_runs(block):
+    """Every Python block in the skill runs against the installed nodebpy, so
+    the skill can't drift from the API it teaches."""
+    import textwrap
+
+    import bpy
+
+    from nodebpy import compositor as c
+    from nodebpy import geometry as g
+    from nodebpy import shader as s
+    from nodebpy.builder import TreeBuilder
+
+    if any(marker in block for marker in _NEEDS_USER_DATA):
+        compile(block, "<skill>", "exec")
+        return
+    code = block
+    if not re.search(
+        r"^with (g|s|c)\.|^with TreeBuilder|^class |^def |^from nodebpy", code, re.MULTILINE
+    ):
+        prelude = _FRAGMENT_PRELUDE.replace("__block__", repr(block))
+        code = "with g.tree('Skill snippet') as tree:\n" + textwrap.indent(
+            prelude + code, "    "
+        )
+    cube = bpy.data.objects.get("Cube") or bpy.data.objects.new(
+        "Cube", bpy.data.meshes.new("Cube")
+    )
+    if cube.name not in bpy.context.scene.collection.all_objects:
+        bpy.context.scene.collection.objects.link(cube)
+    namespace = {
+        "g": g,
+        "s": s,
+        "c": c,
+        "bpy": bpy,
+        "TreeBuilder": TreeBuilder,
+        "obj": cube,
+        "pi": 3.141592653589793,
+    }
+    exec(compile(code, "<skill>", "exec"), namespace)  # noqa: S102

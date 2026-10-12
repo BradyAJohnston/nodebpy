@@ -22,9 +22,11 @@ uv run pytest -n 4
 `src/nodebpy/skills/nodebpy/` is the source of the agent skill and ships in the wheel;
 `skills/nodebpy/` at the repository root is the copy that `npx skills add` and the
 Claude Code marketplace (`.claude-plugin/`) read. After editing the source, run
-`make skills` to refresh the copy; a test fails when the two differ. Keep SKILL.md
-in step with API changes in the same pull request, since the skill is what agents
-rely on for the current argument orders and method names.
+`make skills` to refresh the copy; a test fails when the two differ. Keep the skill
+in step with API changes in the same pull request, since it is what agents rely on for
+the current argument orders and method names: `SKILL.md` holds the loop, the core
+idioms and the errors table, and `references/` one file per task. `test_skill.py` runs
+every Python block in it against the package, so an outdated example fails the tests.
 
 ## Regenerating node classes
 
