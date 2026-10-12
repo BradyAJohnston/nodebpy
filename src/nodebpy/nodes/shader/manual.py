@@ -16,6 +16,7 @@ from ...builder import (
     ShaderSocket,
     TreeBuilder,
     VectorSocket,
+    WorldBuilder,
 )
 from ...builder.accessor import SocketAccessor
 from ...builder.socket import BaseSocket
@@ -44,6 +45,7 @@ __all__ = [
     "RepeatZone",
     "material",
     "tree",
+    "world",
 ]
 
 tree: Final = TreeBuilder.shader
@@ -59,6 +61,30 @@ def material(
 ) -> MaterialBuilder:
     return MaterialBuilder(
         name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
+    )
+
+
+def world(
+    name: str = "World",
+    *,
+    collapse: bool = False,
+    arrange: ArrangeMethod = "sugiyama",
+    fake_user: bool = False,
+    clear: bool = False,
+    scene: bool = False,
+) -> WorldBuilder:
+    """Build a world's node tree; ``scene=True`` makes it the active scene's world.
+
+    ``with s.world("Studio", clear=True, scene=True):`` then add a Background
+    linked into a World Output, as in a material.
+    """
+    return WorldBuilder(
+        name,
+        collapse=collapse,
+        arrange=arrange,
+        fake_user=fake_user,
+        clear=clear,
+        scene=scene,
     )
 
 

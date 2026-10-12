@@ -117,6 +117,7 @@ from .manual import (
     RepeatZone,
     material,
     tree,
+    world,
 )
 from .output import (
     AOVOutput,
@@ -292,4 +293,5 @@ __all__ = (
     "WorldOutput",
     "material",
     "tree",
+    "world",
 )

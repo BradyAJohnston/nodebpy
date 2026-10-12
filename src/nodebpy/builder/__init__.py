@@ -81,6 +81,7 @@ from .tree import (
     PanelContext,
     SocketContext,
     TreeBuilder,
+    WorldBuilder,
     default_split_inputs,
 )
 
@@ -157,6 +158,7 @@ __all__ = [
     "VectorSocket",
     "VectorSocketGrid",
     "VectorSocketList",
+    "WorldBuilder",
     "arrange",
     "asset_group_base",
     "build_from_source",
