@@ -30,3 +30,17 @@ def test_unknown_enum_value_lists_the_options():
     with g.tree():
         with pytest.raises(TypeError, match=r"no option 'XYZZY'\. Options: ADD"):
             g.Math(operation="XYZZY")
+
+
+def test_optional_enum_typos_suggest_options():
+    with g.tree():
+        assert g.VoronoiTexture(voronoi_dimensions="2D").voronoi_dimensions == "2D"
+        with pytest.raises(TypeError, match="Did you mean '2D'"):
+            g.VoronoiTexture(voronoi_dimensions="2d ")
+
+
+def test_other_type_errors_pass_through():
+    from nodebpy.builder._utils import enum_value_error
+
+    error = TypeError("expected a float")
+    assert enum_value_error(error, "Math's operation") is error
