@@ -38,6 +38,13 @@ def enum_value_error(error: TypeError, what: str) -> TypeError:
         by_upper[found]
         for found in difflib.get_close_matches(value.upper(), list(by_upper), n=3)
     ]
+    if not options:
+        # only a menu is ever empty: its items come from the Menu Switch it feeds
+        return TypeError(
+            f"{what} has no option {value!r}: it has no items yet. A menu input "
+            "takes its items from the Menu Switch it is linked to; link it to one "
+            f"with a {value!r} item."
+        )
     hint = f" Did you mean {' or '.join(map(repr, close))}?" if close else ""
     return TypeError(
         f"{what} has no option {value!r}.{hint} Options: {', '.join(options)}."
