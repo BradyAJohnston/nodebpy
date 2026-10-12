@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.36.1
+
+### Fixes
+
+- **`to_python` passes a constructor's first argument positionally** for the constant input nodes (`g.Integer(5)`, `g.String("hi")`, `g.Vector((1.0, 2.0, 3.0))`) and when it is the call's only argument (`g.Points(count)`, `g.SeparateColor(color)`), instead of writing its keyword.
+
 ## v520.36.0
 
 ### Enhancements

@@ -24,7 +24,7 @@
           combine_matrix = g.CombineMatrix(column_1_row_1=mean.x, column_1_row_2=mean.y, column_1_row_3=mean.z, column_2_row_1=mean_1.x, column_2_row_2=mean_1.y, column_2_row_3=mean_1.z, column_3_row_1=mean_2.x, column_3_row_2=mean_2.y, column_3_row_3=mean_2.z)
       with g.Frame("SVD"):
           matrix_svd = combine_matrix.o.matrix.svd()
-          separate_matrix = g.SeparateMatrix(matrix=matrix_svd.u)
+          separate_matrix = g.SeparateMatrix(matrix_svd.u)
           combine_xyz = g.CombineXYZ(x=separate_matrix.o.column_1_row_1, y=separate_matrix.o.column_1_row_2, z=separate_matrix.o.column_1_row_3)
           combine_xyz_1 = g.CombineXYZ(x=separate_matrix.o.column_2_row_1, y=separate_matrix.o.column_2_row_2, z=separate_matrix.o.column_2_row_3)
           combine_xyz_2 = g.CombineXYZ(x=separate_matrix.o.column_3_row_1, y=separate_matrix.o.column_3_row_2, z=separate_matrix.o.column_3_row_3)
