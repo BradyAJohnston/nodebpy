@@ -3798,3 +3798,29 @@ def test_shared_classes_export_with_the_trees_alias():
     assert "c.CombineXYZ(" in to_python(comp)
     code = to_python(shader)
     assert "s.RepeatZone(3)" in code and "s.ClosureZone()" in code
+
+
+def test_tree_aliases_fall_back_to_geometry():
+    """A class the emitted tree's module lacks keeps the geometry alias."""
+    from types import SimpleNamespace
+
+    from nodebpy.export.codegen import _CURRENT_TREE, _find_cls, _tree_alias
+
+    token = _CURRENT_TREE.set("ShaderNodeTree")
+    try:
+        assert _find_cls("GeometryNodeSetPosition")[0] == "g"
+        assert _find_cls("ShaderNodeValue")[0] == "s"
+    finally:
+        _CURRENT_TREE.reset(token)
+    ctx = SimpleNamespace(
+        node_tree=SimpleNamespace(bl_idname="ShaderNodeTree"), used_aliases=set()
+    )
+    assert _tree_alias(ctx, "SimulationZone") == "g.SimulationZone"
+    assert _tree_alias(ctx, "RepeatZone") == "s.RepeatZone"
+    assert ctx.used_aliases == {"g", "s"}
+
+
+def test_unlinked_reroute_exports_with_the_trees_alias():
+    with c.tree("Alias Reroute") as tree:
+        tree.tree.nodes.new("NodeReroute")
+    assert "c.Reroute()" in to_python(tree, keep_reroutes=True)

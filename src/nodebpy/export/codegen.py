@@ -602,13 +602,14 @@ def _tree_registry(tree_idname: str) -> dict[str, tuple[str, type, set[type]]]:
         module = {"g": geometry, "s": shader, "c": compositor}[alias]
         registry: dict[str, tuple[str, type, set[type]]] = {}
         for name, cls in vars(module).items():
-            if name.startswith("_") or not isinstance(cls, type):
+            if (
+                name.startswith("_")
+                or not isinstance(cls, type)
+                or not issubclass(cls, BaseNode)
+                or not getattr(cls, "_bl_idname", None)
+            ):
                 continue
-            if not issubclass(cls, BaseNode):
-                continue
-            bl_id = getattr(cls, "_bl_idname", None)
-            if not bl_id:
-                continue
+            bl_id = cls._bl_idname
             if bl_id in registry:
                 registry[bl_id][2].add(cls)
             else:
