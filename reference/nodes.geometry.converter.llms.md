@@ -5783,7 +5783,7 @@ Create String to Value with operation ‘Integer’. 32-bit integer
 ### Switch
 
 ``` python
-Switch(switch=False, false=0.0, true=0.0, *, input_type='FLOAT')
+Switch(switch=False, false=0.0, true=0.0, *, input_type=None)
 ```
 
 Switch between two inputs

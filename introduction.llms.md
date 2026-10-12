@@ -130,7 +130,7 @@ tree
 
 ## Item Nodes
 
-Several regular nodes are also driven by dynamic item collections — Capture Attribute, Bake, Field to Grid, Field to List, Format String, Combine/Separate Bundle, Closure to List, Evaluate Closure, Index Switch and Menu Switch. They all expose the same `items` collection as the zones, alongside their `items=` constructor argument (a name-to-value mapping, or a list of values named after their sources):
+Several regular nodes are also driven by dynamic item collections — Capture Attribute, Bake, Field to Grid, Field to List, Format String, Combine/Separate Bundle, Closure to List, Evaluate Closure, Index Switch, Menu Switch, the Viewer, the compositor’s File Output and the shader Raycast. They all expose the same `items` collection as the zones, and most also take an `items=` constructor argument (a name-to-value mapping, or a list of values named after their sources):
 
 - `CaptureAttribute(...).items.vector(g.Position())` returns an `Item` handle — `item.input` is the field being captured, `item.output` the captured result. The item is named “Position” after its source; pass a name as the second argument to choose one.
 - `Bake().items.geometry(source, "Geo")` works the same way for bake items.
@@ -138,6 +138,8 @@ Several regular nodes are also driven by dynamic item collections — Capture At
 - `CombineBundle().items.float(0.5, "a")` and `SeparateBundle(bundle).items.float("a")` declare bundle items; the socket is `item.input` (the value fed into the bundle) or `item.output` (the value read from it).
 - `EvaluateClosure(closure).inputs.geometry(source, "Geo")` and `.outputs.vector("Force")` declare the closure-call signature; the result socket is `item.output`.
 - `MenuSwitch.float().items.new(0.5, "Option", description="...")` and `IndexSwitch.float().items.new(0.5)` add switch items, typed by the switch’s data type.
+- `Viewer().items.float(height, "Height")` adds a value to view; any socket type can be viewed. The compositor’s `FileOutput().items.color(image, "Beauty")` adds an input to write out (Float, Vector or Color).
+- The shader `Raycast().items.float("height")` samples the `height` attribute where the ray hits: the item’s input is the attribute’s name and `item.output` the value read. The item is named after the attribute unless a name is given; a color item also has an `"<name> Alpha"` output on the node.
 
 A handle stands in for its sockets, so it can be used where a socket is expected: as a node argument or on the left of `>>` it is `item.output`, on the right of `>>` it is `item.input`, and the chain then continues from `item.output`. An item with only one side (a Separate Bundle item has only an output, a Combine Bundle item only an input) raises when the other side is asked for. Zone state items have two inputs and two outputs, so they keep asking for the role: `initial`, `current`, `next` or `result`.
 
@@ -163,3 +165,28 @@ with g.tree() as tree:
 
 tree
 ```
+
+## Materials, Worlds and the Compositor
+
+Shader and compositor trees have their own modules, `nodebpy.shader` and `nodebpy.compositor`, with the nodes those trees accept. `s.material(name)` builds a material and `s.world(name)` a world, in the same way `g.tree(name)` builds a node group; `clear=True` rebuilds an existing one in place, so whatever uses it keeps it. A world built with `scene=True` becomes the active scene’s world, and a compositor group built with `c.tree(name, scene=True)` the scene’s compositor.
+
+``` python
+from nodebpy import compositor as c
+from nodebpy import shader as s
+
+with s.material("Gold", clear=True) as gold:
+    s.PrincipledBSDF(base_color=(1.0, 0.77, 0.34, 1.0), metallic=1.0, roughness=0.2) >> s.MaterialOutput()
+
+with s.world("Studio", clear=True, scene=True) as studio:
+    s.Background(color=(0.05, 0.06, 0.08, 1.0), strength=1.0) >> s.WorldOutput()
+
+with c.tree("Soft Glow", clear=True, scene=True) as glow:
+    image = glow.inputs.color("Image")
+    c.Mix.color(0.3, image, c.Blur(image, size=(20, 20)), blend_type="SCREEN") >> glow.outputs.color("Image")
+
+gold.material, studio.world, glow.tree
+```
+
+    (bpy.data.materials['Gold'],
+     bpy.data.worlds['Studio'],
+     bpy.data.node_groups['Soft Glow'])

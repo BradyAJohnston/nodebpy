@@ -29,12 +29,45 @@ Write image file to disk
 | [`directory`](#nodebpy.nodes.compositor.output.FileOutput.directory) |  |
 | [`file_name`](#nodebpy.nodes.compositor.output.FileOutput.file_name) |  |
 | [`i`](#nodebpy.nodes.compositor.output.FileOutput.i) |  |
+| [`items`](#nodebpy.nodes.compositor.output.FileOutput.items) | The inputs to write, one per item. |
 | [`name`](#nodebpy.nodes.compositor.output.FileOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.output.FileOutput.node) |  |
 | [`o`](#nodebpy.nodes.compositor.output.FileOutput.o) |  |
 | [`save_as_render`](#nodebpy.nodes.compositor.output.FileOutput.save_as_render) |  |
-| [`tree`](#nodebpy.nodes.compositor.output.FileOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`tree`](#nodebpy.nodes.compositor.output.FileOutput.tree) |  |
 | [`use_file_extension`](#nodebpy.nodes.compositor.output.FileOutput.use_file_extension) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.compositor.output.FileOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.compositor.output.FileOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.compositor.output.FileOutput.capture) | Deprecated: use `items.new(value, name).output`. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Deprecated: use `items.new(value, name, type=)`.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Deprecated: use `items.new(value, name)` per item.
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Deprecated: use `items.new(value, name).output`.
 
 ### Viewer
 

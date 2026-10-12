@@ -44,7 +44,7 @@ Supports geometry, shader, and compositor node trees.
 | [activate_tree](#nodebpy.TreeBuilder.activate_tree) | Make this tree the active tree for all new node creation. |
 | [add](#nodebpy.TreeBuilder.add) |  |
 | [arrange](#nodebpy.TreeBuilder.arrange) |  |
-| [compositor](#nodebpy.TreeBuilder.compositor) | Create a compositor node tree. |
+| [compositor](#nodebpy.TreeBuilder.compositor) | Create a compositor node tree; `scene=True` also makes it the |
 | [deactivate_tree](#nodebpy.TreeBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
 | [disable_arrange](#nodebpy.TreeBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.TreeBuilder.geometry) | Create a geometry node tree. |
@@ -87,10 +87,11 @@ compositor(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    scene=False,
 )
 ```
 
-Create a compositor node tree.
+Create a compositor node tree; `scene=True` also makes it the active scene’s compositor.
 
 ### deactivate_tree
 

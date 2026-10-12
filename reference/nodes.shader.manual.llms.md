@@ -79,7 +79,7 @@ Create Attribute with operation ‘View Layer’.
 ### MenuSwitch
 
 ``` python
-MenuSwitch(menu=None, items=None, *, data_type='FLOAT')
+MenuSwitch(menu=None, items=None, *, data_type=None)
 ```
 
 Node builder for the Menu Switch node (Shader tree)
@@ -225,9 +225,10 @@ vector(menu=None, items=None)
 
 ## Functions
 
-| Name                                              | Description |
-|---------------------------------------------------|-------------|
-| [material](#nodebpy.nodes.shader.manual.material) |             |
+| Name | Description |
+|----|----|
+| [material](#nodebpy.nodes.shader.manual.material) |  |
+| [world](#nodebpy.nodes.shader.manual.world) | Build a world’s node tree; `scene=True` makes it the active scene’s world. |
 
 ### material
 
@@ -241,3 +242,21 @@ material(
     clear=False,
 )
 ```
+
+### world
+
+``` python
+world(
+    name='World',
+    *,
+    collapse=False,
+    arrange='sugiyama',
+    fake_user=False,
+    clear=False,
+    scene=False,
+)
+```
+
+Build a world’s node tree; `scene=True` makes it the active scene’s world.
+
+`with s.world("Studio", clear=True, scene=True):` then add a Background linked into a World Output, as in a material.

@@ -499,11 +499,44 @@ Cast rays and retrieve information from the hit point
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.Raycast.i) |  |
+| [`items`](#nodebpy.nodes.shader.input.Raycast.items) | The attributes to sample at the hit point. |
 | [`name`](#nodebpy.nodes.shader.input.Raycast.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.Raycast.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Raycast.o) |  |
 | [`only_local`](#nodebpy.nodes.shader.input.Raycast.only_local) |  |
-| [`tree`](#nodebpy.nodes.shader.input.Raycast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`tree`](#nodebpy.nodes.shader.input.Raycast.tree) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.shader.input.Raycast.add_item) | Deprecated: use `items.new(value, name, type=)`. |
+| [add_items](#nodebpy.nodes.shader.input.Raycast.add_items) | Deprecated: use `items.new(value, name)` per item. |
+| [capture](#nodebpy.nodes.shader.input.Raycast.capture) | Deprecated: use `items.new(value, name).output`. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Deprecated: use `items.new(value, name, type=)`.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Deprecated: use `items.new(value, name)` per item.
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Deprecated: use `items.new(value, name).output`.
 
 **Inputs**
 

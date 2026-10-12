@@ -1,5 +1,28 @@
 # Changelog
 
+## v520.36.0
+
+### Enhancements
+
+- **`s.world(name)`** builds a world’s node tree as `s.material(name)` does a material’s (`clear=True` rebuilds it in place), and `scene=True` makes it the active scene’s world. `c.tree(name, scene=True)` makes a compositor group the scene’s compositor.
+- **Agent skill.** The package ships an [Agent Skill](https://agentskills.io) that teaches AI coding agents to write, verify and port node trees with nodebpy: `SKILL.md` is the write, run, verify and fix loop, the core idioms and the errors, with one reference per task (writing trees, zones and items, shaders and the compositor, existing trees, verifying). Install it from the repository with `npx skills add BradyAJohnston/nodebpy`, as a Claude Code plugin (`/plugin marketplace add BradyAJohnston/nodebpy`), or from the installed package with `nodebpy skill install`. `nodebpy lookup search|show|socket` finds node classes, prints a class’s constructor, variants and outputs, and lists a socket type’s methods. A test runs every code block in the skill, so it can’t drift from the API.
+- **`Switch`, `IndexSwitch` and `MenuSwitch` take their type from their values** when `input_type` / `data_type` isn’t given. They used to default to Float, so a node passed in was linked through whichever of its outputs converts to a float: `g.Switch(cond, g.Cube(), g.UVSphere())` switched the two UV Maps instead of the meshes. Plain Python values decide only when nothing is linked (`g.Switch(cond, 1, 2)` is an integer switch), and values of different types raise a `SocketError` naming each one. The class methods (`g.Switch.geometry(...)`) and an explicit type work as before.
+- **The compositor’s `IndexSwitch` shares Geometry Nodes’ class**, since it is the same node with fewer types: it takes `items=[...]` and infers its type the same way, falling back to Color (Blender’s compositor default) when nothing decides it. It keeps its compositor-only `integer_vector` variant and has none of the types the compositor can’t switch. **Breaking:** the old `item_0=` / `item_1=` / `extend=` arguments are gone; pass the items as a list, e.g. `c.IndexSwitch.color(index, [a, b])`. Exported compositor trees now write `c.IndexSwitch` rather than `g.IndexSwitch`.
+- **`c.Switch` is the typed Switch.** Blender 5.2 deprecates the compositor’s Color-only Switch (“Use Utilities ▸ Switch node instead”), and nodebpy wrapped the deprecated node. `c.Switch` now builds the typed Switch the compositor’s Add menu offers, with the same type inference and the compositor’s types (including `integer_vector`). Positional calls keep working; **breaking:** the `off=` / `on=` keywords are now `false=` / `true=`. Exporting a tree that still has the old node writes the equivalent `c.Switch.color(...)`.
+- **`g.RotateEuler` warns that Blender deprecates it** (“Use the Rotate Rotation node instead”), pointing at the line that builds it.
+- **Items on the Viewer, File Output and Raycast nodes.** `g.Viewer().items.<type>(value, name)` adds values to view (every socket type), `c.FileOutput().items.color(image, "Beauty")` adds the inputs to write out, and the shader `s.Raycast().items.float("height")` samples an attribute where the ray hits, the item’s output being the value read (a color item also has an `"<name> Alpha"` output). They round-trip through `to_python`, which now writes the Viewer’s items with their names instead of re-linking them with `>>`.
+- **`s.ClosureZone`**: the closure zone works in shader trees, so the shader module now exports it.
+- **Tuples that hold sockets feed vector, rotation and color inputs.** `g.Cube(size=(1, 1, height))`, `position + (0, 0, height)` and item values build a Combine XYZ (or the tree’s Combine Color) from the tuple and link it in; this used to raise a bpy `TypeError`. A tuple of the wrong length, or a socket for a shader color’s alpha (shader colors have none), raises a `SocketError` naming the parts.
+- **Mistyped enum values suggest the closest options**: `g.Math(operation="SUBSTRACT")` raises `TypeError: Math's operation has no option 'SUBSTRACT'. Did you mean 'SUBTRACT'? Options: ...`, ignoring case (`"add"` suggests `ADD`). Menu socket values such as `g.ResampleCurve(mode="Coutn")` do the same.
+- **Faster `arrange`** on trees whose columns need balancing: the search that shortens the tallest columns counts sockets by number, which more than halves the layout time of the 4-bit decoder benchmark (0.20 s to 0.09 s). Layouts are unchanged.
+
+### Fixes
+
+- **Exported shader and compositor trees use their own module** for classes the modules share (`c.Value()`, `s.CombineXYZ(...)`, `s.RepeatZone(...)`, `s.ClosureZone()`, Reroute, bundles, Evaluate Closure, Format String), instead of `g.` and an extra `geometry` import.
+- **A menu input with a default but no Menu Switch says so**, instead of listing an empty set of options.
+- **Linking a socket the node’s settings hide raises**, naming the node’s settings and the sockets that are available, e.g. `'Vector Math' has no 'Vector' output with its current settings {'operation': 'DOT_PRODUCT'}; available: ['Value']`. The link used to be created and then ignored when the tree was evaluated.
+- **Exporting a node with a one-character string default no longer recurses forever.**
+
 ## v520.35.1
 
 ### Fixes

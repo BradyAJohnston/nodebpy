@@ -14,6 +14,7 @@
 | [SocketContext](#nodebpy.builder.tree.SocketContext) |  |
 | [TreeBuilder](#nodebpy.builder.tree.TreeBuilder) | Builder for creating Blender node trees with a clean Python API. |
 | [TreePanelContext](#nodebpy.builder.tree.TreePanelContext) | Context manager for a panel holding both input *and* output sockets. |
+| [WorldBuilder](#nodebpy.builder.tree.WorldBuilder) | Builds a world’s node tree, as :class:`MaterialBuilder` does a |
 
 ### DirectionalContext
 
@@ -806,7 +807,7 @@ MaterialBuilder(
 | [activate_tree](#nodebpy.builder.tree.MaterialBuilder.activate_tree) | Make this tree the active tree for all new node creation. |
 | [add](#nodebpy.builder.tree.MaterialBuilder.add) |  |
 | [arrange](#nodebpy.builder.tree.MaterialBuilder.arrange) |  |
-| [compositor](#nodebpy.builder.tree.MaterialBuilder.compositor) | Create a compositor node tree. |
+| [compositor](#nodebpy.builder.tree.MaterialBuilder.compositor) | Create a compositor node tree; `scene=True` also makes it the |
 | [deactivate_tree](#nodebpy.builder.tree.MaterialBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
 | [disable_arrange](#nodebpy.builder.tree.MaterialBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.MaterialBuilder.geometry) | Create a geometry node tree. |
@@ -849,10 +850,11 @@ compositor(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    scene=False,
 )
 ```
 
-Create a compositor node tree.
+Create a compositor node tree; `scene=True` also makes it the active scene’s compositor.
 
 ##### deactivate_tree
 
@@ -1792,7 +1794,7 @@ Supports geometry, shader, and compositor node trees.
 | [activate_tree](#nodebpy.builder.tree.TreeBuilder.activate_tree) | Make this tree the active tree for all new node creation. |
 | [add](#nodebpy.builder.tree.TreeBuilder.add) |  |
 | [arrange](#nodebpy.builder.tree.TreeBuilder.arrange) |  |
-| [compositor](#nodebpy.builder.tree.TreeBuilder.compositor) | Create a compositor node tree. |
+| [compositor](#nodebpy.builder.tree.TreeBuilder.compositor) | Create a compositor node tree; `scene=True` also makes it the |
 | [deactivate_tree](#nodebpy.builder.tree.TreeBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
 | [disable_arrange](#nodebpy.builder.tree.TreeBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.TreeBuilder.geometry) | Create a geometry node tree. |
@@ -1835,10 +1837,11 @@ compositor(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    scene=False,
 )
 ```
 
-Create a compositor node tree.
+Create a compositor node tree; `scene=True` also makes it the active scene’s compositor.
 
 ##### deactivate_tree
 
@@ -1996,6 +1999,231 @@ Activates the panel on the builder’s `inputs` and `outputs` contexts at once, 
 | Name                                                    | Description |
 |---------------------------------------------------------|-------------|
 | [`panel`](#nodebpy.builder.tree.TreePanelContext.panel) |             |
+
+### WorldBuilder
+
+``` python
+WorldBuilder(
+    name='World',
+    *,
+    collapse=False,
+    arrange='sugiyama',
+    fake_user=False,
+    ignore_visibility=False,
+    clear=False,
+    scene=False,
+)
+```
+
+Builds a world’s node tree, as :class:`MaterialBuilder` does a material’s; `world` is the `bpy.types.World`.
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`collapse`](#nodebpy.builder.tree.WorldBuilder.collapse) |  |
+| [`fake_user`](#nodebpy.builder.tree.WorldBuilder.fake_user) |  |
+| [`group_input_splits`](#nodebpy.builder.tree.WorldBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
+| [`ignore_visibility`](#nodebpy.builder.tree.WorldBuilder.ignore_visibility) |  |
+| [`inputs`](#nodebpy.builder.tree.WorldBuilder.inputs) |  |
+| [`is_modifier`](#nodebpy.builder.tree.WorldBuilder.is_modifier) | Whether the group can be used as a Geometry Nodes modifier. |
+| [`is_tool`](#nodebpy.builder.tree.WorldBuilder.is_tool) | Whether the group can be used as a node tool. |
+| [`layout_snapshot`](#nodebpy.builder.tree.WorldBuilder.layout_snapshot) | A structural layout snapshot: for every node its type, `(x, y)` |
+| [`node_positions`](#nodebpy.builder.tree.WorldBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
+| [`nodes`](#nodebpy.builder.tree.WorldBuilder.nodes) |  |
+| [`outputs`](#nodebpy.builder.tree.WorldBuilder.outputs) |  |
+| [`tree`](#nodebpy.builder.tree.WorldBuilder.tree) |  |
+| [`world`](#nodebpy.builder.tree.WorldBuilder.world) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [activate_tree](#nodebpy.builder.tree.WorldBuilder.activate_tree) | Make this tree the active tree for all new node creation. |
+| [add](#nodebpy.builder.tree.WorldBuilder.add) |  |
+| [arrange](#nodebpy.builder.tree.WorldBuilder.arrange) |  |
+| [compositor](#nodebpy.builder.tree.WorldBuilder.compositor) | Create a compositor node tree; `scene=True` also makes it the |
+| [deactivate_tree](#nodebpy.builder.tree.WorldBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
+| [disable_arrange](#nodebpy.builder.tree.WorldBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
+| [geometry](#nodebpy.builder.tree.WorldBuilder.geometry) | Create a geometry node tree. |
+| [link](#nodebpy.builder.tree.WorldBuilder.link) |  |
+| [panel](#nodebpy.builder.tree.WorldBuilder.panel) | A panel that can group input *and* output sockets together |
+| [shader](#nodebpy.builder.tree.WorldBuilder.shader) | Create a shader node tree. |
+| [split_group_inputs](#nodebpy.builder.tree.WorldBuilder.split_group_inputs) | Split the Group Input node into one instance per consumer node, |
+| [to_mermaid](#nodebpy.builder.tree.WorldBuilder.to_mermaid) | Generate a Mermaid diagram that represents this tree. |
+| [to_plot](#nodebpy.builder.tree.WorldBuilder.to_plot) | Draw this tree to an image, styled like Blender’s node editor, |
+| [to_python](#nodebpy.builder.tree.WorldBuilder.to_python) | Generate Python source that recreates this tree using nodebpy. |
+
+##### activate_tree
+
+``` python
+activate_tree()
+```
+
+Make this tree the active tree for all new node creation.
+
+##### add
+
+``` python
+add(name)
+```
+
+##### arrange
+
+``` python
+arrange()
+```
+
+##### compositor
+
+``` python
+compositor(
+    name='Compositor Nodes',
+    *,
+    collapse=False,
+    arrange='sugiyama',
+    fake_user=False,
+    split_inputs=None,
+    clear=False,
+    scene=False,
+)
+```
+
+Create a compositor node tree; `scene=True` also makes it the active scene’s compositor.
+
+##### deactivate_tree
+
+``` python
+deactivate_tree()
+```
+
+Whatever tree was previously active is set to be the active one (or None if no previously active tree).
+
+##### disable_arrange
+
+``` python
+disable_arrange()
+```
+
+Disable the auto-layout that otherwise runs when this tree’s context exits, so explicitly assigned node locations are preserved.
+
+##### geometry
+
+``` python
+geometry(
+    name='Geometry Nodes',
+    *,
+    collapse=False,
+    arrange='sugiyama',
+    fake_user=False,
+    split_inputs=None,
+    clear=False,
+    is_modifier=None,
+    is_tool=None,
+)
+```
+
+Create a geometry node tree.
+
+`is_modifier` and `is_tool` flag the group for use as a modifier or as a node tool; `None` leaves an existing group’s flags alone.
+
+##### link
+
+``` python
+link(socket1, socket2)
+```
+
+##### panel
+
+``` python
+panel(name, *, description='', default_closed=False, reuse=True)
+```
+
+A panel that can group input *and* output sockets together (`tree.inputs.panel` / `tree.outputs.panel` group one direction). Reuses an existing same-named panel under the same parent, so a mixed panel can be declared in separate input and output passes; pass `reuse=False` to always create a fresh panel — Blender allows several same-named sibling panels, and rebuilding such an interface must not fold them into one. Passing an existing panel (or a previous `tree.panel(...)` context) instead of a name reopens exactly that panel — the unambiguous spelling generated code uses for the second direction pass over a same-named sibling.
+
+##### shader
+
+``` python
+shader(
+    name='Shader Nodes',
+    *,
+    collapse=False,
+    arrange='sugiyama',
+    fake_user=False,
+    split_inputs=None,
+    clear=False,
+)
+```
+
+Create a shader node tree.
+
+##### split_group_inputs
+
+``` python
+split_group_inputs()
+```
+
+Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Each instance is named (and labelled, so the editor header shows it) after the interface sockets it carries, making it easy to spot when scanning the tree (Blender de-duplicates repeated names with `.001` suffixes as usual), and parented into its consumer’s frame so the arranger’s frame clustering keeps the pair together. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with `split_inputs=True`, or inside a :func:`~nodebpy.builder.default_split_inputs` scope.
+
+##### to_mermaid
+
+``` python
+to_mermaid(fenced=True)
+```
+
+Generate a Mermaid diagram that represents this tree.
+
+This can be used for documentation or visualization purposes. The Mermaid syntax is supported by many tools, including GitHub and Jupyter notebooks.
+
+###### Arguments
+
+    fenced:
+        Whether to wrap the output in a fenced code block with mermaid syntax highlighting.
+
+###### Returns
+
+| Name | Type | Description |
+|----|----|----|
+|  | A string containing the Mermaid diagram syntax representing this node tree. |  |
+
+##### to_plot
+
+``` python
+to_plot(
+    filepath,
+    *,
+    title=None,
+    dpi=150,
+    node=False,
+    open_panels=False,
+    width=None,
+    axes=False,
+)
+```
+
+Draw this tree to an image, styled like Blender’s node editor, for headless review (`pip install nodebpy[plot]`): its internals, or with `node=True` the single group node a user adds to another tree, showing the interface sockets with their default values.
+
+See :func:`nodebpy.export.to_plot`.
+
+##### to_python
+
+``` python
+to_python(
+    min_chain_length=3,
+    strict=True,
+    max_inline_width=88,
+    snapshot_positions=False,
+    keep_reroutes=False,
+    top_level='with',
+    format=True,
+    nodebpy_pkg='nodebpy',
+    in_place=False,
+)
+```
+
+Generate Python source that recreates this tree using nodebpy.
+
+See :func:`nodebpy.codegen.to_python` for parameter details.
 
 ## Functions
 

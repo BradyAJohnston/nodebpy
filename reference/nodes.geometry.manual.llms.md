@@ -518,7 +518,7 @@ Convert each input geometry into an instance, which can be much faster than the 
 ### IndexSwitch
 
 ``` python
-IndexSwitch(index=0, items=(), data_type='FLOAT')
+IndexSwitch(index=0, items=(), data_type=None)
 ```
 
 Node builder for the Index Switch node
@@ -732,7 +732,7 @@ Combine any number of input strings
 ### MenuSwitch
 
 ``` python
-MenuSwitch(menu=None, items=None, *, data_type='FLOAT')
+MenuSwitch(menu=None, items=None, *, data_type=None)
 ```
 
 Node builder for the Menu Switch node

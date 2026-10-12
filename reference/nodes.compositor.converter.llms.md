@@ -11,14 +11,13 @@
 | [ConvertToDisplay](#nodebpy.nodes.compositor.converter.ConvertToDisplay) | Convert from scene linear to display color space, with a view transform and look for tone mapping |
 | [IDMask](#nodebpy.nodes.compositor.converter.IDMask) | Create a matte from an object or material index pass |
 | [ImplicitConversion](#nodebpy.nodes.compositor.converter.ImplicitConversion) | Implicitly convert the input value to a fixed socket type |
-| [IndexSwitch](#nodebpy.nodes.compositor.converter.IndexSwitch) | Choose between an arbitrary number of values with an index |
 | [Levels](#nodebpy.nodes.compositor.converter.Levels) | Compute average and standard deviation of pixel values |
 | [RGBToBW](#nodebpy.nodes.compositor.converter.RGBToBW) | Convert RGB input into grayscale using luminance |
 | [RelativeToPixel](#nodebpy.nodes.compositor.converter.RelativeToPixel) | Converts values that are relative to the image size to be in terms of pixels |
 | [SeparateColor](#nodebpy.nodes.compositor.converter.SeparateColor) | Split an image into its composite color channels |
 | [SetAlpha](#nodebpy.nodes.compositor.converter.SetAlpha) | Add an alpha channel to an image |
 | [Split](#nodebpy.nodes.compositor.converter.Split) | Combine two images for side-by-side display. Typically used in combination with a Viewer node |
-| [Switch](#nodebpy.nodes.compositor.converter.Switch) | Switch between two images using a checkbox |
+| [Switch](#nodebpy.nodes.compositor.converter.Switch) | Switch between two inputs |
 | [SwitchView](#nodebpy.nodes.compositor.converter.SwitchView) | Combine the views (left and right) into a single stereo 3D output |
 
 ### AlphaConvert
@@ -412,174 +411,6 @@ Create Implicit Conversion with operation ‘Vector’.
 |-----------|---------------|-------------|
 | `o.value` | `ColorSocket` | Value       |
 
-### IndexSwitch
-
-``` python
-IndexSwitch(
-    index=0,
-    item_0=(0.8, 0.8, 0.8, 1.0),
-    item_1=(0.8, 0.8, 0.8, 1.0),
-    extend=None,
-    *,
-    data_type='RGBA',
-)
-```
-
-Choose between an arbitrary number of values with an index
-
-#### Parameters
-
-| Name   | Type          | Description | Default                |
-|--------|---------------|-------------|------------------------|
-| index  | InputInteger  | Index       | `0`                    |
-| item_0 | InputColor    | 0           | `(0.8, 0.8, 0.8, 1.0)` |
-| item_1 | InputColor    | 1           | `(0.8, 0.8, 0.8, 1.0)` |
-| extend | InputLinkable |             | `None`                 |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`data_type`](#nodebpy.nodes.compositor.converter.IndexSwitch.data_type) |  |
-| [`i`](#nodebpy.nodes.compositor.converter.IndexSwitch.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.IndexSwitch.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.compositor.converter.IndexSwitch.node) |  |
-| [`o`](#nodebpy.nodes.compositor.converter.IndexSwitch.o) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.IndexSwitch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [boolean](#nodebpy.nodes.compositor.converter.IndexSwitch.boolean) | Create Index Switch with operation ‘Boolean’. |
-| [color](#nodebpy.nodes.compositor.converter.IndexSwitch.color) | Create Index Switch with operation ‘Color’. |
-| [float](#nodebpy.nodes.compositor.converter.IndexSwitch.float) | Create Index Switch with operation ‘Float’. |
-| [font](#nodebpy.nodes.compositor.converter.IndexSwitch.font) | Create Index Switch with operation ‘Font’. |
-| [integer](#nodebpy.nodes.compositor.converter.IndexSwitch.integer) | Create Index Switch with operation ‘Integer’. |
-| [integer_vector](#nodebpy.nodes.compositor.converter.IndexSwitch.integer_vector) | Create Index Switch with operation ‘Integer Vector’. |
-| [matrix](#nodebpy.nodes.compositor.converter.IndexSwitch.matrix) | Create Index Switch with operation ‘Matrix’. |
-| [menu](#nodebpy.nodes.compositor.converter.IndexSwitch.menu) | Create Index Switch with operation ‘Menu’. |
-| [object](#nodebpy.nodes.compositor.converter.IndexSwitch.object) | Create Index Switch with operation ‘Object’. |
-| [rotation](#nodebpy.nodes.compositor.converter.IndexSwitch.rotation) | Create Index Switch with operation ‘Rotation’. |
-| [string](#nodebpy.nodes.compositor.converter.IndexSwitch.string) | Create Index Switch with operation ‘String’. |
-| [vector](#nodebpy.nodes.compositor.converter.IndexSwitch.vector) | Create Index Switch with operation ‘Vector’. |
-
-##### boolean
-
-``` python
-boolean(index=0, item_0=False, item_1=False, extend=None)
-```
-
-Create Index Switch with operation ‘Boolean’.
-
-##### color
-
-``` python
-color(
-    index=0,
-    item_0=(0.8, 0.8, 0.8, 1.0),
-    item_1=(0.8, 0.8, 0.8, 1.0),
-    extend=None,
-)
-```
-
-Create Index Switch with operation ‘Color’.
-
-##### float
-
-``` python
-float(index=0, item_0=0.0, item_1=0.0, extend=None)
-```
-
-Create Index Switch with operation ‘Float’.
-
-##### font
-
-``` python
-font(index=0, item_0=None, item_1=None, extend=None)
-```
-
-Create Index Switch with operation ‘Font’.
-
-##### integer
-
-``` python
-integer(index=0, item_0=0, item_1=0, extend=None)
-```
-
-Create Index Switch with operation ‘Integer’.
-
-##### integer_vector
-
-``` python
-integer_vector(index=0, item_0=(0, 0, 0), item_1=(0, 0, 0), extend=None)
-```
-
-Create Index Switch with operation ‘Integer Vector’.
-
-##### matrix
-
-``` python
-matrix(index=0, item_0=None, item_1=None, extend=None)
-```
-
-Create Index Switch with operation ‘Matrix’.
-
-##### menu
-
-``` python
-menu(index=0, item_0=None, item_1=None, extend=None)
-```
-
-Create Index Switch with operation ‘Menu’.
-
-##### object
-
-``` python
-object(index=0, item_0=None, item_1=None, extend=None)
-```
-
-Create Index Switch with operation ‘Object’.
-
-##### rotation
-
-``` python
-rotation(index=0, item_0=(0.0, 0.0, 0.0), item_1=(0.0, 0.0, 0.0), extend=None)
-```
-
-Create Index Switch with operation ‘Rotation’.
-
-##### string
-
-``` python
-string(index=0, item_0='', item_1='', extend=None)
-```
-
-Create Index Switch with operation ‘String’.
-
-##### vector
-
-``` python
-vector(index=0, item_0=(0.0, 0.0, 0.0), item_1=(0.0, 0.0, 0.0), extend=None)
-```
-
-Create Index Switch with operation ‘Vector’.
-
-**Inputs**
-
-| Attribute  | Type            | Description |
-|------------|-----------------|-------------|
-| `i.index`  | `IntegerSocket` | Index       |
-| `i.item_0` | `ColorSocket`   | 0           |
-| `i.item_1` | `ColorSocket`   | 1           |
-| `i.extend` | `Socket`        |             |
-
-**Outputs**
-
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.output` | `ColorSocket` | Output      |
-
 ### Levels
 
 ``` python
@@ -939,42 +770,156 @@ Combine two images for side-by-side display. Typically used in combination with 
 ### Switch
 
 ``` python
-Switch(switch=False, off=(0.8, 0.8, 0.8, 1.0), on=(0.8, 0.8, 0.8, 1.0))
+Switch(switch=False, false=0.0, true=0.0, *, input_type=None)
 ```
 
-Switch between two images using a checkbox
+Switch between two inputs
 
 #### Parameters
 
-| Name   | Type         | Description | Default                |
-|--------|--------------|-------------|------------------------|
-| switch | InputBoolean | Switch      | `False`                |
-| off    | InputColor   | Off         | `(0.8, 0.8, 0.8, 1.0)` |
-| on     | InputColor   | On          | `(0.8, 0.8, 0.8, 1.0)` |
+| Name   | Type         | Description | Default |
+|--------|--------------|-------------|---------|
+| switch | InputBoolean | Switch      | `False` |
+| false  | InputFloat   | False       | `0.0`   |
+| true   | InputFloat   | True        | `0.0`   |
 
 #### Attributes
 
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.Switch.i) |  |
+| [`input_type`](#nodebpy.nodes.compositor.converter.Switch.input_type) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.Switch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.Switch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Switch.o) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.Switch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.compositor.converter.Switch.boolean) | Create Switch with operation ‘Boolean’. |
+| [color](#nodebpy.nodes.compositor.converter.Switch.color) | Create Switch with operation ‘Color’. |
+| [float](#nodebpy.nodes.compositor.converter.Switch.float) | Create Switch with operation ‘Float’. |
+| [font](#nodebpy.nodes.compositor.converter.Switch.font) | Create Switch with operation ‘Font’. |
+| [integer](#nodebpy.nodes.compositor.converter.Switch.integer) | Create Switch with operation ‘Integer’. |
+| [integer_vector](#nodebpy.nodes.compositor.converter.Switch.integer_vector) | Create Switch with operation ‘Integer Vector’. |
+| [matrix](#nodebpy.nodes.compositor.converter.Switch.matrix) | Create Switch with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.compositor.converter.Switch.menu) | Create Switch with operation ‘Menu’. |
+| [object](#nodebpy.nodes.compositor.converter.Switch.object) | Create Switch with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.compositor.converter.Switch.rotation) | Create Switch with operation ‘Rotation’. |
+| [string](#nodebpy.nodes.compositor.converter.Switch.string) | Create Switch with operation ‘String’. |
+| [vector](#nodebpy.nodes.compositor.converter.Switch.vector) | Create Switch with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(switch=False, false=False, true=False)
+```
+
+Create Switch with operation ‘Boolean’.
+
+##### color
+
+``` python
+color(switch=False, false=(0.8, 0.8, 0.8, 1.0), true=(0.8, 0.8, 0.8, 1.0))
+```
+
+Create Switch with operation ‘Color’.
+
+##### float
+
+``` python
+float(switch=False, false=0.0, true=0.0)
+```
+
+Create Switch with operation ‘Float’.
+
+##### font
+
+``` python
+font(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Font’.
+
+##### integer
+
+``` python
+integer(switch=False, false=0, true=0)
+```
+
+Create Switch with operation ‘Integer’.
+
+##### integer_vector
+
+``` python
+integer_vector(switch=False, false=(0, 0, 0), true=(0, 0, 0))
+```
+
+Create Switch with operation ‘Integer Vector’.
+
+##### matrix
+
+``` python
+matrix(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Menu’.
+
+##### object
+
+``` python
+object(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(switch=False, false=(0.0, 0.0, 0.0), true=(0.0, 0.0, 0.0))
+```
+
+Create Switch with operation ‘Rotation’.
+
+##### string
+
+``` python
+string(switch=False, false='', true='')
+```
+
+Create Switch with operation ‘String’.
+
+##### vector
+
+``` python
+vector(switch=False, false=(0.0, 0.0, 0.0), true=(0.0, 0.0, 0.0))
+```
+
+Create Switch with operation ‘Vector’.
 
 **Inputs**
 
 | Attribute  | Type            | Description |
 |------------|-----------------|-------------|
 | `i.switch` | `BooleanSocket` | Switch      |
-| `i.off`    | `ColorSocket`   | Off         |
-| `i.on`     | `ColorSocket`   | On          |
+| `i.false`  | `FloatSocket`   | False       |
+| `i.true`   | `FloatSocket`   | True        |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.image` | `ColorSocket` | Image       |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.output` | `FloatSocket` | Output      |
 
 ### SwitchView
 

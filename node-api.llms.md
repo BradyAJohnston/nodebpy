@@ -35,6 +35,16 @@ with g.tree() as tree:
 tree
 ```
 
+A vector, rotation or color input can also take a tuple that mixes plain values and sockets. The parts known only when the tree runs can’t go into the socket’s default, so they are combined with a `Combine XYZ` (or `Combine Color`) node that is linked in instead:
+
+``` python
+with g.tree() as tree:
+    height = tree.inputs.float("Height", 2.0)
+    g.Cube(size=(1, 1, height)) >> tree.outputs.geometry("Geometry")
+
+tree
+```
+
 ### Default Inputs
 
 Some inputs read something other than their stored value when nothing is connected. Blender hides the value of such sockets in the editor: Set Position’s *Position* reads the position field, its *Selection* means every element, and many group assets declare a *Default Input* (an implicit field or context value) for an input. A constructor parameter whose value Blender hides defaults to `None`, which leaves the socket alone.
@@ -225,7 +235,7 @@ class EvaluateAtIndex(BaseNode):
     ):
 ```
 
-They are set during the class construction, but can also be set and changed afterwards.
+They are set during the class construction, but can also be set and changed afterwards. A value the node doesn’t have raises a `TypeError` that lists its options and suggests the closest, so `g.Math(operation="SUBSTRACT")` asks “Did you mean ‘SUBTRACT’?”. Menu sockets such as Resample Curve’s `mode` do the same.
 
 ``` python
 with g.tree() as tree:
@@ -257,6 +267,18 @@ with g.tree():
 
 assert eod1.data_type == eod2.data_type
 assert eod1.domain == eod2.domain
+```
+
+### Switches pick their type
+
+`Switch`, `IndexSwitch` and `MenuSwitch` work out their type from the values they are given when you don’t name one, so a node passed in is linked through its output of that type: the meshes below, rather than the UV Maps. Plain Python values decide only when nothing is linked (`g.Switch(cond, 1, 2)` is an integer switch), and values of different types raise an error naming each one. The class methods, or `input_type=` / `data_type=`, still set the type explicitly.
+
+``` python
+with g.tree():
+    use_sphere = g.Boolean(True)
+    switch = g.Switch(use_sphere, g.Cube(), g.UVSphere())
+
+assert switch.input_type == "GEOMETRY"
 ```
 
 A similar approach is taken for the `Compare` node, with the first being data type and then secondarily the comparison operation.
@@ -293,7 +315,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x129ded950>
+>     <nodebpy.builder.socket.BooleanSocket at 0x12a5e1bd0>
 >
 > ### Comparing Python Objects
 >
