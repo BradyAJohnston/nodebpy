@@ -87,6 +87,7 @@ from ...types import (
 from .._mixins import (
     _ClosureToListMixin,
     _CombineBundleMixin,
+    _DeprecatedNodeMixin,
     _FieldToListMixin,
     _FormatStringMixin,
     _SeparateBundleMixin,
@@ -7148,7 +7149,7 @@ class ReverseString(BaseNode):
         self._establish_links(**key_args)
 
 
-class RotateEuler(BaseNode):
+class RotateEuler(_DeprecatedNodeMixin, BaseNode):
     """
     Apply a secondary Euler rotation to a given Euler rotation
 
@@ -7274,6 +7275,8 @@ class RotateEuler(BaseNode):
     @space.setter
     def space(self, value: Literal["OBJECT", "LOCAL"]) -> None:
         self.node.space = value
+
+    _replacement = "g.RotateRotation"
 
 
 class RotateRotation(BaseNode):

@@ -34,6 +34,7 @@ from ...types import (
     InputString,
     InputVector,
 )
+from .._mixins import _SwitchMixin
 
 
 class AlphaConvert(BaseNode):
@@ -1081,66 +1082,214 @@ class Split(BaseNode):
         self._establish_links(**key_args)
 
 
-class Switch(BaseNode):
+class Switch[T](_SwitchMixin, BaseNode):
     """
-    Switch between two images using a checkbox
+    Switch between two inputs
 
     Parameters
     ----------
     switch : InputBoolean
         Switch
-    off : InputColor
-        Off
-    on : InputColor
-        On
+    false : InputFloat
+        False
+    true : InputFloat
+        True
 
     Inputs
     ------
     i.switch : BooleanSocket
         Switch
-    i.off : ColorSocket
-        Off
-    i.on : ColorSocket
-        On
+    i.false : FloatSocket
+        False
+    i.true : FloatSocket
+        True
 
     Outputs
     -------
-    o.image : ColorSocket
-        Image
+    o.output : FloatSocket
+        Output
     """
 
-    _bl_idname = "CompositorNodeSwitch"
-    node: bpy.types.CompositorNodeSwitch
+    _bl_idname = "GeometryNodeSwitch"
+    node: bpy.types.GeometryNodeSwitch
 
-    class _Inputs(SocketAccessor):
+    class _Inputs[S](SocketAccessor):
         switch: BooleanSocket
         """Switch"""
-        off: ColorSocket
-        """Off"""
-        on: ColorSocket
-        """On"""
+        false: S
+        """False"""
+        true: S
+        """True"""
 
-    class _Outputs(SocketAccessor):
-        image: ColorSocket
-        """Image"""
+    class _Outputs[S](SocketAccessor):
+        output: S
+        """Output"""
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[T]: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> _Outputs[T]: ...
 
-    def __init__(
-        self,
+    @classmethod
+    def float(
+        cls,
         switch: InputBoolean = False,
-        off: InputColor = (0.8, 0.8, 0.8, 1.0),
-        on: InputColor = (0.8, 0.8, 0.8, 1.0),
-    ):
-        super().__init__()
-        key_args = {"Switch": switch, "Off": off, "On": on}
+        false: InputFloat = 0.0,
+        true: InputFloat = 0.0,
+    ) -> "Switch[FloatSocket]":
+        """Create Switch with operation 'Float'."""
+        return Switch(input_type="FLOAT", switch=switch, false=false, true=true)
 
-        self._establish_links(**key_args)
+    @classmethod
+    def integer(
+        cls,
+        switch: InputBoolean = False,
+        false: InputInteger = 0,
+        true: InputInteger = 0,
+    ) -> "Switch[IntegerSocket]":
+        """Create Switch with operation 'Integer'."""
+        return Switch(input_type="INT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def boolean(
+        cls,
+        switch: InputBoolean = False,
+        false: InputBoolean = False,
+        true: InputBoolean = False,
+    ) -> "Switch[BooleanSocket]":
+        """Create Switch with operation 'Boolean'."""
+        return Switch(input_type="BOOLEAN", switch=switch, false=false, true=true)
+
+    @classmethod
+    def vector(
+        cls,
+        switch: InputBoolean = False,
+        false: InputVector = (0.0, 0.0, 0.0),
+        true: InputVector = (0.0, 0.0, 0.0),
+    ) -> "Switch[VectorSocket]":
+        """Create Switch with operation 'Vector'."""
+        return Switch(input_type="VECTOR", switch=switch, false=false, true=true)
+
+    @classmethod
+    def color(
+        cls,
+        switch: InputBoolean = False,
+        false: InputColor = (0.8, 0.8, 0.8, 1.0),
+        true: InputColor = (0.8, 0.8, 0.8, 1.0),
+    ) -> "Switch[ColorSocket]":
+        """Create Switch with operation 'Color'."""
+        return Switch(input_type="RGBA", switch=switch, false=false, true=true)
+
+    @classmethod
+    def rotation(
+        cls,
+        switch: InputBoolean = False,
+        false: InputRotation = (0.0, 0.0, 0.0),
+        true: InputRotation = (0.0, 0.0, 0.0),
+    ) -> "Switch[RotationSocket]":
+        """Create Switch with operation 'Rotation'."""
+        return Switch(input_type="ROTATION", switch=switch, false=false, true=true)
+
+    @classmethod
+    def matrix(
+        cls,
+        switch: InputBoolean = False,
+        false: InputMatrix = None,
+        true: InputMatrix = None,
+    ) -> "Switch[MatrixSocket]":
+        """Create Switch with operation 'Matrix'."""
+        return Switch(input_type="MATRIX", switch=switch, false=false, true=true)
+
+    @classmethod
+    def string(
+        cls,
+        switch: InputBoolean = False,
+        false: InputString = "",
+        true: InputString = "",
+    ) -> "Switch[StringSocket]":
+        """Create Switch with operation 'String'."""
+        return Switch(input_type="STRING", switch=switch, false=false, true=true)
+
+    @classmethod
+    def menu(
+        cls,
+        switch: InputBoolean = False,
+        false: InputMenu = None,
+        true: InputMenu = None,
+    ) -> "Switch[MenuSocket]":
+        """Create Switch with operation 'Menu'."""
+        return Switch(input_type="MENU", switch=switch, false=false, true=true)
+
+    @classmethod
+    def object(
+        cls,
+        switch: InputBoolean = False,
+        false: InputObject = None,
+        true: InputObject = None,
+    ) -> "Switch[ObjectSocket]":
+        """Create Switch with operation 'Object'."""
+        return Switch(input_type="OBJECT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def font(
+        cls,
+        switch: InputBoolean = False,
+        false: InputFont = None,
+        true: InputFont = None,
+    ) -> "Switch[FontSocket]":
+        """Create Switch with operation 'Font'."""
+        return Switch(input_type="FONT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def integer_vector(
+        cls,
+        switch: InputBoolean = False,
+        false: InputIntegerVector = (0, 0, 0),
+        true: InputIntegerVector = (0, 0, 0),
+    ) -> "Switch[IntegerSocket]":
+        """Create Switch with operation 'Integer Vector'."""
+        return Switch(input_type="INT_VECTOR", switch=switch, false=false, true=true)
+
+    @property
+    def input_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "FONT",
+        "INT_VECTOR",
+    ]:
+        return self.node.input_type  # ty: ignore[invalid-return-type]
+
+    @input_type.setter
+    def input_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "FONT",
+            "INT_VECTOR",
+        ],
+    ) -> None:
+        self.node.input_type = value
 
 
 class SwitchView(BaseNode):

@@ -5272,6 +5272,22 @@ def _emit_menu_switch(node, ctx: EmitContext) -> Expr | _Val | None:
     return Call(f"{alias}.MenuSwitch.{factory}", kwargs={"items": items})
 
 
+@register_emitter("CompositorNodeSwitch")
+def _emit_compositor_legacy_switch(node, ctx: EmitContext) -> Expr | _Val | None:
+    """Blender 5.2 deprecates the compositor's Color-only Switch for the typed
+    one, which ``c.Switch`` builds; a Color Switch does the same job."""
+    ctx.used_aliases.add("c")
+    args: list[Expr] = []
+    for identifier in ("Switch", "Off", "On"):
+        link = ctx.input_link(node, identifier)
+        socket = _input_socket_by_identifier(node, identifier)
+        if link is not None:
+            args.append(ctx.upstream_expr(link))
+        else:
+            args.append(Lit(getattr(socket, "default_value", None)))
+    return Call("c.Switch.color", args)
+
+
 @register_emitter("GeometryNodeIndexSwitch")
 def _emit_index_switch(node, ctx: EmitContext) -> Expr | _Val | None:
     """IndexSwitch emits the factory tuple form

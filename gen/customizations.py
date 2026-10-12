@@ -344,3 +344,14 @@ register_customization(
         suppress=frozenset({"__init__"}),
     )
 )
+
+# Blender 5.2 deprecates Rotate Euler ("Use the Rotate Rotation node instead").
+# It still works, so the class stays, warning on construction.
+register_customization(
+    NodeCustomization(
+        bl_idname="FunctionNodeRotateEuler",
+        bases=("_DeprecatedNodeMixin",),
+        imports=("from .._mixins import _DeprecatedNodeMixin",),
+        extra_body='    _replacement = "g.RotateRotation"',
+    )
+)

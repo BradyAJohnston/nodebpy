@@ -1,6 +1,7 @@
 """Switch nodes take their type from the values they switch between, and a link
 from or to a socket the node's settings hide raises instead of doing nothing."""
 
+import bpy
 import pytest
 
 from nodebpy import TreeBuilder
@@ -131,3 +132,42 @@ def test_compositor_index_switch_exports_with_its_alias():
     code = to_python(tree)
     assert "c.IndexSwitch.integer_vector(" in code
     assert "c.IndexSwitch.float(" in code
+
+
+def test_compositor_switch_is_the_typed_switch():
+    """Blender 5.2 deprecates the compositor's Color-only Switch."""
+    with c.tree() as tree:
+        image = tree.inputs.color("Image")
+        switch = c.Switch(True, image, c.Blur(image))
+        values = c.Switch(False, c.Value(), 2.0)
+    assert c.Switch._bl_idname == "GeometryNodeSwitch"
+    assert (switch.input_type, values.input_type) == ("RGBA", "FLOAT")
+    assert hasattr(c.Switch, "integer_vector") and not hasattr(c.Switch, "geometry")
+
+
+def test_deprecated_node_warns_at_the_callers_line():
+    with g.tree():
+        with pytest.warns(DeprecationWarning, match="RotateRotation") as caught:
+            g.RotateEuler.axis_angle()
+    assert caught[0].filename == __file__
+
+
+def test_legacy_compositor_switch_exports_as_the_typed_switch():
+    tree = bpy.data.node_groups.new("Legacy Switch", "CompositorNodeTree")
+    tree.interface.new_socket("Image", in_out="INPUT", socket_type="NodeSocketColor")
+    tree.interface.new_socket("Image", in_out="OUTPUT", socket_type="NodeSocketColor")
+    group_in = tree.nodes.new("NodeGroupInput")
+    group_out = tree.nodes.new("NodeGroupOutput")
+    legacy = tree.nodes.new("CompositorNodeSwitch")
+    tree.links.new(group_in.outputs[0], legacy.inputs["On"])
+    tree.links.new(legacy.outputs[0], group_out.inputs[0])
+
+    code = to_python(tree)
+    assert "c.Switch.color(" in code
+    namespace: dict = {}
+    exec(code, namespace)  # noqa: S102
+    rebuilt = namespace["tree"].tree
+    switch = next(n for n in rebuilt.nodes if n.bl_idname == "GeometryNodeSwitch")
+    assert switch.input_type == "RGBA"
+    assert switch.inputs["True"].links[0].from_node.bl_idname == "NodeGroupInput"
+    assert switch.outputs[0].links[0].to_node.bl_idname == "NodeGroupOutput"

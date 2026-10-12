@@ -9,7 +9,9 @@ bespoke behaviour lives here.
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Iterable, Mapping
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, ClassVar, Literal, cast
 
 import bpy
@@ -488,6 +490,7 @@ _SwitchType = Literal[
     "CLOSURE",
     "FONT",
     "SOUND",
+    "INT_VECTOR",  # compositor only
 ]
 
 
@@ -517,3 +520,22 @@ class _SwitchMixin:
             )
         self.input_type = input_type
         self._establish_links(**{"Switch": switch, "False": false, "True": true})
+
+
+_PACKAGE_DIR = str(Path(__file__).resolve().parents[1])
+
+
+class _DeprecatedNodeMixin:
+    """A node Blender deprecates: building one warns and names the replacement."""
+
+    _replacement: ClassVar[str]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        warnings.warn(
+            f"Blender deprecates the {type(self).__name__} node; use "
+            f"{self._replacement} instead.",
+            DeprecationWarning,
+            # point at the caller's code, past the class methods that build it
+            skip_file_prefixes=(_PACKAGE_DIR,),
+        )
+        super().__init__(*args, **kwargs)

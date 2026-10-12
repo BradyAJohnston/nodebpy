@@ -113,6 +113,14 @@ def class_name_for(display_name: str, bl_idname: str, config: TreeTypeConfig) ->
     return class_name
 
 
+# Deprecated nodes whose replacement takes their class name, matched exactly.
+# Blender 5.2 deprecates the compositor's Color-only Switch ("Use Utilities >
+# Switch node instead"): the typed GeometryNodeSwitch, also in the
+# compositor's Add menu, becomes ``c.Switch``. Python can't see a node's
+# ``deprecation_notice``, so the list is kept by hand.
+REPLACED_NODES = frozenset({"CompositorNodeSwitch"})
+
+
 @dataclass
 class TreeTypeConfig:
     """Configuration for generating node classes for a specific tree type."""
@@ -146,6 +154,8 @@ class TreeTypeConfig:
         # like UV/RGB/&→And).
         if class_name_for(rna_name, name, self) in self.manually_defined:
             return Disposition.MANUAL
+        if name in REPLACED_NODES:
+            return Disposition.SKIP
         if any(s in name for s in self.nodes_to_skip) or any(
             s in rna_name for s in self.nodes_to_skip
         ):

@@ -87,6 +87,7 @@ def test_fresh_nodes_export_without_default_kwargs():
     assert "_set_position = g.SetPosition()" in lines
 
 
+@pytest.mark.filterwarnings("ignore:Blender deprecates:DeprecationWarning")
 @pytest.mark.parametrize(
     ("module", "tree_type"),
     [
