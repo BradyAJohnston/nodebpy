@@ -35,6 +35,7 @@ from ..types import (
 from ._utils import (
     SocketError,
     _allow_innactive_sockets,
+    enum_value_error,
     resolve_socket_key,
     socket_key,
 )
@@ -1431,7 +1432,14 @@ class TreeBuilder[TreeT: NodeTree]:
                 continue
             item = value.resolve(self.tree)
             if item is not None:
-                item.default_value = value.default
+                try:
+                    item.default_value = value.default
+                except TypeError as error:
+                    node = getattr(item, "node", None)
+                    where = f"{node.name}'s " if node is not None else "The "
+                    raise enum_value_error(
+                        error, f"{where}'{item.name}' menu"
+                    ) from None
 
     def __len__(self) -> int:
         return len(self.nodes)

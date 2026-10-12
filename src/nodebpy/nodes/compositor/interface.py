@@ -225,4 +225,4 @@ class EnableOutput[T](BaseNode):
             "INT_VECTOR",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)

@@ -27,7 +27,7 @@ from bpy.types import (
 
 from ..types import SOCKET_COMPATIBILITY, Default, InputAny
 from ._combine import holds_sockets, link_combined
-from ._utils import SocketError, _NodeLike, _SocketLike
+from ._utils import SocketError, _NodeLike, _SocketLike, enum_value_error
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
@@ -171,6 +171,13 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             node = cls()
             node >> socket
             return node
+
+    def _set_enum(self, prop: str, value: Any) -> None:
+        """Set an enum property, suggesting the closest options for a typo."""
+        try:
+            setattr(self.node, prop, value)
+        except TypeError as error:
+            raise enum_value_error(error, f"{type(self).__name__}'s {prop}") from None
 
     def _set_input_default_value(self, input: NodeSocket, value: Any) -> None:
         """Set the default value for an input socket, handling type conversions."""

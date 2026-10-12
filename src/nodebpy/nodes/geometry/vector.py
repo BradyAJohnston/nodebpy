@@ -582,7 +582,7 @@ class VectorMath(BaseNode):
             "TANGENT",
         ],
     ) -> None:
-        self.node.operation = value
+        self._set_enum("operation", value)
 
 
 class VectorRotate(BaseNode):
@@ -774,7 +774,7 @@ class VectorRotate(BaseNode):
     def rotation_type(
         self, value: Literal["AXIS_ANGLE", "X_AXIS", "Y_AXIS", "Z_AXIS", "EULER_XYZ"]
     ) -> None:
-        self.node.rotation_type = value
+        self._set_enum("rotation_type", value)
 
     @property
     def invert(self) -> bool:

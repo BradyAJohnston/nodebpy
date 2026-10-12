@@ -856,7 +856,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         self,
         value: _AttributeDomains,
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class _ClosureInputItems(_SocketItems):

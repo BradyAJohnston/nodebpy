@@ -122,7 +122,7 @@ class CombineColor(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class ImplicitConversion[T](BaseNode):
@@ -266,7 +266,7 @@ class ImplicitConversion[T](BaseNode):
             "CLOSURE",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class Mix(BaseNode):
@@ -570,7 +570,7 @@ class Mix(BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def factor_mode(self) -> Literal["UNIFORM", "NON_UNIFORM"]:
@@ -578,7 +578,7 @@ class Mix(BaseNode):
 
     @factor_mode.setter
     def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]) -> None:
-        self.node.factor_mode = value
+        self._set_enum("factor_mode", value)
 
     @property
     def blend_type(
@@ -631,7 +631,7 @@ class Mix(BaseNode):
             "VALUE",
         ],
     ) -> None:
-        self.node.blend_type = value
+        self._set_enum("blend_type", value)
 
     @property
     def clamp_factor(self) -> bool:
@@ -773,7 +773,7 @@ class SeparateColor(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class ShaderToRGB(BaseNode):

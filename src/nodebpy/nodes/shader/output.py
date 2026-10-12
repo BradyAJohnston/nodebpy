@@ -139,7 +139,7 @@ class LightOutput(BaseNode):
 
     @target.setter
     def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
-        self.node.target = value
+        self._set_enum("target", value)
 
 
 class LineStyleOutput(BaseNode):
@@ -254,7 +254,7 @@ class LineStyleOutput(BaseNode):
 
     @target.setter
     def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
-        self.node.target = value
+        self._set_enum("target", value)
 
     @property
     def blend_type(
@@ -307,7 +307,7 @@ class LineStyleOutput(BaseNode):
             "VALUE",
         ],
     ) -> None:
-        self.node.blend_type = value
+        self._set_enum("blend_type", value)
 
     @property
     def use_alpha(self) -> bool:
@@ -412,7 +412,7 @@ class MaterialOutput(BaseNode):
 
     @target.setter
     def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
-        self.node.target = value
+        self._set_enum("target", value)
 
 
 class WorldOutput(BaseNode):
@@ -482,4 +482,4 @@ class WorldOutput(BaseNode):
 
     @target.setter
     def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
-        self.node.target = value
+        self._set_enum("target", value)

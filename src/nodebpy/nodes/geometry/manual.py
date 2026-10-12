@@ -665,7 +665,7 @@ class StoreNamedAttribute[T: BaseSocket](BaseNode):
         self,
         value: _NamedAttributeDataTypes,
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def domain(
@@ -678,7 +678,7 @@ class StoreNamedAttribute[T: BaseSocket](BaseNode):
         self,
         value: _AttributeDomains,
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class _EvaluateClosureInputs(_SocketValueItems):
@@ -1412,7 +1412,7 @@ class _IndexSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
     @data_type.setter
     def data_type(self, value: SOCKET_TYPES) -> None:
         """Input socket: Data Type"""
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 type MenuItems[V] = Mapping[str, None | V | tuple[V | None, str]]
@@ -1724,7 +1724,7 @@ class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
     @data_type.setter
     def data_type(self, value: SOCKET_TYPES) -> None:
         """Input socket: Data Type"""
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
@@ -1972,7 +1972,7 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         self,
         value: _AttributeDomains,
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 class _FieldToGridItems(_ValueItems[Item]):
@@ -2098,7 +2098,7 @@ class FieldToGrid[T: BaseSocket](ItemsMixin, BaseNode):
         self,
         value: _GridDataTypes,
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     # -- deprecated per-type methods, removed in 530 --
 
@@ -2603,7 +2603,7 @@ class Compare[T: BaseSocket](BaseNode):
         self,
         value: _CompareDataTypes,
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def mode(
@@ -2747,7 +2747,7 @@ class AttributeStatistic[T: BaseSocket](BaseNode):
             "FLOAT_VECTOR",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def domain(
@@ -2760,7 +2760,7 @@ class AttributeStatistic[T: BaseSocket](BaseNode):
         self,
         value: _AttributeDomains,
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
 
 _SampleCurveDataTypes = Literal[
@@ -3185,7 +3185,7 @@ class SampleCurve[T: BaseSocket](BaseNode):
         self,
         value: _SampleCurveDataTypes,
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SampleIndex[T: BaseSocket](BaseNode):
@@ -3417,7 +3417,7 @@ class SampleIndex[T: BaseSocket](BaseNode):
         self,
         value: _SampleCurveDataTypes,
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def domain(
@@ -3430,7 +3430,7 @@ class SampleIndex[T: BaseSocket](BaseNode):
         self,
         value: _AttributeDomains,
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)
 
     @property
     def clamp(self) -> bool:

@@ -214,7 +214,7 @@ class AdvectGrid[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class ClipGrid[T](BaseNode):
@@ -414,7 +414,7 @@ class ClipGrid[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class CubeGridTopology(BaseNode):
@@ -632,7 +632,7 @@ class DistributePointsInGrid(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["DENSITY_RANDOM", "DENSITY_GRID"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class DistributePointsInVolume(BaseNode):
@@ -840,7 +840,7 @@ class GetNamedGrid[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridCurl(BaseNode):
@@ -1037,7 +1037,7 @@ class GridDilateErode[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridDivergence(BaseNode):
@@ -1217,7 +1217,7 @@ class GridInfo[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridLaplacian(BaseNode):
@@ -1368,7 +1368,7 @@ class GridMean[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridMedian[T](BaseNode):
@@ -1476,7 +1476,7 @@ class GridMedian[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridToMesh(BaseNode):
@@ -1648,7 +1648,7 @@ class GridToPoints[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class MeshToDensityGrid(BaseNode):
@@ -2137,7 +2137,7 @@ class PruneGrid[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SDFGridFillet(BaseNode):
@@ -2612,7 +2612,7 @@ class SampleGrid[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SampleGridIndex[T, TGrid](BaseNode):
@@ -2735,7 +2735,7 @@ class SampleGridIndex[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SetGridBackground[T, TGrid](BaseNode):
@@ -2871,7 +2871,7 @@ class SetGridBackground[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SetGridTransform[T](BaseNode):
@@ -2968,7 +2968,7 @@ class SetGridTransform[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class StoreNamedGrid[T](BaseNode):
@@ -3084,7 +3084,7 @@ class StoreNamedGrid[T](BaseNode):
     def data_type(
         self, value: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class VolumeCube(BaseNode):
@@ -3354,4 +3354,4 @@ class VoxelizeGrid[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)

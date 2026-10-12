@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import difflib
 import keyword
 import re
 import unicodedata
@@ -16,6 +17,31 @@ if TYPE_CHECKING:
 
 class SocketError(Exception):
     """Raised when a socket operation fails."""
+
+
+_ENUM_NOT_FOUND = re.compile(
+    r'enum "(?P<value>[^"]*)" not found in \((?P<options>.*)\)'
+)
+
+
+def enum_value_error(error: TypeError, what: str) -> TypeError:
+    """Blender's error for an unknown enum value, reworded to name ``what``
+    and suggest the closest options (case aside: ``"add"`` suggests ``ADD``).
+    Returns ``error`` itself when it is about something else."""
+    match = _ENUM_NOT_FOUND.search(str(error))
+    if match is None:
+        return error
+    value = match["value"]
+    options = re.findall(r"'([^']*)'", match["options"])
+    by_upper = {option.upper(): option for option in options}
+    close = [
+        by_upper[found]
+        for found in difflib.get_close_matches(value.upper(), list(by_upper), n=3)
+    ]
+    hint = f" Did you mean {' or '.join(map(repr, close))}?" if close else ""
+    return TypeError(
+        f"{what} has no option {value!r}.{hint} Options: {', '.join(options)}."
+    )
 
 
 # Type precedence for mixed-type operator dispatch (higher = dominant).

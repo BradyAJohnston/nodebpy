@@ -646,7 +646,7 @@ class Defocus(BaseNode):
             "OCTAGON", "HEPTAGON", "HEXAGON", "PENTAGON", "SQUARE", "TRIANGLE", "CIRCLE"
         ],
     ) -> None:
-        self.node.bokeh = value
+        self._set_enum("bokeh", value)
 
     @property
     def angle(self) -> float:

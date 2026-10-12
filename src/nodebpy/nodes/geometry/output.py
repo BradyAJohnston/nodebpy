@@ -105,4 +105,4 @@ class Viewer(_ViewerMixin, BaseNode):
             "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ],
     ) -> None:
-        self.node.domain = value
+        self._set_enum("domain", value)

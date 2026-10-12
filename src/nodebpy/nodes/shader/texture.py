@@ -75,7 +75,7 @@ class EnvironmentTexture(BaseNode):
 
     @projection.setter
     def projection(self, value: Literal["EQUIRECTANGULAR", "MIRROR_BALL"]) -> None:
-        self.node.projection = value
+        self._set_enum("projection", value)
 
     @property
     def interpolation(self) -> Literal["Linear", "Closest", "Cubic", "Smart"]:
@@ -85,7 +85,7 @@ class EnvironmentTexture(BaseNode):
     def interpolation(
         self, value: Literal["Linear", "Closest", "Cubic", "Smart"]
     ) -> None:
-        self.node.interpolation = value
+        self._set_enum("interpolation", value)
 
 
 class IESTexture(BaseNode):
@@ -178,7 +178,7 @@ class IESTexture(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["INTERNAL", "EXTERNAL"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class ImageTexture(BaseNode):
@@ -246,7 +246,7 @@ class ImageTexture(BaseNode):
 
     @projection.setter
     def projection(self, value: Literal["FLAT", "BOX", "SPHERE", "TUBE"]) -> None:
-        self.node.projection = value
+        self._set_enum("projection", value)
 
     @property
     def interpolation(self) -> Literal["Linear", "Closest", "Cubic", "Smart"]:
@@ -256,7 +256,7 @@ class ImageTexture(BaseNode):
     def interpolation(
         self, value: Literal["Linear", "Closest", "Cubic", "Smart"]
     ) -> None:
-        self.node.interpolation = value
+        self._set_enum("interpolation", value)
 
     @property
     def projection_blend(self) -> float:
@@ -272,7 +272,7 @@ class ImageTexture(BaseNode):
 
     @extension.setter
     def extension(self, value: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]) -> None:
-        self.node.extension = value
+        self._set_enum("extension", value)
 
 
 class SkyTexture(BaseNode):
@@ -455,7 +455,7 @@ class SkyTexture(BaseNode):
             "SINGLE_SCATTERING", "MULTIPLE_SCATTERING", "PREETHAM", "HOSEK_WILKIE"
         ],
     ) -> None:
-        self.node.sky_type = value
+        self._set_enum("sky_type", value)
 
     @property
     def sun_disc(self) -> bool:

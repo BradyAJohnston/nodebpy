@@ -380,7 +380,7 @@ class GlassBSDF(BaseNode):
 
     @distribution.setter
     def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]) -> None:
-        self.node.distribution = value
+        self._set_enum("distribution", value)
 
 
 class GlossyBSDF(BaseNode):
@@ -494,7 +494,7 @@ class GlossyBSDF(BaseNode):
     def distribution(
         self, value: Literal["BECKMANN", "GGX", "ASHIKHMIN_SHIRLEY", "MULTI_GGX"]
     ) -> None:
-        self.node.distribution = value
+        self._set_enum("distribution", value)
 
 
 class HairBSDF(BaseNode):
@@ -594,7 +594,7 @@ class HairBSDF(BaseNode):
 
     @component.setter
     def component(self, value: Literal["Reflection", "Transmission"]) -> None:
-        self.node.component = value
+        self._set_enum("component", value)
 
 
 class Holdout(BaseNode):
@@ -850,7 +850,7 @@ class MetallicBSDF(BaseNode):
 
     @distribution.setter
     def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]) -> None:
-        self.node.distribution = value
+        self._set_enum("distribution", value)
 
     @property
     def fresnel_type(self) -> Literal["PHYSICAL_CONDUCTOR", "F82"]:
@@ -858,7 +858,7 @@ class MetallicBSDF(BaseNode):
 
     @fresnel_type.setter
     def fresnel_type(self, value: Literal["PHYSICAL_CONDUCTOR", "F82"]) -> None:
-        self.node.fresnel_type = value
+        self._set_enum("fresnel_type", value)
 
 
 class MixShader(BaseNode):
@@ -1232,7 +1232,7 @@ class PrincipledBSDF(BaseNode):
 
     @distribution.setter
     def distribution(self, value: Literal["GGX", "MULTI_GGX"]) -> None:
-        self.node.distribution = value
+        self._set_enum("distribution", value)
 
     @property
     def subsurface_method(
@@ -1247,7 +1247,7 @@ class PrincipledBSDF(BaseNode):
             "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
         ],
     ) -> None:
-        self.node.subsurface_method = value
+        self._set_enum("subsurface_method", value)
 
 
 class PrincipledHairBSDF(BaseNode):
@@ -1445,7 +1445,7 @@ class PrincipledHairBSDF(BaseNode):
 
     @model.setter
     def model(self, value: Literal["CHIANG", "HUANG"]) -> None:
-        self.node.model = value
+        self._set_enum("model", value)
 
     @property
     def parametrization(self) -> Literal["ABSORPTION", "MELANIN", "COLOR"]:
@@ -1453,7 +1453,7 @@ class PrincipledHairBSDF(BaseNode):
 
     @parametrization.setter
     def parametrization(self, value: Literal["ABSORPTION", "MELANIN", "COLOR"]) -> None:
-        self.node.parametrization = value
+        self._set_enum("parametrization", value)
 
 
 class RayPortalBSDF(BaseNode):
@@ -1619,7 +1619,7 @@ class RefractionBSDF(BaseNode):
 
     @distribution.setter
     def distribution(self, value: Literal["BECKMANN", "GGX"]) -> None:
-        self.node.distribution = value
+        self._set_enum("distribution", value)
 
 
 class SheenBSDF(BaseNode):
@@ -1704,7 +1704,7 @@ class SheenBSDF(BaseNode):
 
     @distribution.setter
     def distribution(self, value: Literal["ASHIKHMIN", "MICROFIBER"]) -> None:
-        self.node.distribution = value
+        self._set_enum("distribution", value)
 
 
 class SpecularBSDF(BaseNode):
@@ -1952,7 +1952,7 @@ class SubsurfaceScattering(BaseNode):
             "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
         ],
     ) -> None:
-        self.node.falloff = value
+        self._set_enum("falloff", value)
 
 
 class ToonBSDF(BaseNode):
@@ -2044,7 +2044,7 @@ class ToonBSDF(BaseNode):
 
     @component.setter
     def component(self, value: Literal["DIFFUSE", "GLOSSY"]) -> None:
-        self.node.component = value
+        self._set_enum("component", value)
 
 
 class TranslucentBSDF(BaseNode):

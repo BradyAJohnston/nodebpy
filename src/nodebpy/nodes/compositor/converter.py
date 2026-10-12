@@ -256,7 +256,7 @@ class CombineColor(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
     @property
     def ycc_mode(self) -> Literal["ITUBT601", "ITUBT709", "JFIF"]:
@@ -264,7 +264,7 @@ class CombineColor(BaseNode):
 
     @ycc_mode.setter
     def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]) -> None:
-        self.node.ycc_mode = value
+        self._set_enum("ycc_mode", value)
 
 
 class ConvertToDisplay(BaseNode):
@@ -553,7 +553,7 @@ class ImplicitConversion[T](BaseNode):
             "INT_VECTOR",
         ],
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class Levels(BaseNode):
@@ -786,7 +786,7 @@ class RelativeToPixel(BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
     @property
     def reference_dimension(
@@ -799,7 +799,7 @@ class RelativeToPixel(BaseNode):
         self,
         value: Literal["PER_DIMENSION", "X", "Y", "Greater", "Smaller", "Diagonal"],
     ) -> None:
-        self.node.reference_dimension = value
+        self._set_enum("reference_dimension", value)
 
 
 class SeparateColor(BaseNode):
@@ -921,7 +921,7 @@ class SeparateColor(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
     @property
     def ycc_mode(self) -> Literal["ITUBT601", "ITUBT709", "JFIF"]:
@@ -929,7 +929,7 @@ class SeparateColor(BaseNode):
 
     @ycc_mode.setter
     def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]) -> None:
-        self.node.ycc_mode = value
+        self._set_enum("ycc_mode", value)
 
 
 class SetAlpha(BaseNode):
@@ -1289,7 +1289,7 @@ class Switch[T](_SwitchMixin, BaseNode):
             "INT_VECTOR",
         ],
     ) -> None:
-        self.node.input_type = value
+        self._set_enum("input_type", value)
 
 
 class SwitchView(BaseNode):

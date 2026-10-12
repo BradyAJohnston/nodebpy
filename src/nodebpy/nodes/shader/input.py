@@ -922,7 +922,7 @@ class Tangent(BaseNode):
 
     @direction_type.setter
     def direction_type(self, value: Literal["RADIAL", "UV_MAP"]) -> None:
-        self.node.direction_type = value
+        self._set_enum("direction_type", value)
 
     @property
     def axis(self) -> Literal["X", "Y", "Z"]:
@@ -930,7 +930,7 @@ class Tangent(BaseNode):
 
     @axis.setter
     def axis(self, value: Literal["X", "Y", "Z"]) -> None:
-        self.node.axis = value
+        self._set_enum("axis", value)
 
     @property
     def uv_map(self) -> str:

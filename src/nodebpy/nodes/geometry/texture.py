@@ -409,7 +409,7 @@ class GaborTexture(BaseNode):
 
     @gabor_type.setter
     def gabor_type(self, value: Literal["2D", "3D"]) -> None:
-        self.node.gabor_type = value
+        self._set_enum("gabor_type", value)
 
 
 class GradientTexture(BaseNode):
@@ -535,7 +535,7 @@ class GradientTexture(BaseNode):
             "RADIAL",
         ],
     ) -> None:
-        self.node.gradient_type = value
+        self._set_enum("gradient_type", value)
 
 
 class ImageTexture(BaseNode):
@@ -613,7 +613,7 @@ class ImageTexture(BaseNode):
 
     @interpolation.setter
     def interpolation(self, value: Literal["Linear", "Closest", "Cubic"]) -> None:
-        self.node.interpolation = value
+        self._set_enum("interpolation", value)
 
     @property
     def extension(self) -> Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]:
@@ -621,7 +621,7 @@ class ImageTexture(BaseNode):
 
     @extension.setter
     def extension(self, value: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]) -> None:
-        self.node.extension = value
+        self._set_enum("extension", value)
 
 
 class MagicTexture(BaseNode):
@@ -968,7 +968,7 @@ class NoiseTexture(BaseNode):
 
     @noise_dimensions.setter
     def noise_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
-        self.node.noise_dimensions = value
+        self._set_enum("noise_dimensions", value)
 
     @property
     def noise_type(
@@ -993,7 +993,7 @@ class NoiseTexture(BaseNode):
             "HETERO_TERRAIN",
         ],
     ) -> None:
-        self.node.noise_type = value
+        self._set_enum("noise_type", value)
 
     @property
     def normalize(self) -> bool:
@@ -1152,7 +1152,7 @@ class VoronoiTexture(BaseNode):
 
     @voronoi_dimensions.setter
     def voronoi_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
-        self.node.voronoi_dimensions = value
+        self._set_enum("voronoi_dimensions", value)
 
     @property
     def distance(self) -> Literal["EUCLIDEAN", "MANHATTAN", "CHEBYCHEV", "MINKOWSKI"]:
@@ -1162,7 +1162,7 @@ class VoronoiTexture(BaseNode):
     def distance(
         self, value: Literal["EUCLIDEAN", "MANHATTAN", "CHEBYCHEV", "MINKOWSKI"]
     ) -> None:
-        self.node.distance = value
+        self._set_enum("distance", value)
 
     @property
     def feature(
@@ -1175,7 +1175,7 @@ class VoronoiTexture(BaseNode):
         self,
         value: Literal["F1", "F2", "SMOOTH_F1", "DISTANCE_TO_EDGE", "N_SPHERE_RADIUS"],
     ) -> None:
-        self.node.feature = value
+        self._set_enum("feature", value)
 
     @property
     def normalize(self) -> bool:
@@ -1357,7 +1357,7 @@ class WaveTexture(BaseNode):
 
     @wave_type.setter
     def wave_type(self, value: Literal["BANDS", "RINGS"]) -> None:
-        self.node.wave_type = value
+        self._set_enum("wave_type", value)
 
     @property
     def bands_direction(self) -> Literal["X", "Y", "Z", "DIAGONAL"]:
@@ -1365,7 +1365,7 @@ class WaveTexture(BaseNode):
 
     @bands_direction.setter
     def bands_direction(self, value: Literal["X", "Y", "Z", "DIAGONAL"]) -> None:
-        self.node.bands_direction = value
+        self._set_enum("bands_direction", value)
 
     @property
     def rings_direction(self) -> Literal["X", "Y", "Z", "SPHERICAL"]:
@@ -1373,7 +1373,7 @@ class WaveTexture(BaseNode):
 
     @rings_direction.setter
     def rings_direction(self, value: Literal["X", "Y", "Z", "SPHERICAL"]) -> None:
-        self.node.rings_direction = value
+        self._set_enum("rings_direction", value)
 
     @property
     def wave_profile(self) -> Literal["SIN", "SAW", "TRI"]:
@@ -1381,7 +1381,7 @@ class WaveTexture(BaseNode):
 
     @wave_profile.setter
     def wave_profile(self, value: Literal["SIN", "SAW", "TRI"]) -> None:
-        self.node.wave_profile = value
+        self._set_enum("wave_profile", value)
 
 
 class WhiteNoiseTexture(BaseNode):
@@ -1451,4 +1451,4 @@ class WhiteNoiseTexture(BaseNode):
 
     @noise_dimensions.setter
     def noise_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
-        self.node.noise_dimensions = value
+        self._set_enum("noise_dimensions", value)
