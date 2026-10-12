@@ -3775,3 +3775,26 @@ def test_active_output_round_trips():
     assert ns["tree"].tree.nodes[active[0]].inputs[0].links[0].from_node.bl_idname == (
         "ShaderNodeEmission"
     )
+
+
+def test_shared_classes_export_with_the_trees_alias():
+    """Classes several modules share (Value, Combine XYZ, the repeat and closure
+    zones) are written with the exported tree's alias, not the geometry one."""
+    with c.tree("Alias Comp") as comp:
+        x = c.Value()
+        image = comp.inputs.color("Image")
+        c.Blur(image, size=(x, 2)) >> comp.outputs.color("Image")
+    with s.tree("Alias Shader") as shader:
+        zone = s.RepeatZone(3)
+        item = zone.items.float(s.Value(), "x")
+        item.current * 2 >> item.next
+        item.result >> shader.outputs.float("F")
+        closure = s.ClosureZone()
+        closure.inputs.float("i").output >> closure.outputs.float("o").input
+    for tree, alias in ((comp, "c"), (shader, "s")):
+        code = _assert_roundtrip(tree)
+        assert "geometry as g" not in code and "g." not in code, code
+        assert f"{alias}.Value()" in code
+    assert "c.CombineXYZ(" in to_python(comp)
+    code = to_python(shader)
+    assert "s.RepeatZone(3)" in code and "s.ClosureZone()" in code

@@ -17,6 +17,7 @@ title: Changelog
 
 ### Fixes
 
+- **Exported shader and compositor trees use their own module** for classes the modules share (`c.Value()`, `s.CombineXYZ(...)`, `s.RepeatZone(...)`, `s.ClosureZone()`, Reroute, bundles, Evaluate Closure, Format String), instead of `g.` and an extra `geometry` import.
 - **Linking a socket the node's settings hide raises**, naming the node's settings and the sockets that are available, e.g. `'Vector Math' has no 'Vector' output with its current settings {'operation': 'DOT_PRODUCT'}; available: ['Value']`. The link used to be created and then ignored when the tree was evaluated.
 - **Exporting a node with a one-character string default no longer recurses forever.**
 

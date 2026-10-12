@@ -28,6 +28,7 @@ import textwrap
 from collections import Counter
 from collections.abc import Callable, Collection, Iterator, Mapping
 from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from functools import cache
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
@@ -452,6 +453,10 @@ _TREE_ALIAS = {
     "CompositorNodeTree": "c",
 }
 
+# The tree being emitted, so a class shared between modules (Value, Combine XYZ,
+# Reroute, the closure and repeat zones) is written with that tree's alias.
+_CURRENT_TREE: ContextVar[str] = ContextVar("_CURRENT_TREE", default="GeometryNodeTree")
+
 _SKIP_BL_IDNAMES = frozenset(
     {"NodeGroupInput", "NodeGroupOutput", "NodeReroute", "NodeFrame"}
 )
@@ -569,8 +574,60 @@ def _get_node_registry() -> dict[str, tuple[str, type]]:
 
 
 def _find_cls(bl_idname: str) -> tuple[str, type] | None:
-    """Return (alias, class) for a bl_idname, or None."""
-    return _get_node_registry().get(bl_idname)
+    """Return (alias, class) for a bl_idname, or None, preferring the module of
+    the tree being emitted when it has the class."""
+    found = _get_node_registry().get(bl_idname)
+    if found is None:  # the registry decides what is supported; the tree only the alias
+        return None
+    local = _tree_registry(_CURRENT_TREE.get()).get(bl_idname)
+    if local is None:
+        return found
+    if found is not None and local[1] is not found[1] and found[1] in local[2]:
+        # the module re-exports the registry's own choice under its alias
+        return local[0], found[1]
+    return local[0], local[1]
+
+
+_TREE_REGISTRIES: dict[str, dict[str, tuple[str, type, set[type]]]] = {}
+
+
+def _tree_registry(tree_idname: str) -> dict[str, tuple[str, type, set[type]]]:
+    """bl_idname → (alias, class, every class the module exports for it) for
+    one tree type's module."""
+    if tree_idname not in _TREE_REGISTRIES:
+        from ..builder.node import BaseNode
+        from ..nodes import compositor, geometry, shader
+
+        alias = _TREE_ALIAS.get(tree_idname, "g")
+        module = {"g": geometry, "s": shader, "c": compositor}[alias]
+        registry: dict[str, tuple[str, type, set[type]]] = {}
+        for name, cls in vars(module).items():
+            if name.startswith("_") or not isinstance(cls, type):
+                continue
+            if not issubclass(cls, BaseNode):
+                continue
+            bl_id = getattr(cls, "_bl_idname", None)
+            if not bl_id:
+                continue
+            if bl_id in registry:
+                registry[bl_id][2].add(cls)
+            else:
+                registry[bl_id] = (alias, cls, {cls})
+        _TREE_REGISTRIES[tree_idname] = registry
+    return _TREE_REGISTRIES[tree_idname]
+
+
+def _tree_alias(ctx: EmitContext, name: str) -> str:
+    """``<alias>.<name>`` for a class the emitted tree's module exports, falling
+    back to the geometry module; records the alias for the imports."""
+    from ..nodes import compositor, geometry, shader
+
+    alias = _TREE_ALIAS.get(ctx.node_tree.bl_idname, "g")
+    module = {"g": geometry, "s": shader, "c": compositor}[alias]
+    if not hasattr(module, name):
+        alias = "g"
+    ctx.used_aliases.add(alias)
+    return f"{alias}.{name}"
 
 
 # ---------------------------------------------------------------------------
@@ -4794,6 +4851,14 @@ def _render_group_class(
 def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
     """Generate the interface/body/output lines for one tree. Nested group
     nodes register their classes on ``collector`` as a side effect."""
+    token = _CURRENT_TREE.set(node_tree.bl_idname)
+    try:
+        return _emit_tree_lines(node_tree, collector)
+    finally:
+        _CURRENT_TREE.reset(token)
+
+
+def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
     links = _effective_links(node_tree, collector.keep_reroutes)
     incoming: dict[str, list[_Link]] = {}
     outgoing: dict[str, list[_Link]] = {}
@@ -5125,8 +5190,7 @@ def _emit_format_string(node, ctx: EmitContext) -> Expr | _Val | None:
         Lit(format_socket.default_value if format_socket is not None else "")
     ]
     kwargs: dict[str, Expr] = {"items": DictExpr(items)} if items else {}
-    ctx.used_aliases.add("g")
-    return Call("g.FormatString", args, kwargs)
+    return Call(_tree_alias(ctx, "FormatString"), args, kwargs)
 
 
 @register_emitter("GeometryNodeStringJoin")
@@ -5682,11 +5746,11 @@ def _emit_reroute(node, ctx: EmitContext) -> Expr | _Val | None:
     socket expression so the runtime links it directly — ``tree.link`` skips
     type-compat for reroutes — rather than the colour-typed ``input=`` kwarg
     best-matching against the reroute's default socket and failing."""
-    ctx.used_aliases.add("g")
+    reroute = _tree_alias(ctx, "Reroute")
     link = ctx.input_link(node, node.inputs[0].identifier)
     if link is None:
-        return Call("g.Reroute")
-    return Call("g.Reroute", kwargs={"input": ctx.socket_expr(link)})
+        return Call(reroute)
+    return Call(reroute, kwargs={"input": ctx.socket_expr(link)})
 
 
 def _bundle_item_call(
@@ -5742,7 +5806,7 @@ def _combine_bundle_dict(node, ctx: EmitContext) -> Expr:
     kwargs: dict[str, Expr] = {"items": DictExpr(items)}
     if node.define_signature:
         kwargs["define_signature"] = Lit(True)
-    return Call("g.CombineBundle", kwargs=kwargs)
+    return Call(_tree_alias(ctx, "CombineBundle"), kwargs=kwargs)
 
 
 @register_emitter("NodeCombineBundle")
@@ -5752,7 +5816,6 @@ def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     unlinked defaults and non-AUTO structure types. Falls back to the
     items-dict constructor for item types without a typed factory."""
     items = list(node.bundle_items)
-    ctx.used_aliases.add("g")
     if any(item.socket_type not in _SWITCH_METHOD for item in items):
         return _combine_bundle_dict(node, ctx)
     kwargs: dict[str, Expr] = {}
@@ -5762,7 +5825,7 @@ def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     if not items and not ctx.outgoing.get(node.name):
         var_name = "_" + var_name  # dangling and item-less → never referenced
     ref = Ref(var_name)
-    ctor = Call("g.CombineBundle", kwargs=kwargs)
+    ctor = Call(_tree_alias(ctx, "CombineBundle"), kwargs=kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     for socket, item in zip(_prefixed_sockets(node, "Item_"), items):
         args, kwargs = _item_decl_args(ctx, node, item, socket)
@@ -5784,7 +5847,7 @@ def _separate_bundle_dict(node, ctx: EmitContext) -> Expr:
     kwargs: dict[str, Expr] = {"items": DictExpr(items)}
     if node.define_signature:
         kwargs["define_signature"] = Lit(True)
-    return Call("g.SeparateBundle", args, kwargs)
+    return Call(_tree_alias(ctx, "SeparateBundle"), args, kwargs)
 
 
 @register_emitter("NodeSeparateBundle")
@@ -5794,7 +5857,6 @@ def _emit_separate_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     variable whenever the item's output is read. Falls back to the
     items-dict constructor for item types without a typed factory."""
     items = list(node.bundle_items)
-    ctx.used_aliases.add("g")
     if any(item.socket_type not in _SWITCH_METHOD for item in items):
         return _separate_bundle_dict(node, ctx)
     bundle_link = ctx.input_link(node, "Bundle")
@@ -5806,7 +5868,7 @@ def _emit_separate_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     if not items:
         var_name = "_" + var_name  # no item lines → never referenced
     ref = Ref(var_name)
-    ctor = Call("g.SeparateBundle", args, kwargs)
+    ctor = Call(_tree_alias(ctx, "SeparateBundle"), args, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     outputs: dict[str, Expr] = {}
     consumed = {link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())}
@@ -5913,7 +5975,7 @@ def _evaluate_closure_dict(node, ctx: EmitContext) -> Expr:
         kwargs["output_items"] = DictExpr(output_items)
     if node.define_signature:
         kwargs["define_signature"] = Lit(True)
-    return Call("g.EvaluateClosure", args, kwargs)
+    return Call(_tree_alias(ctx, "EvaluateClosure"), args, kwargs)
 
 
 @register_emitter("NodeEvaluateClosure")
@@ -5925,7 +5987,6 @@ def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
     constructor for item types without a typed factory."""
     in_items = list(node.input_items)
     out_items = list(node.output_items)
-    ctx.used_aliases.add("g")
     if any(i.socket_type not in _SWITCH_METHOD for i in in_items + out_items):
         return _evaluate_closure_dict(node, ctx)
     closure_link = ctx.input_link(node, "Closure")
@@ -5937,7 +5998,7 @@ def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
     if not in_items and not out_items:
         var_name = "_" + var_name  # no item lines → never referenced
     ref = Ref(var_name)
-    ctor = Call("g.EvaluateClosure", args, kwargs)
+    ctor = Call(_tree_alias(ctx, "EvaluateClosure"), args, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     for socket, item in zip(_prefixed_sockets(node, "Item_"), in_items):
         args, kwargs = _item_decl_args(ctx, node, item, socket)
@@ -6208,8 +6269,8 @@ def _emit_state_zone_input(
 ) -> _Val:
     """Shared input-node emitter for simulation/repeat zones."""
     out_node = _zone_required(node)
-    ctx.used_aliases.add("g")
     zone_ref = Ref(_make_var(label, ctx.counter))
+    ctor = _tree_alias(ctx, ctor)
     ctx.pending_lines.append(f"    {zone_ref.name} = {Call(ctor, ctor_args).render()}")
     if inspection := getattr(out_node, "inspection_index", 0):
         # Which iteration the spreadsheet inspects — zone-output state no
@@ -6255,7 +6316,7 @@ def _emit_simulation_input(node, ctx: EmitContext) -> _Val:
     return _emit_state_zone_input(
         node,
         ctx,
-        ctor="g.SimulationZone",
+        ctor="SimulationZone",
         label="simulation_zone",
         items_attr="state_items",
         special_outputs={"Delta Time": "delta_time"},
@@ -6277,7 +6338,7 @@ def _emit_repeat_input(node, ctx: EmitContext) -> _Val:
     return _emit_state_zone_input(
         node,
         ctx,
-        ctor="g.RepeatZone",
+        ctor="RepeatZone",
         label="repeat_zone",
         items_attr="repeat_items",
         special_outputs={"Iteration": "iteration"},
@@ -6446,9 +6507,9 @@ def _emit_closure_input(node, ctx: EmitContext) -> _Val:
     Items live on the output node (``input_items`` / ``output_items``) and drive
     the input node's outputs and the output node's inputs respectively."""
     out_node = _zone_required(node)
-    ctx.used_aliases.add("g")
     zone_ref = Ref(_make_var("closure_zone", ctx.counter))
-    ctx.pending_lines.append(f"    {zone_ref.name} = {Call('g.ClosureZone').render()}")
+    closure_zone = _tree_alias(ctx, "ClosureZone")
+    ctx.pending_lines.append(f"    {zone_ref.name} = {Call(closure_zone).render()}")
 
     # Input items → readable sockets on the input node's outputs.
     consumed = {link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())}
