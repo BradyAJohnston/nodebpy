@@ -108,6 +108,7 @@ from .input import (
 )
 from .manual import (
     Attribute,
+    ClosureZone,
     Float,
     Frame,
     MenuSwitch,
@@ -182,6 +183,7 @@ __all__ = (
     "Clamp",
     "ClosureInput",
     "ClosureOutput",
+    "ClosureZone",
     "Color",
     "ColorAttribute",
     "ColorRamp",

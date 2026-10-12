@@ -424,6 +424,8 @@ def _is_zero(val: Any) -> bool:
         return not val
     if isinstance(val, (int, float)):
         return val == 0
+    if isinstance(val, str):  # iterating a one-character string never ends
+        return val == ""
     try:
         return all(_is_zero(v) for v in val)
     except TypeError:
@@ -5367,6 +5369,13 @@ class _TypedItemsNodeSpec(_ItemsNodeSpec):
     label: str = "node"  # variable name stem
     method_map: dict[str, str] | None = None  # item type → factory method
     fixed_outputs: tuple[tuple[str, str], ...] = ()  # (output id, accessor path)
+    # items with no output socket (Viewer, File Output)
+    item_outputs: bool = True
+    # item outputs matched by identifier rather than being the trailing ones
+    # (Raycast's color items add an "<name> Alpha" output between them)
+    output_pattern: str | None = None
+    # node properties passed to the constructor when they differ from it
+    ctor_props: bool = False
 
 
 _TYPED_ITEMS_NODE_SPECS = {
@@ -5386,6 +5395,34 @@ _TYPED_ITEMS_NODE_SPECS = {
         },
         method_map=_CAPTURE_ITEM_METHOD,
         fixed_outputs=(("Geometry", "o.geometry"), ("Selection", "o.selection")),
+    ),
+    "GeometryNodeViewer": _TypedItemsNodeSpec(
+        label="viewer", collection="viewer_items", item_outputs=False, ctor_props=True
+    ),
+    "CompositorNodeOutputFile": _TypedItemsNodeSpec(
+        label="file_output",
+        collection="file_output_items",
+        item_outputs=False,
+        ctor_props=True,
+    ),
+    "ShaderNodeRaycast": _TypedItemsNodeSpec(
+        label="raycast",
+        collection="sample_attribute_items",
+        fixed=(
+            ("Position", "position"),
+            ("Direction", "direction"),
+            ("Length", "length"),
+        ),
+        method_map=_CAPTURE_ITEM_METHOD,
+        fixed_outputs=(
+            ("Is Hit", "o.is_hit"),
+            ("Self Hit", "o.self_hit"),
+            ("Hit Distance", "o.hit_distance"),
+            ("Hit Position", "o.hit_position"),
+            ("Hit Normal", "o.hit_normal"),
+        ),
+        output_pattern=r"Attribute_\d+",
+        ctor_props=True,
     ),
     "GeometryNodeBake": _TypedItemsNodeSpec(label="bake", collection="bake_items"),
     "GeometryNodeFieldToGrid": _TypedItemsNodeSpec(
@@ -5516,11 +5553,23 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
         in_sockets[: len(in_sockets) - len(items)],
         in_sockets[len(in_sockets) - len(items) :],
     )
-    item_outputs = out_sockets[len(out_sockets) - len(items) :]
+    item_outputs: list[Any]
+    if not spec.item_outputs:
+        item_outputs = [None] * len(items)
+    elif spec.output_pattern is not None:
+        item_outputs = [
+            s for s in out_sockets if re.fullmatch(spec.output_pattern, s.identifier)
+        ]
+    else:
+        item_outputs = out_sockets[len(out_sockets) - len(items) :]
 
     kwargs = _items_fixed_kwargs(node, ctx, spec, fixed_inputs)
     if kwargs is None:  # pragma: no cover - every spec'd fixed input is authorable
         return None
+    if spec.ctor_props:
+        kwargs.update(
+            {name: Lit(value) for name, value in _non_default_props(node, cls).items()}
+        )
 
     ctx.used_aliases.add(alias)
     var_name = _make_var(spec.label, ctx.counter)
@@ -5543,7 +5592,12 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
         args, kwargs = _item_decl_args(ctx, node, item, in_socket)
         method = method_map[_item_socket_type(item)]
         call = Call(f"{ref.name}.items.{method}", args, kwargs)
-        if out_socket.identifier in consumed:
+        # outputs beside the item's own (a color sample's alpha) are read
+        # off the node by name
+        for extra in out_sockets:
+            if extra.identifier.startswith(f"{getattr(out_socket, 'identifier', '')}_"):
+                outputs[extra.identifier] = Attr(ref, f"o[{_fmt(extra.name)}]")
+        if out_socket is not None and out_socket.identifier in consumed:
             handle = Ref(_make_var(item.name, ctx.counter))
             ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
             outputs[out_socket.identifier] = Attr(handle, "output")
@@ -5633,33 +5687,6 @@ def _emit_reroute(node, ctx: EmitContext) -> Expr | _Val | None:
     if link is None:
         return Call("g.Reroute")
     return Call("g.Reroute", kwargs={"input": ctx.socket_expr(link)})
-
-
-@register_emitter("GeometryNodeViewer")
-def _emit_viewer(node, ctx: EmitContext) -> Expr | _Val | None:
-    """The Viewer's data inputs are created on link via a virtual ``__extend__``
-    socket, so they can't be passed as constructor kwargs. Emit
-    ``viewer = g.Viewer(...)`` then one ``expr >> viewer`` per linked input
-    (in socket order, so Geometry precedes Value), and dissolve the node."""
-    ctx.used_aliases.add("g")
-    kwargs: dict[str, Expr] = {}
-    if node.domain != "AUTO":
-        kwargs["domain"] = Lit(node.domain)
-    if getattr(node, "ui_shortcut", 0):
-        kwargs["ui_shortcut"] = Lit(node.ui_shortcut)
-    order = {s.identifier: i for i, s in enumerate(node.inputs)}
-    links = sorted(
-        ctx.incoming.get(node.name, ()),
-        key=lambda link: order.get(link.to_socket.identifier, 0),
-    )
-    var = _make_var("viewer", ctx.counter)
-    if not links:  # nothing wired into it → the variable is never read (F841)
-        var = "_" + var
-    ctx.pending_lines.append(f"    {var} = {Call('g.Viewer', kwargs=kwargs).render()}")
-    for link in links:
-        statement = BinOp(">>", ctx.upstream_expr(link, pipeline=True), Ref(var))
-        ctx.pending_lines.extend(_stmt_lines(statement))
-    return _Val(None, outputs={})
 
 
 def _bundle_item_call(

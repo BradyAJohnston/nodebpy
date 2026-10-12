@@ -46,14 +46,20 @@ from ..types import (
     InputBoolean,
     InputBundle,
     InputClosure,
+    InputCollection,
     InputColor,
     InputFloat,
+    InputFont,
     InputGeometry,
+    InputImage,
     InputInteger,
     InputLinkable,
+    InputMaterial,
     InputMatrix,
     InputMenu,
+    InputObject,
     InputRotation,
+    InputSound,
     InputString,
     InputVector,
     _BakedDataTypeValues,
@@ -63,13 +69,20 @@ if TYPE_CHECKING:
     from ..builder import (
         BooleanSocket,
         BundleSocket,
+        ClosureSocket,
+        CollectionSocket,
         ColorSocket,
         FloatSocket,
+        FontSocket,
         GeometrySocket,
+        ImageSocket,
         IntegerSocket,
+        MaterialSocket,
         MatrixSocket,
         MenuSocket,
+        ObjectSocket,
         RotationSocket,
+        SoundSocket,
         StringSocket,
         VectorSocket,
     )
@@ -539,3 +552,179 @@ class _DeprecatedNodeMixin:
             skip_file_prefixes=(_PACKAGE_DIR,),
         )
         super().__init__(*args, **kwargs)
+
+
+class _ViewerItems(_FieldItems):
+    """Viewer items: each is an input showing a value in the spreadsheet and
+    viewport; every socket type can be viewed."""
+
+    _has_output = False
+
+    def string(
+        self, value: InputString = None, name: str | None = None
+    ) -> Item[StringSocket]:
+        return self._typed(value, name, "STRING")
+
+    def menu(
+        self, value: InputMenu = None, name: str | None = None
+    ) -> Item[MenuSocket]:
+        return self._typed(value, name, "MENU")
+
+    def object(
+        self, value: InputObject = None, name: str | None = None
+    ) -> Item[ObjectSocket]:
+        return self._typed(value, name, "OBJECT")
+
+    def image(
+        self, value: InputImage = None, name: str | None = None
+    ) -> Item[ImageSocket]:
+        return self._typed(value, name, "IMAGE")
+
+    def geometry(
+        self, value: InputGeometry = None, name: str | None = None
+    ) -> Item[GeometrySocket]:
+        return self._typed(value, name, "GEOMETRY")
+
+    def collection(
+        self, value: InputCollection = None, name: str | None = None
+    ) -> Item[CollectionSocket]:
+        return self._typed(value, name, "COLLECTION")
+
+    def material(
+        self, value: InputMaterial = None, name: str | None = None
+    ) -> Item[MaterialSocket]:
+        return self._typed(value, name, "MATERIAL")
+
+    def bundle(
+        self, value: InputBundle = None, name: str | None = None
+    ) -> Item[BundleSocket]:
+        return self._typed(value, name, "BUNDLE")
+
+    def closure(
+        self, value: InputClosure = None, name: str | None = None
+    ) -> Item[ClosureSocket]:
+        return self._typed(value, name, "CLOSURE")
+
+    def font(
+        self, value: InputFont = None, name: str | None = None
+    ) -> Item[FontSocket]:
+        return self._typed(value, name, "FONT")
+
+    def sound(
+        self, value: InputSound = None, name: str | None = None
+    ) -> Item[SoundSocket]:
+        return self._typed(value, name, "SOUND")
+
+
+class _ViewerMixin(ItemsMixin):
+    """Items for the Viewer node, whose inputs are all viewer items."""
+
+    _items_collection = "viewer_items"
+    _socket_data_types = _ALL_ITEM_TYPES
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
+
+    @property
+    def items(self) -> _ViewerItems:
+        """The values to view, one input socket each."""
+        return _ViewerItems(self)
+
+
+class _FileOutputItems(_ValueItems[Item]):
+    """File Output items: each is an image, value or vector to write out."""
+
+    _has_output = False
+
+    def float(
+        self, value: InputFloat = None, name: str | None = None
+    ) -> Item[FloatSocket]:
+        return self._typed(value, name, "FLOAT")
+
+    def vector(
+        self, value: InputVector = None, name: str | None = None
+    ) -> Item[VectorSocket]:
+        return self._typed(value, name, "VECTOR")
+
+    def color(
+        self, value: InputColor = None, name: str | None = None
+    ) -> Item[ColorSocket]:
+        return self._typed(value, name, "RGBA")
+
+
+class _FileOutputMixin(ItemsMixin):
+    """Items for the compositor's File Output node, one input per file or
+    layer written."""
+
+    _items_collection = "file_output_items"
+    _socket_data_types = ("VALUE", "VECTOR", "RGBA")
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
+
+    @property
+    def items(self) -> _FileOutputItems:
+        """The inputs to write, one per item."""
+        return _FileOutputItems(self)
+
+
+class _RaycastItems(_ValueItems[Item]):
+    """Raycast's sample attributes: each item's input is the name of the
+    attribute to read where the ray hits, and its output the value read.
+    A color item also has an "<name> Alpha" output on the node."""
+
+    _value_types = ("STRING",)
+
+    def float(
+        self, attribute: InputString, name: str | None = None
+    ) -> Item[FloatSocket]:
+        """Sample the float attribute named ``attribute`` at the hit point."""
+        return self._attribute(attribute, name, "FLOAT")
+
+    def vector(
+        self, attribute: InputString, name: str | None = None
+    ) -> Item[VectorSocket]:
+        """Sample the vector attribute named ``attribute`` at the hit point."""
+        return self._attribute(attribute, name, "VECTOR")
+
+    def color(
+        self, attribute: InputString, name: str | None = None
+    ) -> Item[ColorSocket]:
+        """Sample the color attribute named ``attribute`` at the hit point."""
+        return self._attribute(attribute, name, "RGBA")
+
+    def new(  # ty: ignore[invalid-method-override]
+        self, attribute: InputString = None, name: str | None = None, *, type: str
+    ) -> Item:
+        """Sample ``attribute`` as a runtime-chosen ``type`` (``"FLOAT"``,
+        ``"VECTOR"`` or ``"RGBA"``)."""
+        return self._attribute(attribute, name, type)
+
+    def _attribute(self, attribute: Any, name: str | None, type: str) -> Any:
+        # the value is the attribute's name, so it also names the item, and
+        # it isn't the old name-first order ``_typed`` watches for
+        if name is None and isinstance(attribute, str):
+            name = attribute
+        return self._declare(attribute, name, type)
+
+
+class _RaycastMixin(ItemsMixin):
+    """Sample attributes for the shader Raycast node."""
+
+    _items_collection = "sample_attribute_items"
+    _socket_data_types = ("VALUE", "VECTOR", "RGBA")
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
+
+    def _item_socket(self, item, *, output: bool = False) -> bpy.types.NodeSocket:
+        # the item sockets are Value_<n> in, Attribute_<n> out; a color item's
+        # extra Attribute_<n>_Alpha output is not one of them
+        prefix = "Attribute_" if output else "Value_"
+        sockets = self.node.outputs if output else self.node.inputs
+        own = [
+            s
+            for s in sockets
+            if s.identifier.startswith(prefix) and s.identifier[len(prefix) :].isdigit()
+        ]
+        index = next(i for i, candidate in enumerate(self._items) if candidate == item)
+        return own[index]
+
+    @property
+    def items(self) -> _RaycastItems:
+        """The attributes to sample at the hit point."""
+        return _RaycastItems(self)

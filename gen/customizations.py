@@ -355,3 +355,34 @@ register_customization(
         extra_body='    _replacement = "g.RotateRotation"',
     )
 )
+
+
+# Viewer's inputs are viewer items; the mixin adds the ``items`` collection beside the generated
+# constructor.
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeViewer",
+        bases=("_ViewerMixin",),
+        imports=("from .._mixins import _ViewerMixin",),
+    )
+)
+
+# File Output's inputs are file output items; the mixin adds the ``items`` collection beside the generated
+# constructor.
+register_customization(
+    NodeCustomization(
+        bl_idname="CompositorNodeOutputFile",
+        bases=("_FileOutputMixin",),
+        imports=("from .._mixins import _FileOutputMixin",),
+    )
+)
+
+# Raycast samples attributes through its sample attribute items; the mixin adds the ``items`` collection beside the generated
+# constructor.
+register_customization(
+    NodeCustomization(
+        bl_idname="ShaderNodeRaycast",
+        bases=("_RaycastMixin",),
+        imports=("from .._mixins import _RaycastMixin",),
+    )
+)

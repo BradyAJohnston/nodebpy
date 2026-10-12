@@ -228,6 +228,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "Legacy",
     ],
     manually_defined=(
+        "ClosureZone",
         "MenuSwitch",
         "RepeatInput",
         "RepeatOutput",

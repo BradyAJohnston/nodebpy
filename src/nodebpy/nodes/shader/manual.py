@@ -30,11 +30,12 @@ from ...types import (
     InputShader,
     InputVector,
 )
-from ..geometry import Frame, RepeatInput, RepeatOutput, RepeatZone
+from ..geometry import ClosureZone, Frame, RepeatInput, RepeatOutput, RepeatZone
 from ..geometry.manual import Float, MenuItems, _MenuSwitchBase
 
 __all__ = [
     "Attribute",
+    "ClosureZone",
     "Float",
     "Frame",
     "MenuSwitch",

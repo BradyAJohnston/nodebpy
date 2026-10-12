@@ -15,6 +15,7 @@ from ...types import (
     InputFloat,
     InputVector,
 )
+from .._mixins import _RaycastMixin
 
 
 class AmbientOcclusion(BaseNode):
@@ -787,7 +788,7 @@ class PointInfo(BaseNode):
         self._establish_links(**key_args)
 
 
-class Raycast(BaseNode):
+class Raycast(_RaycastMixin, BaseNode):
     """
     Cast rays and retrieve information from the hit point
 
