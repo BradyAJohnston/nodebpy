@@ -87,9 +87,11 @@ from ...types import (
 from .._mixins import (
     _ClosureToListMixin,
     _CombineBundleMixin,
+    _DeprecatedNodeMixin,
     _FieldToListMixin,
     _FormatStringMixin,
     _SeparateBundleMixin,
+    _SwitchMixin,
 )
 
 
@@ -7147,7 +7149,7 @@ class ReverseString(BaseNode):
         self._establish_links(**key_args)
 
 
-class RotateEuler(BaseNode):
+class RotateEuler(_DeprecatedNodeMixin, BaseNode):
     """
     Apply a secondary Euler rotation to a given Euler rotation
 
@@ -7273,6 +7275,8 @@ class RotateEuler(BaseNode):
     @space.setter
     def space(self, value: Literal["OBJECT", "LOCAL"]) -> None:
         self.node.space = value
+
+    _replacement = "g.RotateRotation"
 
 
 class RotateRotation(BaseNode):
@@ -9475,7 +9479,7 @@ class StringToValue[T](BaseNode):
         self.node.data_type = value
 
 
-class Switch[T](BaseNode):
+class Switch[T](_SwitchMixin, BaseNode):
     """
     Switch between two inputs
 
@@ -9524,38 +9528,6 @@ class Switch[T](BaseNode):
         def i(self) -> _Inputs[T]: ...
         @property
         def o(self) -> _Outputs[T]: ...
-
-    def __init__(
-        self,
-        switch: InputBoolean = False,
-        false: InputAny = 0.0,
-        true: InputAny = 0.0,
-        *,
-        input_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-            "FONT",
-            "SOUND",
-        ] = "FLOAT",
-    ):
-        super().__init__()
-        key_args = {"Switch": switch, "False": false, "True": true}
-        self.input_type = input_type
-        self._establish_links(**key_args)
 
     @classmethod
     def float(

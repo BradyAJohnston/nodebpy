@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import BaseNode, Socket, SocketAccessor
+from ...builder import BaseNode, SocketAccessor
 from ...builder.socket import (
     BooleanSocket,
     ColorSocket,
@@ -27,7 +27,6 @@ from ...types import (
     InputFont,
     InputInteger,
     InputIntegerVector,
-    InputLinkable,
     InputMatrix,
     InputMenu,
     InputObject,
@@ -35,6 +34,7 @@ from ...types import (
     InputString,
     InputVector,
 )
+from .._mixins import _SwitchMixin
 
 
 class AlphaConvert(BaseNode):
@@ -515,301 +515,6 @@ class ImplicitConversion[T](BaseNode):
     ) -> "ImplicitConversion[IntegerSocket]":
         """Create Implicit Conversion with operation 'Integer Vector'."""
         return ImplicitConversion(data_type="INT_VECTOR", value=value)
-
-    @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "OBJECT",
-        "FONT",
-        "INT_VECTOR",
-    ]:
-        return self.node.data_type  # ty: ignore[invalid-return-type]
-
-    @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "OBJECT",
-            "FONT",
-            "INT_VECTOR",
-        ],
-    ) -> None:
-        self.node.data_type = value
-
-
-class IndexSwitch[T](BaseNode):
-    """
-    Choose between an arbitrary number of values with an index
-
-    Parameters
-    ----------
-    index : InputInteger
-        Index
-    item_0 : InputColor
-        0
-    item_1 : InputColor
-        1
-    extend : InputLinkable
-
-
-    Inputs
-    ------
-    i.index : IntegerSocket
-        Index
-    i.item_0 : ColorSocket
-        0
-    i.item_1 : ColorSocket
-        1
-    i.extend : Socket
-
-
-    Outputs
-    -------
-    o.output : ColorSocket
-        Output
-    """
-
-    _bl_idname = "GeometryNodeIndexSwitch"
-    node: bpy.types.GeometryNodeIndexSwitch
-
-    class _Inputs[S](SocketAccessor):
-        index: IntegerSocket
-        """Index"""
-        item_0: S
-        """0"""
-        item_1: S
-        """1"""
-        extend: Socket
-
-    class _Outputs[S](SocketAccessor):
-        output: S
-        """Output"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs[T]: ...
-        @property
-        def o(self) -> _Outputs[T]: ...
-
-    def __init__(
-        self,
-        index: InputInteger = 0,
-        item_0: InputAny = (0.8, 0.8, 0.8, 1.0),
-        item_1: InputAny = (0.8, 0.8, 0.8, 1.0),
-        extend: InputLinkable = None,
-        *,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "OBJECT",
-            "FONT",
-            "INT_VECTOR",
-        ] = "RGBA",
-    ):
-        super().__init__()
-        key_args = {
-            "Index": index,
-            "Item_0": item_0,
-            "Item_1": item_1,
-            "__extend__": extend,
-        }
-        self.data_type = data_type
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputFloat = 0.0,
-        item_1: InputFloat = 0.0,
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[FloatSocket]":
-        """Create Index Switch with operation 'Float'."""
-        return IndexSwitch(
-            data_type="FLOAT", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def integer(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputInteger = 0,
-        item_1: InputInteger = 0,
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[IntegerSocket]":
-        """Create Index Switch with operation 'Integer'."""
-        return IndexSwitch(
-            data_type="INT", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def boolean(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputBoolean = False,
-        item_1: InputBoolean = False,
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[BooleanSocket]":
-        """Create Index Switch with operation 'Boolean'."""
-        return IndexSwitch(
-            data_type="BOOLEAN",
-            index=index,
-            item_0=item_0,
-            item_1=item_1,
-            extend=extend,
-        )
-
-    @classmethod
-    def vector(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputVector = (0.0, 0.0, 0.0),
-        item_1: InputVector = (0.0, 0.0, 0.0),
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[VectorSocket]":
-        """Create Index Switch with operation 'Vector'."""
-        return IndexSwitch(
-            data_type="VECTOR", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def color(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputColor = (0.8, 0.8, 0.8, 1.0),
-        item_1: InputColor = (0.8, 0.8, 0.8, 1.0),
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[ColorSocket]":
-        """Create Index Switch with operation 'Color'."""
-        return IndexSwitch(
-            data_type="RGBA", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def rotation(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputRotation = (0.0, 0.0, 0.0),
-        item_1: InputRotation = (0.0, 0.0, 0.0),
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[RotationSocket]":
-        """Create Index Switch with operation 'Rotation'."""
-        return IndexSwitch(
-            data_type="ROTATION",
-            index=index,
-            item_0=item_0,
-            item_1=item_1,
-            extend=extend,
-        )
-
-    @classmethod
-    def matrix(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputMatrix = None,
-        item_1: InputMatrix = None,
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[MatrixSocket]":
-        """Create Index Switch with operation 'Matrix'."""
-        return IndexSwitch(
-            data_type="MATRIX", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def string(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputString = "",
-        item_1: InputString = "",
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[StringSocket]":
-        """Create Index Switch with operation 'String'."""
-        return IndexSwitch(
-            data_type="STRING", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def menu(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputMenu = None,
-        item_1: InputMenu = None,
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[MenuSocket]":
-        """Create Index Switch with operation 'Menu'."""
-        return IndexSwitch(
-            data_type="MENU", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def object(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputObject = None,
-        item_1: InputObject = None,
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[ObjectSocket]":
-        """Create Index Switch with operation 'Object'."""
-        return IndexSwitch(
-            data_type="OBJECT", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def font(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputFont = None,
-        item_1: InputFont = None,
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[FontSocket]":
-        """Create Index Switch with operation 'Font'."""
-        return IndexSwitch(
-            data_type="FONT", index=index, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def integer_vector(
-        cls,
-        index: InputInteger = 0,
-        item_0: InputIntegerVector = (0, 0, 0),
-        item_1: InputIntegerVector = (0, 0, 0),
-        extend: InputLinkable = None,
-    ) -> "IndexSwitch[IntegerSocket]":
-        """Create Index Switch with operation 'Integer Vector'."""
-        return IndexSwitch(
-            data_type="INT_VECTOR",
-            index=index,
-            item_0=item_0,
-            item_1=item_1,
-            extend=extend,
-        )
 
     @property
     def data_type(
@@ -1377,66 +1082,214 @@ class Split(BaseNode):
         self._establish_links(**key_args)
 
 
-class Switch(BaseNode):
+class Switch[T](_SwitchMixin, BaseNode):
     """
-    Switch between two images using a checkbox
+    Switch between two inputs
 
     Parameters
     ----------
     switch : InputBoolean
         Switch
-    off : InputColor
-        Off
-    on : InputColor
-        On
+    false : InputFloat
+        False
+    true : InputFloat
+        True
 
     Inputs
     ------
     i.switch : BooleanSocket
         Switch
-    i.off : ColorSocket
-        Off
-    i.on : ColorSocket
-        On
+    i.false : FloatSocket
+        False
+    i.true : FloatSocket
+        True
 
     Outputs
     -------
-    o.image : ColorSocket
-        Image
+    o.output : FloatSocket
+        Output
     """
 
-    _bl_idname = "CompositorNodeSwitch"
-    node: bpy.types.CompositorNodeSwitch
+    _bl_idname = "GeometryNodeSwitch"
+    node: bpy.types.GeometryNodeSwitch
 
-    class _Inputs(SocketAccessor):
+    class _Inputs[S](SocketAccessor):
         switch: BooleanSocket
         """Switch"""
-        off: ColorSocket
-        """Off"""
-        on: ColorSocket
-        """On"""
+        false: S
+        """False"""
+        true: S
+        """True"""
 
-    class _Outputs(SocketAccessor):
-        image: ColorSocket
-        """Image"""
+    class _Outputs[S](SocketAccessor):
+        output: S
+        """Output"""
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[T]: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> _Outputs[T]: ...
 
-    def __init__(
-        self,
+    @classmethod
+    def float(
+        cls,
         switch: InputBoolean = False,
-        off: InputColor = (0.8, 0.8, 0.8, 1.0),
-        on: InputColor = (0.8, 0.8, 0.8, 1.0),
-    ):
-        super().__init__()
-        key_args = {"Switch": switch, "Off": off, "On": on}
+        false: InputFloat = 0.0,
+        true: InputFloat = 0.0,
+    ) -> "Switch[FloatSocket]":
+        """Create Switch with operation 'Float'."""
+        return Switch(input_type="FLOAT", switch=switch, false=false, true=true)
 
-        self._establish_links(**key_args)
+    @classmethod
+    def integer(
+        cls,
+        switch: InputBoolean = False,
+        false: InputInteger = 0,
+        true: InputInteger = 0,
+    ) -> "Switch[IntegerSocket]":
+        """Create Switch with operation 'Integer'."""
+        return Switch(input_type="INT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def boolean(
+        cls,
+        switch: InputBoolean = False,
+        false: InputBoolean = False,
+        true: InputBoolean = False,
+    ) -> "Switch[BooleanSocket]":
+        """Create Switch with operation 'Boolean'."""
+        return Switch(input_type="BOOLEAN", switch=switch, false=false, true=true)
+
+    @classmethod
+    def vector(
+        cls,
+        switch: InputBoolean = False,
+        false: InputVector = (0.0, 0.0, 0.0),
+        true: InputVector = (0.0, 0.0, 0.0),
+    ) -> "Switch[VectorSocket]":
+        """Create Switch with operation 'Vector'."""
+        return Switch(input_type="VECTOR", switch=switch, false=false, true=true)
+
+    @classmethod
+    def color(
+        cls,
+        switch: InputBoolean = False,
+        false: InputColor = (0.8, 0.8, 0.8, 1.0),
+        true: InputColor = (0.8, 0.8, 0.8, 1.0),
+    ) -> "Switch[ColorSocket]":
+        """Create Switch with operation 'Color'."""
+        return Switch(input_type="RGBA", switch=switch, false=false, true=true)
+
+    @classmethod
+    def rotation(
+        cls,
+        switch: InputBoolean = False,
+        false: InputRotation = (0.0, 0.0, 0.0),
+        true: InputRotation = (0.0, 0.0, 0.0),
+    ) -> "Switch[RotationSocket]":
+        """Create Switch with operation 'Rotation'."""
+        return Switch(input_type="ROTATION", switch=switch, false=false, true=true)
+
+    @classmethod
+    def matrix(
+        cls,
+        switch: InputBoolean = False,
+        false: InputMatrix = None,
+        true: InputMatrix = None,
+    ) -> "Switch[MatrixSocket]":
+        """Create Switch with operation 'Matrix'."""
+        return Switch(input_type="MATRIX", switch=switch, false=false, true=true)
+
+    @classmethod
+    def string(
+        cls,
+        switch: InputBoolean = False,
+        false: InputString = "",
+        true: InputString = "",
+    ) -> "Switch[StringSocket]":
+        """Create Switch with operation 'String'."""
+        return Switch(input_type="STRING", switch=switch, false=false, true=true)
+
+    @classmethod
+    def menu(
+        cls,
+        switch: InputBoolean = False,
+        false: InputMenu = None,
+        true: InputMenu = None,
+    ) -> "Switch[MenuSocket]":
+        """Create Switch with operation 'Menu'."""
+        return Switch(input_type="MENU", switch=switch, false=false, true=true)
+
+    @classmethod
+    def object(
+        cls,
+        switch: InputBoolean = False,
+        false: InputObject = None,
+        true: InputObject = None,
+    ) -> "Switch[ObjectSocket]":
+        """Create Switch with operation 'Object'."""
+        return Switch(input_type="OBJECT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def font(
+        cls,
+        switch: InputBoolean = False,
+        false: InputFont = None,
+        true: InputFont = None,
+    ) -> "Switch[FontSocket]":
+        """Create Switch with operation 'Font'."""
+        return Switch(input_type="FONT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def integer_vector(
+        cls,
+        switch: InputBoolean = False,
+        false: InputIntegerVector = (0, 0, 0),
+        true: InputIntegerVector = (0, 0, 0),
+    ) -> "Switch[IntegerSocket]":
+        """Create Switch with operation 'Integer Vector'."""
+        return Switch(input_type="INT_VECTOR", switch=switch, false=false, true=true)
+
+    @property
+    def input_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "FONT",
+        "INT_VECTOR",
+    ]:
+        return self.node.input_type  # ty: ignore[invalid-return-type]
+
+    @input_type.setter
+    def input_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "FONT",
+            "INT_VECTOR",
+        ],
+    ) -> None:
+        self.node.input_type = value
 
 
 class SwitchView(BaseNode):

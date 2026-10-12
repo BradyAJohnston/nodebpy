@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Final, Literal
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Final, Literal, cast
 
 from bpy.types import (
     CompositorNodeConvertColorSpace,
@@ -11,8 +12,13 @@ from ...builder import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
+    FontSocket,
     IntegerSocket,
+    IntegerVectorSocket,
+    MatrixSocket,
     MenuSocket,
+    ObjectSocket,
+    RotationSocket,
     SocketAccessor,
     StringSocket,
     TreeBuilder,
@@ -20,21 +26,113 @@ from ...builder import (
 )
 from ...builder.socket import BaseSocket
 from ...types import (
+    SOCKET_TYPES,
     Image,
     InputBoolean,
     InputColor,
     InputFloat,
+    InputFont,
     InputInteger,
+    InputIntegerVector,
+    InputMatrix,
     InputMenu,
+    InputObject,
+    InputRotation,
     InputString,
     InputVector,
 )
-from ..geometry.manual import Float, Frame, MenuItems, _MenuSwitchBase
+from ..geometry.manual import Float, Frame, MenuItems, _IndexSwitchBase, _MenuSwitchBase
 
-__all__ = ["Float", "Frame", "MenuSwitch", "tree"]
+__all__ = ["Float", "Frame", "IndexSwitch", "MenuSwitch", "tree"]
 
 
 tree: Final = TreeBuilder.compositor
+
+
+class IndexSwitch[T: BaseSocket](_IndexSwitchBase[T]):
+    """Node builder for the Index Switch node (Compositor tree).
+
+    The same node as in Geometry Nodes, with the same items API and type
+    inference, but the compositor switches fewer types (and Integer Vector,
+    which Geometry Nodes doesn't). With nothing to infer from it is a Color
+    switch, as Blender starts it in the compositor.
+    """
+
+    _fallback_data_type = "RGBA"
+
+    @classmethod
+    def float(
+        cls, index: InputInteger = 0, items: Iterable[InputFloat] = ()
+    ) -> "IndexSwitch[FloatSocket]":
+        return IndexSwitch(index=index, items=items, data_type="FLOAT")
+
+    @classmethod
+    def integer(
+        cls, index: InputInteger = 0, items: Iterable[InputInteger] = ()
+    ) -> "IndexSwitch[IntegerSocket]":
+        return IndexSwitch(index=index, items=items, data_type="INT")
+
+    @classmethod
+    def boolean(
+        cls, index: InputInteger = 0, items: Iterable[InputBoolean] = ()
+    ) -> "IndexSwitch[BooleanSocket]":
+        return IndexSwitch(index=index, items=items, data_type="BOOLEAN")
+
+    @classmethod
+    def vector(
+        cls, index: InputInteger = 0, items: Iterable[InputVector] = ()
+    ) -> "IndexSwitch[VectorSocket]":
+        return IndexSwitch(index=index, items=items, data_type="VECTOR")
+
+    @classmethod
+    def color(
+        cls, index: InputInteger = 0, items: Iterable[InputColor] = ()
+    ) -> "IndexSwitch[ColorSocket]":
+        return IndexSwitch(index=index, items=items, data_type="RGBA")
+
+    @classmethod
+    def rotation(
+        cls, index: InputInteger = 0, items: Iterable[InputRotation] = ()
+    ) -> "IndexSwitch[RotationSocket]":
+        return IndexSwitch(index=index, items=items, data_type="ROTATION")
+
+    @classmethod
+    def matrix(
+        cls, index: InputInteger = 0, items: Iterable[InputMatrix] = ()
+    ) -> "IndexSwitch[MatrixSocket]":
+        return IndexSwitch(index=index, items=items, data_type="MATRIX")
+
+    @classmethod
+    def string(
+        cls, index: InputInteger = 0, items: Iterable[InputString] = ()
+    ) -> "IndexSwitch[StringSocket]":
+        return IndexSwitch(index=index, items=items, data_type="STRING")
+
+    @classmethod
+    def menu(
+        cls, index: InputInteger = 0, items: Iterable[InputMenu] = ()
+    ) -> "IndexSwitch[MenuSocket]":
+        return IndexSwitch(index=index, items=items, data_type="MENU")
+
+    @classmethod
+    def object(
+        cls, index: InputInteger = 0, items: Iterable[InputObject] = ()
+    ) -> "IndexSwitch[ObjectSocket]":
+        return IndexSwitch(index=index, items=items, data_type="OBJECT")
+
+    @classmethod
+    def font(
+        cls, index: InputInteger = 0, items: Iterable[InputFont] = ()
+    ) -> "IndexSwitch[FontSocket]":
+        return IndexSwitch(index=index, items=items, data_type="FONT")
+
+    @classmethod
+    def integer_vector(
+        cls, index: InputInteger = 0, items: Iterable[InputIntegerVector] = ()
+    ) -> "IndexSwitch[IntegerVectorSocket]":
+        return IndexSwitch(
+            index=index, items=items, data_type=cast("SOCKET_TYPES", "INT_VECTOR")
+        )
 
 
 class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):

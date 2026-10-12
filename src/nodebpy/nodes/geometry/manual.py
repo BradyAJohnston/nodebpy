@@ -49,6 +49,7 @@ from ...builder import (
     VectorSocket,
     VectorSocketGrid,
 )
+from ...builder._infer import infer_node_type
 from ...builder.items import (
     _ALL_ITEM_TYPES,
     Item,
@@ -1347,12 +1348,91 @@ class _IndexSwitchItems[T: BaseSocket](ItemCollection["Item[T]"]):
             self.new(value)
 
 
-class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
-    """Node builder for the Index Switch node"""
+class _IndexSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
+    """Base class for Index Switch nodes across tree types: the items, and the
+    type inferred from them. Each tree's subclass adds its typed variants."""
 
     _bl_idname = "GeometryNodeIndexSwitch"
     node: bpy.types.GeometryNodeIndexSwitch
     _items_collection = "index_switch_items"
+    # the type when the items don't decide it
+    _fallback_data_type: ClassVar[str] = "FLOAT"
+
+    def __init__(
+        self,
+        index: InputInteger = 0,
+        items: Iterable[InputAny] = (),
+        data_type: SOCKET_TYPES | None = None,
+    ):
+        super().__init__()
+        items = list(items)
+        # without a type, take it from the items (Float when they don't say)
+        self.data_type = data_type or cast(
+            "SOCKET_TYPES",
+            infer_node_type(
+                self.node, "data_type", items, default=self._fallback_data_type
+            ),
+        )
+        self.node.index_switch_items.clear()
+        self.items._add_all(items)
+        self._establish_links(Index=index)
+
+    @property
+    def items(self) -> "_IndexSwitchItems[T]":
+        """The switch's items, one input socket each."""
+        return _IndexSwitchItems(self)
+
+    @property
+    def _socket_data_types(self) -> tuple[str, ...]:
+        # items are untyped; the node-level data_type fixes the type for all
+        # of them ("FLOAT" is the data_type spelling of socket.type "VALUE")
+        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
+
+    def _new_item(self, name: str, type: str) -> bpy.types.IndexSwitchItem:
+        # index switch items are unnamed and untyped
+        return self._items.new()
+
+    def _item_socket(
+        self, item: bpy.types.IndexSwitchItem, *, output: bool = False
+    ) -> NodeSocket:
+        if output:
+            raise ValueError("Index switch items do not have output sockets")
+        identifier = f"Item_{item.identifier}"
+        assert self.node.inputs is not None
+        for socket in self.node.inputs:
+            if socket.identifier == identifier:
+                return socket
+        raise KeyError(f"No input socket for index switch item {item.identifier}")
+
+    @property
+    def data_type(self) -> SOCKET_TYPES:
+        """Input socket: Data Type"""
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(self, value: SOCKET_TYPES) -> None:
+        """Input socket: Data Type"""
+        self.node.data_type = value
+
+
+type MenuItems[V] = Mapping[str, None | V | tuple[V | None, str]]
+"""Menu Switch ``items`` mapping: item name → value, where the value may be
+a ``(value, description)`` pair to also set the item's tooltip."""
+
+
+def _split_menu_item(
+    value: InputAny | tuple[InputAny, str],
+) -> tuple[InputAny, str | None]:
+    """Split a ``(value, description)`` menu item pair. A 2-tuple whose
+    second element is a string can never be a socket default value, so the
+    form is unambiguous."""
+    if isinstance(value, tuple) and len(value) == 2 and isinstance(value[1], str):
+        return value[0], value[1]
+    return cast("InputAny", value), None
+
+
+class IndexSwitch[T: BaseSocket](_IndexSwitchBase[T]):
+    """Node builder for the Index Switch node"""
 
     @classmethod
     def float(
@@ -1475,71 +1555,6 @@ class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
         @property
         def o(self) -> "_Outputs[T]": ...
 
-    def __init__(
-        self,
-        index: InputInteger = 0,
-        items: Iterable[InputAny] = (),
-        data_type: SOCKET_TYPES = "FLOAT",
-    ):
-        super().__init__()
-        self.data_type = data_type
-        self.node.index_switch_items.clear()
-        self.items._add_all(items)
-        self._establish_links(Index=index)
-
-    @property
-    def items(self) -> "_IndexSwitchItems[T]":
-        """The switch's items, one input socket each."""
-        return _IndexSwitchItems(self)
-
-    @property
-    def _socket_data_types(self) -> tuple[str, ...]:
-        # items are untyped; the node-level data_type fixes the type for all
-        # of them ("FLOAT" is the data_type spelling of socket.type "VALUE")
-        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
-
-    def _new_item(self, name: str, type: str) -> bpy.types.IndexSwitchItem:
-        # index switch items are unnamed and untyped
-        return self._items.new()
-
-    def _item_socket(
-        self, item: bpy.types.IndexSwitchItem, *, output: bool = False
-    ) -> NodeSocket:
-        if output:
-            raise ValueError("Index switch items do not have output sockets")
-        identifier = f"Item_{item.identifier}"
-        assert self.node.inputs is not None
-        for socket in self.node.inputs:
-            if socket.identifier == identifier:
-                return socket
-        raise KeyError(f"No input socket for index switch item {item.identifier}")
-
-    @property
-    def data_type(self) -> SOCKET_TYPES:
-        """Input socket: Data Type"""
-        return self.node.data_type  # ty: ignore[invalid-return-type]
-
-    @data_type.setter
-    def data_type(self, value: SOCKET_TYPES) -> None:
-        """Input socket: Data Type"""
-        self.node.data_type = value
-
-
-type MenuItems[V] = Mapping[str, None | V | tuple[V | None, str]]
-"""Menu Switch ``items`` mapping: item name → value, where the value may be
-a ``(value, description)`` pair to also set the item's tooltip."""
-
-
-def _split_menu_item(
-    value: InputAny | tuple[InputAny, str],
-) -> tuple[InputAny, str | None]:
-    """Split a ``(value, description)`` menu item pair. A 2-tuple whose
-    second element is a string can never be a socket default value, so the
-    form is unambiguous."""
-    if isinstance(value, tuple) and len(value) == 2 and isinstance(value[1], str):
-        return value[0], value[1]
-    return cast("InputAny", value), None
-
 
 class _MenuSwitchItems[T: BaseSocket](ItemCollection["MenuItem[T]"]):
     """The Menu Switch's items: one per menu entry, each with an input
@@ -1613,15 +1628,26 @@ class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
         menu: InputMenu = None,
         items: MenuItems[InputAny] | None = None,
         *,
-        data_type: SOCKET_TYPES = "FLOAT",
+        data_type: SOCKET_TYPES | None = None,
     ):
         super().__init__()
-        self.data_type = data_type
+        # an iterator of items is read twice: for the type, then to add them
+        entries: Mapping[str, Any] | list[Any] = (
+            items if isinstance(items, Mapping) else list(items or ())
+        )
+        values = entries.values() if isinstance(entries, Mapping) else entries
+        # without a type, take it from the items (Float when they don't say)
+        self.data_type = data_type or cast(
+            "SOCKET_TYPES",
+            infer_node_type(
+                self.node, "data_type", [_split_menu_item(v)[0] for v in values]
+            ),
+        )
         self.node.enum_items.clear()
         # a plain string `menu` is an explicit selection; otherwise the
         # selection defaults to the first item
         self._explicit_selection = isinstance(menu, str)
-        self.items._add_all(items)
+        self.items._add_all(entries)
         if isinstance(menu, str) and not self.node.enum_items:
             # a selection named before any items exist (they will be added via
             # items.new()) can't be set yet; defer it to context exit

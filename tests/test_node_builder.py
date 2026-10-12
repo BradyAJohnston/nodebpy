@@ -586,6 +586,7 @@ for _mod, _tree_type in [
         )
 
 
+@pytest.mark.filterwarnings("ignore:Blender deprecates:DeprecationWarning")
 @pytest.mark.parametrize("module,tree_type,class_names", _all_node_params)
 def test_add_all_nodes(module, tree_type, class_names):
     def _test_node_property_access(node: BaseNode):

@@ -5272,25 +5272,45 @@ def _emit_menu_switch(node, ctx: EmitContext) -> Expr | _Val | None:
     return Call(f"{alias}.MenuSwitch.{factory}", kwargs={"items": items})
 
 
+@register_emitter("CompositorNodeSwitch")
+def _emit_compositor_legacy_switch(node, ctx: EmitContext) -> Expr | _Val | None:
+    """Blender 5.2 deprecates the compositor's Color-only Switch for the typed
+    one, which ``c.Switch`` builds; a Color Switch does the same job."""
+    ctx.used_aliases.add("c")
+    args: list[Expr] = []
+    for identifier in ("Switch", "Off", "On"):
+        link = ctx.input_link(node, identifier)
+        socket = _input_socket_by_identifier(node, identifier)
+        if link is not None:
+            args.append(ctx.upstream_expr(link))
+        else:
+            args.append(Lit(getattr(socket, "default_value", None)))
+    return Call("c.Switch.color", args)
+
+
 @register_emitter("GeometryNodeIndexSwitch")
 def _emit_index_switch(node, ctx: EmitContext) -> Expr | _Val | None:
     """IndexSwitch emits the factory tuple form
     ``g.IndexSwitch.float(index, (a, b, ...))`` so the item count
-    round-trips (the constructor clears and recreates the items)."""
-    factory = _SWITCH_FACTORY_NAMES.get(node.data_type)
+    round-trips (the constructor clears and recreates the items). The
+    compositor has its own IndexSwitch class (with ``integer_vector``), so
+    the alias follows the tree being exported."""
+    factory = {**_SWITCH_FACTORY_NAMES, "INT_VECTOR": "integer_vector"}.get(
+        node.data_type
+    )
     if factory is None:
         return None
-    ctx.used_aliases.add("g")
+    alias = _TREE_ALIAS.get(ctx.node_tree.bl_idname, "g")
+    ctx.used_aliases.add(alias)
+    name = f"{alias}.IndexSwitch.{factory}"
     items = TupleExpr([expr for _, expr in _switch_item_exprs(node, ctx, "Index")])
     index_link = ctx.input_link(node, "Index")
     if index_link is not None:
-        return Call(f"g.IndexSwitch.{factory}", [ctx.upstream_expr(index_link), items])
+        return Call(name, [ctx.upstream_expr(index_link), items])
     index_socket = _input_socket_by_identifier(node, "Index")
     if index_socket is not None and index_socket.default_value:
-        return Call(
-            f"g.IndexSwitch.{factory}", [Lit(index_socket.default_value), items]
-        )
-    return Call(f"g.IndexSwitch.{factory}", kwargs={"items": items})
+        return Call(name, [Lit(index_socket.default_value), items])
+    return Call(name, kwargs={"items": items})
 
 
 _UNSET = object()

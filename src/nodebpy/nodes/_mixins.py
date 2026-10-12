@@ -9,8 +9,10 @@ bespoke behaviour lives here.
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Iterable, Mapping
-from typing import TYPE_CHECKING, Any, ClassVar, Literal
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, cast
 
 import bpy
 from mathutils import Euler
@@ -27,6 +29,7 @@ from ..builder import (
     StringSocketList,
     VectorSocketList,
 )
+from ..builder._infer import infer_node_type
 from ..builder.items import (
     _ALL_ITEM_TYPES,
     _DEFAULT_NAMES,
@@ -466,3 +469,73 @@ class _HandleModeMixin:
     @mode.setter
     def mode(self, value: set[Literal["LEFT", "RIGHT"]]) -> None:
         self.node.mode = value
+
+
+_SwitchType = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "MENU",
+    "OBJECT",
+    "IMAGE",
+    "GEOMETRY",
+    "COLLECTION",
+    "MATERIAL",
+    "BUNDLE",
+    "CLOSURE",
+    "FONT",
+    "SOUND",
+    "INT_VECTOR",  # compositor only
+]
+
+
+class _SwitchMixin:
+    """Switch's constructor: without an ``input_type``, the type comes from
+    the values switched between, so a node passed in links the output of
+    that type (``g.Switch(cond, g.Cube(), g.UVSphere())`` switches meshes)."""
+
+    if TYPE_CHECKING:
+        node: bpy.types.GeometryNodeSwitch
+
+        def _establish_links(self, **kwargs: InputAny) -> None: ...
+
+    def __init__(
+        self,
+        switch: InputBoolean = False,
+        false: InputAny = 0.0,
+        true: InputAny = 0.0,
+        *,
+        input_type: _SwitchType | None = None,
+    ):
+        super().__init__()
+        if input_type is None:
+            input_type = cast(
+                "_SwitchType",
+                infer_node_type(self.node, "input_type", (false, true)),
+            )
+        self.input_type = input_type
+        self._establish_links(**{"Switch": switch, "False": false, "True": true})
+
+
+_PACKAGE_DIR = str(Path(__file__).resolve().parents[1])
+
+
+class _DeprecatedNodeMixin:
+    """A node Blender deprecates: building one warns and names the replacement."""
+
+    _replacement: ClassVar[str]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        warnings.warn(
+            f"Blender deprecates the {type(self).__name__} node; use "
+            f"{self._replacement} instead.",
+            DeprecationWarning,
+            # point at the caller's code, past the class methods that build it
+            skip_file_prefixes=(_PACKAGE_DIR,),
+        )
+        super().__init__(*args, **kwargs)
