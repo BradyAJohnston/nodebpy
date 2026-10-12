@@ -58,7 +58,7 @@ def test_plugin_manifest_matches_package():
     assert manifest["name"] == "nodebpy"
     project = tomllib.loads((REPO / "pyproject.toml").read_text(encoding="utf-8"))
     assert manifest["version"] == project["project"]["version"], (
-        "plugin.json version differs from pyproject.toml; run make version"
+        "plugin.json version differs from pyproject.toml; run make skills"
     )
     marketplace = json.loads((REPO / ".claude-plugin" / "marketplace.json").read_text())
     assert [p["name"] for p in marketplace["plugins"]] == ["nodebpy"]
