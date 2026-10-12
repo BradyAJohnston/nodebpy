@@ -49,6 +49,7 @@ from ...builder import (
     VectorSocket,
     VectorSocketGrid,
 )
+from ...builder._infer import infer_node_type
 from ...builder.items import (
     _ALL_ITEM_TYPES,
     Item,
@@ -1479,10 +1480,14 @@ class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
         self,
         index: InputInteger = 0,
         items: Iterable[InputAny] = (),
-        data_type: SOCKET_TYPES = "FLOAT",
+        data_type: SOCKET_TYPES | None = None,
     ):
         super().__init__()
-        self.data_type = data_type
+        items = list(items)
+        # without a type, take it from the items (Float when they don't say)
+        self.data_type = data_type or cast(
+            "SOCKET_TYPES", infer_node_type(self.node, "data_type", items)
+        )
         self.node.index_switch_items.clear()
         self.items._add_all(items)
         self._establish_links(Index=index)
@@ -1613,15 +1618,26 @@ class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
         menu: InputMenu = None,
         items: MenuItems[InputAny] | None = None,
         *,
-        data_type: SOCKET_TYPES = "FLOAT",
+        data_type: SOCKET_TYPES | None = None,
     ):
         super().__init__()
-        self.data_type = data_type
+        # an iterator of items is read twice: for the type, then to add them
+        entries: Mapping[str, Any] | list[Any] = (
+            items if isinstance(items, Mapping) else list(items or ())
+        )
+        values = entries.values() if isinstance(entries, Mapping) else entries
+        # without a type, take it from the items (Float when they don't say)
+        self.data_type = data_type or cast(
+            "SOCKET_TYPES",
+            infer_node_type(
+                self.node, "data_type", [_split_menu_item(v)[0] for v in values]
+            ),
+        )
         self.node.enum_items.clear()
         # a plain string `menu` is an explicit selection; otherwise the
         # selection defaults to the first item
         self._explicit_selection = isinstance(menu, str)
-        self.items._add_all(items)
+        self.items._add_all(entries)
         if isinstance(menu, str) and not self.node.enum_items:
             # a selection named before any items exist (they will be added via
             # items.new()) can't be set yet; defer it to context exit

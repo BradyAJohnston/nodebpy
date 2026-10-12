@@ -275,6 +275,20 @@ assert eod1.data_type == eod2.data_type
 assert eod1.domain == eod2.domain
 ```
 
+### Switches pick their type
+
+`Switch`, `IndexSwitch` and `MenuSwitch` work out their type from the values they are given when you don't name one, so a node passed in is linked through its output of that type: the meshes below, rather than the UV Maps.
+Plain Python values decide only when nothing is linked (`g.Switch(cond, 1, 2)` is an integer switch), and values of different types raise an error naming each one.
+The class methods, or `input_type=` / `data_type=`, still set the type explicitly.
+
+```{python}
+with g.tree():
+    use_sphere = g.Boolean(True)
+    switch = g.Switch(use_sphere, g.Cube(), g.UVSphere())
+
+assert switch.input_type == "GEOMETRY"
+```
+
 A similar approach is taken for the `Compare` node, with the first being data type and then secondarily the comparison operation.
 
 If the items being compared are nodes or sockets, regular boolean comparison with operators will also work.

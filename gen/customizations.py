@@ -332,3 +332,15 @@ register_customization(
         extra_body=_domain_factory_typed("FieldVariance", ["FLOAT", "FLOAT_VECTOR"]),
     )
 )
+
+
+# Switch takes its type from the values it switches between when none is given
+# (a node passed in would otherwise link whichever output converts to Float).
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeSwitch",
+        bases=("_SwitchMixin",),
+        imports=("from .._mixins import _SwitchMixin",),
+        suppress=frozenset({"__init__"}),
+    )
+)

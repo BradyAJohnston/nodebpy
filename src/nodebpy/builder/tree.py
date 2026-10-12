@@ -1802,6 +1802,13 @@ class TreeBuilder[TreeT: NodeTree]:
                 f"Incompatible socket types, {socket1.type} and {socket2.type}"
             )
 
+        if not self.ignore_visibility:
+            # a socket the node's settings hide (Vector Math's Vector output in
+            # Dot Product mode) takes the link but never passes anything along
+            for socket in (socket1, socket2):
+                if getattr(socket, "is_unavailable", False):
+                    raise RuntimeError(_unavailable_message(socket))
+
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
         assert link is not None
 
@@ -1878,3 +1885,22 @@ class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
             ignore_visibility=ignore_visibility,
             clear=True,
         )
+
+
+def _unavailable_message(socket: NodeSocket) -> str:
+    """Why ``socket`` can't be linked: what its node's settings make available."""
+    node = socket.node
+    assert node is not None
+    direction = "output" if socket.is_output else "input"
+    sockets = node.outputs if socket.is_output else node.inputs
+    available = [s.name for s in sockets or () if s.name and not s.is_unavailable]
+    base = set(bpy.types.Node.bl_rna.properties.keys())
+    settings = {
+        prop.identifier: getattr(node, prop.identifier)
+        for prop in node.bl_rna.properties
+        if prop.type == "ENUM" and not prop.is_readonly and prop.identifier not in base
+    }
+    return (
+        f"'{node.name}' has no '{socket.name}' {direction} with its current "
+        f"settings {settings}; available: {available}."
+    )
