@@ -639,6 +639,41 @@ def _tree_alias(ctx: EmitContext, name: str) -> str:
 # Signatures are read for every constructor call emitted; they do not change.
 _signature = cache(inspect.signature)
 
+# Constant input nodes, whose value is passed positionally whatever else the
+# call carries (``g.Integer(5)``, ``g.Vector((1.0, 0.0, 0.0), vector_dimensions=2)``).
+_CONSTANT_INPUT_NODES = frozenset(
+    {
+        "FunctionNodeInputBool",
+        "FunctionNodeInputColor",
+        "FunctionNodeInputInt",
+        "FunctionNodeInputIntVector",
+        "FunctionNodeInputRotation",
+        "FunctionNodeInputString",
+        "FunctionNodeInputVector",
+    }
+)
+
+
+def _constructor_call(func: str, cls: type, node, kwargs: dict[str, Expr]) -> Call:
+    """``func(**kwargs)``, passing the constructor's first parameter
+    positionally for a constant input node or when it is the only argument
+    (``g.Points(count)``, but ``g.SetPosition(offset=...)``)."""
+    if kwargs and (node.bl_idname in _CONSTANT_INPUT_NODES or len(kwargs) == 1):
+        try:
+            params = list(_signature(cls.__init__).parameters.values())[1:]
+        except (TypeError, ValueError):
+            params = []
+        if (
+            params
+            and params[0].kind is inspect.Parameter.POSITIONAL_OR_KEYWORD
+            and params[0].name in kwargs
+        ):
+            kwargs = dict(kwargs)
+            first = kwargs.pop(params[0].name)
+            return Call(func, args=[first], kwargs=kwargs)
+    return Call(func, kwargs=kwargs)
+
+
 # Probe trees kept open inside probe_trees(), by tree type.
 _PROBE_TREES: dict[str, Any] = {}
 _KEEP_PROBE_TREES = False
@@ -1303,7 +1338,7 @@ class EmitContext:
         kwargs = dict(socket_kwargs)
         for name, value in prop_values.items():
             kwargs[name] = Lit(value)
-        return Call(f"{alias}.{cls.__name__}", kwargs=kwargs)
+        return _constructor_call(f"{alias}.{cls.__name__}", cls, node, kwargs)
 
     def _literal_kwargs(
         self, node, cls: type, existing: dict, skip_input_id: str | None
@@ -5549,7 +5584,7 @@ def _items_node_ctor(
         if method is not None:
             return Call(f"{alias}.{cls.__name__}.{method}", kwargs=kwargs)
         kwargs[spec.factory_prop] = Lit(prop_value)
-    return Call(f"{alias}.{cls.__name__}", kwargs=kwargs)
+    return _constructor_call(f"{alias}.{cls.__name__}", cls, node, kwargs)
 
 
 def _emit_items_node(node, ctx: EmitContext) -> Expr | _Val | None:

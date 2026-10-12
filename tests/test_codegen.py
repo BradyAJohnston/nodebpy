@@ -999,7 +999,7 @@ def test_multi_input_socket_becomes_tuple():
         b = g.UVSphere()
         g.JoinGeometry((a, b)) >> tree.outputs.geometry()
     code = _assert_roundtrip(tree)
-    assert "g.JoinGeometry(geometry=(g.Cube(), g.UVSphere()))" in code
+    assert "g.JoinGeometry((g.Cube(), g.UVSphere()))" in code
 
 
 def test_geometry_to_instance_emits_positional_args():
@@ -3238,7 +3238,7 @@ def test_axes_to_rotation_socket_property_collision():
 
     code = _assert_roundtrip(tree)
     assert "secondary_axis=" not in code
-    assert "g.AxesToRotation(primary_axis=v)" in code
+    assert "g.AxesToRotation(v)" in code
 
     # A non-default enum is applied by the constructor (the renamed ``primary``
     # param writes the bpy ``primary_axis`` property), emitted under that param,
@@ -3297,9 +3297,26 @@ def test_duplicate_separators_on_one_source_stay_explicit():
         g.CombineColor(red=s1.o.red, green=s2.o.green) >> tree.outputs.color("Result")
 
     code = _assert_roundtrip(tree)
-    assert code.count("g.SeparateColor(color=color)") == 2
+    assert code.count("g.SeparateColor(color)") == 2
     # not dissolved to the accessor sugar
     assert "color.r" not in code and "color.g" not in code
+
+
+def test_constructor_first_argument_positional():
+    """A constant input node's value, or a constructor's first parameter when
+    it is the only argument, is passed without its keyword."""
+    with TreeBuilder("Positional") as tree:
+        vec = g.Vector((1.0, 2.0, 3.0))
+        points = g.Points(g.Integer(5))
+        g.SetPosition(points, offset=vec) >> tree.outputs.geometry("Geometry")
+        g.String("hi") >> tree.outputs.string("String")
+
+    code = _assert_roundtrip(tree)
+    assert "g.Integer(5)" in code
+    assert 'g.String("hi")' in code
+    assert "g.Vector((1.0, 2.0, 3.0))" in code
+    assert "g.Points(g.Integer(5))" in code
+    assert "offset=" in code
 
 
 MN_FILE_PATH = (
