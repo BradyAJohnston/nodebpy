@@ -9,6 +9,13 @@ skills:
 	mkdir -p skills
 	cp -r src/nodebpy/skills/nodebpy skills/nodebpy
 
+# Set the package version and copy it into the Claude Code plugin manifest:
+# `make version V=520.37.0` or `make version V="--bump patch"`.
+.PHONY: version
+version:
+	uv version $(V)
+	v=$$(uv version --short); perl -0pi -e "s/\"version\": \"[^\"]*\"/\"version\": \"$$v\"/" .claude-plugin/plugin.json
+
 # Regenerate the socket draw-order table from Blender's node declarations
 # (network: sparse-clones the tag matching the installed bpy).
 socket-order:

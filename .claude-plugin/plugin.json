@@ -1,6 +1,6 @@
 {
   "name": "nodebpy",
-  "version": "520.36.1",
+  "version": "520.37.0",
   "description": "Write, edit and verify Blender node trees (Geometry Nodes, shaders, compositor) as Python with nodebpy.",
   "author": {
     "name": "Brady Johnston",
