@@ -44,3 +44,9 @@ def test_other_type_errors_pass_through():
 
     error = TypeError("expected a float")
     assert enum_value_error(error, "Math's operation") is error
+
+
+def test_unlinked_menu_input_says_where_items_come_from():
+    with pytest.raises(TypeError, match="no items yet.*Menu Switch"):
+        with g.tree() as tree:
+            tree.inputs.menu("Mode", "Mesh")
