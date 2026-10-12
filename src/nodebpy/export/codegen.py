@@ -1294,7 +1294,7 @@ class EmitContext:
         for link in self.incoming.get(node.name, ()):
             if skip_input_id and link.to_socket.identifier == skip_input_id:
                 continue
-            name = _normalize(link.to_socket.identifier)
+            name = _socket_param(cls, link.to_socket.identifier)
             if getattr(link.to_socket, "is_multi_input", False):
                 multi_inputs.add(name)
             by_socket.setdefault(name, []).append(
@@ -1369,7 +1369,7 @@ class EmitContext:
                 continue
             if not hasattr(socket, "default_value"):
                 continue
-            kwarg_name = _normalize(socket.identifier)
+            kwarg_name = _socket_param(cls, socket.identifier)
             if kwarg_name in existing:
                 continue
             try:
@@ -1631,7 +1631,7 @@ def _non_default_props(node, cls: type) -> dict[str, Any]:
         # property — even when its name happens to match a bpy property.
         # AxesToRotation's ``primary_axis`` is the Vector socket; the enum of
         # the same bpy name rides on the separate ``primary`` param instead.
-        if _input_socket_by_kwarg(node, name) is not None:
+        if _input_socket_by_kwarg(node, cls, name) is not None:
             continue
         # A constructor param represents a node setting only if it (or the
         # property it proxies) names an actual bpy property. This excludes
@@ -1898,15 +1898,24 @@ def _class_factories(cls: type) -> list[_Factory]:
     return factories
 
 
-def _input_socket_by_kwarg(node, kwarg_name: str):
+def _socket_param(cls: type, identifier: str) -> str:
+    """The constructor parameter for input socket ``identifier``: its
+    normalized identifier, unless the class renamed it after the socket's
+    display name (Color Ramp's ``Fac`` is ``factor``)."""
+    param = _normalize(identifier)
+    renames = getattr(cls, "_renamed_params", {}).get("__init__", {})
+    return renames.get(param, param)
+
+
+def _input_socket_by_kwarg(node, cls: type, kwarg_name: str):
     normalized = _normalize(kwarg_name)
     for socket in node.inputs:
-        if _normalize(socket.identifier) == normalized:
+        if _socket_param(cls, socket.identifier) == normalized:
             return socket
     return None
 
 
-def _factory_state_matches(node, props: dict[str, Any]) -> bool:
+def _factory_state_matches(node, cls: type, props: dict[str, Any]) -> bool:
     """True if every constant the factory sets equals the node's current state."""
     rna_props = getattr(getattr(node, "bl_rna", None), "properties", None)
     for key, value in props.items():
@@ -1916,7 +1925,7 @@ def _factory_state_matches(node, props: dict[str, Any]) -> bool:
             continue
         # Not an rna property — may be a constant on an input socket (menu
         # "type" sockets). Verify against the socket's default value.
-        socket = _input_socket_by_kwarg(node, key)
+        socket = _input_socket_by_kwarg(node, cls, key)
         if (
             socket is None
             or socket.is_linked
@@ -1953,11 +1962,11 @@ def _factory_call(
     parameters, and unlinked sockets whose factory-parameter default differs
     from the node's value get explicit literal kwargs.
     """
-    skip_key = _normalize(skip_input_id) if skip_input_id else None
+    skip_key = _socket_param(cls, skip_input_id) if skip_input_id else None
     best: tuple[_Factory, dict[str, Expr], tuple[bool, int, int]] | None = None
 
     for factory in _class_factories(cls):
-        if not _factory_state_matches(node, factory.props):
+        if not _factory_state_matches(node, cls, factory.props):
             continue
         covered = {_normalize(key) for key in factory.props}
         passed = {
@@ -1999,7 +2008,7 @@ def _factory_call(
                     or isinstance(default, Default)
                 ):
                     continue  # None / Default.* mean "leave the socket untouched"
-                socket = _input_socket_by_kwarg(node, key)
+                socket = _input_socket_by_kwarg(node, cls, key)
                 if socket is None:
                     faithful = False
                     break
