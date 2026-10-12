@@ -4,7 +4,8 @@
 ``.blend`` asset libraries through Python source — ``dump``, ``build``,
 ``ensure``, ``check``, ``plot`` — and renders them as text for ``git diff``
 with ``textconv``; see :mod:`nodebpy.assets._library` and
-:mod:`nodebpy.assets._textconv`.
+:mod:`nodebpy.assets._textconv`. ``run`` runs a script that builds node trees
+and reports what it built (:mod:`nodebpy.report`).
 
 Under a full Blender (no ``bpy`` module) run this file as a script, with the
 arguments after Blender's ``--`` separator::
@@ -31,6 +32,12 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
         argv = sys.argv[1:]
         if "--" in sys.argv:
             argv = sys.argv[sys.argv.index("--") + 1 :]
+
+    if argv and argv[0] == "run":
+        from nodebpy.report import main as report_main
+
+        report_main(argv)
+        return
 
     from nodebpy.assets._library import main as library_main
 

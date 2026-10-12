@@ -1424,6 +1424,9 @@ class TreeBuilder[TreeT: NodeTree]:
         # (see MenuSocket.default_value).
         self._exited = True
         self.deactivate_tree()
+        built = _BUILT_TREES.get()
+        if built is not None and args[:1] == (None,) and self not in built:
+            built.append(self)  # only trees whose block finished
 
     def _apply_input_defaults(self) -> None:
         if not self._menu_defaults:
@@ -1900,6 +1903,24 @@ class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
             ignore_visibility=ignore_visibility,
             clear=True,
         )
+
+
+# The builders whose ``with`` block closed inside :func:`record_built_trees`.
+_BUILT_TREES: ContextVar[list[TreeBuilder[Any]] | None] = ContextVar(
+    "_BUILT_TREES", default=None
+)
+
+
+@contextmanager
+def record_built_trees() -> Iterator[list[TreeBuilder[Any]]]:
+    """Collect every tree built (each builder's ``with`` block closing) in the
+    block, in order, whether new or rebuilt in place."""
+    built: list[TreeBuilder[Any]] = []
+    token = _BUILT_TREES.set(built)
+    try:
+        yield built
+    finally:
+        _BUILT_TREES.reset(token)
 
 
 class WorldBuilder(TreeBuilder[ShaderNodeTree]):
