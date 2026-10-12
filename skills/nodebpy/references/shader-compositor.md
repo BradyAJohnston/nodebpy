@@ -47,26 +47,24 @@ into a shader group. Shader trees also have `s.RepeatZone` and `s.ClosureZone`
 
 ## 3. Worlds
 
-There is no world builder; wrap the world's own node tree:
+`s.world` builds a world's node tree as `s.material` does a material's; `clear=True`
+rebuilds an existing world in place and `scene=True` makes it the scene's world:
 
 ```python
-from nodebpy.builder import TreeBuilder
-
-world = bpy.data.worlds.new("Studio")
-with TreeBuilder(world.node_tree, clear=True):
+with s.world("Studio", clear=True, scene=True) as studio:
     s.Background(color=(0.05, 0.06, 0.08, 1.0), strength=1.0) >> s.WorldOutput()
-bpy.context.scene.world = world
+
+studio.world   # the bpy World
 ```
 
 ## 4. Compositor groups
 
 ```python
-with c.tree("Soft Glow", clear=True) as tree:
+# scene=True makes the group the scene's compositor
+with c.tree("Soft Glow", clear=True, scene=True) as tree:
     image = tree.inputs.color("Image")
     glow = c.Blur(image, size=(20, 20))
     c.Mix.color(0.3, image, glow, blend_type="SCREEN") >> tree.outputs.color("Image")
-
-bpy.context.scene.compositing_node_group = tree.tree   # the scene's compositor
 ```
 
 Frames work as in geometry trees (`with c.Frame("Label"):`).

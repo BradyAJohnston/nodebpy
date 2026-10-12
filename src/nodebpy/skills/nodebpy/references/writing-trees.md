@@ -18,8 +18,9 @@ Every snippet runs inside `with g.tree(...) as tree:` with
 |---|---|
 | `g.tree(name, *, clear=False, is_modifier=None, is_tool=None, collapse=False, arrange="sugiyama", fake_user=False)` | Geometry node group (`g.tree` is `TreeBuilder.geometry`) |
 | `s.tree(name, ...)`, `s.material(name, ...)` | Shader node group; material (`.material` is the `bpy.types.Material`) |
-| `c.tree(name, ...)` | Compositor node group |
-| `TreeBuilder(bpy_tree_or_name, tree_type="GeometryNodeTree", clear=False, ...)` | Wraps an existing tree (a world's `node_tree`, a group from a file) or makes one |
+| `s.world(name, clear=False, scene=False)` | World node tree (`.world` is the World) |
+| `c.tree(name, ..., scene=False)` | Compositor node group (`scene=True`: the scene's compositor) |
+| `TreeBuilder(bpy_tree_or_name, tree_type="GeometryNodeTree", clear=False, ...)` | Wraps an existing tree (a group from a file) or makes one |
 
 On the builder: `tree.tree` (the bpy NodeTree), `len(tree)` (nodes), `tree.inputs`,
 `tree.outputs`, `tree.link(out_socket, in_socket)`, `tree.arrange()`,

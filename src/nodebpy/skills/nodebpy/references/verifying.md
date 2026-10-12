@@ -27,10 +27,13 @@ def report(tree, obj_name="Cube"):
     geo = obj.evaluated_get(bpy.context.evaluated_depsgraph_get()).evaluated_geometry()
     print(f"{tree.tree.name}: {len(tree)} nodes, {len(tree.tree.links)} links")
     print(geo)                          # vertex / face / point / instance counts
+    for warning in mod.node_warnings:   # what the editor shows on the modifier
+        print(f"{warning.type}: {warning.message}")
 ```
 
 Missing geometry, zero instances or a count off by a factor usually point at a link
-into the wrong socket.
+into the wrong socket. A node warning such as "Input geometry has unsupported type"
+names a node fed the wrong kind of geometry.
 
 ## 2. Looking at the tree
 
