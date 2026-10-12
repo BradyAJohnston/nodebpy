@@ -76,7 +76,7 @@ class BrickTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -108,7 +108,7 @@ class BrickTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -218,7 +218,7 @@ class CheckerTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -238,7 +238,7 @@ class CheckerTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -430,7 +430,7 @@ class GradientTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -444,7 +444,7 @@ class GradientTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -650,7 +650,7 @@ class MagicTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -668,7 +668,7 @@ class MagicTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -748,7 +748,7 @@ class NoiseTexture(BaseNode):
 
     Outputs
     -------
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     o.color : ColorSocket
         Color
@@ -778,7 +778,7 @@ class NoiseTexture(BaseNode):
         """Distortion"""
 
     class _Outputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
         color: ColorSocket
         """Color"""
@@ -1228,7 +1228,7 @@ class WaveTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -1254,7 +1254,7 @@ class WaveTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:

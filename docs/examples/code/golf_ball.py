@@ -3,8 +3,8 @@ from nodebpy import shader as s
 
 with s.material("Golf Ball") as material:
     coords = s.TextureCoordinate().o.object
-    grain = s.NoiseTexture(coords, scale=180.0, detail=3.0, roughness=0.65).o.fac
-    micro = s.NoiseTexture(coords, scale=650.0, detail=2.0).o.fac
+    grain = s.NoiseTexture(coords, scale=180.0, detail=3.0, roughness=0.65).o.factor
+    micro = s.NoiseTexture(coords, scale=650.0, detail=2.0).o.factor
 
     white = grain.map_range(0.25, 0.75, interpolation_type="SMOOTHSTEP")
     color = white.mix.color((0.69, 0.70, 0.67, 1.0), (0.91, 0.91, 0.87, 1.0))

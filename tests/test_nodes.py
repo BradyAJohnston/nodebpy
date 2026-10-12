@@ -220,13 +220,13 @@ def test_field_to_grid():
         ftg = g.FieldToGrid(g.CubeGridTopology().o.topology)
         pos = ftg.items.new(g.Position(), "position").output
         vec = ftg.items.new(nt.o.color, "vec").output
-        fac = ftg.items.new(nt.o.fac, "fac").output
+        fac = ftg.items.new(nt.o.factor, "fac").output
         assert len(ftg.o) == 4
         assert isinstance(pos, VectorSocketGrid)
         assert pos.name == "position"
         assert isinstance(vec, VectorSocketGrid)
         assert vec.name == "vec"
-        assert isinstance(nt.o.fac, FloatSocket)
+        assert isinstance(nt.o.factor, FloatSocket)
         assert fac.name == "fac"
         assert isinstance(fac, FloatSocketGrid)
         assert fac.name == "fac"
@@ -2551,7 +2551,7 @@ def test_field_to_grid_capture_typed(snapshot):
 
         back = named.dilate_erode(-2).voxelize().background_value
 
-        f = ftg.items.float(g.NoiseTexture().o.fac).output
+        f = ftg.items.float(g.NoiseTexture().o.factor).output
         end = f.dilate_erode(1).laplacian().gradient().divergence()
 
         end >> tree.outputs.float("Grid", structure_type="GRID")

@@ -108,7 +108,7 @@ class IESTexture(BaseNode):
 
     Outputs
     -------
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -122,7 +122,7 @@ class IESTexture(BaseNode):
         """Strength"""
 
     class _Outputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:

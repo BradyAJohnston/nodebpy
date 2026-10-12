@@ -3248,7 +3248,7 @@ class Selection(BaseNode):
 
     Outputs
     -------
-    o.selection : BooleanSocket
+    o.boolean : BooleanSocket
         Boolean
     o.float : FloatSocket
         Float
@@ -3261,7 +3261,7 @@ class Selection(BaseNode):
         pass
 
     class _Outputs(SocketAccessor):
-        selection: BooleanSocket
+        boolean: BooleanSocket
         """Boolean"""
         float: FloatSocket
         """Float"""

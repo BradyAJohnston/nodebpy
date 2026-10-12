@@ -177,9 +177,9 @@ class SocketInfo:
                 return item
         raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
-    def format_accessor_annotation(self) -> str:
+    def format_accessor_annotation(self, attr_name: str | None = None) -> str:
         """Generate an annotation + attribute docstring for use in Inputs/Outputs inner classes."""
-        attr_name = normalize_name(self.identifier)
+        attr_name = attr_name or normalize_name(self.identifier)
 
         return_type = "Socket"
         for key, cls in _OUTPUT_SOCKET_CLASSES.items():
@@ -357,6 +357,29 @@ class NodeInfo:
     # Per-value socket snapshots for any input socket named "Type" that is a MENU.
     # Keyed by the socket identifier; each entry mirrors EnumInfo used for properties.
     type_socket_enums: list[EnumInfo] = field(default_factory=list)
+
+    @property
+    def output_attr_names(self) -> dict[str, str]:
+        """The ``o.<name>`` accessor attribute for each output, by identifier.
+
+        Named after the socket's display name, as ``to_python`` writes them
+        (Attribute's ``Fac`` output is ``o.factor``). A name shared by several
+        outputs (Mix's four "Result" sockets), or one that doesn't normalize
+        to a distinct attribute, falls back to the identifier.
+        """
+        names = Counter(s.name for s in self.outputs)
+        by_name = {
+            s.identifier: normalize_name(s.name)
+            for s in self.outputs
+            if names[s.name] == 1 and normalize_name(s.name).isidentifier()
+        }
+        taken = Counter(by_name.values())
+        return {
+            s.identifier: by_name[s.identifier]
+            if taken.get(by_name.get(s.identifier, ""), 0) == 1
+            else normalize_name(s.identifier)
+            for s in self.outputs
+        }
 
     @property
     def node_docs_url(self) -> str | None:
