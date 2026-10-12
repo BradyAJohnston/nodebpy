@@ -1,5 +1,7 @@
 """Items on the Viewer, File Output and Raycast nodes, and their export."""
 
+import pytest
+
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
@@ -79,3 +81,52 @@ def test_shader_closure_zone():
         "NodeClosureOutput",
         "NodeEvaluateClosure",
     }
+
+
+@pytest.mark.parametrize(
+    ("method", "socket_type"),
+    [
+        ("float", "VALUE"),
+        ("integer", "INT"),
+        ("boolean", "BOOLEAN"),
+        ("vector", "VECTOR"),
+        ("color", "RGBA"),
+        ("rotation", "ROTATION"),
+        ("matrix", "MATRIX"),
+        ("string", "STRING"),
+        ("menu", "MENU"),
+        ("object", "OBJECT"),
+        ("image", "IMAGE"),
+        ("geometry", "GEOMETRY"),
+        ("collection", "COLLECTION"),
+        ("material", "MATERIAL"),
+        ("bundle", "BUNDLE"),
+        ("closure", "CLOSURE"),
+        ("font", "FONT"),
+        ("sound", "SOUND"),
+    ],
+)
+def test_viewer_views_every_socket_type(method, socket_type):
+    with g.tree():
+        viewer = g.Viewer()
+        item = getattr(viewer.items, method)(name="Item")
+    assert item.input.socket.type == socket_type
+
+
+def test_file_output_and_raycast_vectors():
+    with c.tree():
+        output = c.FileOutput()
+        assert output.items.vector(name="Normal").input.socket.type == "VECTOR"
+    with s.tree():
+        ray = s.Raycast()
+        direction = ray.items.vector("dir")
+        tint = ray.items.new("tint", type="RGBA")
+    assert direction.output.socket.type == "VECTOR"
+    assert (tint.name, tint.output.socket.type) == ("tint", "RGBA")
+
+
+def test_is_zero_on_strings():
+    from nodebpy.export.codegen import _is_zero
+
+    # a one-character string iterates to itself, so it must not recurse
+    assert _is_zero("") and not _is_zero("a")
