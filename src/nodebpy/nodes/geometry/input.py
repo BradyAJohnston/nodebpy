@@ -3649,17 +3649,6 @@ class Vector(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(
-        self,
-        vector: tuple[float, float, float] = (0.0, 0.0, 0.0),
-        vector_dimensions: int = 3,
-    ):
-        super().__init__()
-        key_args = {}
-        self.vector = vector
-        self.vector_dimensions = vector_dimensions
-        self._establish_links(**key_args)
-
     @property
     def vector(self) -> Vector:
         return self.node.vector
@@ -3675,6 +3664,16 @@ class Vector(BaseNode):
     @vector_dimensions.setter
     def vector_dimensions(self, value: int) -> None:
         self.node.vector_dimensions = value
+
+    def __init__(
+        self,
+        vector: tuple[float, ...] = (0.0, 0.0, 0.0),
+        vector_dimensions: int = 3,
+    ):
+        super().__init__()
+        self.node.vector_dimensions = len(vector)
+        self.node.vector = vector
+        self.vector_dimensions = vector_dimensions
 
 
 class VertexNeighbors(BaseNode):
