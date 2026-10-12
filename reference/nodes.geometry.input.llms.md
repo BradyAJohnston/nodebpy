@@ -965,16 +965,16 @@ Calculate the surface area of a mesh’s faces
 ### FaceGroupBoundaries
 
 ``` python
-FaceGroupBoundaries(face_set=None)
+FaceGroupBoundaries(face_group_id=None)
 ```
 
 Find edges on the boundaries between groups of faces with the same ID value
 
 #### Parameters
 
-| Name     | Type         | Description   | Default |
-|----------|--------------|---------------|---------|
-| face_set | InputInteger | Face Group ID | `None`  |
+| Name          | Type         | Description   | Default |
+|---------------|--------------|---------------|---------|
+| face_group_id | InputInteger | Face Group ID | `None`  |
 
 #### Attributes
 
@@ -988,9 +988,9 @@ Find edges on the boundaries between groups of faces with the same ID value
 
 **Inputs**
 
-| Attribute    | Type            | Description   |
-|--------------|-----------------|---------------|
-| `i.face_set` | `IntegerSocket` | Face Group ID |
+| Attribute         | Type            | Description   |
+|-------------------|-----------------|---------------|
+| `i.face_group_id` | `IntegerSocket` | Face Group ID |
 
 **Outputs**
 
@@ -2323,10 +2323,10 @@ User selection of the edited geometry, for tool execution
 
 **Outputs**
 
-| Attribute     | Type            | Description |
-|---------------|-----------------|-------------|
-| `o.selection` | `BooleanSocket` | Boolean     |
-| `o.float`     | `FloatSocket`   | Float       |
+| Attribute   | Type            | Description |
+|-------------|-----------------|-------------|
+| `o.boolean` | `BooleanSocket` | Boolean     |
+| `o.float`   | `FloatSocket`   | Float       |
 
 ### SelfObject
 

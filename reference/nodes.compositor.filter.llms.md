@@ -455,7 +455,7 @@ Denoise renders from Cycles and other ray tracing renderers
 ### Despeckle
 
 ``` python
-Despeckle(image=None, fac=1.0, color_threshold=0.5, neighbor_threshold=0.5)
+Despeckle(image=None, factor=1.0, color_threshold=0.5, neighbor_threshold=0.5)
 ```
 
 Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched
@@ -465,7 +465,7 @@ Smooth areas of an image in which noise is noticeable, while leaving complex are
 | Name               | Type       | Description        | Default |
 |--------------------|------------|--------------------|---------|
 | image              | InputColor | Image              | `None`  |
-| fac                | InputFloat | Factor             | `1.0`   |
+| factor             | InputFloat | Factor             | `1.0`   |
 | color_threshold    | InputFloat | Color Threshold    | `0.5`   |
 | neighbor_threshold | InputFloat | Neighbor Threshold | `0.5`   |
 
@@ -484,7 +484,7 @@ Smooth areas of an image in which noise is noticeable, while leaving complex are
 | Attribute              | Type          | Description        |
 |------------------------|---------------|--------------------|
 | `i.image`              | `ColorSocket` | Image              |
-| `i.fac`                | `FloatSocket` | Factor             |
+| `i.factor`             | `FloatSocket` | Factor             |
 | `i.color_threshold`    | `FloatSocket` | Color Threshold    |
 | `i.neighbor_threshold` | `FloatSocket` | Neighbor Threshold |
 
@@ -588,8 +588,8 @@ DirectionalBlur(
     center=(0.5, 0.5),
     rotation=0.0,
     scale=1.0,
-    translation_amount=0.0,
-    translation_direction=0.0,
+    amount=0.0,
+    direction=0.0,
 )
 ```
 
@@ -597,15 +597,15 @@ Blur an image along a direction
 
 #### Parameters
 
-| Name                  | Type         | Description | Default      |
-|-----------------------|--------------|-------------|--------------|
-| image                 | InputColor   | Image       | `None`       |
-| samples               | InputInteger | Samples     | `1`          |
-| center                | InputVector  | Center      | `(0.5, 0.5)` |
-| rotation              | InputFloat   | Rotation    | `0.0`        |
-| scale                 | InputFloat   | Scale       | `1.0`        |
-| translation_amount    | InputFloat   | Amount      | `0.0`        |
-| translation_direction | InputFloat   | Direction   | `0.0`        |
+| Name      | Type         | Description | Default      |
+|-----------|--------------|-------------|--------------|
+| image     | InputColor   | Image       | `None`       |
+| samples   | InputInteger | Samples     | `1`          |
+| center    | InputVector  | Center      | `(0.5, 0.5)` |
+| rotation  | InputFloat   | Rotation    | `0.0`        |
+| scale     | InputFloat   | Scale       | `1.0`        |
+| amount    | InputFloat   | Amount      | `0.0`        |
+| direction | InputFloat   | Direction   | `0.0`        |
 
 #### Attributes
 
@@ -619,15 +619,15 @@ Blur an image along a direction
 
 **Inputs**
 
-| Attribute                 | Type            | Description |
-|---------------------------|-----------------|-------------|
-| `i.image`                 | `ColorSocket`   | Image       |
-| `i.samples`               | `IntegerSocket` | Samples     |
-| `i.center`                | `VectorSocket`  | Center      |
-| `i.rotation`              | `FloatSocket`   | Rotation    |
-| `i.scale`                 | `FloatSocket`   | Scale       |
-| `i.translation_amount`    | `FloatSocket`   | Amount      |
-| `i.translation_direction` | `FloatSocket`   | Direction   |
+| Attribute     | Type            | Description |
+|---------------|-----------------|-------------|
+| `i.image`     | `ColorSocket`   | Image       |
+| `i.samples`   | `IntegerSocket` | Samples     |
+| `i.center`    | `VectorSocket`  | Center      |
+| `i.rotation`  | `FloatSocket`   | Rotation    |
+| `i.scale`     | `FloatSocket`   | Scale       |
+| `i.amount`    | `FloatSocket`   | Amount      |
+| `i.direction` | `FloatSocket`   | Direction   |
 
 **Outputs**
 
@@ -638,7 +638,7 @@ Blur an image along a direction
 ### Filter
 
 ``` python
-Filter(image=None, fac=1.0, type='Soften')
+Filter(image=None, factor=1.0, type='Soften')
 ```
 
 Apply common image enhancement filters
@@ -648,7 +648,7 @@ Apply common image enhancement filters
 | Name | Type | Description | Default |
 |----|----|----|----|
 | image | InputColor | Image | `None` |
-| fac | InputFloat | Factor | `1.0` |
+| factor | InputFloat | Factor | `1.0` |
 | type | InputMenu \| Literal\['Soften', 'Box Sharpen', 'Diamond Sharpen', 'Laplace', 'Sobel', 'Prewitt', 'Kirsch', 'Shadow'\] | Type | `'Soften'` |
 
 #### Attributes
@@ -677,7 +677,7 @@ Apply common image enhancement filters
 ##### box_sharpen
 
 ``` python
-box_sharpen(image=None, fac=1.0)
+box_sharpen(image=None, factor=1.0)
 ```
 
 Create Filter node with type ‘Box Sharpen’.
@@ -685,7 +685,7 @@ Create Filter node with type ‘Box Sharpen’.
 ##### diamond_sharpen
 
 ``` python
-diamond_sharpen(image=None, fac=1.0)
+diamond_sharpen(image=None, factor=1.0)
 ```
 
 Create Filter node with type ‘Diamond Sharpen’.
@@ -693,7 +693,7 @@ Create Filter node with type ‘Diamond Sharpen’.
 ##### kirsch
 
 ``` python
-kirsch(image=None, fac=1.0)
+kirsch(image=None, factor=1.0)
 ```
 
 Create Filter node with type ‘Kirsch’.
@@ -701,7 +701,7 @@ Create Filter node with type ‘Kirsch’.
 ##### laplace
 
 ``` python
-laplace(image=None, fac=1.0)
+laplace(image=None, factor=1.0)
 ```
 
 Create Filter node with type ‘Laplace’.
@@ -709,7 +709,7 @@ Create Filter node with type ‘Laplace’.
 ##### prewitt
 
 ``` python
-prewitt(image=None, fac=1.0)
+prewitt(image=None, factor=1.0)
 ```
 
 Create Filter node with type ‘Prewitt’.
@@ -717,7 +717,7 @@ Create Filter node with type ‘Prewitt’.
 ##### shadow
 
 ``` python
-shadow(image=None, fac=1.0)
+shadow(image=None, factor=1.0)
 ```
 
 Create Filter node with type ‘Shadow’.
@@ -725,7 +725,7 @@ Create Filter node with type ‘Shadow’.
 ##### sobel
 
 ``` python
-sobel(image=None, fac=1.0)
+sobel(image=None, factor=1.0)
 ```
 
 Create Filter node with type ‘Sobel’.
@@ -733,18 +733,18 @@ Create Filter node with type ‘Sobel’.
 ##### soften
 
 ``` python
-soften(image=None, fac=1.0)
+soften(image=None, factor=1.0)
 ```
 
 Create Filter node with type ‘Soften’.
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.image` | `ColorSocket` | Image       |
-| `i.fac`   | `FloatSocket` | Factor      |
-| `i.type`  | `MenuSocket`  | Type        |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `i.image`  | `ColorSocket` | Image       |
+| `i.factor` | `FloatSocket` | Factor      |
+| `i.type`   | `MenuSocket`  | Type        |
 
 **Outputs**
 
@@ -759,10 +759,10 @@ Glare(
     image=None,
     type='Streaks',
     quality='Medium',
-    highlights_threshold=1.0,
-    highlights_smoothness=0.1,
-    clamp_highlights=False,
-    maximum_highlights=10.0,
+    threshold=1.0,
+    smoothness=0.1,
+    clamp=False,
+    maximum=10.0,
     strength=1.0,
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
@@ -772,7 +772,7 @@ Glare(
     iterations=3,
     fade=0.9,
     color_modulation=0.25,
-    diagonal_star=True,
+    diagonal=True,
     sun_position=(0.5, 0.5),
     jitter=0.0,
     kernel_data_type='Float',
@@ -790,10 +790,10 @@ Add lens flares, fog and glows around bright parts of the image
 | image | InputColor | Image | `None` |
 | type | InputMenu \| Literal\['Bloom', 'Ghosts', 'Streaks', 'Fog Glow', 'Simple Star', 'Sun Beams', 'Kernel'\] | Type | `'Streaks'` |
 | quality | InputMenu \| Literal\['High', 'Medium', 'Low'\] | Quality | `'Medium'` |
-| highlights_threshold | InputFloat | Threshold | `1.0` |
-| highlights_smoothness | InputFloat | Smoothness | `0.1` |
-| clamp_highlights | InputBoolean | Clamp | `False` |
-| maximum_highlights | InputFloat | Maximum | `10.0` |
+| threshold | InputFloat | Threshold | `1.0` |
+| smoothness | InputFloat | Smoothness | `0.1` |
+| clamp | InputBoolean | Clamp | `False` |
+| maximum | InputFloat | Maximum | `10.0` |
 | strength | InputFloat | Strength | `1.0` |
 | saturation | InputFloat | Saturation | `1.0` |
 | tint | InputColor | Tint | `(1.0, 1.0, 1.0, 1.0)` |
@@ -803,7 +803,7 @@ Add lens flares, fog and glows around bright parts of the image
 | iterations | InputInteger | Iterations | `3` |
 | fade | InputFloat | Fade | `0.9` |
 | color_modulation | InputFloat | Color Modulation | `0.25` |
-| diagonal_star | InputBoolean | Diagonal | `True` |
+| diagonal | InputBoolean | Diagonal | `True` |
 | sun_position | InputVector | Sun Position | `(0.5, 0.5)` |
 | jitter | InputFloat | Jitter | `0.0` |
 | kernel_data_type | InputMenu \| Literal\['Float', 'Color'\] | Kernel Data Type | `'Float'` |
@@ -838,10 +838,10 @@ Add lens flares, fog and glows around bright parts of the image
 bloom(
     image=None,
     quality='Medium',
-    highlights_threshold=1.0,
-    highlights_smoothness=0.1,
-    clamp_highlights=False,
-    maximum_highlights=10.0,
+    threshold=1.0,
+    smoothness=0.1,
+    clamp=False,
+    maximum=10.0,
     strength=1.0,
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
@@ -857,10 +857,10 @@ Create Glare node with type ‘Bloom’.
 fog_glow(
     image=None,
     quality='Medium',
-    highlights_threshold=1.0,
-    highlights_smoothness=0.1,
-    clamp_highlights=False,
-    maximum_highlights=10.0,
+    threshold=1.0,
+    smoothness=0.1,
+    clamp=False,
+    maximum=10.0,
     strength=1.0,
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
@@ -876,10 +876,10 @@ Create Glare node with type ‘Fog Glow’.
 ghosts(
     image=None,
     quality='Medium',
-    highlights_threshold=1.0,
-    highlights_smoothness=0.1,
-    clamp_highlights=False,
-    maximum_highlights=10.0,
+    threshold=1.0,
+    smoothness=0.1,
+    clamp=False,
+    maximum=10.0,
     strength=1.0,
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
@@ -896,10 +896,10 @@ Create Glare node with type ‘Ghosts’.
 kernel(
     image=None,
     quality='Medium',
-    highlights_threshold=1.0,
-    highlights_smoothness=0.1,
-    clamp_highlights=False,
-    maximum_highlights=10.0,
+    threshold=1.0,
+    smoothness=0.1,
+    clamp=False,
+    maximum=10.0,
     strength=1.0,
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
@@ -916,16 +916,16 @@ Create Glare node with type ‘Kernel’.
 simple_star(
     image=None,
     quality='Medium',
-    highlights_threshold=1.0,
-    highlights_smoothness=0.1,
-    clamp_highlights=False,
-    maximum_highlights=10.0,
+    threshold=1.0,
+    smoothness=0.1,
+    clamp=False,
+    maximum=10.0,
     strength=1.0,
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
     iterations=3,
     fade=0.9,
-    diagonal_star=True,
+    diagonal=True,
 )
 ```
 
@@ -937,10 +937,10 @@ Create Glare node with type ‘Simple Star’.
 streaks(
     image=None,
     quality='Medium',
-    highlights_threshold=1.0,
-    highlights_smoothness=0.1,
-    clamp_highlights=False,
-    maximum_highlights=10.0,
+    threshold=1.0,
+    smoothness=0.1,
+    clamp=False,
+    maximum=10.0,
     strength=1.0,
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
@@ -960,10 +960,10 @@ Create Glare node with type ‘Streaks’.
 sun_beams(
     image=None,
     quality='Medium',
-    highlights_threshold=1.0,
-    highlights_smoothness=0.1,
-    clamp_highlights=False,
-    maximum_highlights=10.0,
+    threshold=1.0,
+    smoothness=0.1,
+    clamp=False,
+    maximum=10.0,
     strength=1.0,
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
@@ -977,30 +977,30 @@ Create Glare node with type ‘Sun Beams’.
 
 **Inputs**
 
-| Attribute                 | Type            | Description      |
-|---------------------------|-----------------|------------------|
-| `i.image`                 | `ColorSocket`   | Image            |
-| `i.type`                  | `MenuSocket`    | Type             |
-| `i.quality`               | `MenuSocket`    | Quality          |
-| `i.highlights_threshold`  | `FloatSocket`   | Threshold        |
-| `i.highlights_smoothness` | `FloatSocket`   | Smoothness       |
-| `i.clamp_highlights`      | `BooleanSocket` | Clamp            |
-| `i.maximum_highlights`    | `FloatSocket`   | Maximum          |
-| `i.strength`              | `FloatSocket`   | Strength         |
-| `i.saturation`            | `FloatSocket`   | Saturation       |
-| `i.tint`                  | `ColorSocket`   | Tint             |
-| `i.size`                  | `FloatSocket`   | Size             |
-| `i.streaks`               | `IntegerSocket` | Streaks          |
-| `i.streaks_angle`         | `FloatSocket`   | Streaks Angle    |
-| `i.iterations`            | `IntegerSocket` | Iterations       |
-| `i.fade`                  | `FloatSocket`   | Fade             |
-| `i.color_modulation`      | `FloatSocket`   | Color Modulation |
-| `i.diagonal_star`         | `BooleanSocket` | Diagonal         |
-| `i.sun_position`          | `VectorSocket`  | Sun Position     |
-| `i.jitter`                | `FloatSocket`   | Jitter           |
-| `i.kernel_data_type`      | `MenuSocket`    | Kernel Data Type |
-| `i.float_kernel`          | `FloatSocket`   | Kernel           |
-| `i.color_kernel`          | `ColorSocket`   | Kernel           |
+| Attribute            | Type            | Description      |
+|----------------------|-----------------|------------------|
+| `i.image`            | `ColorSocket`   | Image            |
+| `i.type`             | `MenuSocket`    | Type             |
+| `i.quality`          | `MenuSocket`    | Quality          |
+| `i.threshold`        | `FloatSocket`   | Threshold        |
+| `i.smoothness`       | `FloatSocket`   | Smoothness       |
+| `i.clamp`            | `BooleanSocket` | Clamp            |
+| `i.maximum`          | `FloatSocket`   | Maximum          |
+| `i.strength`         | `FloatSocket`   | Strength         |
+| `i.saturation`       | `FloatSocket`   | Saturation       |
+| `i.tint`             | `ColorSocket`   | Tint             |
+| `i.size`             | `FloatSocket`   | Size             |
+| `i.streaks`          | `IntegerSocket` | Streaks          |
+| `i.streaks_angle`    | `FloatSocket`   | Streaks Angle    |
+| `i.iterations`       | `IntegerSocket` | Iterations       |
+| `i.fade`             | `FloatSocket`   | Fade             |
+| `i.color_modulation` | `FloatSocket`   | Color Modulation |
+| `i.diagonal`         | `BooleanSocket` | Diagonal         |
+| `i.sun_position`     | `VectorSocket`  | Sun Position     |
+| `i.jitter`           | `FloatSocket`   | Jitter           |
+| `i.kernel_data_type` | `MenuSocket`    | Kernel Data Type |
+| `i.float_kernel`     | `FloatSocket`   | Kernel           |
+| `i.color_kernel`     | `ColorSocket`   | Kernel           |
 
 **Outputs**
 
@@ -1208,7 +1208,7 @@ Reduce detail in an image by making individual pixels more prominent, for a bloc
 VectorBlur(
     image=None,
     speed=(0.0, 0.0, 0.0, 0.0),
-    z=0.0,
+    depth=0.0,
     samples=32,
     shutter=0.5,
 )
@@ -1222,7 +1222,7 @@ Uses the vector speed render pass to blur the image pixels in 2D
 |---------|--------------|-------------|------------------------|
 | image   | InputColor   | Image       | `None`                 |
 | speed   | InputVector  | Speed       | `(0.0, 0.0, 0.0, 0.0)` |
-| z       | InputFloat   | Depth       | `0.0`                  |
+| depth   | InputFloat   | Depth       | `0.0`                  |
 | samples | InputInteger | Samples     | `32`                   |
 | shutter | InputFloat   | Shutter     | `0.5`                  |
 
@@ -1242,7 +1242,7 @@ Uses the vector speed render pass to blur the image pixels in 2D
 |-------------|-----------------|-------------|
 | `i.image`   | `ColorSocket`   | Image       |
 | `i.speed`   | `VectorSocket`  | Speed       |
-| `i.z`       | `FloatSocket`   | Depth       |
+| `i.depth`   | `FloatSocket`   | Depth       |
 | `i.samples` | `IntegerSocket` | Samples     |
 | `i.shutter` | `FloatSocket`   | Shutter     |
 

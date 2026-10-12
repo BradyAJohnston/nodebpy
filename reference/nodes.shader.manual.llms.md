@@ -12,69 +12,7 @@
 
 | Name | Description |
 |----|----|
-| [Attribute](#nodebpy.nodes.shader.manual.Attribute) | Retrieve attributes attached to objects or geometry |
 | [MenuSwitch](#nodebpy.nodes.shader.manual.MenuSwitch) | Node builder for the Menu Switch node (Shader tree) |
-
-### Attribute
-
-``` python
-Attribute(attribute_type='GEOMETRY', attribute_name='')
-```
-
-Retrieve attributes attached to objects or geometry
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`attribute_name`](#nodebpy.nodes.shader.manual.Attribute.attribute_name) |  |
-| [`attribute_type`](#nodebpy.nodes.shader.manual.Attribute.attribute_type) |  |
-| [`i`](#nodebpy.nodes.shader.manual.Attribute.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.nodes.shader.manual.Attribute.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.shader.manual.Attribute.node) |  |
-| [`o`](#nodebpy.nodes.shader.manual.Attribute.o) |  |
-| [`tree`](#nodebpy.nodes.shader.manual.Attribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [geometry](#nodebpy.nodes.shader.manual.Attribute.geometry) | Create Attribute with operation ‘Geometry’. |
-| [instancer](#nodebpy.nodes.shader.manual.Attribute.instancer) | Create Attribute with operation ‘Instancer’. |
-| [object](#nodebpy.nodes.shader.manual.Attribute.object) | Create Attribute with operation ‘Object’. |
-| [view_layer](#nodebpy.nodes.shader.manual.Attribute.view_layer) | Create Attribute with operation ‘View Layer’. |
-
-##### geometry
-
-``` python
-geometry(attribute_name='')
-```
-
-Create Attribute with operation ‘Geometry’.
-
-##### instancer
-
-``` python
-instancer(attribute_name='')
-```
-
-Create Attribute with operation ‘Instancer’.
-
-##### object
-
-``` python
-object(attribute_name='')
-```
-
-Create Attribute with operation ‘Object’.
-
-##### view_layer
-
-``` python
-view_layer(attribute_name='')
-```
-
-Create Attribute with operation ‘View Layer’.
 
 ### MenuSwitch
 

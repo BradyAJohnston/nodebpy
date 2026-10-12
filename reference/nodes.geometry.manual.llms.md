@@ -123,7 +123,7 @@ Deprecated: use `items.new(value, name).output`.
 
 ``` python
 ColorRamp(
-    fac=0.5,
+    factor=0.5,
     *,
     items=_COLOR_RAMP_DEFAULT_ITEMS,
     color_interpolation='LINEAR',
@@ -138,7 +138,7 @@ Map values to colors with the use of a gradient
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| fac | InputFloat | Factor: Which is used to sample the ColorRamp for the output color. | `0.5` |
+| factor | InputFloat | Factor: Which is used to sample the ColorRamp for the output color. | `0.5` |
 | items | Iterable\[tuple\[float, tuple\[float, float, float float\]\] \| tuple\[float, float, float, float, float\]\] | Iterable of items which contain (position, color) which position being a 4-component float for values RGBA. Position is a value betwen `0..1`. Items can also be flat `(position, r, g, b, a)`, so an `(N, 5)` numpy array works. Defaults to black at 0.0 and white at 1.0. At least one item is required. | `_COLOR_RAMP_DEFAULT_ITEMS` |
 
 #### Attributes
@@ -159,14 +159,14 @@ Map values to colors with the use of a gradient
 
 | Attribute | Type | Description |
 |----|----|----|
-| `i.fac` | `FloatSocket` | Factor: The input value between `0..1` which maps to the final color value. |
+| `i.factor` | `FloatSocket` | Factor: The input value between `0..1` which maps to the final color value. |
 
 **Outputs**
 
 | Attribute | Type | Description |
 |----|----|----|
-| `o.color` | `ColorSocket` | Color: The mapped color value based in the input `fac`. |
-| `o.alpha` | `FloatSocket` | Alpha: The mapped alpha of the color based on the input `fac`. |
+| `o.color` | `ColorSocket` | Color: The mapped color value based in the input `factor`. |
+| `o.alpha` | `FloatSocket` | Alpha: The mapped alpha of the color based on the input `factor`. |
 
 ### Compare
 

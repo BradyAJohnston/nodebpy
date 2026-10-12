@@ -409,8 +409,8 @@ Create Movie Distortion node with type ‘Undistort’.
 PlaneTrackDeform(
     image=None,
     motion_blur=False,
-    motion_blur_samples=16,
-    motion_blur_shutter=0.5,
+    samples=16,
+    shutter=0.5,
     *,
     tracking_object='',
     plane_track_name='',
@@ -421,12 +421,12 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 
 #### Parameters
 
-| Name                | Type         | Description | Default |
-|---------------------|--------------|-------------|---------|
-| image               | InputColor   | Image       | `None`  |
-| motion_blur         | InputBoolean | Motion Blur | `False` |
-| motion_blur_samples | InputInteger | Samples     | `16`    |
-| motion_blur_shutter | InputFloat   | Shutter     | `0.5`   |
+| Name        | Type         | Description | Default |
+|-------------|--------------|-------------|---------|
+| image       | InputColor   | Image       | `None`  |
+| motion_blur | InputBoolean | Motion Blur | `False` |
+| samples     | InputInteger | Samples     | `16`    |
+| shutter     | InputFloat   | Shutter     | `0.5`   |
 
 #### Attributes
 
@@ -442,12 +442,12 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 
 **Inputs**
 
-| Attribute               | Type            | Description |
-|-------------------------|-----------------|-------------|
-| `i.image`               | `ColorSocket`   | Image       |
-| `i.motion_blur`         | `BooleanSocket` | Motion Blur |
-| `i.motion_blur_samples` | `IntegerSocket` | Samples     |
-| `i.motion_blur_shutter` | `FloatSocket`   | Shutter     |
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `i.image`       | `ColorSocket`   | Image       |
+| `i.motion_blur` | `BooleanSocket` | Motion Blur |
+| `i.samples`     | `IntegerSocket` | Samples     |
+| `i.shutter`     | `FloatSocket`   | Shutter     |
 
 **Outputs**
 

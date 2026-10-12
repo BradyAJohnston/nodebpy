@@ -58,7 +58,7 @@ Transform Coordinate System for Radial Tiling
 ### VectorCurves
 
 ``` python
-VectorCurves(fac=1.0, vector=(0.0, 0.0, 0.0))
+VectorCurves(factor=1.0, vector=(0.0, 0.0, 0.0))
 ```
 
 Map input vector components with curves
@@ -67,7 +67,7 @@ Map input vector components with curves
 
 | Name   | Type        | Description | Default           |
 |--------|-------------|-------------|-------------------|
-| fac    | InputFloat  | Factor      | `1.0`             |
+| factor | InputFloat  | Factor      | `1.0`             |
 | vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
@@ -84,7 +84,7 @@ Map input vector components with curves
 
 | Attribute  | Type           | Description |
 |------------|----------------|-------------|
-| `i.fac`    | `FloatSocket`  | Factor      |
+| `i.factor` | `FloatSocket`  | Factor      |
 | `i.vector` | `VectorSocket` | Vector      |
 
 **Outputs**

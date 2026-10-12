@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.36.0</span>
+    <span class="navbar-title">nodebpy 520.37.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -2161,7 +2161,7 @@ i.weight : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.shader.MixShader" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.shader.MixShader">MixShader</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>MixShader(fac<span class="op">=</span><span class="fl">0.5</span>, shader<span class="op">=</span><span class="va">None</span>, shader_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>MixShader(factor<span class="op">=</span><span class="fl">0.5</span>, shader<span class="op">=</span><span class="va">None</span>, shader_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Mix two shaders together. Typically used for material layering</p>
 <section id="parameters-9" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
@@ -2176,7 +2176,7 @@ i.weight : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td>fac</td>
+<td>factor</td>
 <td>InputFloat</td>
 <td>Factor</td>
 <td><code>0.5</code></td>
@@ -2239,7 +2239,7 @@ i.weight : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>i.fac</code></td>
+<td><code>i.factor</code></td>
 <td><code>FloatSocket</code></td>
 <td>Factor</td>
 </tr>
@@ -2776,9 +2776,9 @@ i.weight : FloatSocket
 <span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    random_roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    random<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    r_lobe<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    tt_lobe<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    trt_lobe<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    reflection<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    transmission<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    secondary_reflection<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">'CHIANG'</span>,</span>
 <span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    parametrization<span class="op">=</span><span class="st">'COLOR'</span>,</span>
@@ -2893,19 +2893,19 @@ i.weight : FloatSocket
 <td><code>0.0</code></td>
 </tr>
 <tr class="even">
-<td>r_lobe</td>
+<td>reflection</td>
 <td>InputFloat</td>
 <td>Reflection</td>
 <td><code>1.0</code></td>
 </tr>
 <tr class="odd">
-<td>tt_lobe</td>
+<td>transmission</td>
 <td>InputFloat</td>
 <td>Transmission</td>
 <td><code>1.0</code></td>
 </tr>
 <tr class="even">
-<td>trt_lobe</td>
+<td>secondary_reflection</td>
 <td>InputFloat</td>
 <td>Secondary Reflection</td>
 <td><code>1.0</code></td>
@@ -3039,17 +3039,17 @@ i.weight : FloatSocket
 <td>Weight</td>
 </tr>
 <tr class="even">
-<td><code>i.r_lobe</code></td>
+<td><code>i.reflection</code></td>
 <td><code>FloatSocket</code></td>
 <td>Reflection</td>
 </tr>
 <tr class="odd">
-<td><code>i.tt_lobe</code></td>
+<td><code>i.transmission</code></td>
 <td><code>FloatSocket</code></td>
 <td>Transmission</td>
 </tr>
 <tr class="even">
-<td><code>i.trt_lobe</code></td>
+<td><code>i.secondary_reflection</code></td>
 <td><code>FloatSocket</code></td>
 <td>Secondary Reflection</td>
 </tr>

@@ -1639,9 +1639,9 @@ Reverse the order of the vertices and edges of selected faces, flipping their no
 
 ``` python
 GeometryProximity(
-    target=None,
+    geometry=None,
     group_id=None,
-    source_position=None,
+    sample_position=None,
     sample_group_id=None,
     *,
     target_element='FACES',
@@ -1654,9 +1654,9 @@ Compute the closest location on the target geometry
 
 | Name            | Type          | Description     | Default |
 |-----------------|---------------|-----------------|---------|
-| target          | InputGeometry | Geometry        | `None`  |
+| geometry        | InputGeometry | Geometry        | `None`  |
 | group_id        | InputInteger  | Group ID        | `None`  |
-| source_position | InputVector   | Sample Position | `None`  |
+| sample_position | InputVector   | Sample Position | `None`  |
 | sample_group_id | InputInteger  | Sample Group ID | `None`  |
 
 #### Attributes
@@ -1674,9 +1674,9 @@ Compute the closest location on the target geometry
 
 | Attribute           | Type             | Description     |
 |---------------------|------------------|-----------------|
-| `i.target`          | `GeometrySocket` | Geometry        |
+| `i.geometry`        | `GeometrySocket` | Geometry        |
 | `i.group_id`        | `IntegerSocket`  | Group ID        |
-| `i.source_position` | `VectorSocket`   | Sample Position |
+| `i.sample_position` | `VectorSocket`   | Sample Position |
 | `i.sample_group_id` | `IntegerSocket`  | Sample Group ID |
 
 **Outputs**
@@ -2721,9 +2721,9 @@ Generate a point cloud with positions and radii defined by fields
 
 **Outputs**
 
-| Attribute    | Type             | Description |
-|--------------|------------------|-------------|
-| `o.geometry` | `GeometrySocket` | Points      |
+| Attribute  | Type             | Description |
+|------------|------------------|-------------|
+| `o.points` | `GeometrySocket` | Points      |
 
 ### PointsToCurves
 
@@ -3678,7 +3678,7 @@ Create Sample Nearest Surface with operation ‘Vector’. 3D vector with floati
 SampleUVSurface(
     mesh=None,
     value=None,
-    source_uv_map=None,
+    uv_map=None,
     sample_uv=(0.0, 0.0, 0.0),
     *,
     data_type='FLOAT',
@@ -3689,12 +3689,12 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 
 #### Parameters
 
-| Name          | Type          | Description | Default           |
-|---------------|---------------|-------------|-------------------|
-| mesh          | InputGeometry | Mesh        | `None`            |
-| value         | InputFloat    | Value       | `None`            |
-| source_uv_map | InputVector   | UV Map      | `None`            |
-| sample_uv     | InputVector   | Sample UV   | `(0.0, 0.0, 0.0)` |
+| Name      | Type          | Description | Default           |
+|-----------|---------------|-------------|-------------------|
+| mesh      | InputGeometry | Mesh        | `None`            |
+| value     | InputFloat    | Value       | `None`            |
+| uv_map    | InputVector   | UV Map      | `None`            |
+| sample_uv | InputVector   | Sample UV   | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -3722,7 +3722,7 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 ##### boolean
 
 ``` python
-boolean(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
+boolean(mesh=None, value=None, uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Boolean’. True or false
@@ -3730,7 +3730,7 @@ Create Sample UV Surface with operation ‘Boolean’. True or false
 ##### color
 
 ``` python
-color(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
+color(mesh=None, value=None, uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Color’. RGBA color with 32-bit floating-point values
@@ -3738,7 +3738,7 @@ Create Sample UV Surface with operation ‘Color’. RGBA color with 32-bit floa
 ##### float
 
 ``` python
-float(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
+float(mesh=None, value=None, uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Float’. Floating-point value
@@ -3746,7 +3746,7 @@ Create Sample UV Surface with operation ‘Float’. Floating-point value
 ##### integer
 
 ``` python
-integer(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
+integer(mesh=None, value=None, uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Integer’. 32-bit integer
@@ -3754,7 +3754,7 @@ Create Sample UV Surface with operation ‘Integer’. 32-bit integer
 ##### matrix
 
 ``` python
-matrix(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
+matrix(mesh=None, value=None, uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix
@@ -3762,7 +3762,7 @@ Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix
 ##### quaternion
 
 ``` python
-quaternion(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
+quaternion(mesh=None, value=None, uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Quaternion’. Floating point quaternion rotation
@@ -3770,19 +3770,19 @@ Create Sample UV Surface with operation ‘Quaternion’. Floating point quatern
 ##### vector
 
 ``` python
-vector(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
+vector(mesh=None, value=None, uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Vector’. 3D vector with floating-point values
 
 **Inputs**
 
-| Attribute         | Type             | Description |
-|-------------------|------------------|-------------|
-| `i.mesh`          | `GeometrySocket` | Mesh        |
-| `i.value`         | `FloatSocket`    | Value       |
-| `i.source_uv_map` | `VectorSocket`   | UV Map      |
-| `i.sample_uv`     | `VectorSocket`   | Sample UV   |
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `i.mesh`      | `GeometrySocket` | Mesh        |
+| `i.value`     | `FloatSocket`    | Value       |
+| `i.uv_map`    | `VectorSocket`   | UV Map      |
+| `i.sample_uv` | `VectorSocket`   | Sample UV   |
 
 **Outputs**
 
@@ -5213,13 +5213,7 @@ Create Set Selection with operation ‘Spline’. Attribute on spline
 ### SetShadeSmooth
 
 ``` python
-SetShadeSmooth(
-    geometry=None,
-    selection=None,
-    shade_smooth=True,
-    *,
-    domain='FACE',
-)
+SetShadeSmooth(mesh=None, selection=None, shade_smooth=True, *, domain='FACE')
 ```
 
 Control the smoothness of mesh normals around each face by changing the “shade smooth” attribute
@@ -5228,7 +5222,7 @@ Control the smoothness of mesh normals around each face by changing the “shade
 
 | Name         | Type          | Description  | Default |
 |--------------|---------------|--------------|---------|
-| geometry     | InputGeometry | Mesh         | `None`  |
+| mesh         | InputGeometry | Mesh         | `None`  |
 | selection    | InputBoolean  | Selection    | `None`  |
 | shade_smooth | InputBoolean  | Shade Smooth | `True`  |
 
@@ -5253,7 +5247,7 @@ Control the smoothness of mesh normals around each face by changing the “shade
 ##### edge
 
 ``` python
-edge(geometry=None, selection=None, shade_smooth=True)
+edge(mesh=None, selection=None, shade_smooth=True)
 ```
 
 Create Set Shade Smooth with operation ‘Edge’. Attribute on mesh edge
@@ -5261,7 +5255,7 @@ Create Set Shade Smooth with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, selection=None, shade_smooth=True)
+face(mesh=None, selection=None, shade_smooth=True)
 ```
 
 Create Set Shade Smooth with operation ‘Face’. Attribute on mesh faces
@@ -5270,20 +5264,20 @@ Create Set Shade Smooth with operation ‘Face’. Attribute on mesh faces
 
 | Attribute        | Type             | Description  |
 |------------------|------------------|--------------|
-| `i.geometry`     | `GeometrySocket` | Mesh         |
+| `i.mesh`         | `GeometrySocket` | Mesh         |
 | `i.selection`    | `BooleanSocket`  | Selection    |
 | `i.shade_smooth` | `BooleanSocket`  | Shade Smooth |
 
 **Outputs**
 
-| Attribute    | Type             | Description |
-|--------------|------------------|-------------|
-| `o.geometry` | `GeometrySocket` | Mesh        |
+| Attribute | Type             | Description |
+|-----------|------------------|-------------|
+| `o.mesh`  | `GeometrySocket` | Mesh        |
 
 ### SetSplineCyclic
 
 ``` python
-SetSplineCyclic(geometry=None, selection=None, cyclic=False)
+SetSplineCyclic(curve=None, selection=None, cyclic=False)
 ```
 
 Control whether each spline loops back on itself by changing the “cyclic” attribute
@@ -5292,7 +5286,7 @@ Control whether each spline loops back on itself by changing the “cyclic” at
 
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
-| geometry  | InputGeometry | Curve       | `None`  |
+| curve     | InputGeometry | Curve       | `None`  |
 | selection | InputBoolean  | Selection   | `None`  |
 | cyclic    | InputBoolean  | Cyclic      | `False` |
 
@@ -5310,20 +5304,20 @@ Control whether each spline loops back on itself by changing the “cyclic” at
 
 | Attribute     | Type             | Description |
 |---------------|------------------|-------------|
-| `i.geometry`  | `GeometrySocket` | Curve       |
+| `i.curve`     | `GeometrySocket` | Curve       |
 | `i.selection` | `BooleanSocket`  | Selection   |
 | `i.cyclic`    | `BooleanSocket`  | Cyclic      |
 
 **Outputs**
 
-| Attribute    | Type             | Description |
-|--------------|------------------|-------------|
-| `o.geometry` | `GeometrySocket` | Curve       |
+| Attribute | Type             | Description |
+|-----------|------------------|-------------|
+| `o.curve` | `GeometrySocket` | Curve       |
 
 ### SetSplineResolution
 
 ``` python
-SetSplineResolution(geometry=None, selection=None, resolution=12)
+SetSplineResolution(curve=None, selection=None, resolution=12)
 ```
 
 Control how many evaluated points should be generated on every curve segment
@@ -5332,7 +5326,7 @@ Control how many evaluated points should be generated on every curve segment
 
 | Name       | Type          | Description | Default |
 |------------|---------------|-------------|---------|
-| geometry   | InputGeometry | Curve       | `None`  |
+| curve      | InputGeometry | Curve       | `None`  |
 | selection  | InputBoolean  | Selection   | `None`  |
 | resolution | InputInteger  | Resolution  | `12`    |
 
@@ -5350,15 +5344,15 @@ Control how many evaluated points should be generated on every curve segment
 
 | Attribute      | Type             | Description |
 |----------------|------------------|-------------|
-| `i.geometry`   | `GeometrySocket` | Curve       |
+| `i.curve`      | `GeometrySocket` | Curve       |
 | `i.selection`  | `BooleanSocket`  | Selection   |
 | `i.resolution` | `IntegerSocket`  | Resolution  |
 
 **Outputs**
 
-| Attribute    | Type             | Description |
-|--------------|------------------|-------------|
-| `o.geometry` | `GeometrySocket` | Curve       |
+| Attribute | Type             | Description |
+|-----------|------------------|-------------|
+| `o.curve` | `GeometrySocket` | Curve       |
 
 ### SetSplineType
 

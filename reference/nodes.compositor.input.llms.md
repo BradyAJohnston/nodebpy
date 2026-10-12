@@ -220,8 +220,8 @@ Mask(
     size_y=256,
     feather=True,
     motion_blur=False,
-    motion_blur_samples=16,
-    motion_blur_shutter=0.5,
+    samples=16,
+    shutter=0.5,
 )
 ```
 
@@ -236,8 +236,8 @@ Input mask from a mask data-block, created in the image editor
 | size_y | InputInteger | Size Y | `256` |
 | feather | InputBoolean | Feather | `True` |
 | motion_blur | InputBoolean | Motion Blur | `False` |
-| motion_blur_samples | InputInteger | Samples | `16` |
-| motion_blur_shutter | InputFloat | Shutter | `0.5` |
+| samples | InputInteger | Samples | `16` |
+| shutter | InputFloat | Shutter | `0.5` |
 
 #### Attributes
 
@@ -251,15 +251,15 @@ Input mask from a mask data-block, created in the image editor
 
 **Inputs**
 
-| Attribute               | Type            | Description |
-|-------------------------|-----------------|-------------|
-| `i.size_source`         | `MenuSocket`    | Size Source |
-| `i.size_x`              | `IntegerSocket` | Size X      |
-| `i.size_y`              | `IntegerSocket` | Size Y      |
-| `i.feather`             | `BooleanSocket` | Feather     |
-| `i.motion_blur`         | `BooleanSocket` | Motion Blur |
-| `i.motion_blur_samples` | `IntegerSocket` | Samples     |
-| `i.motion_blur_shutter` | `FloatSocket`   | Shutter     |
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `i.size_source` | `MenuSocket`    | Size Source |
+| `i.size_x`      | `IntegerSocket` | Size X      |
+| `i.size_y`      | `IntegerSocket` | Size Y      |
+| `i.feather`     | `BooleanSocket` | Feather     |
+| `i.motion_blur` | `BooleanSocket` | Motion Blur |
+| `i.samples`     | `IntegerSocket` | Samples     |
+| `i.shutter`     | `FloatSocket`   | Shutter     |
 
 **Outputs**
 
@@ -409,7 +409,7 @@ StringToImage(
     horizontal_alignment='Center',
     vertical_alignment='Middle',
     wrap=True,
-    wrap_width=1920,
+    width=1920,
 )
 ```
 
@@ -425,7 +425,7 @@ Generates an image containing the given paragraph of text
 | horizontal_alignment | InputMenu \| Literal\['Left', 'Center', 'Right'\] | Horizontal Alignment | `'Center'` |
 | vertical_alignment | InputMenu \| Literal\['Top', 'Top Baseline', 'Middle', 'Bottom Baseline', 'Bottom'\] | Vertical Alignment | `'Middle'` |
 | wrap | InputBoolean | Wrap | `True` |
-| wrap_width | InputInteger | Width | `1920` |
+| width | InputInteger | Width | `1920` |
 
 #### Attributes
 
@@ -447,7 +447,7 @@ Generates an image containing the given paragraph of text
 | `i.horizontal_alignment` | `MenuSocket`    | Horizontal Alignment |
 | `i.vertical_alignment`   | `MenuSocket`    | Vertical Alignment   |
 | `i.wrap`                 | `BooleanSocket` | Wrap                 |
-| `i.wrap_width`           | `IntegerSocket` | Width                |
+| `i.width`                | `IntegerSocket` | Width                |
 
 **Outputs**
 
@@ -489,9 +489,9 @@ Generate a factor value (from 0.0 to 1.0) between scene start and end time, usin
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.fac`   | `FloatSocket` | Factor      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.factor` | `FloatSocket` | Factor      |
 
 ### TrackPosition
 

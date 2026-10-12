@@ -254,13 +254,13 @@ Create matte using a given color, for green or blue screen footage
 ``` python
 ColorSpill(
     image=(1.0, 1.0, 1.0, 1.0),
-    fac=1.0,
+    factor=1.0,
     spill_channel='G',
     limit_method='Single',
     limit_channel='R',
     limit_strength=1.0,
     use_spill_strength=False,
-    spill_strength=(0.0, 1.0, 0.0, 1.0),
+    strength=(0.0, 1.0, 0.0, 1.0),
 )
 ```
 
@@ -271,13 +271,13 @@ Remove colors from a blue or green screen, by reducing one RGB channel compared 
 | Name | Type | Description | Default |
 |----|----|----|----|
 | image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
-| fac | InputFloat | Factor | `1.0` |
+| factor | InputFloat | Factor | `1.0` |
 | spill_channel | InputMenu \| Literal\['R', 'G', 'B'\] | Spill Channel | `'G'` |
 | limit_method | InputMenu \| Literal\['Single', 'Average'\] | Limit Method | `'Single'` |
 | limit_channel | InputMenu \| Literal\['R', 'G', 'B'\] | Limit Channel | `'R'` |
 | limit_strength | InputFloat | Limit Strength | `1.0` |
 | use_spill_strength | InputBoolean | Use Spill Strength | `False` |
-| spill_strength | InputColor | Strength | `(0.0, 1.0, 0.0, 1.0)` |
+| strength | InputColor | Strength | `(0.0, 1.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -294,13 +294,13 @@ Remove colors from a blue or green screen, by reducing one RGB channel compared 
 | Attribute              | Type            | Description        |
 |------------------------|-----------------|--------------------|
 | `i.image`              | `ColorSocket`   | Image              |
-| `i.fac`                | `FloatSocket`   | Factor             |
+| `i.factor`             | `FloatSocket`   | Factor             |
 | `i.spill_channel`      | `MenuSocket`    | Spill Channel      |
 | `i.limit_method`       | `MenuSocket`    | Limit Method       |
 | `i.limit_channel`      | `MenuSocket`    | Limit Channel      |
 | `i.limit_strength`     | `FloatSocket`   | Limit Strength     |
 | `i.use_spill_strength` | `BooleanSocket` | Use Spill Strength |
-| `i.spill_strength`     | `ColorSocket`   | Strength           |
+| `i.strength`           | `ColorSocket`   | Strength           |
 
 **Outputs**
 
@@ -517,15 +517,15 @@ Keying(
     key_balance=0.5,
     black_level=0.0,
     white_level=1.0,
-    edge_search_size=3,
-    edge_tolerance=0.1,
+    size=3,
+    tolerance=0.1,
     garbage_matte=0.0,
     core_matte=0.0,
     postprocess_blur_size=0,
-    postprocess_dilate_size=0,
-    postprocess_feather_size=0,
+    dilate_size=0,
+    feather_size=0,
     feather_falloff='Smooth',
-    despill_strength=1.0,
+    strength=1.0,
     despill_balance=0.5,
 )
 ```
@@ -542,15 +542,15 @@ Perform both chroma keying (to remove the backdrop) and despill (to correct colo
 | key_balance | InputFloat | Balance | `0.5` |
 | black_level | InputFloat | Black Level | `0.0` |
 | white_level | InputFloat | White Level | `1.0` |
-| edge_search_size | InputInteger | Size | `3` |
-| edge_tolerance | InputFloat | Tolerance | `0.1` |
+| size | InputInteger | Size | `3` |
+| tolerance | InputFloat | Tolerance | `0.1` |
 | garbage_matte | InputFloat | Garbage Matte | `0.0` |
 | core_matte | InputFloat | Core Matte | `0.0` |
 | postprocess_blur_size | InputInteger | Blur Size | `0` |
-| postprocess_dilate_size | InputInteger | Dilate Size | `0` |
-| postprocess_feather_size | InputInteger | Feather Size | `0` |
+| dilate_size | InputInteger | Dilate Size | `0` |
+| feather_size | InputInteger | Feather Size | `0` |
 | feather_falloff | InputMenu \| Literal\['Smooth', 'Sphere', 'Root', 'Inverse Square', 'Sharp', 'Linear'\] | Feather Falloff | `'Smooth'` |
-| despill_strength | InputFloat | Strength | `1.0` |
+| strength | InputFloat | Strength | `1.0` |
 | despill_balance | InputFloat | Balance | `0.5` |
 
 #### Attributes
@@ -565,24 +565,24 @@ Perform both chroma keying (to remove the backdrop) and despill (to correct colo
 
 **Inputs**
 
-| Attribute                    | Type            | Description     |
-|------------------------------|-----------------|-----------------|
-| `i.image`                    | `ColorSocket`   | Image           |
-| `i.key_color`                | `ColorSocket`   | Key Color       |
-| `i.preprocess_blur_size`     | `IntegerSocket` | Blur Size       |
-| `i.key_balance`              | `FloatSocket`   | Balance         |
-| `i.black_level`              | `FloatSocket`   | Black Level     |
-| `i.white_level`              | `FloatSocket`   | White Level     |
-| `i.edge_search_size`         | `IntegerSocket` | Size            |
-| `i.edge_tolerance`           | `FloatSocket`   | Tolerance       |
-| `i.garbage_matte`            | `FloatSocket`   | Garbage Matte   |
-| `i.core_matte`               | `FloatSocket`   | Core Matte      |
-| `i.postprocess_blur_size`    | `IntegerSocket` | Blur Size       |
-| `i.postprocess_dilate_size`  | `IntegerSocket` | Dilate Size     |
-| `i.postprocess_feather_size` | `IntegerSocket` | Feather Size    |
-| `i.feather_falloff`          | `MenuSocket`    | Feather Falloff |
-| `i.despill_strength`         | `FloatSocket`   | Strength        |
-| `i.despill_balance`          | `FloatSocket`   | Balance         |
+| Attribute                 | Type            | Description     |
+|---------------------------|-----------------|-----------------|
+| `i.image`                 | `ColorSocket`   | Image           |
+| `i.key_color`             | `ColorSocket`   | Key Color       |
+| `i.preprocess_blur_size`  | `IntegerSocket` | Blur Size       |
+| `i.key_balance`           | `FloatSocket`   | Balance         |
+| `i.black_level`           | `FloatSocket`   | Black Level     |
+| `i.white_level`           | `FloatSocket`   | White Level     |
+| `i.size`                  | `IntegerSocket` | Size            |
+| `i.tolerance`             | `FloatSocket`   | Tolerance       |
+| `i.garbage_matte`         | `FloatSocket`   | Garbage Matte   |
+| `i.core_matte`            | `FloatSocket`   | Core Matte      |
+| `i.postprocess_blur_size` | `IntegerSocket` | Blur Size       |
+| `i.dilate_size`           | `IntegerSocket` | Dilate Size     |
+| `i.feather_size`          | `IntegerSocket` | Feather Size    |
+| `i.feather_falloff`       | `MenuSocket`    | Feather Falloff |
+| `i.strength`              | `FloatSocket`   | Strength        |
+| `i.despill_balance`       | `FloatSocket`   | Balance         |
 
 **Outputs**
 

@@ -206,8 +206,8 @@ with g.tree("Voxelise") as tree:
         building_points,
         selection=g.GeometryProximity(
             target_element="POINTS",
-            target=road_points,
-            source_position=g.Position().o.position,
+            geometry=road_points,
+            sample_position=g.Position().o.position,
         ).o.distance
         < road_width,
     )
@@ -256,8 +256,8 @@ def city_builder(
         domain=DeleteGeometry.Domain.POINT,
         selection=geometry_proximity(
             target_element=GeometryProximity.TargetElement.POINTS,
-            target=road_points,
-            source_position=position(),
+            geometry=road_points,
+            sample_position=position(),
         ).distance
         < road_width,
     )

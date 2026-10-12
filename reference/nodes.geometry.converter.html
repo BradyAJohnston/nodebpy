@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.36.0</span>
+    <span class="navbar-title">nodebpy 520.37.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -1178,13 +1178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.converter.AccumulateField" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.AccumulateField">AccumulateField</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AccumulateField(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AccumulateField(value<span class="op">=</span><span class="fl">1.0</span>, group_id<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Add the values of an evaluated field together and output the running total for each element</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
@@ -1205,7 +1199,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>1.0</code></td>
 </tr>
 <tr class="even">
-<td>group_index</td>
+<td>group_id</td>
 <td>InputInteger</td>
 <td>Group ID</td>
 <td><code>None</code></td>
@@ -1297,7 +1291,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Value</td>
 </tr>
 <tr class="even">
-<td><code>i.group_index</code></td>
+<td><code>i.group_id</code></td>
 <td><code>IntegerSocket</code></td>
 <td>Group ID</td>
 </tr>
@@ -3833,7 +3827,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.FieldAverage" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.FieldAverage">FieldAverage</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>FieldAverage(value<span class="op">=</span><span class="fl">0.0</span>, group_index<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>FieldAverage(value<span class="op">=</span><span class="fl">0.0</span>, group_id<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the mean and median of a given field</p>
 <section id="parameters-18" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
@@ -3854,7 +3848,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>0.0</code></td>
 </tr>
 <tr class="even">
-<td>group_index</td>
+<td>group_id</td>
 <td>InputInteger</td>
 <td>Group ID</td>
 <td><code>None</code></td>
@@ -3946,7 +3940,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Value</td>
 </tr>
 <tr class="even">
-<td><code>i.group_index</code></td>
+<td><code>i.group_id</code></td>
 <td><code>IntegerSocket</code></td>
 <td>Group ID</td>
 </tr>
@@ -3978,13 +3972,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.FieldMinAndMax" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.FieldMinAndMax">FieldMinAndMax</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>FieldMinAndMax(</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>FieldMinAndMax(value<span class="op">=</span><span class="fl">0.0</span>, group_id<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the minimum and maximum of a given field</p>
 <section id="parameters-19" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-19">Parameters</h4>
@@ -4005,7 +3993,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>0.0</code></td>
 </tr>
 <tr class="even">
-<td>group_index</td>
+<td>group_id</td>
 <td>InputInteger</td>
 <td>Group ID</td>
 <td><code>None</code></td>
@@ -4097,7 +4085,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Value</td>
 </tr>
 <tr class="even">
-<td><code>i.group_index</code></td>
+<td><code>i.group_id</code></td>
 <td><code>IntegerSocket</code></td>
 <td>Group ID</td>
 </tr>
@@ -4321,7 +4309,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.FieldVariance" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.FieldVariance">FieldVariance</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>FieldVariance(value<span class="op">=</span><span class="fl">0.0</span>, group_index<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>FieldVariance(value<span class="op">=</span><span class="fl">0.0</span>, group_id<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the standard deviation and variance of a given field</p>
 <section id="parameters-21" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-21">Parameters</h4>
@@ -4342,7 +4330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>0.0</code></td>
 </tr>
 <tr class="even">
-<td>group_index</td>
+<td>group_id</td>
 <td>InputInteger</td>
 <td>Group ID</td>
 <td><code>None</code></td>
@@ -4434,7 +4422,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Value</td>
 </tr>
 <tr class="even">
-<td><code>i.group_index</code></td>
+<td><code>i.group_id</code></td>
 <td><code>IntegerSocket</code></td>
 <td>Group ID</td>
 </tr>

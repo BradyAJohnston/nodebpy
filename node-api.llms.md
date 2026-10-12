@@ -139,7 +139,7 @@ The two selector factories are the deliberate exceptions. `fac.mix.float(a, b)` 
 
 ``` python
 with g.tree() as tree:
-    fac = g.NoiseTexture().o.fac
+    fac = g.NoiseTexture().o.factor
     mixed = fac.mix.vector((0, 0, 0), (1, 1, 1))
     picked = (fac > 0.5).switch.geometry(g.Cube(), g.IcoSphere())
 
@@ -315,7 +315,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x12a5e1bd0>
+>     <nodebpy.builder.socket.BooleanSocket at 0x12a77da90>
 >
 > ### Comparing Python Objects
 >

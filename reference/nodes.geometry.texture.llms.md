@@ -87,10 +87,10 @@ Generate a procedural texture producing bricks
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.color` | `ColorSocket` | Color       |
-| `o.fac`   | `FloatSocket` | Factor      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.color`  | `ColorSocket` | Color       |
+| `o.factor` | `FloatSocket` | Factor      |
 
 ### CheckerTexture
 
@@ -135,10 +135,10 @@ Generate a checkerboard texture
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.color` | `ColorSocket` | Color       |
-| `o.fac`   | `FloatSocket` | Factor      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.color`  | `ColorSocket` | Color       |
+| `o.factor` | `FloatSocket` | Factor      |
 
 ### GaborTexture
 
@@ -334,10 +334,10 @@ Create Gradient Texture with operation ‘Spherical’. Create a spherical progr
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.color` | `ColorSocket` | Color       |
-| `o.fac`   | `FloatSocket` | Factor      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.color`  | `ColorSocket` | Color       |
+| `o.factor` | `FloatSocket` | Factor      |
 
 ### ImageTexture
 
@@ -426,10 +426,10 @@ Generate a psychedelic color texture
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.color` | `ColorSocket` | Color       |
-| `o.fac`   | `FloatSocket` | Factor      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.color`  | `ColorSocket` | Color       |
+| `o.factor` | `FloatSocket` | Factor      |
 
 ### NoiseTexture
 
@@ -597,10 +597,10 @@ Create Noise Texture with operation ‘Ridged Multifractal’. Create sharp peak
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.fac`   | `FloatSocket` | Factor      |
-| `o.color` | `ColorSocket` | Color       |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.factor` | `FloatSocket` | Factor      |
+| `o.color`  | `ColorSocket` | Color       |
 
 ### VoronoiTexture
 
@@ -783,10 +783,10 @@ Create Wave Texture with operation ‘Rings’. Use wave texture in rings
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.color` | `ColorSocket` | Color       |
-| `o.fac`   | `FloatSocket` | Factor      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.color`  | `ColorSocket` | Color       |
+| `o.factor` | `FloatSocket` | Factor      |
 
 ### WhiteNoiseTexture
 

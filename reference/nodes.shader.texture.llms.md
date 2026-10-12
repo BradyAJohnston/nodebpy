@@ -113,9 +113,9 @@ Create IES Texture with operation ‘Internal’. Use internal text data-block
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.fac`   | `FloatSocket` | Factor      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.factor` | `FloatSocket` | Factor      |
 
 ### ImageTexture
 

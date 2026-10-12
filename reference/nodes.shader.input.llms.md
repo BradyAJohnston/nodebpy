@@ -7,6 +7,7 @@
 | Name | Description |
 |----|----|
 | [AmbientOcclusion](#nodebpy.nodes.shader.input.AmbientOcclusion) | Compute how much the hemisphere above the shading point is occluded, for example to add weathering effects to corners. |
+| [Attribute](#nodebpy.nodes.shader.input.Attribute) | Retrieve attributes attached to objects or geometry |
 | [Bevel](#nodebpy.nodes.shader.input.Bevel) | Generates normals with round corners. |
 | [CameraData](#nodebpy.nodes.shader.input.CameraData) | Retrieve information about the camera and how it relates to the current shading point’s position |
 | [Color](#nodebpy.nodes.shader.input.Color) | A color picker |
@@ -81,6 +82,76 @@ Note: For Cycles, this may slow down renders significantly
 | [`only_local`](#nodebpy.nodes.shader.input.AmbientOcclusion.only_local) |  |
 | [`samples`](#nodebpy.nodes.shader.input.AmbientOcclusion.samples) |  |
 | [`tree`](#nodebpy.nodes.shader.input.AmbientOcclusion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+### Attribute
+
+``` python
+Attribute(attribute_type='GEOMETRY', attribute_name='')
+```
+
+Retrieve attributes attached to objects or geometry
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`attribute_name`](#nodebpy.nodes.shader.input.Attribute.attribute_name) |  |
+| [`attribute_type`](#nodebpy.nodes.shader.input.Attribute.attribute_type) |  |
+| [`i`](#nodebpy.nodes.shader.input.Attribute.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.Attribute.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.Attribute.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.Attribute.o) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Attribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [geometry](#nodebpy.nodes.shader.input.Attribute.geometry) | Create Attribute with operation ‘Geometry’. |
+| [instancer](#nodebpy.nodes.shader.input.Attribute.instancer) | Create Attribute with operation ‘Instancer’. |
+| [object](#nodebpy.nodes.shader.input.Attribute.object) | Create Attribute with operation ‘Object’. |
+| [view_layer](#nodebpy.nodes.shader.input.Attribute.view_layer) | Create Attribute with operation ‘View Layer’. |
+
+##### geometry
+
+``` python
+geometry(attribute_name='')
+```
+
+Create Attribute with operation ‘Geometry’.
+
+##### instancer
+
+``` python
+instancer(attribute_name='')
+```
+
+Create Attribute with operation ‘Instancer’.
+
+##### object
+
+``` python
+object(attribute_name='')
+```
+
+Create Attribute with operation ‘Object’.
+
+##### view_layer
+
+``` python
+view_layer(attribute_name='')
+```
+
+Create Attribute with operation ‘View Layer’.
+
+**Outputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `o.color`  | `ColorSocket`  | Color       |
+| `o.vector` | `VectorSocket` | Vector      |
+| `o.factor` | `FloatSocket`  | Factor      |
+| `o.alpha`  | `FloatSocket`  | Alpha       |
 
 ### Bevel
 
@@ -253,7 +324,7 @@ Typically used for mixing reflections at grazing angles
 
 #### Outputs
 
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
 
 #### Attributes
@@ -694,7 +765,7 @@ Note: as meshes are triangulated before being processed by Cycles, topology will
 
 #### Outputs
 
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
 
 #### Attributes

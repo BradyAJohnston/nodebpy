@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.36.0</span>
+    <span class="navbar-title">nodebpy 520.37.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -1966,7 +1966,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.filter.Despeckle" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Despeckle">Despeckle</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Despeckle(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>, color_threshold<span class="op">=</span><span class="fl">0.5</span>, neighbor_threshold<span class="op">=</span><span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Despeckle(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>, color_threshold<span class="op">=</span><span class="fl">0.5</span>, neighbor_threshold<span class="op">=</span><span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched</p>
 <section id="parameters-7" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
@@ -1987,7 +1987,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>None</code></td>
 </tr>
 <tr class="even">
-<td>fac</td>
+<td>factor</td>
 <td>InputFloat</td>
 <td>Factor</td>
 <td><code>1.0</code></td>
@@ -2055,7 +2055,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Image</td>
 </tr>
 <tr class="even">
-<td><code>i.fac</code></td>
+<td><code>i.factor</code></td>
 <td><code>FloatSocket</code></td>
 <td>Factor</td>
 </tr>
@@ -2290,8 +2290,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>),</span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    translation_amount<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    translation_direction<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    amount<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    direction<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Blur an image along a direction</p>
 <section id="parameters-9" class="level4 doc-section doc-section-parameters">
@@ -2337,13 +2337,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>1.0</code></td>
 </tr>
 <tr class="even">
-<td>translation_amount</td>
+<td>amount</td>
 <td>InputFloat</td>
 <td>Amount</td>
 <td><code>0.0</code></td>
 </tr>
 <tr class="odd">
-<td>translation_direction</td>
+<td>direction</td>
 <td>InputFloat</td>
 <td>Direction</td>
 <td><code>0.0</code></td>
@@ -2419,12 +2419,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Scale</td>
 </tr>
 <tr class="even">
-<td><code>i.translation_amount</code></td>
+<td><code>i.amount</code></td>
 <td><code>FloatSocket</code></td>
 <td>Amount</td>
 </tr>
 <tr class="odd">
-<td><code>i.translation_direction</code></td>
+<td><code>i.direction</code></td>
 <td><code>FloatSocket</code></td>
 <td>Direction</td>
 </tr>
@@ -2451,7 +2451,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter">Filter</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Filter(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'Soften'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Filter(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'Soften'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply common image enhancement filters</p>
 <section id="parameters-10" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
@@ -2478,7 +2478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>None</code></td>
 </tr>
 <tr class="even">
-<td>fac</td>
+<td>factor</td>
 <td>InputFloat</td>
 <td>Factor</td>
 <td><code>1.0</code></td>
@@ -2571,42 +2571,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.filter.Filter.box_sharpen" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.box_sharpen">box_sharpen</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>box_sharpen(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>box_sharpen(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Box Sharpen’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.diamond_sharpen" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.diamond_sharpen">diamond_sharpen</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>diamond_sharpen(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>diamond_sharpen(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Diamond Sharpen’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.kirsch" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.kirsch">kirsch</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>kirsch(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>kirsch(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Kirsch’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.laplace" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.laplace">laplace</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>laplace(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>laplace(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Laplace’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.prewitt" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.prewitt">prewitt</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>prewitt(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>prewitt(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Prewitt’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.shadow" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.shadow">shadow</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>shadow(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>shadow(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Shadow’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.sobel" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.sobel">sobel</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sobel(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sobel(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Sobel’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.soften" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.soften">soften</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>soften(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>soften(image<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Soften’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -2624,7 +2624,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Image</td>
 </tr>
 <tr class="even">
-<td><code>i.fac</code></td>
+<td><code>i.factor</code></td>
 <td><code>FloatSocket</code></td>
 <td>Factor</td>
 </tr>
@@ -2661,10 +2661,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">'Streaks'</span>,</span>
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
@@ -2674,7 +2674,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    iterations<span class="op">=</span><span class="dv">3</span>,</span>
 <span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    fade<span class="op">=</span><span class="fl">0.9</span>,</span>
 <span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    color_modulation<span class="op">=</span><span class="fl">0.25</span>,</span>
-<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>    diagonal_star<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>    diagonal<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    sun_position<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>),</span>
 <span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>    jitter<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    kernel_data_type<span class="op">=</span><span class="st">'Float'</span>,</span>
@@ -2686,9 +2686,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 12%">
-<col style="width: 64%">
-<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 66%">
+<col style="width: 10%">
 <col style="width: 13%">
 </colgroup>
 <thead>
@@ -2719,25 +2719,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>'Medium'</code></td>
 </tr>
 <tr class="even">
-<td>highlights_threshold</td>
+<td>threshold</td>
 <td>InputFloat</td>
 <td>Threshold</td>
 <td><code>1.0</code></td>
 </tr>
 <tr class="odd">
-<td>highlights_smoothness</td>
+<td>smoothness</td>
 <td>InputFloat</td>
 <td>Smoothness</td>
 <td><code>0.1</code></td>
 </tr>
 <tr class="even">
-<td>clamp_highlights</td>
+<td>clamp</td>
 <td>InputBoolean</td>
 <td>Clamp</td>
 <td><code>False</code></td>
 </tr>
 <tr class="odd">
-<td>maximum_highlights</td>
+<td>maximum</td>
 <td>InputFloat</td>
 <td>Maximum</td>
 <td><code>10.0</code></td>
@@ -2797,7 +2797,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>0.25</code></td>
 </tr>
 <tr class="odd">
-<td>diagonal_star</td>
+<td>diagonal</td>
 <td>InputBoolean</td>
 <td>Diagonal</td>
 <td><code>True</code></td>
@@ -2913,10 +2913,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>bloom(</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
@@ -2929,10 +2929,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>fog_glow(</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
@@ -2945,10 +2945,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ghosts(</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
@@ -2962,10 +2962,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>kernel(</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
@@ -2979,16 +2979,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>simple_star(</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>    iterations<span class="op">=</span><span class="dv">3</span>,</span>
 <span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>    fade<span class="op">=</span><span class="fl">0.9</span>,</span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    diagonal_star<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    diagonal<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Glare node with type ‘Simple Star’.</p>
 </section>
@@ -2997,10 +2997,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>streaks(</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
@@ -3017,10 +3017,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>sun_beams(</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
@@ -3055,22 +3055,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Quality</td>
 </tr>
 <tr class="even">
-<td><code>i.highlights_threshold</code></td>
+<td><code>i.threshold</code></td>
 <td><code>FloatSocket</code></td>
 <td>Threshold</td>
 </tr>
 <tr class="odd">
-<td><code>i.highlights_smoothness</code></td>
+<td><code>i.smoothness</code></td>
 <td><code>FloatSocket</code></td>
 <td>Smoothness</td>
 </tr>
 <tr class="even">
-<td><code>i.clamp_highlights</code></td>
+<td><code>i.clamp</code></td>
 <td><code>BooleanSocket</code></td>
 <td>Clamp</td>
 </tr>
 <tr class="odd">
-<td><code>i.maximum_highlights</code></td>
+<td><code>i.maximum</code></td>
 <td><code>FloatSocket</code></td>
 <td>Maximum</td>
 </tr>
@@ -3120,7 +3120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Color Modulation</td>
 </tr>
 <tr class="odd">
-<td><code>i.diagonal_star</code></td>
+<td><code>i.diagonal</code></td>
 <td><code>BooleanSocket</code></td>
 <td>Diagonal</td>
 </tr>
@@ -3696,7 +3696,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>VectorBlur(</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    speed<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    z<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    depth<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    samples<span class="op">=</span><span class="dv">32</span>,</span>
 <span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    shutter<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -3726,7 +3726,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>(0.0, 0.0, 0.0, 0.0)</code></td>
 </tr>
 <tr class="odd">
-<td>z</td>
+<td>depth</td>
 <td>InputFloat</td>
 <td>Depth</td>
 <td><code>0.0</code></td>
@@ -3799,7 +3799,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Speed</td>
 </tr>
 <tr class="odd">
-<td><code>i.z</code></td>
+<td><code>i.depth</code></td>
 <td><code>FloatSocket</code></td>
 <td>Depth</td>
 </tr>

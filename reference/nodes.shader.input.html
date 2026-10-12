@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.36.0</span>
+    <span class="navbar-title">nodebpy 520.37.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -761,6 +761,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
   <li><a href="#nodebpy.nodes.shader.input.AmbientOcclusion" id="toc-nodebpy.nodes.shader.input.AmbientOcclusion" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.input.AmbientOcclusion">AmbientOcclusion</a></li>
+  <li><a href="#nodebpy.nodes.shader.input.Attribute" id="toc-nodebpy.nodes.shader.input.Attribute" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.input.Attribute">Attribute</a></li>
   <li><a href="#nodebpy.nodes.shader.input.Bevel" id="toc-nodebpy.nodes.shader.input.Bevel" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.input.Bevel">Bevel</a></li>
   <li><a href="#nodebpy.nodes.shader.input.CameraData" id="toc-nodebpy.nodes.shader.input.CameraData" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.input.CameraData">CameraData</a></li>
   <li><a href="#nodebpy.nodes.shader.input.Color" id="toc-nodebpy.nodes.shader.input.Color" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.input.Color">Color</a></li>
@@ -808,74 +809,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Compute how much the hemisphere above the shading point is occluded, for example to add weathering effects to corners.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.shader.input.Attribute">Attribute</a></td>
+<td>Retrieve attributes attached to objects or geometry</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.Bevel">Bevel</a></td>
 <td>Generates normals with round corners.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.CameraData">CameraData</a></td>
 <td>Retrieve information about the camera and how it relates to the current shading point’s position</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.Color">Color</a></td>
 <td>A color picker</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.ColorAttribute">ColorAttribute</a></td>
 <td>Retrieve a color attribute, or the default fallback if none is specified</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.CurvesInfo">CurvesInfo</a></td>
 <td>Retrieve hair curve information</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.Fresnel">Fresnel</a></td>
 <td>Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.Geometry">Geometry</a></td>
 <td>Retrieve geometric information about the current shading point</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.LayerWeight">LayerWeight</a></td>
 <td>Produce a blending factor depending on the angle between the surface normal and the view direction.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.LightPath">LightPath</a></td>
 <td>Retrieve the type of incoming ray for which the shader is being executed.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.ObjectInfo">ObjectInfo</a></td>
 <td>Retrieve information about the object instance</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.ParticleInfo">ParticleInfo</a></td>
 <td>Retrieve the data of the particle that spawned the object instance, for example to give variation to multiple instances of an object</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.PointInfo">PointInfo</a></td>
 <td>Retrieve information about points in a point cloud</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.Raycast">Raycast</a></td>
 <td>Cast rays and retrieve information from the hit point</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.Tangent">Tangent</a></td>
 <td>Generate a tangent direction for the Anisotropic BSDF</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.TextureCoordinate">TextureCoordinate</a></td>
 <td>Retrieve multiple types of texture coordinates.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.UVAlongStroke">UVAlongStroke</a></td>
 <td>UV coordinates that map a texture along the stroke length</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.input.UVMap">UVMap</a></td>
 <td>Retrieve a UV map from the geometry, or the default fallback if none is specified</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.input.Wireframe">Wireframe</a></td>
 <td>Retrieve the edges of an object as it appears to Cycles.</td>
 </tr>
@@ -965,9 +970,136 @@ o.ao : FloatSocket
 </table>
 </section>
 </section>
+<section id="nodebpy.nodes.shader.input.Attribute" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Attribute">Attribute</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Attribute(attribute_type<span class="op">=</span><span class="st">'GEOMETRY'</span>, attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve attributes attached to objects or geometry</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.attribute_name"><code>attribute_name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.attribute_type"><code>attribute_type</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.name"><code>name</code></a></td>
+<td>The name of the node being wrapped by this instance.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.tree"><code>tree</code></a></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.geometry">geometry</a></td>
+<td>Create Attribute with operation ‘Geometry’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.instancer">instancer</a></td>
+<td>Create Attribute with operation ‘Instancer’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.object">object</a></td>
+<td>Create Attribute with operation ‘Object’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.input.Attribute.view_layer">view_layer</a></td>
+<td>Create Attribute with operation ‘View Layer’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.input.Attribute.geometry" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Attribute.geometry">geometry</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>geometry(attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Attribute with operation ‘Geometry’.</p>
+</section>
+<section id="nodebpy.nodes.shader.input.Attribute.instancer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Attribute.instancer">instancer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>instancer(attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Attribute with operation ‘Instancer’.</p>
+</section>
+<section id="nodebpy.nodes.shader.input.Attribute.object" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Attribute.object">object</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Attribute with operation ‘Object’.</p>
+</section>
+<section id="nodebpy.nodes.shader.input.Attribute.view_layer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Attribute.view_layer">view_layer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>view_layer(attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Attribute with operation ‘View Layer’.</p>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Color</td>
+</tr>
+<tr class="even">
+<td><code>o.vector</code></td>
+<td><code>VectorSocket</code></td>
+<td>Vector</td>
+</tr>
+<tr class="odd">
+<td><code>o.factor</code></td>
+<td><code>FloatSocket</code></td>
+<td>Factor</td>
+</tr>
+<tr class="even">
+<td><code>o.alpha</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
 <section id="nodebpy.nodes.shader.input.Bevel" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Bevel">Bevel</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Bevel(radius<span class="op">=</span><span class="fl">0.05</span>, normal<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, samples<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Bevel(radius<span class="op">=</span><span class="fl">0.05</span>, normal<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, samples<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Generates normals with round corners.</code></pre>
 <p>Note: only supported in Cycles, and may slow down renders</p>
 <section id="parameters-1" class="level4 doc-section doc-section-----parameters">
@@ -989,8 +1121,8 @@ i.normal : VectorSocket
 <pre><code>o.normal : VectorSocket
     Normal</code></pre>
 </section>
-<section id="attributes-1" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1029,10 +1161,10 @@ i.normal : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.CameraData" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.CameraData">CameraData</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>CameraData()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>CameraData()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information about the camera and how it relates to the current shading point’s position</p>
-<section id="attributes-2" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1094,10 +1226,10 @@ i.normal : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.Color" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Color">Color</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Color()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Color()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A color picker</p>
-<section id="attributes-3" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1149,10 +1281,10 @@ i.normal : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.ColorAttribute" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.ColorAttribute">ColorAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ColorAttribute(layer_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ColorAttribute(layer_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a color attribute, or the default fallback if none is specified</p>
-<section id="attributes-4" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1213,10 +1345,10 @@ i.normal : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.CurvesInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.CurvesInfo">CurvesInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>CurvesInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>CurvesInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve hair curve information</p>
-<section id="attributes-5" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1293,7 +1425,7 @@ i.normal : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.Fresnel" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Fresnel">Fresnel</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Fresnel(ior<span class="op">=</span><span class="fl">1.5</span>, normal<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>Fresnel(ior<span class="op">=</span><span class="fl">1.5</span>, normal<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations.</code></pre>
 <p>Typically used for mixing reflections at grazing angles</p>
 <section id="parameters-2" class="level4 doc-section doc-section-----parameters">
@@ -1312,11 +1444,11 @@ i.normal : VectorSocket
 </section>
 <section id="outputs-2" class="level4 doc-section doc-section-----outputs">
 <h4 class="doc-section doc-section-----outputs anchored" data-anchor-id="outputs-2">Outputs</h4>
-<pre><code>o.fac : FloatSocket
+<pre><code>o.factor : FloatSocket
     Factor</code></pre>
 </section>
-<section id="attributes-6" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1351,10 +1483,10 @@ i.normal : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.Geometry" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Geometry">Geometry</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>Geometry()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>Geometry()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve geometric information about the current shading point</p>
-<section id="attributes-7" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1446,7 +1578,7 @@ i.normal : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.LayerWeight" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.LayerWeight">LayerWeight</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>LayerWeight(blend<span class="op">=</span><span class="fl">0.5</span>, normal<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>LayerWeight(blend<span class="op">=</span><span class="fl">0.5</span>, normal<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Produce a blending factor depending on the angle between the surface normal and the view direction.</code></pre>
 <p>Typically used for layering shaders with the Mix Shader node</p>
 <section id="parameters-3" class="level4 doc-section doc-section-----parameters">
@@ -1470,8 +1602,8 @@ i.normal : VectorSocket
 o.facing : FloatSocket
     Facing</code></pre>
 </section>
-<section id="attributes-8" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1506,7 +1638,7 @@ o.facing : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.input.LightPath" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.LightPath">LightPath</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>LightPath()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>LightPath()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Retrieve the type of incoming ray for which the shader is being executed.</code></pre>
 <p>Typically used for non-physically-based tricks</p>
 <section id="outputs-4" class="level4 doc-section doc-section-----outputs">
@@ -1542,8 +1674,8 @@ o.transmission_depth : FloatSocket
 o.portal_depth : FloatSocket
     Portal Depth</code></pre>
 </section>
-<section id="attributes-9" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1578,10 +1710,10 @@ o.portal_depth : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.input.ObjectInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.ObjectInfo">ObjectInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>ObjectInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>ObjectInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information about the object instance</p>
-<section id="attributes-10" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1658,10 +1790,10 @@ o.portal_depth : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.input.ParticleInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.ParticleInfo">ParticleInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ParticleInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ParticleInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the data of the particle that spawned the object instance, for example to give variation to multiple instances of an object</p>
-<section id="attributes-11" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1748,10 +1880,10 @@ o.portal_depth : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.input.PointInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.PointInfo">PointInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>PointInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>PointInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information about points in a point cloud</p>
-<section id="attributes-12" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1813,7 +1945,7 @@ o.portal_depth : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.input.Raycast" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Raycast">Raycast</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>Raycast(position<span class="op">=</span><span class="va">None</span>, direction<span class="op">=</span><span class="va">None</span>, length<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, only_local<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>Raycast(position<span class="op">=</span><span class="va">None</span>, direction<span class="op">=</span><span class="va">None</span>, length<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, only_local<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Cast rays and retrieve information from the hit point</p>
 <section id="parameters-4" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
@@ -1848,8 +1980,8 @@ o.portal_depth : FloatSocket
 </tbody>
 </table>
 </section>
-<section id="attributes-13" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1889,8 +2021,8 @@ o.portal_depth : FloatSocket
 </tbody>
 </table>
 </section>
-<section id="methods" class="level4">
-<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1915,17 +2047,17 @@ o.portal_depth : FloatSocket
 </table>
 <section id="nodebpy.nodes.shader.input.Raycast.add_item" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Raycast.add_item">add_item</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>add_item(name, value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, <span class="bu">type</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Deprecated: use <code>items.new(value, name, type=)</code>.</p>
 </section>
 <section id="nodebpy.nodes.shader.input.Raycast.add_items" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Raycast.add_items">add_items</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>add_items(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Deprecated: use <code>items.new(value, name)</code> per item.</p>
 </section>
 <section id="nodebpy.nodes.shader.input.Raycast.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Raycast.capture">capture</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>capture(value, <span class="op">*</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Deprecated: use <code>items.new(value, name).output</code>.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1996,10 +2128,10 @@ o.portal_depth : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.input.Tangent" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Tangent">Tangent</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>Tangent(direction_type<span class="op">=</span><span class="st">'RADIAL'</span>, axis<span class="op">=</span><span class="st">'Z'</span>, uv_map<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>Tangent(direction_type<span class="op">=</span><span class="st">'RADIAL'</span>, axis<span class="op">=</span><span class="st">'Z'</span>, uv_map<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a tangent direction for the Anisotropic BSDF</p>
-<section id="attributes-14" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2063,7 +2195,7 @@ o.portal_depth : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.input.TextureCoordinate" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.TextureCoordinate">TextureCoordinate</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>TextureCoordinate(from_instancer<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>TextureCoordinate(from_instancer<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Retrieve multiple types of texture coordinates.</code></pre>
 <p>Typically used as inputs for texture nodes</p>
 <section id="outputs-5" class="level4 doc-section doc-section-----outputs">
@@ -2083,8 +2215,8 @@ o.window : VectorSocket
 o.reflection : VectorSocket
     Reflection</code></pre>
 </section>
-<section id="attributes-15" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2123,10 +2255,10 @@ o.reflection : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.UVAlongStroke" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.UVAlongStroke">UVAlongStroke</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>UVAlongStroke(use_tips<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>UVAlongStroke(use_tips<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>UV coordinates that map a texture along the stroke length</p>
-<section id="attributes-16" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<section id="attributes-17" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2182,10 +2314,10 @@ o.reflection : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.UVMap" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.UVMap">UVMap</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>UVMap(from_instancer<span class="op">=</span><span class="va">False</span>, uv_map<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>UVMap(from_instancer<span class="op">=</span><span class="va">False</span>, uv_map<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a UV map from the geometry, or the default fallback if none is specified</p>
-<section id="attributes-17" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2245,7 +2377,7 @@ o.reflection : VectorSocket
 </section>
 <section id="nodebpy.nodes.shader.input.Wireframe" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.input.Wireframe">Wireframe</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>Wireframe(size<span class="op">=</span><span class="fl">0.01</span>, <span class="op">*</span>, use_pixel_size<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>Wireframe(size<span class="op">=</span><span class="fl">0.01</span>, <span class="op">*</span>, use_pixel_size<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Retrieve the edges of an object as it appears to Cycles.</code></pre>
 <p>Note: as meshes are triangulated before being processed by Cycles, topology will always appear triangulated</p>
 <section id="parameters-5" class="level4 doc-section doc-section-----parameters">
@@ -2260,11 +2392,11 @@ o.reflection : VectorSocket
 </section>
 <section id="outputs-6" class="level4 doc-section doc-section-----outputs">
 <h4 class="doc-section doc-section-----outputs anchored" data-anchor-id="outputs-6">Outputs</h4>
-<pre><code>o.fac : FloatSocket
+<pre><code>o.factor : FloatSocket
     Factor</code></pre>
 </section>
-<section id="attributes-18" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">

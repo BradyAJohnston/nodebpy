@@ -525,7 +525,7 @@ Create Metallic BSDF with operation ‘Physical Conductor’. Fresnel conductor 
 ### MixShader
 
 ``` python
-MixShader(fac=0.5, shader=None, shader_001=None)
+MixShader(factor=0.5, shader=None, shader_001=None)
 ```
 
 Mix two shaders together. Typically used for material layering
@@ -534,7 +534,7 @@ Mix two shaders together. Typically used for material layering
 
 | Name       | Type        | Description | Default |
 |------------|-------------|-------------|---------|
-| fac        | InputFloat  | Factor      | `0.5`   |
+| factor     | InputFloat  | Factor      | `0.5`   |
 | shader     | InputShader | Shader      | `None`  |
 | shader_001 | InputShader | Shader      | `None`  |
 
@@ -552,7 +552,7 @@ Mix two shaders together. Typically used for material layering
 
 | Attribute      | Type           | Description |
 |----------------|----------------|-------------|
-| `i.fac`        | `FloatSocket`  | Factor      |
+| `i.factor`     | `FloatSocket`  | Factor      |
 | `i.shader`     | `ShaderSocket` | Shader      |
 | `i.shader_001` | `ShaderSocket` | Shader      |
 
@@ -717,9 +717,9 @@ PrincipledHairBSDF(
     random_roughness=0.0,
     random=None,
     weight=0.0,
-    r_lobe=1.0,
-    tt_lobe=1.0,
-    trt_lobe=1.0,
+    reflection=1.0,
+    transmission=1.0,
+    secondary_reflection=1.0,
     *,
     model='CHIANG',
     parametrization='COLOR',
@@ -747,9 +747,9 @@ Physically-based, easy-to-use shader for rendering hair and fur
 | random_roughness | InputFloat | Random Roughness | `0.0` |
 | random | InputFloat | Random | `None` |
 | weight | InputFloat | Weight | `0.0` |
-| r_lobe | InputFloat | Reflection | `1.0` |
-| tt_lobe | InputFloat | Transmission | `1.0` |
-| trt_lobe | InputFloat | Secondary Reflection | `1.0` |
+| reflection | InputFloat | Reflection | `1.0` |
+| transmission | InputFloat | Transmission | `1.0` |
+| secondary_reflection | InputFloat | Secondary Reflection | `1.0` |
 
 #### Attributes
 
@@ -782,9 +782,9 @@ Physically-based, easy-to-use shader for rendering hair and fur
 | `i.random_roughness`       | `FloatSocket`  | Random Roughness       |
 | `i.random`                 | `FloatSocket`  | Random                 |
 | `i.weight`                 | `FloatSocket`  | Weight                 |
-| `i.r_lobe`                 | `FloatSocket`  | Reflection             |
-| `i.tt_lobe`                | `FloatSocket`  | Transmission           |
-| `i.trt_lobe`               | `FloatSocket`  | Secondary Reflection   |
+| `i.reflection`             | `FloatSocket`  | Reflection             |
+| `i.transmission`           | `FloatSocket`  | Transmission           |
+| `i.secondary_reflection`   | `FloatSocket`  | Secondary Reflection   |
 
 **Outputs**
 

@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.36.0</span>
+    <span class="navbar-title">nodebpy 520.37.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -1940,8 +1940,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>PlaneTrackDeform(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    motion_blur<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    motion_blur_samples<span class="op">=</span><span class="dv">16</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    motion_blur_shutter<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    samples<span class="op">=</span><span class="dv">16</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    shutter<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    tracking_object<span class="op">=</span><span class="st">''</span>,</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    plane_track_name<span class="op">=</span><span class="st">''</span>,</span>
@@ -1972,13 +1972,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>False</code></td>
 </tr>
 <tr class="odd">
-<td>motion_blur_samples</td>
+<td>samples</td>
 <td>InputInteger</td>
 <td>Samples</td>
 <td><code>16</code></td>
 </tr>
 <tr class="even">
-<td>motion_blur_shutter</td>
+<td>shutter</td>
 <td>InputFloat</td>
 <td>Shutter</td>
 <td><code>0.5</code></td>
@@ -2047,12 +2047,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Motion Blur</td>
 </tr>
 <tr class="odd">
-<td><code>i.motion_blur_samples</code></td>
+<td><code>i.samples</code></td>
 <td><code>IntegerSocket</code></td>
 <td>Samples</td>
 </tr>
 <tr class="even">
-<td><code>i.motion_blur_shutter</code></td>
+<td><code>i.shutter</code></td>
 <td><code>FloatSocket</code></td>
 <td>Shutter</td>
 </tr>

@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.36.0</span>
+    <span class="navbar-title">nodebpy 520.37.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -4972,9 +4972,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.geometry.geometry.GeometryProximity" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.GeometryProximity">GeometryProximity</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>GeometryProximity(</span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    group_id<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    source_position<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    sample_position<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    sample_group_id<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    target_element<span class="op">=</span><span class="st">'FACES'</span>,</span>
@@ -4993,7 +4993,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>target</td>
+<td>geometry</td>
 <td>InputGeometry</td>
 <td>Geometry</td>
 <td><code>None</code></td>
@@ -5005,7 +5005,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>None</code></td>
 </tr>
 <tr class="odd">
-<td>source_position</td>
+<td>sample_position</td>
 <td>InputVector</td>
 <td>Sample Position</td>
 <td><code>None</code></td>
@@ -5066,7 +5066,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>i.target</code></td>
+<td><code>i.geometry</code></td>
 <td><code>GeometrySocket</code></td>
 <td>Geometry</td>
 </tr>
@@ -5076,7 +5076,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Group ID</td>
 </tr>
 <tr class="odd">
-<td><code>i.source_position</code></td>
+<td><code>i.sample_position</code></td>
 <td><code>VectorSocket</code></td>
 <td>Sample Position</td>
 </tr>
@@ -7718,7 +7718,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>o.geometry</code></td>
+<td><code>o.points</code></td>
 <td><code>GeometrySocket</code></td>
 <td>Points</td>
 </tr>
@@ -9903,7 +9903,7 @@ i.radius : FloatSocket
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb141"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a>SampleUVSurface(</span>
 <span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb141-3"><a href="#cb141-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb141-4"><a href="#cb141-4" aria-hidden="true" tabindex="-1"></a>    source_uv_map<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb141-4"><a href="#cb141-4" aria-hidden="true" tabindex="-1"></a>    uv_map<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb141-5"><a href="#cb141-5" aria-hidden="true" tabindex="-1"></a>    sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
 <span id="cb141-6"><a href="#cb141-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb141-7"><a href="#cb141-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
@@ -9934,7 +9934,7 @@ i.radius : FloatSocket
 <td><code>None</code></td>
 </tr>
 <tr class="odd">
-<td>source_uv_map</td>
+<td>uv_map</td>
 <td>InputVector</td>
 <td>UV Map</td>
 <td><code>None</code></td>
@@ -10027,37 +10027,37 @@ i.radius : FloatSocket
 </table>
 <section id="nodebpy.nodes.geometry.geometry.SampleUVSurface.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SampleUVSurface.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb142"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>boolean(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, source_uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb142"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>boolean(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample UV Surface with operation ‘Boolean’. True or false</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SampleUVSurface.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SampleUVSurface.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb143"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a>color(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, source_uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb143"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a>color(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample UV Surface with operation ‘Color’. RGBA color with 32-bit floating-point values</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SampleUVSurface.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SampleUVSurface.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb144"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, source_uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb144"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample UV Surface with operation ‘Float’. Floating-point value</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SampleUVSurface.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SampleUVSurface.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb145"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>integer(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, source_uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb145"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>integer(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample UV Surface with operation ‘Integer’. 32-bit integer</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SampleUVSurface.matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SampleUVSurface.matrix">matrix</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb146"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>matrix(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, source_uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb146"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>matrix(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SampleUVSurface.quaternion" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SampleUVSurface.quaternion">quaternion</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb147"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>quaternion(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, source_uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb147"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>quaternion(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample UV Surface with operation ‘Quaternion’. Floating point quaternion rotation</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SampleUVSurface.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SampleUVSurface.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb148"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>vector(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, source_uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb148"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>vector(mesh<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="va">None</span>, uv_map<span class="op">=</span><span class="va">None</span>, sample_uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample UV Surface with operation ‘Vector’. 3D vector with floating-point values</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -10080,7 +10080,7 @@ i.radius : FloatSocket
 <td>Value</td>
 </tr>
 <tr class="odd">
-<td><code>i.source_uv_map</code></td>
+<td><code>i.uv_map</code></td>
 <td><code>VectorSocket</code></td>
 <td>UV Map</td>
 </tr>
@@ -13567,13 +13567,7 @@ i.radius : FloatSocket
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SetShadeSmooth" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetShadeSmooth">SetShadeSmooth</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb202"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb202-1"><a href="#cb202-1" aria-hidden="true" tabindex="-1"></a>SetShadeSmooth(</span>
-<span id="cb202-2"><a href="#cb202-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb202-3"><a href="#cb202-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb202-4"><a href="#cb202-4" aria-hidden="true" tabindex="-1"></a>    shade_smooth<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb202-5"><a href="#cb202-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb202-6"><a href="#cb202-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'FACE'</span>,</span>
-<span id="cb202-7"><a href="#cb202-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb202"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb202-1"><a href="#cb202-1" aria-hidden="true" tabindex="-1"></a>SetShadeSmooth(mesh<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, shade_smooth<span class="op">=</span><span class="va">True</span>, <span class="op">*</span>, domain<span class="op">=</span><span class="st">'FACE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Control the smoothness of mesh normals around each face by changing the “shade smooth” attribute</p>
 <section id="parameters-81" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-81">Parameters</h4>
@@ -13588,7 +13582,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td>geometry</td>
+<td>mesh</td>
 <td>InputGeometry</td>
 <td>Mesh</td>
 <td><code>None</code></td>
@@ -13667,12 +13661,12 @@ i.radius : FloatSocket
 </table>
 <section id="nodebpy.nodes.geometry.geometry.SetShadeSmooth.edge" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetShadeSmooth.edge">edge</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb203"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a>edge(geometry<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, shade_smooth<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb203"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a>edge(mesh<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, shade_smooth<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Shade Smooth with operation ‘Edge’. Attribute on mesh edge</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SetShadeSmooth.face" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetShadeSmooth.face">face</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb204"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb204-1"><a href="#cb204-1" aria-hidden="true" tabindex="-1"></a>face(geometry<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, shade_smooth<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb204"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb204-1"><a href="#cb204-1" aria-hidden="true" tabindex="-1"></a>face(mesh<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, shade_smooth<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Shade Smooth with operation ‘Face’. Attribute on mesh faces</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -13685,7 +13679,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>i.geometry</code></td>
+<td><code>i.mesh</code></td>
 <td><code>GeometrySocket</code></td>
 <td>Mesh</td>
 </tr>
@@ -13712,7 +13706,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>o.geometry</code></td>
+<td><code>o.mesh</code></td>
 <td><code>GeometrySocket</code></td>
 <td>Mesh</td>
 </tr>
@@ -13723,7 +13717,7 @@ i.radius : FloatSocket
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SetSplineCyclic" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetSplineCyclic">SetSplineCyclic</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb205"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a>SetSplineCyclic(geometry<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, cyclic<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb205"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a>SetSplineCyclic(curve<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, cyclic<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Control whether each spline loops back on itself by changing the “cyclic” attribute</p>
 <section id="parameters-82" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-82">Parameters</h4>
@@ -13738,7 +13732,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td>geometry</td>
+<td>curve</td>
 <td>InputGeometry</td>
 <td>Curve</td>
 <td><code>None</code></td>
@@ -13801,7 +13795,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>i.geometry</code></td>
+<td><code>i.curve</code></td>
 <td><code>GeometrySocket</code></td>
 <td>Curve</td>
 </tr>
@@ -13828,7 +13822,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>o.geometry</code></td>
+<td><code>o.curve</code></td>
 <td><code>GeometrySocket</code></td>
 <td>Curve</td>
 </tr>
@@ -13838,7 +13832,7 @@ i.radius : FloatSocket
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SetSplineResolution" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetSplineResolution">SetSplineResolution</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb206"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb206-1"><a href="#cb206-1" aria-hidden="true" tabindex="-1"></a>SetSplineResolution(geometry<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, resolution<span class="op">=</span><span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb206"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb206-1"><a href="#cb206-1" aria-hidden="true" tabindex="-1"></a>SetSplineResolution(curve<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>, resolution<span class="op">=</span><span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Control how many evaluated points should be generated on every curve segment</p>
 <section id="parameters-83" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-83">Parameters</h4>
@@ -13853,7 +13847,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td>geometry</td>
+<td>curve</td>
 <td>InputGeometry</td>
 <td>Curve</td>
 <td><code>None</code></td>
@@ -13916,7 +13910,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>i.geometry</code></td>
+<td><code>i.curve</code></td>
 <td><code>GeometrySocket</code></td>
 <td>Curve</td>
 </tr>
@@ -13943,7 +13937,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>o.geometry</code></td>
+<td><code>o.curve</code></td>
 <td><code>GeometrySocket</code></td>
 <td>Curve</td>
 </tr>

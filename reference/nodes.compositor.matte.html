@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.36.0</span>
+    <span class="navbar-title">nodebpy 520.37.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -1557,13 +1557,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.ColorSpill">ColorSpill</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ColorSpill(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    fac<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    factor<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    spill_channel<span class="op">=</span><span class="st">'G'</span>,</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    limit_method<span class="op">=</span><span class="st">'Single'</span>,</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    limit_channel<span class="op">=</span><span class="st">'R'</span>,</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    limit_strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    use_spill_strength<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    spill_strength<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Remove colors from a blue or green screen, by reducing one RGB channel compared to the others</p>
 <section id="parameters-4" class="level4 doc-section doc-section-parameters">
@@ -1591,7 +1591,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
 </tr>
 <tr class="even">
-<td>fac</td>
+<td>factor</td>
 <td>InputFloat</td>
 <td>Factor</td>
 <td><code>1.0</code></td>
@@ -1627,7 +1627,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>False</code></td>
 </tr>
 <tr class="even">
-<td>spill_strength</td>
+<td>strength</td>
 <td>InputColor</td>
 <td>Strength</td>
 <td><code>(0.0, 1.0, 0.0, 1.0)</code></td>
@@ -1683,7 +1683,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Image</td>
 </tr>
 <tr class="even">
-<td><code>i.fac</code></td>
+<td><code>i.factor</code></td>
 <td><code>FloatSocket</code></td>
 <td>Factor</td>
 </tr>
@@ -1713,7 +1713,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Use Spill Strength</td>
 </tr>
 <tr class="even">
-<td><code>i.spill_strength</code></td>
+<td><code>i.strength</code></td>
 <td><code>ColorSocket</code></td>
 <td>Strength</td>
 </tr>
@@ -2329,15 +2329,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    key_balance<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    black_level<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    white_level<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    edge_search_size<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    edge_tolerance<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    tolerance<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    garbage_matte<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    core_matte<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    postprocess_blur_size<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    postprocess_dilate_size<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    postprocess_feather_size<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    dilate_size<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    feather_size<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    feather_falloff<span class="op">=</span><span class="st">'Smooth'</span>,</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    despill_strength<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    despill_balance<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Perform both chroma keying (to remove the backdrop) and despill (to correct color cast from the backdrop)</p>
@@ -2345,8 +2345,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 15%">
-<col style="width: 60%">
+<col style="width: 13%">
+<col style="width: 61%">
 <col style="width: 10%">
 <col style="width: 14%">
 </colgroup>
@@ -2396,13 +2396,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>1.0</code></td>
 </tr>
 <tr class="odd">
-<td>edge_search_size</td>
+<td>size</td>
 <td>InputInteger</td>
 <td>Size</td>
 <td><code>3</code></td>
 </tr>
 <tr class="even">
-<td>edge_tolerance</td>
+<td>tolerance</td>
 <td>InputFloat</td>
 <td>Tolerance</td>
 <td><code>0.1</code></td>
@@ -2426,13 +2426,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>0</code></td>
 </tr>
 <tr class="even">
-<td>postprocess_dilate_size</td>
+<td>dilate_size</td>
 <td>InputInteger</td>
 <td>Dilate Size</td>
 <td><code>0</code></td>
 </tr>
 <tr class="odd">
-<td>postprocess_feather_size</td>
+<td>feather_size</td>
 <td>InputInteger</td>
 <td>Feather Size</td>
 <td><code>0</code></td>
@@ -2444,7 +2444,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>'Smooth'</code></td>
 </tr>
 <tr class="odd">
-<td>despill_strength</td>
+<td>strength</td>
 <td>InputFloat</td>
 <td>Strength</td>
 <td><code>1.0</code></td>
@@ -2531,12 +2531,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>White Level</td>
 </tr>
 <tr class="odd">
-<td><code>i.edge_search_size</code></td>
+<td><code>i.size</code></td>
 <td><code>IntegerSocket</code></td>
 <td>Size</td>
 </tr>
 <tr class="even">
-<td><code>i.edge_tolerance</code></td>
+<td><code>i.tolerance</code></td>
 <td><code>FloatSocket</code></td>
 <td>Tolerance</td>
 </tr>
@@ -2556,12 +2556,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Blur Size</td>
 </tr>
 <tr class="even">
-<td><code>i.postprocess_dilate_size</code></td>
+<td><code>i.dilate_size</code></td>
 <td><code>IntegerSocket</code></td>
 <td>Dilate Size</td>
 </tr>
 <tr class="odd">
-<td><code>i.postprocess_feather_size</code></td>
+<td><code>i.feather_size</code></td>
 <td><code>IntegerSocket</code></td>
 <td>Feather Size</td>
 </tr>
@@ -2571,7 +2571,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Feather Falloff</td>
 </tr>
 <tr class="odd">
-<td><code>i.despill_strength</code></td>
+<td><code>i.strength</code></td>
 <td><code>FloatSocket</code></td>
 <td>Strength</td>
 </tr>

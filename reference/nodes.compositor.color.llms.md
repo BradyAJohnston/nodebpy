@@ -25,7 +25,7 @@
 AlphaOver(
     background=(1.0, 1.0, 1.0, 1.0),
     foreground=(1.0, 1.0, 1.0, 1.0),
-    fac=1.0,
+    factor=1.0,
     type='Over',
     straight_alpha=False,
 )
@@ -39,7 +39,7 @@ Overlay a foreground image onto a background image
 |----|----|----|----|
 | background | InputColor | Background | `(1.0, 1.0, 1.0, 1.0)` |
 | foreground | InputColor | Foreground | `(1.0, 1.0, 1.0, 1.0)` |
-| fac | InputFloat | Factor | `1.0` |
+| factor | InputFloat | Factor | `1.0` |
 | type | InputMenu \| Literal\['Over', 'Disjoint Over', 'Conjoint Over'\] | Type | `'Over'` |
 | straight_alpha | InputBoolean | Straight Alpha | `False` |
 
@@ -67,7 +67,7 @@ Overlay a foreground image onto a background image
 conjoint_over(
     background=(1.0, 1.0, 1.0, 1.0),
     foreground=(1.0, 1.0, 1.0, 1.0),
-    fac=1.0,
+    factor=1.0,
     straight_alpha=False,
 )
 ```
@@ -80,7 +80,7 @@ Create Alpha Over node with type ‘Conjoint Over’.
 disjoint_over(
     background=(1.0, 1.0, 1.0, 1.0),
     foreground=(1.0, 1.0, 1.0, 1.0),
-    fac=1.0,
+    factor=1.0,
     straight_alpha=False,
 )
 ```
@@ -93,7 +93,7 @@ Create Alpha Over node with type ‘Disjoint Over’.
 over(
     background=(1.0, 1.0, 1.0, 1.0),
     foreground=(1.0, 1.0, 1.0, 1.0),
-    fac=1.0,
+    factor=1.0,
     straight_alpha=False,
 )
 ```
@@ -106,7 +106,7 @@ Create Alpha Over node with type ‘Over’.
 |--------------------|-----------------|----------------|
 | `i.background`     | `ColorSocket`   | Background     |
 | `i.foreground`     | `ColorSocket`   | Foreground     |
-| `i.fac`            | `FloatSocket`   | Factor         |
+| `i.factor`         | `FloatSocket`   | Factor         |
 | `i.type`           | `MenuSocket`    | Type           |
 | `i.straight_alpha` | `BooleanSocket` | Straight Alpha |
 
@@ -119,18 +119,18 @@ Create Alpha Over node with type ‘Over’.
 ### BrightnessContrast
 
 ``` python
-BrightnessContrast(image=None, bright=0.0, contrast=0.0)
+BrightnessContrast(image=None, brightness=0.0, contrast=0.0)
 ```
 
 Adjust brightness and contrast
 
 #### Parameters
 
-| Name     | Type       | Description | Default |
-|----------|------------|-------------|---------|
-| image    | InputColor | Image       | `None`  |
-| bright   | InputFloat | Brightness  | `0.0`   |
-| contrast | InputFloat | Contrast    | `0.0`   |
+| Name       | Type       | Description | Default |
+|------------|------------|-------------|---------|
+| image      | InputColor | Image       | `None`  |
+| brightness | InputFloat | Brightness  | `0.0`   |
+| contrast   | InputFloat | Contrast    | `0.0`   |
 
 #### Attributes
 
@@ -144,11 +144,11 @@ Adjust brightness and contrast
 
 **Inputs**
 
-| Attribute    | Type          | Description |
-|--------------|---------------|-------------|
-| `i.image`    | `ColorSocket` | Image       |
-| `i.bright`   | `FloatSocket` | Brightness  |
-| `i.contrast` | `FloatSocket` | Contrast    |
+| Attribute      | Type          | Description |
+|----------------|---------------|-------------|
+| `i.image`      | `ColorSocket` | Image       |
+| `i.brightness` | `FloatSocket` | Brightness  |
+| `i.contrast`   | `FloatSocket` | Contrast    |
 
 **Outputs**
 
@@ -161,7 +161,7 @@ Adjust brightness and contrast
 ``` python
 ColorBalance(
     image=None,
-    fac=1.0,
+    factor=1.0,
     type='Lift/Gamma/Gain',
     base_lift=0.0,
     color_lift=(1.0, 1.0, 1.0, 1.0),
@@ -192,7 +192,7 @@ Adjust color and values
 | Name | Type | Description | Default |
 |----|----|----|----|
 | image | InputColor | Image | `None` |
-| fac | InputFloat | Factor | `1.0` |
+| factor | InputFloat | Factor | `1.0` |
 | type | InputMenu \| Literal\['Lift/Gamma/Gain', 'Offset/Power/Slope (ASC-CDL)', 'White Point'\] | Type | `'Lift/Gamma/Gain'` |
 | base_lift | InputFloat | Lift | `0.0` |
 | color_lift | InputColor | Lift | `(1.0, 1.0, 1.0, 1.0)` |
@@ -236,7 +236,7 @@ Adjust color and values
 ``` python
 lift_gamma_gain(
     image=None,
-    fac=1.0,
+    factor=1.0,
     base_lift=0.0,
     color_lift=(1.0, 1.0, 1.0, 1.0),
     base_gamma=1.0,
@@ -256,7 +256,7 @@ Create Color Balance node with type ‘Lift/Gamma/Gain’.
 ``` python
 offset_power_slope_asc_cdl(
     image=None,
-    fac=1.0,
+    factor=1.0,
     base_offset=0.0,
     color_offset=(0.0, 0.0, 0.0, 1.0),
     base_power=1.0,
@@ -276,7 +276,7 @@ Create Color Balance node with type ‘Offset/Power/Slope (ASC-CDL)’.
 ``` python
 white_point(
     image=None,
-    fac=1.0,
+    factor=1.0,
     input_temperature=6500.0,
     input_tint=10.0,
     output_temperature=6500.0,
@@ -294,7 +294,7 @@ Create Color Balance node with type ‘White Point’.
 | Attribute              | Type          | Description |
 |------------------------|---------------|-------------|
 | `i.image`              | `ColorSocket` | Image       |
-| `i.fac`                | `FloatSocket` | Factor      |
+| `i.factor`             | `FloatSocket` | Factor      |
 | `i.type`               | `MenuSocket`  | Type        |
 | `i.base_lift`          | `FloatSocket` | Lift        |
 | `i.color_lift`         | `ColorSocket` | Lift        |
@@ -347,9 +347,9 @@ ColorCorrection(
     shadows_offset=0.0,
     midtones_start=0.2,
     midtones_end=0.7,
-    apply_on_red=True,
-    apply_on_green=True,
-    apply_on_blue=True,
+    red=True,
+    green=True,
+    blue=True,
 )
 ```
 
@@ -383,9 +383,9 @@ Adjust the color of an image, separately in several tonal ranges (highlights, mi
 | shadows_offset        | InputFloat   | Offset         | `0.0`   |
 | midtones_start        | InputFloat   | Midtones Start | `0.2`   |
 | midtones_end          | InputFloat   | Midtones End   | `0.7`   |
-| apply_on_red          | InputBoolean | Red            | `True`  |
-| apply_on_green        | InputBoolean | Green          | `True`  |
-| apply_on_blue         | InputBoolean | Blue           | `True`  |
+| red                   | InputBoolean | Red            | `True`  |
+| green                 | InputBoolean | Green          | `True`  |
+| blue                  | InputBoolean | Blue           | `True`  |
 
 #### Attributes
 
@@ -425,9 +425,9 @@ Adjust the color of an image, separately in several tonal ranges (highlights, mi
 | `i.shadows_offset`        | `FloatSocket`   | Offset         |
 | `i.midtones_start`        | `FloatSocket`   | Midtones Start |
 | `i.midtones_end`          | `FloatSocket`   | Midtones End   |
-| `i.apply_on_red`          | `BooleanSocket` | Red            |
-| `i.apply_on_green`        | `BooleanSocket` | Green          |
-| `i.apply_on_blue`         | `BooleanSocket` | Blue           |
+| `i.red`                   | `BooleanSocket` | Red            |
+| `i.green`                 | `BooleanSocket` | Green          |
+| `i.blue`                  | `BooleanSocket` | Blue           |
 
 **Outputs**
 
@@ -530,17 +530,17 @@ Adjust brightness using a camera exposure parameter
 ### HueCorrect
 
 ``` python
-HueCorrect(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+HueCorrect(image=(1.0, 1.0, 1.0, 1.0), factor=1.0)
 ```
 
 Adjust hue, saturation, and value with a curve
 
 #### Parameters
 
-| Name  | Type       | Description | Default                |
-|-------|------------|-------------|------------------------|
-| image | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| fac   | InputFloat | Factor      | `1.0`                  |
+| Name   | Type       | Description | Default                |
+|--------|------------|-------------|------------------------|
+| image  | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| factor | InputFloat | Factor      | `1.0`                  |
 
 #### Attributes
 
@@ -554,10 +554,10 @@ Adjust hue, saturation, and value with a curve
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.image` | `ColorSocket` | Image       |
-| `i.fac`   | `FloatSocket` | Factor      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `i.image`  | `ColorSocket` | Image       |
+| `i.factor` | `FloatSocket` | Factor      |
 
 **Outputs**
 
@@ -568,7 +568,7 @@ Adjust hue, saturation, and value with a curve
 ### HueSaturationValue
 
 ``` python
-HueSaturationValue(image=None, hue=0.5, saturation=1.0, value=1.0, fac=1.0)
+HueSaturationValue(image=None, hue=0.5, saturation=1.0, value=1.0, factor=1.0)
 ```
 
 Apply a color transformation in the HSV color model
@@ -581,7 +581,7 @@ Apply a color transformation in the HSV color model
 | hue        | InputFloat | Hue         | `0.5`   |
 | saturation | InputFloat | Saturation  | `1.0`   |
 | value      | InputFloat | Value       | `1.0`   |
-| fac        | InputFloat | Factor      | `1.0`   |
+| factor     | InputFloat | Factor      | `1.0`   |
 
 #### Attributes
 
@@ -601,7 +601,7 @@ Apply a color transformation in the HSV color model
 | `i.hue`        | `FloatSocket` | Hue         |
 | `i.saturation` | `FloatSocket` | Saturation  |
 | `i.value`      | `FloatSocket` | Value       |
-| `i.fac`        | `FloatSocket` | Factor      |
+| `i.factor`     | `FloatSocket` | Factor      |
 
 **Outputs**
 
@@ -612,7 +612,7 @@ Apply a color transformation in the HSV color model
 ### InvertColor
 
 ``` python
-InvertColor(color=None, fac=1.0, invert_color=True, invert_alpha=False)
+InvertColor(color=None, factor=1.0, invert_color=True, invert_alpha=False)
 ```
 
 Invert colors, producing a negative
@@ -622,7 +622,7 @@ Invert colors, producing a negative
 | Name         | Type         | Description  | Default |
 |--------------|--------------|--------------|---------|
 | color        | InputColor   | Color        | `None`  |
-| fac          | InputFloat   | Factor       | `1.0`   |
+| factor       | InputFloat   | Factor       | `1.0`   |
 | invert_color | InputBoolean | Invert Color | `True`  |
 | invert_alpha | InputBoolean | Invert Alpha | `False` |
 
@@ -641,7 +641,7 @@ Invert colors, producing a negative
 | Attribute        | Type            | Description  |
 |------------------|-----------------|--------------|
 | `i.color`        | `ColorSocket`   | Color        |
-| `i.fac`          | `FloatSocket`   | Factor       |
+| `i.factor`       | `FloatSocket`   | Factor       |
 | `i.invert_color` | `BooleanSocket` | Invert Color |
 | `i.invert_alpha` | `BooleanSocket` | Invert Alpha |
 
@@ -694,7 +694,7 @@ Reduce number of colors in an image, converting smooth gradients into sharp tran
 ``` python
 RGBCurves(
     image=(1.0, 1.0, 1.0, 1.0),
-    fac=1.0,
+    factor=1.0,
     black_level=(0.0, 0.0, 0.0, 1.0),
     white_level=(1.0, 1.0, 1.0, 1.0),
 )
@@ -707,7 +707,7 @@ Perform level adjustments on each color channel of an image
 | Name        | Type       | Description | Default                |
 |-------------|------------|-------------|------------------------|
 | image       | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| fac         | InputFloat | Factor      | `1.0`                  |
+| factor      | InputFloat | Factor      | `1.0`                  |
 | black_level | InputColor | Black Level | `(0.0, 0.0, 0.0, 1.0)` |
 | white_level | InputColor | White Level | `(1.0, 1.0, 1.0, 1.0)` |
 
@@ -726,7 +726,7 @@ Perform level adjustments on each color channel of an image
 | Attribute       | Type          | Description |
 |-----------------|---------------|-------------|
 | `i.image`       | `ColorSocket` | Image       |
-| `i.fac`         | `FloatSocket` | Factor      |
+| `i.factor`      | `FloatSocket` | Factor      |
 | `i.black_level` | `ColorSocket` | Black Level |
 | `i.white_level` | `ColorSocket` | White Level |
 

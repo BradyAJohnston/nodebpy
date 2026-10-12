@@ -50,17 +50,17 @@ Apply a gamma correction
 ### RGBCurves
 
 ``` python
-RGBCurves(fac=1.0, color=(1.0, 1.0, 1.0, 1.0))
+RGBCurves(factor=1.0, color=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Apply color corrections for each color channel
 
 #### Parameters
 
-| Name  | Type       | Description | Default                |
-|-------|------------|-------------|------------------------|
-| fac   | InputFloat | Factor      | `1.0`                  |
-| color | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
+| Name   | Type       | Description | Default                |
+|--------|------------|-------------|------------------------|
+| factor | InputFloat | Factor      | `1.0`                  |
+| color  | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -74,10 +74,10 @@ Apply color corrections for each color channel
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.fac`   | `FloatSocket` | Factor      |
-| `i.color` | `ColorSocket` | Color       |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `i.factor` | `FloatSocket` | Factor      |
+| `i.color`  | `ColorSocket` | Color       |
 
 **Outputs**
 

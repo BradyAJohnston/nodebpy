@@ -88,23 +88,17 @@
 ### AccumulateField
 
 ``` python
-AccumulateField(
-    value=1.0,
-    group_index=None,
-    *,
-    data_type='FLOAT',
-    domain='POINT',
-)
+AccumulateField(value=1.0, group_id=None, *, data_type='FLOAT', domain='POINT')
 ```
 
 Add the values of an evaluated field together and output the running total for each element
 
 #### Parameters
 
-| Name        | Type         | Description | Default |
-|-------------|--------------|-------------|---------|
-| value       | InputFloat   | Value       | `1.0`   |
-| group_index | InputInteger | Group ID    | `None`  |
+| Name     | Type         | Description | Default |
+|----------|--------------|-------------|---------|
+| value    | InputFloat   | Value       | `1.0`   |
+| group_id | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -127,10 +121,10 @@ Add the values of an evaluated field together and output the running total for e
 
 **Inputs**
 
-| Attribute       | Type            | Description |
-|-----------------|-----------------|-------------|
-| `i.value`       | `FloatSocket`   | Value       |
-| `i.group_index` | `IntegerSocket` | Group ID    |
+| Attribute    | Type            | Description |
+|--------------|-----------------|-------------|
+| `i.value`    | `FloatSocket`   | Value       |
+| `i.group_id` | `IntegerSocket` | Group ID    |
 
 **Outputs**
 
@@ -1176,17 +1170,17 @@ Retrieve values from a field on a different domain besides the domain from the c
 ### FieldAverage
 
 ``` python
-FieldAverage(value=0.0, group_index=None, *, data_type='FLOAT', domain='POINT')
+FieldAverage(value=0.0, group_id=None, *, data_type='FLOAT', domain='POINT')
 ```
 
 Calculate the mean and median of a given field
 
 #### Parameters
 
-| Name        | Type         | Description | Default |
-|-------------|--------------|-------------|---------|
-| value       | InputFloat   | Value       | `0.0`   |
-| group_index | InputInteger | Group ID    | `None`  |
+| Name     | Type         | Description | Default |
+|----------|--------------|-------------|---------|
+| value    | InputFloat   | Value       | `0.0`   |
+| group_id | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -1209,10 +1203,10 @@ Calculate the mean and median of a given field
 
 **Inputs**
 
-| Attribute       | Type            | Description |
-|-----------------|-----------------|-------------|
-| `i.value`       | `FloatSocket`   | Value       |
-| `i.group_index` | `IntegerSocket` | Group ID    |
+| Attribute    | Type            | Description |
+|--------------|-----------------|-------------|
+| `i.value`    | `FloatSocket`   | Value       |
+| `i.group_id` | `IntegerSocket` | Group ID    |
 
 **Outputs**
 
@@ -1224,23 +1218,17 @@ Calculate the mean and median of a given field
 ### FieldMinAndMax
 
 ``` python
-FieldMinAndMax(
-    value=0.0,
-    group_index=None,
-    *,
-    data_type='FLOAT',
-    domain='POINT',
-)
+FieldMinAndMax(value=0.0, group_id=None, *, data_type='FLOAT', domain='POINT')
 ```
 
 Calculate the minimum and maximum of a given field
 
 #### Parameters
 
-| Name        | Type         | Description | Default |
-|-------------|--------------|-------------|---------|
-| value       | InputFloat   | Value       | `0.0`   |
-| group_index | InputInteger | Group ID    | `None`  |
+| Name     | Type         | Description | Default |
+|----------|--------------|-------------|---------|
+| value    | InputFloat   | Value       | `0.0`   |
+| group_id | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -1263,10 +1251,10 @@ Calculate the minimum and maximum of a given field
 
 **Inputs**
 
-| Attribute       | Type            | Description |
-|-----------------|-----------------|-------------|
-| `i.value`       | `FloatSocket`   | Value       |
-| `i.group_index` | `IntegerSocket` | Group ID    |
+| Attribute    | Type            | Description |
+|--------------|-----------------|-------------|
+| `i.value`    | `FloatSocket`   | Value       |
+| `i.group_id` | `IntegerSocket` | Group ID    |
 
 **Outputs**
 
@@ -1404,17 +1392,17 @@ vector(input=(0, 0, 0), name=None)
 ### FieldVariance
 
 ``` python
-FieldVariance(value=0.0, group_index=None, *, data_type='FLOAT', domain='POINT')
+FieldVariance(value=0.0, group_id=None, *, data_type='FLOAT', domain='POINT')
 ```
 
 Calculate the standard deviation and variance of a given field
 
 #### Parameters
 
-| Name        | Type         | Description | Default |
-|-------------|--------------|-------------|---------|
-| value       | InputFloat   | Value       | `0.0`   |
-| group_index | InputInteger | Group ID    | `None`  |
+| Name     | Type         | Description | Default |
+|----------|--------------|-------------|---------|
+| value    | InputFloat   | Value       | `0.0`   |
+| group_id | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -1437,10 +1425,10 @@ Calculate the standard deviation and variance of a given field
 
 **Inputs**
 
-| Attribute       | Type            | Description |
-|-----------------|-----------------|-------------|
-| `i.value`       | `FloatSocket`   | Value       |
-| `i.group_index` | `IntegerSocket` | Group ID    |
+| Attribute    | Type            | Description |
+|--------------|-----------------|-------------|
+| `i.value`    | `FloatSocket`   | Value       |
+| `i.group_id` | `IntegerSocket` | Group ID    |
 
 **Outputs**
 
