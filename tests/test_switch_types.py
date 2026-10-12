@@ -171,3 +171,21 @@ def test_legacy_compositor_switch_exports_as_the_typed_switch():
     assert switch.input_type == "RGBA"
     assert switch.inputs["True"].links[0].from_node.bl_idname == "NodeGroupInput"
     assert switch.outputs[0].links[0].to_node.bl_idname == "NodeGroupOutput"
+
+
+def test_inference_skips_values_that_cannot_decide():
+    """None, a node with no outputs and other objects leave the type to the
+    rest of the values; a raw bpy node counts as its first output."""
+    from nodebpy.builder._infer import _source_socket, infer_data_type
+
+    with g.tree():
+        viewer = g.Viewer()  # no outputs to link from
+        assert _source_socket(viewer) is None
+        assert _source_socket(None) is None
+        cube = g.Cube().node  # a raw bpy node
+        assert _source_socket(cube).name == "Mesh"
+        assert g.Switch(False, cube, g.Cone()).input_type == "GEOMETRY"
+        assert g.IndexSwitch(items=[g.Value(), None]).data_type == "FLOAT"
+    assert infer_data_type("Switch", [object(), (1, 2)], keyword="input_type") == (
+        "FLOAT"
+    )
