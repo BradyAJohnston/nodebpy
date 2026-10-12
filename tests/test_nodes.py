@@ -84,6 +84,33 @@ def test_join_geometry():
     assert join._default_input_socket.links[0].from_node == items[0].node
 
 
+@pytest.mark.parametrize(
+    "cls, value",
+    [
+        (g.Vector, (1.0, 2.0)),
+        (g.Vector, (1.0, 2.0, 3.0)),
+        (g.Vector, (1.0, 2.0, 3.0, 4.0)),
+        (g.IntegerVector, (1, 2)),
+        (g.IntegerVector, (1, 2, 3)),
+    ],
+)
+def test_vector_node_value_dimensions(cls, value):
+    with g.tree():
+        vec = cls(value, vector_dimensions=len(value))
+    assert vec.node.vector_dimensions == len(value)
+    assert tuple(vec.node.vector) == value
+
+
+def test_vector_dimensions_keep_hidden_components():
+    with g.tree():
+        vec = g.Vector((1.0, 2.0, 3.0), vector_dimensions=2)
+        default = g.Vector(vector_dimensions=2)
+    assert tuple(vec.node.vector) == (1.0, 2.0)
+    vec.vector_dimensions = 3
+    assert tuple(vec.node.vector) == (1.0, 2.0, 3.0)
+    assert tuple(default.node.vector) == (0.0, 0.0)
+
+
 def test_socket_selection():
     with g.tree("AnotherTree"):
         pos = g.SetPosition()

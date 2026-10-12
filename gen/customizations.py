@@ -386,3 +386,22 @@ register_customization(
         imports=("from .._mixins import _RaycastMixin",),
     )
 )
+
+# Blender sizes ``vector`` by ``vector_dimensions`` (keeping hidden components),
+# so the node is sized to the value before it is written, then set to the
+# requested dimensions: ``Vector((1.0, 2.0), vector_dimensions=2)``.
+register_customization(
+    NodeCustomization(
+        bl_idname="FunctionNodeInputVector",
+        suppress=frozenset({"__init__"}),
+        extra_body="""    def __init__(
+        self,
+        vector: tuple[float, ...] = (0.0, 0.0, 0.0),
+        vector_dimensions: int = 3,
+    ):
+        super().__init__()
+        self.node.vector_dimensions = len(vector)
+        self.node.vector = vector
+        self.vector_dimensions = vector_dimensions""",
+    )
+)

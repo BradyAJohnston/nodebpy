@@ -1106,10 +1106,11 @@ class IntegerVector(BaseNode):
         vector_dimensions: Literal[2, 3] = 3,
     ):
         super().__init__()
-        key_args = {}
-        self.vector = vector
+        # Blender sizes ``vector`` by ``vector_dimensions``, keeping hidden
+        # components: size the node to the value before writing it.
+        self.node.vector_dimensions = len(vector)
+        self.node.vector = vector
         self.vector_dimensions = vector_dimensions
-        self._establish_links(**key_args)
 
     @property
     def vector(self) -> list[int]:
