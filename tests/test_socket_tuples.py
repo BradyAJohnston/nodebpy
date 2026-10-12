@@ -68,3 +68,14 @@ def test_bad_socket_tuples_raise():
     with s.material("Alpha"):
         with pytest.raises(SocketError, match="no alpha"):
             s.PrincipledBSDF(base_color=(0.1, 0.2, 0.1, s.Value()))
+
+
+def test_tuples_of_the_wrong_kind_raise():
+    with s.material("Lengths"):
+        with pytest.raises(SocketError, match="3 or 4 components, not 2"):
+            s.PrincipledBSDF(base_color=(s.Value(), 0.2))
+    with g.tree() as tree:
+        height = tree.inputs.float("Height")
+        # a float input has no components to combine
+        with pytest.raises(SocketError, match="VALUE input"):
+            g.Math.add((height, 1.0), 2.0)
