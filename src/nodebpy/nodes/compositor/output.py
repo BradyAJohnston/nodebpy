@@ -11,9 +11,10 @@ from ...builder.socket import (
 from ...types import (
     InputColor,
 )
+from .._mixins import _FileOutputMixin
 
 
-class FileOutput(BaseNode):
+class FileOutput(_FileOutputMixin, BaseNode):
     """
     Write image file to disk
     """

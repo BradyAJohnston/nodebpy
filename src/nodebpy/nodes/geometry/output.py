@@ -5,9 +5,10 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import BaseNode, SocketAccessor
+from .._mixins import _ViewerMixin
 
 
-class Viewer(BaseNode):
+class Viewer(_ViewerMixin, BaseNode):
     """
     Display the input data in the Spreadsheet Editor
     """

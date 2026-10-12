@@ -10,10 +10,13 @@ title: Changelog
 - **The compositor's `IndexSwitch` shares Geometry Nodes' class**, since it is the same node with fewer types: it takes `items=[...]` and infers its type the same way, falling back to Color (Blender's compositor default) when nothing decides it. It keeps its compositor-only `integer_vector` variant and has none of the types the compositor can't switch. **Breaking:** the old `item_0=` / `item_1=` / `extend=` arguments are gone; pass the items as a list, e.g. `c.IndexSwitch.color(index, [a, b])`. Exported compositor trees now write `c.IndexSwitch` rather than `g.IndexSwitch`.
 - **`c.Switch` is the typed Switch.** Blender 5.2 deprecates the compositor's Color-only Switch ("Use Utilities ▸ Switch node instead"), and nodebpy wrapped the deprecated node. `c.Switch` now builds the typed Switch the compositor's Add menu offers, with the same type inference and the compositor's types (including `integer_vector`). Positional calls keep working; **breaking:** the `off=` / `on=` keywords are now `false=` / `true=`. Exporting a tree that still has the old node writes the equivalent `c.Switch.color(...)`.
 - **`g.RotateEuler` warns that Blender deprecates it** ("Use the Rotate Rotation node instead"), pointing at the line that builds it.
+- **Items on the Viewer, File Output and Raycast nodes.** `g.Viewer().items.<type>(value, name)` adds values to view (every socket type), `c.FileOutput().items.color(image, "Beauty")` adds the inputs to write out, and the shader `s.Raycast().items.float("height")` samples an attribute where the ray hits, the item's output being the value read (a color item also has an `"<name> Alpha"` output). They round-trip through `to_python`, which now writes the Viewer's items with their names instead of re-linking them with `>>`.
+- **`s.ClosureZone`**: the closure zone works in shader trees, so the shader module now exports it.
 
 ### Fixes
 
 - **Linking a socket the node's settings hide raises**, naming the node's settings and the sockets that are available, e.g. `'Vector Math' has no 'Vector' output with its current settings {'operation': 'DOT_PRODUCT'}; available: ['Value']`. The link used to be created and then ignored when the tree was evaluated.
+- **Exporting a node with a one-character string default no longer recurses forever.**
 
 ## v520.35.1
 

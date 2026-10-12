@@ -145,7 +145,7 @@ tree
 
 ## Item Nodes
 
-Several regular nodes are also driven by dynamic item collections — Capture Attribute, Bake, Field to Grid, Field to List, Format String, Combine/Separate Bundle, Closure to List, Evaluate Closure, Index Switch and Menu Switch. They all expose the same `items` collection as the zones, alongside their `items=` constructor argument (a name-to-value mapping, or a list of values named after their sources):
+Several regular nodes are also driven by dynamic item collections — Capture Attribute, Bake, Field to Grid, Field to List, Format String, Combine/Separate Bundle, Closure to List, Evaluate Closure, Index Switch, Menu Switch, the Viewer, the compositor's File Output and the shader Raycast. They all expose the same `items` collection as the zones, and most also take an `items=` constructor argument (a name-to-value mapping, or a list of values named after their sources):
 
 - `CaptureAttribute(...).items.vector(g.Position())` returns an `Item` handle — `item.input` is the field being captured, `item.output` the captured result. The item is named "Position" after its source; pass a name as the second argument to choose one.
 - `Bake().items.geometry(source, "Geo")` works the same way for bake items.
@@ -153,6 +153,8 @@ Several regular nodes are also driven by dynamic item collections — Capture At
 - `CombineBundle().items.float(0.5, "a")` and `SeparateBundle(bundle).items.float("a")` declare bundle items; the socket is `item.input` (the value fed into the bundle) or `item.output` (the value read from it).
 - `EvaluateClosure(closure).inputs.geometry(source, "Geo")` and `.outputs.vector("Force")` declare the closure-call signature; the result socket is `item.output`.
 - `MenuSwitch.float().items.new(0.5, "Option", description="...")` and `IndexSwitch.float().items.new(0.5)` add switch items, typed by the switch's data type.
+- `Viewer().items.float(height, "Height")` adds a value to view; any socket type can be viewed. The compositor's `FileOutput().items.color(image, "Beauty")` adds an input to write out (Float, Vector or Color).
+- The shader `Raycast().items.float("height")` samples the `height` attribute where the ray hits: the item's input is the attribute's name and `item.output` the value read. The item is named after the attribute unless a name is given; a color item also has an `"<name> Alpha"` output on the node.
 
 A handle stands in for its sockets, so it can be used where a socket is expected: as a node argument or on the left of `>>` it is `item.output`, on the right of `>>` it is `item.input`, and the chain then continues from `item.output`. An item with only one side (a Separate Bundle item has only an output, a Combine Bundle item only an input) raises when the other side is asked for. Zone state items have two inputs and two outputs, so they keep asking for the role: `initial`, `current`, `next` or `result`.
 
