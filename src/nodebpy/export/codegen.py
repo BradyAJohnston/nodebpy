@@ -659,10 +659,7 @@ def _constructor_call(func: str, cls: type, node, kwargs: dict[str, Expr]) -> Ca
     positionally for a constant input node or when it is the only argument
     (``g.Points(count)``, but ``g.SetPosition(offset=...)``)."""
     if kwargs and (node.bl_idname in _CONSTANT_INPUT_NODES or len(kwargs) == 1):
-        try:
-            params = list(_signature(cls.__init__).parameters.values())[1:]
-        except (TypeError, ValueError):
-            params = []
+        params = list(_signature(cls.__init__).parameters.values())[1:]
         if (
             params
             and params[0].kind is inspect.Parameter.POSITIONAL_OR_KEYWORD
