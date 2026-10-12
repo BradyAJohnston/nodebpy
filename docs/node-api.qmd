@@ -36,6 +36,17 @@ with g.tree() as tree:
 tree
 ```
 
+A vector, rotation or color input can also take a tuple that mixes plain values and sockets.
+The parts known only when the tree runs can't go into the socket's default, so they are combined with a `Combine XYZ` (or `Combine Color`) node that is linked in instead:
+
+```{python}
+with g.tree() as tree:
+    height = tree.inputs.float("Height", 2.0)
+    g.Cube(size=(1, 1, height)) >> tree.outputs.geometry("Geometry")
+
+tree
+```
+
 ### Default Inputs
 
 Some inputs read something other than their stored value when nothing is

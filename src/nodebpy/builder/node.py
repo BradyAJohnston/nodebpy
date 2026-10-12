@@ -26,6 +26,7 @@ from bpy.types import (
 )
 
 from ..types import SOCKET_COMPATIBILITY, Default, InputAny
+from ._combine import holds_sockets, link_combined
 from ._utils import SocketError, _NodeLike, _SocketLike
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
@@ -175,7 +176,10 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         """Set the default value for an input socket, handling type conversions."""
         assert hasattr(input, "default_value")
         stype = getattr(input, "type", None)
-        if stype == "VECTOR" and isinstance(value, (int, float)):
+        if holds_sockets(value):
+            # (1, 1, height): the sockets are combined into a node and linked
+            link_combined(self.tree, input, value)
+        elif stype == "VECTOR" and isinstance(value, (int, float)):
             input.default_value = [value] * len(input.default_value)  # type: ignore
         elif stype == "INT" and isinstance(value, float):
             input.default_value = int(value)  # type: ignore
