@@ -16,6 +16,7 @@ title: Changelog
 - **`s.ClosureZone`**: the closure zone works in shader trees, so the shader module now exports it.
 - **Tuples that hold sockets feed vector, rotation and color inputs.** `g.Cube(size=(1, 1, height))`, `position + (0, 0, height)` and item values build a Combine XYZ (or the tree's Combine Color) from the tuple and link it in; this used to raise a bpy `TypeError`. A tuple of the wrong length, or a socket for a shader color's alpha (shader colors have none), raises a `SocketError` naming the parts.
 - **Mistyped enum values suggest the closest options**: `g.Math(operation="SUBSTRACT")` raises `TypeError: Math's operation has no option 'SUBSTRACT'. Did you mean 'SUBTRACT'? Options: ...`, ignoring case (`"add"` suggests `ADD`). Menu socket values such as `g.ResampleCurve(mode="Coutn")` do the same.
+- **Faster `arrange`** on trees whose columns need balancing: the search that shortens the tallest columns counts sockets by number, which more than halves the layout time of the 4-bit decoder benchmark (0.20 s to 0.09 s). Layouts are unchanged.
 
 ### Fixes
 
