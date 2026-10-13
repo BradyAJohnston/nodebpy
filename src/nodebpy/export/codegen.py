@@ -3245,6 +3245,24 @@ def _match_socket_method(
     return None
 
 
+def _method_defaults(receiver: NodeSocket, method: str) -> dict[str, Any]:
+    """The defaults of the method the receiver's socket class has under the
+    name *method*, by parameter. A ``None`` default leaves the socket as it
+    is, so it is left out, as are methods reached through an accessor
+    (``point.at``)."""
+    from ..builder._registry import _wrap_socket
+
+    cls = type(_wrap_socket(receiver))
+    function = None if "." in method else getattr(cls, method, None)
+    if not callable(function):
+        return {}
+    return {
+        name: parameter.default
+        for name, parameter in inspect.signature(function).parameters.items()
+        if parameter.default not in (inspect.Parameter.empty, None)
+    }
+
+
 def _socket_method_val(ctx: EmitContext, node) -> _Val | None:
     """Emit a node as a method call on its receiver socket, if possible."""
     dissolve = _DISSOLVE_SPECS.get(node.bl_idname)
@@ -3261,6 +3279,9 @@ def _socket_method_val(ctx: EmitContext, node) -> _Val | None:
         link.to_socket.identifier: link for link in ctx.incoming.get(node.name, ())
     }
     receiver = ctx.socket_expr(incoming[spec.receiver])
+    # An argument left out takes the method's default, which need not be
+    # the node's (log() is natural where Blender's base is 0.5).
+    method_defaults = _method_defaults(incoming[spec.receiver].from_socket, method)
 
     kwargs: dict[str, Expr] = {}
     blender_defaults: dict[str, object] | None = None
@@ -3273,6 +3294,10 @@ def _socket_method_val(ctx: EmitContext, node) -> _Val | None:
         if socket is None or not hasattr(socket, "default_value"):
             continue  # pragma: no cover - spec params name real sockets
         value = socket.default_value
+        if index >= spec.always_args and method_defaults.get(param) is not None:
+            if not _eq(value, method_defaults[param]):
+                kwargs[param] = Lit(value)
+            continue
         if index >= spec.always_args:
             if blender_defaults is None:
                 blender_defaults = _get_blender_socket_defaults(

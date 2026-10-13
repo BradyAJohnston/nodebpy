@@ -204,6 +204,50 @@ def test_value_output_default_round_trips():
     assert value_node.outputs[0].default_value == pytest.approx(0.05)
 
 
+@pytest.mark.parametrize(
+    "build",
+    [
+        lambda x, v, s: g.Math.logarithm(x),
+        lambda x, v, s: g.Math.ping_pong(x),
+        lambda x, v, s: g.Math.wrap(x),
+        lambda x, v, s: g.VectorMath.cross_product(v),
+        lambda x, v, s: g.VectorMath.dot_product(v),
+        lambda x, v, s: g.VectorMath.reflect(v),
+        lambda x, v, s: g.SliceString(s),
+    ],
+    ids=["log", "ping_pong", "wrap", "cross", "dot", "reflect", "slice"],
+)
+def test_socket_methods_keep_the_nodes_defaults(build):
+    """A node written as a socket method keeps its unlinked inputs, also
+    where the method's defaults differ from Blender's (``log()`` is natural,
+    the node's base is 0.5)."""
+    with TreeBuilder("MethodDefaults") as tree:
+        x = tree.inputs.float("X")
+        v = tree.inputs.vector("V")
+        s = tree.inputs.string("S")
+        node = build(x, v, s)
+        if isinstance(node, g.SliceString):
+            node >> tree.outputs.string("Out")
+        else:
+            node >> tree.outputs.float("Out")
+
+    def unlinked(node_tree):
+        (found,) = (n for n in node_tree.nodes if n.bl_idname == node.node.bl_idname)
+        return [
+            (
+                i.identifier,
+                tuple(i.default_value) if i.type == "VECTOR" else i.default_value,
+            )
+            for i in found.inputs
+            if i.enabled and not i.is_linked and hasattr(i, "default_value")
+        ]
+
+    code = to_python(tree, format=False)
+    namespace: dict = {}
+    exec(code, namespace)
+    assert unlinked(namespace["tree"].tree) == pytest.approx(unlinked(tree.tree)), code
+
+
 def test_fanout_assigns_variable():
     """Every node gets a named variable (Phase 1 rule)."""
     with TreeBuilder("FanOut") as tree:
