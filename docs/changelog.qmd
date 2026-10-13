@@ -6,6 +6,7 @@ title: Changelog
 
 ### Fixes
 
+- **`to_python` keeps unlinked inputs that a socket method's defaults would change.** A Logarithm, Ping-Pong or Wrap node, a Cross Product, Dot Product or Reflect left at Blender's defaults, or a Slice String with its default length of 10, was written as `x.log()`, `v.cross()`, `s.slice()` and so on, which rebuilds with the method's own defaults instead (a base of e, `(0, 0, 1)`, a length of 0). An argument is now left out only when it matches the method's default.
 - **`x.log()` is the natural logarithm**, as `math.log` and NumPy's `log` are; it was base 2. **Breaking:** pass the base for another, e.g. `x.log(2)`.
 - **`to_python` passes a constructor's first argument positionally** for the constant input nodes (`g.Integer(5)`, `g.String("hi")`, `g.Vector((1.0, 2.0, 3.0))`) and when it is the call's only argument (`g.Points(count)`, `g.SeparateColor(color)`), instead of writing its keyword.
 - **`g.Vector` and `g.IntegerVector` take values that aren't 3D**: `g.Vector((1.0, 2.0), vector_dimensions=2)` and `g.Vector((1.0, 2.0, 3.0, 4.0), vector_dimensions=4)` raised a bpy `ValueError`, since the value was written before the dimensions were changed.
