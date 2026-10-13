@@ -166,6 +166,14 @@ def test_float_methods():
     assert result["close"] and not result["far"]
 
 
+def test_float_log_defaults_to_natural():
+    with g.tree("FloatLog") as tree:
+        f = g.Value(4.0).o.value
+        result = evaluate(tree, natural=f.log(), base_two=f.log(2))
+    assert result["natural"] == pytest.approx(math.log(4.0))
+    assert result["base_two"] == pytest.approx(2.0)
+
+
 @pytest.mark.parametrize("op", [round, math.floor, math.ceil, math.trunc])
 def test_float_rounding_builtins(op):
     values = [2.3, -2.3, 2.7, -2.7, -0.4]

@@ -15,6 +15,7 @@ Organization (top to bottom):
 
 from __future__ import annotations
 
+import math
 from collections.abc import Iterable, Iterator, Mapping
 from typing import (
     TYPE_CHECKING,
@@ -1958,8 +1959,9 @@ class _FloatMixin[IntegerResult: (IntegerSocket, IntegerSocketGrid, IntegerSocke
         self._assert_output("power")
         return self._math.power(self.socket, exponent).o.value  # ty: ignore[invalid-return-type]
 
-    def log(self, base: InputFloat = 2.0) -> Self:
-        """Return the logarithm of this value to *base*."""
+    def log(self, base: InputFloat = math.e) -> Self:
+        """Return the logarithm of this value to *base*, the natural logarithm
+        by default (as ``math.log``)."""
         self._assert_output("log")
         return self._math.logarithm(self.socket, base).o.value  # ty: ignore[invalid-return-type]
 

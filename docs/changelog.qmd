@@ -6,6 +6,7 @@ title: Changelog
 
 ### Fixes
 
+- **`x.log()` is the natural logarithm**, as `math.log` and NumPy's `log` are; it was base 2. **Breaking:** pass the base for another, e.g. `x.log(2)`.
 - **`to_python` passes a constructor's first argument positionally** for the constant input nodes (`g.Integer(5)`, `g.String("hi")`, `g.Vector((1.0, 2.0, 3.0))`) and when it is the call's only argument (`g.Points(count)`, `g.SeparateColor(color)`), instead of writing its keyword.
 - **`g.Vector` and `g.IntegerVector` take values that aren't 3D**: `g.Vector((1.0, 2.0), vector_dimensions=2)` and `g.Vector((1.0, 2.0, 3.0, 4.0), vector_dimensions=4)` raised a bpy `ValueError`, since the value was written before the dimensions were changed.
 - **Output accessors are named after the socket name Blender shows**, as `to_python` writes them, rather than the socket's identifier: `NoiseTexture().o.factor` (was `o.fac`), `Points().o.points`, `SetShadeSmooth().o.mesh`, `SetSplineCyclic().o.curve`, `Selection().o.boolean`. A name shared by several outputs keeps the identifier. The old names still work at runtime but no longer type-check.
