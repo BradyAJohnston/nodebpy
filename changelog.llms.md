@@ -1,5 +1,12 @@
 # Changelog
 
+## v520.38.0
+
+### Fixes
+
+- **`to_python` keeps unlinked inputs that a socket method’s defaults would change.** A Logarithm, Ping-Pong or Wrap node, a Cross Product, Dot Product or Reflect left at Blender’s defaults, or a Slice String with its default length of 10, was written as `x.log()`, `v.cross()`, `s.slice()` and so on, which rebuilds with the method’s own defaults instead (a base of e, `(0, 0, 1)`, a length of 0). An argument is now left out only when it matches the method’s default.
+- **`x.log()` is the natural logarithm**, as `math.log` and NumPy’s `log` are; it was base 2. **Breaking:** pass the base for another, e.g. `x.log(2)`.
+
 ## v520.37.0
 
 ### Fixes

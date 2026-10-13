@@ -1306,7 +1306,7 @@ Runtime float socket wrapper.
 | [hash](#nodebpy.builder.socket.FloatSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [inverse_sqrt](#nodebpy.builder.socket.FloatSocket.inverse_sqrt) | Return `1 / sqrt(self)`. |
 | [is_close](#nodebpy.builder.socket.FloatSocket.is_close) | Whether self and *other* differ by at most *epsilon*. |
-| [log](#nodebpy.builder.socket.FloatSocket.log) | Return the logarithm of this value to *base*. |
+| [log](#nodebpy.builder.socket.FloatSocket.log) | Return the logarithm of this value to *base*, the natural logarithm |
 | [map_range](#nodebpy.builder.socket.FloatSocket.map_range) | Remap the values on the float socket using the MapRange node. |
 | [max](#nodebpy.builder.socket.FloatSocket.max) | Create Math with operation ‘Maximum’. The maximum from self and value |
 | [min](#nodebpy.builder.socket.FloatSocket.min) | Create Math with operation ‘Minimum’. The minimum from self and value |
@@ -1486,10 +1486,10 @@ Whether self and *other* differ by at most *epsilon*.
 ##### log
 
 ``` python
-log(base=2.0)
+log(base=math.e)
 ```
 
-Return the logarithm of this value to *base*.
+Return the logarithm of this value to *base*, the natural logarithm by default (as `math.log`).
 
 ##### map_range
 
@@ -1752,7 +1752,7 @@ Runtime float grid socket wrapper.
 | [inverse_sqrt](#nodebpy.builder.socket.FloatSocketGrid.inverse_sqrt) | Return `1 / sqrt(self)`. |
 | [is_close](#nodebpy.builder.socket.FloatSocketGrid.is_close) | Whether self and *other* differ by at most *epsilon*. |
 | [laplacian](#nodebpy.builder.socket.FloatSocketGrid.laplacian) | Compute the divergence of the gradient of the input grid. |
-| [log](#nodebpy.builder.socket.FloatSocketGrid.log) | Return the logarithm of this value to *base*. |
+| [log](#nodebpy.builder.socket.FloatSocketGrid.log) | Return the logarithm of this value to *base*, the natural logarithm |
 | [map_range](#nodebpy.builder.socket.FloatSocketGrid.map_range) | Remap the values on the float socket using the MapRange node. |
 | [max](#nodebpy.builder.socket.FloatSocketGrid.max) | Create Math with operation ‘Maximum’. The maximum from self and value |
 | [mean](#nodebpy.builder.socket.FloatSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
@@ -2001,10 +2001,10 @@ Compute the divergence of the gradient of the input grid.
 ##### log
 
 ``` python
-log(base=2.0)
+log(base=math.e)
 ```
 
-Return the logarithm of this value to *base*.
+Return the logarithm of this value to *base*, the natural logarithm by default (as `math.log`).
 
 ##### map_range
 
@@ -2391,7 +2391,7 @@ List float sockets.
 | [is_close](#nodebpy.builder.socket.FloatSocketList.is_close) | Whether self and *other* differ by at most *epsilon*. |
 | [list_length](#nodebpy.builder.socket.FloatSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.FloatSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
-| [log](#nodebpy.builder.socket.FloatSocketList.log) | Return the logarithm of this value to *base*. |
+| [log](#nodebpy.builder.socket.FloatSocketList.log) | Return the logarithm of this value to *base*, the natural logarithm |
 | [map_range](#nodebpy.builder.socket.FloatSocketList.map_range) | Remap the values on the float socket using the MapRange node. |
 | [max](#nodebpy.builder.socket.FloatSocketList.max) | Create Math with operation ‘Maximum’. The maximum from self and value |
 | [min](#nodebpy.builder.socket.FloatSocketList.min) | Create Math with operation ‘Minimum’. The minimum from self and value |
@@ -2604,10 +2604,10 @@ Slice the list using start, stop, and step indices. Behaves like Python’s slic
 ##### log
 
 ``` python
-log(base=2.0)
+log(base=math.e)
 ```
 
-Return the logarithm of this value to *base*.
+Return the logarithm of this value to *base*, the natural logarithm by default (as `math.log`).
 
 ##### map_range
 
