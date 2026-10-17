@@ -34,7 +34,16 @@ from bpy.types import Node, NodeFrame, NodeSocket, NodeTree
 from .common import FRAME_PADDING, frame_label_room
 from .node_size import dimensions, top_offset
 
-__all__ = ["Edits", "match_nodes", "node_keys", "record", "restore", "stamp"]
+__all__ = [
+    "Edits",
+    "input_ref",
+    "input_values",
+    "match_nodes",
+    "node_keys",
+    "record",
+    "restore",
+    "stamp",
+]
 
 type Keys = tuple[str | None, ...]
 """A node's match keys, strictest first; None where a key doesn't apply."""
@@ -169,6 +178,18 @@ def _values(node: Node) -> tuple:
         for s in node.inputs
         if s.enabled and not s.is_linked and hasattr(s, "default_value")
     )
+
+
+def input_values(node: Node) -> dict[tuple, Any]:
+    """The values of *node*'s unlinked inputs, by socket name and the
+    count of earlier sockets of that name."""
+    return dict(_values(node))
+
+
+def input_ref(socket: NodeSocket) -> tuple:
+    """The key of *socket* in :func:`input_values`."""
+    assert socket.node is not None
+    return _socket_ref(socket, socket.node.inputs)
 
 
 def _hash(*parts: Any) -> str:
@@ -360,7 +381,8 @@ def _match(old: list[_NodeLayout], new: dict[Node, Keys]) -> dict[Node, _NodeLay
 
 
 def node_keys(tree: NodeTree) -> dict[str, Keys]:
-    """The keys :func:`match_nodes` matches *tree*'s nodes by, by node name."""
+    """The keys :func:`match_nodes` matches *tree*'s nodes by, by node name:
+    the third and fourth leave out the values of the nodes."""
     _, keys = _keys(tree)
     return {node.name: node_keys for node, node_keys in keys.items()}
 

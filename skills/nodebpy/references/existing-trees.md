@@ -19,6 +19,9 @@
   user has tuned. Keyframes and drivers on node values move to the matching node of the
   rebuild; any it can't place stay on their old path and raise a warning. It also keeps
   the `is_modifier` / `is_tool` flags, but resets simulation caches.
+- A rebuild of a tree someone changed by hand (nodes, links, values, the interface)
+  since it was built keeps the changed tree as `"<name> (edited)"` and raises an
+  `EditedTreeWarning`; compare the two and fold the user's changes into the code.
 - `keep_edits=True` (with `clear=True`) keeps the layout a user gave the tree since it
   was last arranged: moved, resized, collapsed, coloured, relabelled and framed nodes
   stay as they were on the nodes that still match, and new nodes go beside their

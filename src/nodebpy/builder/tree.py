@@ -1200,9 +1200,21 @@ class TreeBuilder[TreeT: NodeTree]:
         if clear and keep_edits and arrange is not None:
             self._kept_edits = _keep.record(self.tree)
         self._animation: NodeAnimation | None = None
+        self._unedited_users: list[NodeTree] = []
         if clear:
-            from ..live import NodeAnimation, preserve_modifier_inputs
+            from ..live import (
+                NodeAnimation,
+                keep_edited,
+                preserve_modifier_inputs,
+                unedited_users,
+                was_edited,
+            )
 
+            self._unedited_users = unedited_users(self.tree)
+            if was_edited(self.tree):
+                copy = self.tree.copy()
+                assert copy is not None
+                keep_edited(copy, self.tree.name)
             assert self.tree.interface is not None
             self._preserved_inputs = preserve_modifier_inputs([self.tree])
             self._preserved_inputs.__enter__()
@@ -1471,6 +1483,12 @@ class TreeBuilder[TreeT: NodeTree]:
             self._preserved_inputs.__exit__(None, None, None)
             self._preserved_inputs = None
         self._warn_invalid_links()
+        from ..live import stamp_build
+
+        stamp_build(self.tree)
+        for user in self._unedited_users:
+            stamp_build(user)
+        self._unedited_users = []
         # Interface-menu defaults assigned from here on can't wait for a
         # context exit that already happened — apply them immediately
         # (see MenuSocket.default_value).
