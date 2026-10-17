@@ -19,6 +19,10 @@ handles all of them:
   and modifier animation addresses inputs by socket identifier.
   :class:`NodeAnimation` moves node animation onto the matching nodes of the
   rebuild and :func:`preserve_modifier_inputs` renames the modifier paths.
+- A rebuild replaces whatever was changed by hand in the tree since it was
+  built. Each build records what the tree computes (:func:`stamp_build`);
+  a rebuild of a tree changed since (:func:`was_edited`) keeps the changed
+  tree as ``"<name> (edited)"`` and warns (:class:`EditedTreeWarning`).
 - A rebuilt tree is arranged afresh, which would undo the layout edits made
   to the old one (moved, resized, collapsed, framed or relabelled nodes).
   They are carried over to the matching nodes of the rebuild
@@ -42,17 +46,23 @@ from typing import Any, cast
 import bpy
 
 from .builder import TreeBuilder, default_keep_edits
+from .builder.tree import _record_builds
 from .layout import keep
 
 __all__ = [
+    "EditedTreeWarning",
     "GroupStash",
     "NodeAnimation",
     "RunResult",
     "copy_asset",
     "group_names_in_source",
+    "keep_edited",
     "preserve_modifier_inputs",
     "run_source",
+    "stamp_build",
     "stash_groups",
+    "unedited_users",
+    "was_edited",
 ]
 
 
@@ -102,7 +112,7 @@ class GroupStash:
             leftover = bpy.data.node_groups.get(name)
             if leftover is not None and leftover != old:
                 bpy.data.node_groups.remove(leftover)
-            old.name = name
+            _rename(old, name)
         self.stashed.clear()
 
     def keep_edits(self) -> None:
@@ -128,11 +138,172 @@ class GroupStash:
             if new is not None and new != old and new.bl_idname == old.bl_idname:
                 copy_asset(old, new)
                 NodeAnimation(old).restore(new)
+                # Animated values are left out of the record of the build.
+                stamp_build(new)
+                users = unedited_users(old)
                 old.user_remap(new)
-                bpy.data.node_groups.remove(old)
+                for user in users:
+                    stamp_build(user)
+                if was_edited(old):
+                    keep_edited(old, name)
+                else:
+                    bpy.data.node_groups.remove(old)
             else:
-                old.name = name
+                _rename(old, name)
         self.stashed.clear()
+
+
+class EditedTreeWarning(UserWarning):
+    """A rebuild replaced a tree that was changed by hand since it was
+    built; the changed tree is kept as ``"<name> (edited)"``."""
+
+
+_INTERFACE_FIELDS = (
+    "item_type",
+    "in_out",
+    "socket_type",
+    "name",
+    "default_value",
+    "min_value",
+    "max_value",
+    "subtype",
+    "structure_type",
+    "default_input",
+    "hide_value",
+)
+
+
+@dataclass
+class _Build:
+    """What a tree computed when nodebpy built it."""
+
+    nodes: dict[tuple[str, bool], list[dict[keep.SocketRef, Any]]]
+    """Each node's input values, grouped by what is left: its type,
+    settings and inputs (the shape key of :func:`nodebpy.layout.keep.node_keys`,
+    which leaves out values) and whether it is muted."""
+    interface: list[tuple[str, ...]]
+
+
+_BUILT: dict[int, _Build] = {}
+"""What each tree computed when nodebpy last built it, by ``session_uid``
+(see :func:`stamp_build`). In memory, so nothing reaches the saved file."""
+
+
+type _Shape = tuple[str, bool]
+
+
+def _read_build(
+    tree: bpy.types.NodeTree,
+) -> tuple[_Build, dict[_Shape, list[set[keep.SocketRef]]]]:
+    """*tree*'s :class:`_Build`, and alongside each node's values, the
+    inputs of that node animated now. Reroutes, layout, names and labels
+    are left out."""
+    animated: dict[str, set[keep.SocketRef]] = {}
+    for curve in _fcurves(tree):
+        with suppress(ValueError):
+            socket = tree.path_resolve(curve.data_path.rpartition(".")[0])
+            if isinstance(socket, bpy.types.NodeSocket) and socket.node is not None:
+                refs = animated.setdefault(socket.node.name, set())
+                refs.add(keep.input_ref(socket))
+    keys = keep.node_keys(tree)
+    nodes: dict[_Shape, list[dict[keep.SocketRef, Any]]] = {}
+    skips: dict[_Shape, list[set[keep.SocketRef]]] = {}
+    for node in tree.nodes:
+        if node.name not in keys or node.bl_idname == "NodeReroute":
+            continue
+        shape = (keys[node.name][3] or "", node.mute)
+        nodes.setdefault(shape, []).append(keep.input_values(node))
+        skips.setdefault(shape, []).append(animated.get(node.name, set()))
+    assert tree.interface is not None
+    interface = [
+        tuple(repr(getattr(item, name, None)) for name in _INTERFACE_FIELDS)
+        for item in tree.interface.items_tree
+    ]
+    return _Build(nodes, interface), skips
+
+
+def stamp_build(tree: bpy.types.NodeTree) -> None:
+    """Record what *tree* computes now, as nodebpy built it. A
+    ``TreeBuilder`` does this on exit when it rebuilt with ``clear=True``, and
+    for every tree under :func:`run_source`; a tree no rebuild will replace
+    needs no record."""
+    _BUILT[tree.session_uid] = _read_build(tree)[0]
+
+
+def was_edited(tree: bpy.types.NodeTree) -> bool:
+    """Whether *tree* computes something else than when nodebpy last built
+    it: a node, link, setting, mute or interface socket changed, or the value
+    of an input that isn't animated (animated values follow the frame, and
+    rebuilds keep animation). False for a tree not built in this session."""
+    built = _BUILT.get(tree.session_uid)
+    if built is None:
+        return False
+    now, skips = _read_build(tree)
+    if now.interface != built.interface or now.nodes.keys() != built.nodes.keys():
+        return True
+    for shape, values in now.nodes.items():
+        unused = list(built.nodes[shape])
+        if len(unused) != len(values):
+            return True
+        for current, skip in zip(values, skips[shape], strict=True):
+            same = next(
+                (
+                    old
+                    for old in unused
+                    if old.keys() == current.keys()
+                    and all(old[k] == v for k, v in current.items() if k not in skip)
+                ),
+                None,
+            )
+            if same is None:
+                return True
+            unused.remove(same)
+    return False
+
+
+def _node_trees() -> Iterator[bpy.types.NodeTree]:
+    yield from bpy.data.node_groups
+    for owner in (*bpy.data.materials, *bpy.data.worlds):
+        if owner.node_tree is not None:
+            yield owner.node_tree
+
+
+def unedited_users(tree: bpy.types.NodeTree) -> list[bpy.types.NodeTree]:
+    """The trees using *tree* as a group that are unedited since nodebpy
+    built them. Rebuilding *tree* can change them (a rebuilt interface drops
+    their links to its old sockets), so a rebuild stamps them again
+    afterwards: what it changed was not changed by hand."""
+    users = []
+    for other in _node_trees():
+        if other.session_uid not in _BUILT or other == tree:
+            continue
+        uses = any(getattr(node, "node_tree", None) == tree for node in other.nodes)
+        if uses and not was_edited(other):
+            users.append(other)
+    return users
+
+
+def keep_edited(tree: bpy.types.NodeTree, name: str) -> bpy.types.NodeTree:
+    """Keep *tree*, changed by hand, as ``"<name> (edited)"`` (replacing an
+    older one of that name), with a fake user and no asset mark, and warn
+    that the rebuild of *name* replaced it."""
+    backup_name = f"{name} (edited)"
+    older = bpy.data.node_groups.get(backup_name)
+    if older is not None and older != tree:
+        bpy.data.node_groups.remove(older)
+    tree.name = backup_name
+    if tree.asset_data is not None:
+        tree.asset_clear()  # which clears the fake user too
+    tree.use_fake_user = True
+    _BUILT.pop(tree.session_uid, None)
+    warnings.warn(
+        f"'{name}' was changed by hand since nodebpy built it, and the "
+        f"rebuild replaces those changes; the changed tree is kept as "
+        f"'{tree.name}'.",
+        EditedTreeWarning,
+        stacklevel=4,
+    )
+    return tree
 
 
 _ASSET_FIELDS = (
@@ -170,6 +341,14 @@ def copy_asset(old: bpy.types.ID, new: bpy.types.ID) -> None:
         copy.image_pixels_float = preview.image_pixels_float[:]
 
 
+def _rename(tree: bpy.types.NodeTree, name: str) -> None:
+    # A group's name is part of what a tree using it recorded as built.
+    users = unedited_users(tree)
+    tree.name = name
+    for user in users:
+        stamp_build(user)
+
+
 def stash_groups(names: Iterable[str]) -> GroupStash:
     """Rename each existing ``bpy.data.node_groups[name]`` to ``"<name>.stale"``
     and return the :class:`GroupStash` that undoes or completes the move.
@@ -183,7 +362,7 @@ def stash_groups(names: Iterable[str]) -> GroupStash:
             continue
         existing = bpy.data.node_groups.get(name)
         if existing is not None and existing.library is None:
-            existing.name = f"{name}.stale"
+            _rename(existing, f"{name}.stale")
             stash.stashed[name] = existing
     return stash
 
@@ -565,7 +744,11 @@ def run_source(
     prior = globals_.get("tree")
 
     existing = list(bpy.data.node_groups)
-    with preserve_modifier_inputs(existing), default_keep_edits(keep_edits):
+    with (
+        preserve_modifier_inputs(existing),
+        default_keep_edits(keep_edits),
+        _record_builds(),
+    ):
         try:
             exec(compile(code, filename, "exec"), globals_)  # noqa: S102
             # Resolved before the stash is replaced: building a defined-only

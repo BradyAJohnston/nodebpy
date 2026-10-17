@@ -1,6 +1,7 @@
 """Tests for nodebpy.live — re-running source safely in a live session."""
 
 import textwrap
+import warnings
 
 import bpy
 import pytest
@@ -9,6 +10,7 @@ from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.builder import CustomGeometryGroup
 from nodebpy.live import (
+    EditedTreeWarning,
     GroupStash,
     RunResult,
     _fcurves,
@@ -17,6 +19,7 @@ from nodebpy.live import (
     preserve_modifier_inputs,
     run_source,
     stash_groups,
+    was_edited,
 )
 
 
@@ -695,3 +698,140 @@ def test_rebuild_keeps_nla_strips_and_tree_drivers():
     assert _paths(tree) == sorted(
         ['["amount"]', f'nodes["{multiply.name}"].inputs[1].default_value']
     )
+
+
+# ---------------------------------------------------------------------------
+# changes made by hand
+# ---------------------------------------------------------------------------
+
+
+def test_rebuild_keeps_a_hand_edited_tree():
+    tree = _animated()
+    assert not was_edited(tree)
+    _multiply(tree).inputs[1].default_value = 9.0
+    assert was_edited(tree)
+
+    with pytest.warns(EditedTreeWarning, match="'Animated' was changed by hand"):
+        _animated()
+
+    backup = bpy.data.node_groups["Animated (edited)"]
+    assert backup.use_fake_user
+    assert _multiply(backup).inputs[1].default_value == 9.0
+    assert _multiply(tree).inputs[1].default_value == 2.0
+    assert not was_edited(tree)
+
+
+def test_layout_names_animation_and_reroutes_are_not_edits():
+    tree = _animated()
+    multiply = _multiply(tree)
+    multiply.location = (500.0, 500.0)
+    multiply.label = "Double"
+    multiply.name = "Doubler"
+    multiply.hide = True
+    multiply.inputs[1].keyframe_insert("default_value", frame=1)
+    multiply.inputs[1].default_value = 7.0  # animated, so it follows the frame
+    link = multiply.outputs[0].links[0]
+    target = link.to_socket
+    reroute = tree.nodes.new("NodeReroute")
+    tree.links.new(multiply.outputs[0], reroute.inputs[0])
+    tree.links.new(reroute.outputs[0], target)
+    assert not was_edited(tree)
+
+
+@pytest.mark.parametrize(
+    "edit",
+    [
+        lambda tree: setattr(_multiply(tree), "mute", True),
+        lambda tree: setattr(_multiply(tree), "operation", "ADD"),
+        lambda tree: tree.links.remove(_multiply(tree).outputs[0].links[0]),
+        lambda tree: tree.nodes.new("GeometryNodeMeshCube"),
+        lambda tree: tree.nodes.new("NodeGroupInput"),
+        lambda tree: tree.interface.new_socket("Added", socket_type="NodeSocketFloat"),
+    ],
+    ids=["mute", "setting", "link", "node", "another-alike", "interface"],
+)
+def test_changes_that_are_edits(edit):
+    tree = _animated()
+    edit(tree)
+    assert was_edited(tree)
+
+
+def test_run_source_keeps_a_hand_edited_group():
+    first = run_source(ANIMATED_CLASS.format(body="pass")).tree
+    assert first is not None
+    first.asset_mark()
+    _multiply(first).inputs[0].default_value = 4.0
+
+    with pytest.warns(EditedTreeWarning):
+        second = run_source(ANIMATED_CLASS.format(body="pass")).tree
+
+    backup = bpy.data.node_groups["Animated Group (edited)"]
+    assert backup == first
+    assert backup.asset_data is None and backup.users == 1  # the fake user
+    assert second is not None and second.name == "Animated Group"
+    assert _multiply(second).inputs[0].default_value == 1.0
+    assert second.asset_data is not None
+    # Not edited since this build: the next run replaces it quietly.
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        run_source(ANIMATED_CLASS.format(body="pass"))
+
+
+def test_second_hand_edited_rebuild_replaces_the_backup():
+    tree = _animated()
+    _multiply(tree).inputs[1].default_value = 9.0
+    with pytest.warns(EditedTreeWarning):
+        _animated()
+    _multiply(tree).inputs[1].default_value = 5.0
+    with pytest.warns(EditedTreeWarning):
+        _animated()
+    backups = [
+        t for t in bpy.data.node_groups if t.name.startswith("Animated (edited)")
+    ]
+    assert [_multiply(t).inputs[1].default_value for t in backups] == [5.0]
+
+
+def test_rebuilding_a_group_does_not_edit_its_users():
+    def build():
+        with g.tree("Inner", clear=True) as inner:
+            inner.inputs.float("Value") >> inner.outputs.float("Value")
+        with g.tree("Outer", clear=True) as outer:
+            node = outer.tree.nodes.new("GeometryNodeGroup")
+            node.node_tree = inner.tree
+            outer.tree.links.new(g.Index().node.outputs[0], node.inputs["Value"])
+            g.Points(10) >> outer.outputs.geometry("Geometry")
+        return outer.tree
+
+    outer = build()
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        build()
+    assert len(outer.links) == 2
+
+
+def test_run_source_does_not_edit_users_of_a_group_class():
+    code = ANIMATED_CLASS.format(body="pass") + textwrap.dedent(
+        """
+        with g.tree("Holder", clear=True) as holder:
+            Animated() >> holder.outputs.geometry("Geometry")
+        """
+    )
+    run_source(code)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        run_source(code)
+
+
+def test_failed_run_does_not_edit_users_of_a_group_class():
+    code = ANIMATED_CLASS.format(body="pass") + textwrap.dedent(
+        """
+        with g.tree("Holder", clear=True) as holder:
+            Animated() >> holder.outputs.geometry("Geometry")
+        """
+    )
+    run_source(code)
+    with pytest.raises(ZeroDivisionError):
+        run_source(ANIMATED_CLASS.format(body="1 / 0") + "\nAnimated.create_group()")
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        run_source(code)
