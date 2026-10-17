@@ -11,6 +11,7 @@ from nodebpy.builder import CustomGeometryGroup
 from nodebpy.live import (
     GroupStash,
     RunResult,
+    _fcurves,
     copy_asset,
     group_names_in_source,
     preserve_modifier_inputs,
@@ -547,3 +548,150 @@ def test_group_stash_replace_and_restore_are_idempotent():
     stash.restore()
     assert new.name == "Stash Me"
     del old
+
+
+# ---------------------------------------------------------------------------
+# animation across rebuilds
+# ---------------------------------------------------------------------------
+
+
+def _animated(first="multiply", **kwargs):
+    with g.tree("Animated", clear=True, **kwargs) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        tree.inputs.float("Extra")
+        scale = tree.inputs.float("Scale", 1.0)
+        if first != "multiply":
+            scale = g.Math(scale, 3.0, operation=first.upper()).o.value
+        value = g.Math.multiply(scale, 2.0)
+        offset = g.CombineXYZ(z=value)
+        geo >> g.SetPosition(offset=offset) >> tree.outputs.geometry("Geometry")
+    return tree.tree
+
+
+def _paths(owner):
+    return sorted(curve.data_path for curve in _fcurves(owner))
+
+
+def _multiply(tree):
+    return next(
+        n
+        for n in tree.nodes
+        if n.bl_idname == "ShaderNodeMath" and n.operation == "MULTIPLY"
+    )
+
+
+def test_rebuild_keeps_modifier_input_keyframes():
+    tree = _animated()
+    modifier = _modifier(tree)
+    obj = modifier.id_data
+    _set_input(modifier, "Scale", 1.0)
+    item = next(i for i in tree.interface.items_tree if i.name == "Scale")
+    path = getattr(modifier.properties.inputs, item.identifier).path_from_id("value")
+    obj.keyframe_insert(path, frame=1)
+    _set_input(modifier, "Scale", 4.0)
+    obj.keyframe_insert(path, frame=10)
+
+    _animated()
+
+    item = next(i for i in tree.interface.items_tree if i.name == "Scale")
+    (path,) = _paths(obj)
+    assert path == f'modifiers["GN"].properties.inputs.{item.identifier}.value'
+    assert obj.path_resolve(path) == 4.0
+
+
+def test_rebuild_keeps_node_keyframes_and_drivers():
+    tree = _animated()
+    multiply = _multiply(tree)
+    multiply.inputs[1].default_value = 2.0
+    multiply.inputs[1].keyframe_insert("default_value", frame=1)
+    multiply.inputs[1].default_value = 6.0
+    multiply.inputs[1].keyframe_insert("default_value", frame=10)
+    driver = multiply.inputs[0].driver_add("default_value")
+    driver.driver.expression = "frame"
+
+    # A node built before it takes its name.
+    _animated(first="add")
+
+    multiply = _multiply(tree)
+    assert multiply.name != "Math"
+    prefix = f'nodes["{multiply.name}"]'
+    assert _paths(tree) == [
+        f"{prefix}.inputs[0].default_value",
+        f"{prefix}.inputs[1].default_value",
+    ]
+    (keyed,) = [c for c in _fcurves(tree) if c.data_path.endswith("[1].default_value")]
+    assert keyed.evaluate(10) == pytest.approx(6.0)
+    assert tree.animation_data.drivers[0].driver.expression == "frame"
+
+
+def test_rebuild_warns_about_animation_it_cannot_place():
+    tree = _animated(first="add")
+    add = next(
+        n
+        for n in tree.nodes
+        if n.bl_idname == "ShaderNodeMath" and n.operation == "ADD"
+    )
+    add.inputs[1].keyframe_insert("default_value", frame=1)
+    path = f'nodes["{add.name}"].inputs[1].default_value'
+
+    with pytest.warns(UserWarning, match="Kept the animation of 'Animated'"):
+        _animated()
+
+    assert _paths(tree) == [path]
+
+
+ANIMATED_CLASS = textwrap.dedent(
+    """
+    from nodebpy import geometry as g
+    from nodebpy.builder import CustomGeometryGroup
+
+    class Animated(CustomGeometryGroup):
+        _name = "Animated Group"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            {body}
+            value = g.Math.multiply(1.0, 2.0)
+            geo >> g.SetPosition(offset=g.CombineXYZ(z=value)) >> tree.outputs.geometry("Geometry")
+    """
+)
+
+
+def test_run_source_moves_group_animation_to_the_rebuild():
+    first = run_source(ANIMATED_CLASS.format(body="pass")).tree
+    assert first is not None
+    multiply = _multiply(first)
+    multiply.inputs[1].keyframe_insert("default_value", frame=1)
+    multiply.inputs[0].driver_add("default_value").driver.expression = "frame"
+    action = first.animation_data.action
+
+    second = run_source(ANIMATED_CLASS.format(body="g.Cube()")).tree
+
+    assert second is not None and second != first
+    assert second.animation_data.action == action
+    multiply = _multiply(second)
+    prefix = f'nodes["{multiply.name}"]'
+    assert _paths(second) == [
+        f"{prefix}.inputs[0].default_value",
+        f"{prefix}.inputs[1].default_value",
+    ]
+
+
+def test_rebuild_keeps_nla_strips_and_tree_drivers():
+    tree = _animated()
+    multiply = _multiply(tree)
+    multiply.inputs[1].keyframe_insert("default_value", frame=1)
+    animation = tree.animation_data
+    track = animation.nla_tracks.new()
+    track.strips.new("Pushed", 1, animation.action)
+    animation.action = None
+    # A driver on a property of the tree, which addresses no node.
+    tree["amount"] = 1.0
+    tree.driver_add('["amount"]').driver.expression = "2"
+
+    _animated(first="add")
+
+    multiply = _multiply(tree)
+    assert _paths(tree) == sorted(
+        ['["amount"]', f'nodes["{multiply.name}"].inputs[1].default_value']
+    )

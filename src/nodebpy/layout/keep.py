@@ -34,7 +34,10 @@ from bpy.types import Node, NodeFrame, NodeSocket, NodeTree
 from .common import FRAME_PADDING, frame_label_room
 from .node_size import dimensions, top_offset
 
-__all__ = ["Edits", "record", "restore", "stamp"]
+__all__ = ["Edits", "match_nodes", "node_keys", "record", "restore", "stamp"]
+
+type Keys = tuple[str | None, ...]
+"""A node's match keys, strictest first; None where a key doesn't apply."""
 
 _ARRANGED: dict[int, str] = {}
 """The layout each arranged tree was left with, by ``session_uid``. Kept in
@@ -49,7 +52,7 @@ _GAP = 20.0
 
 @dataclass
 class _NodeLayout:
-    keys: tuple[str | None, ...]
+    keys: Keys
     location: tuple[float, float]
     width: float
     hide: bool
@@ -330,15 +333,15 @@ def record(tree: NodeTree) -> Edits | None:
     return edits
 
 
-def _match(
-    old: list[_NodeLayout], new: dict[Node, tuple[str | None, ...]]
-) -> dict[Node, _NodeLayout]:
-    matched: dict[Node, _NodeLayout] = {}
+def _match_keys(old: list[Keys], new: dict[Node, Keys]) -> dict[Node, int]:
+    """Pair each node of *new* with an index into *old*, strictest key
+    first; a node or index is used at most once."""
+    matched: dict[Node, int] = {}
     taken: set[int] = set()
     for level in range(6):
         buckets: dict[str, list[int]] = {}
-        for i, layout in enumerate(old):
-            key = layout.keys[level]
+        for i, keys in enumerate(old):
+            key = keys[level]
             if i not in taken and key is not None:
                 buckets.setdefault(key, []).append(i)
         for node, keys in new.items():
@@ -347,8 +350,28 @@ def _match(
                 continue
             i = buckets[key].pop(0)
             taken.add(i)
-            matched[node] = old[i]
+            matched[node] = i
     return matched
+
+
+def _match(old: list[_NodeLayout], new: dict[Node, Keys]) -> dict[Node, _NodeLayout]:
+    pairs = _match_keys([layout.keys for layout in old], new)
+    return {node: old[i] for node, i in pairs.items()}
+
+
+def node_keys(tree: NodeTree) -> dict[str, Keys]:
+    """The keys :func:`match_nodes` matches *tree*'s nodes by, by node name."""
+    _, keys = _keys(tree)
+    return {node.name: node_keys for node, node_keys in keys.items()}
+
+
+def match_nodes(old: dict[str, Keys], tree: NodeTree) -> dict[str, Node]:
+    """The node of *tree* each node named in *old* (from :func:`node_keys`
+    on the tree *tree* rebuilds) became, for those that match one."""
+    names = list(old)
+    _, keys = _keys(tree)
+    pairs = _match_keys([old[name] for name in names], keys)
+    return {names[i]: node for node, i in pairs.items()}
 
 
 def _box(node: Node, location: tuple[float, float]) -> tuple[float, ...]:

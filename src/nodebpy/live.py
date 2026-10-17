@@ -15,6 +15,10 @@ handles all of them:
   what Geometry Nodes modifiers key their input values on, so the values
   would be lost. :func:`preserve_modifier_inputs` snapshots them by socket
   name and reapplies them afterwards.
+- Blender deletes the keyframes and drivers of the nodes a rebuild removes,
+  and modifier animation addresses inputs by socket identifier.
+  :class:`NodeAnimation` moves node animation onto the matching nodes of the
+  rebuild and :func:`preserve_modifier_inputs` renames the modifier paths.
 - A rebuilt tree is arranged afresh, which would undo the layout edits made
   to the old one (moved, resized, collapsed, framed or relabelled nodes).
   They are carried over to the matching nodes of the rebuild
@@ -28,6 +32,8 @@ handles all of them:
 from __future__ import annotations
 
 import ast
+import re
+import warnings
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass, field
@@ -40,6 +46,7 @@ from .layout import keep
 
 __all__ = [
     "GroupStash",
+    "NodeAnimation",
     "RunResult",
     "copy_asset",
     "group_names_in_source",
@@ -120,6 +127,7 @@ class GroupStash:
             new = bpy.data.node_groups.get(name)
             if new is not None and new != old and new.bl_idname == old.bl_idname:
                 copy_asset(old, new)
+                NodeAnimation(old).restore(new)
                 old.user_remap(new)
                 bpy.data.node_groups.remove(old)
             else:
@@ -230,6 +238,7 @@ _INPUT_ATTRS = ("value", "type", "attribute_name")
 @dataclass
 class _InputState:
     socket_type: str
+    identifier: str
     attrs: dict[str, Any]
 
 
@@ -246,6 +255,11 @@ def preserve_modifier_inputs(trees: Iterable[bpy.types.NodeTree]) -> Iterator[No
     (possibly rebuilt, possibly remapped) tree is reapplied; sockets whose
     type changed are skipped, as is anything that fails to apply — the
     reapply step never raises.
+
+    Keyframes and drivers on those inputs are kept too: they address an
+    input by its socket identifier, which a rebuild changes, so their paths
+    are rewritten to the new identifier of the socket with the same name
+    and type.
     """
     pointers = {tree.as_pointer() for tree in trees}
     snapshot: list[tuple[bpy.types.NodesModifier, dict[str, _InputState]]] = []
@@ -262,7 +276,7 @@ def preserve_modifier_inputs(trees: Iterable[bpy.types.NodeTree]) -> Iterator[No
                 for attr in _INPUT_ATTRS
                 if hasattr(wrapper, attr)
             }
-            values[name] = _InputState(socket.socket_type, attrs)
+            values[name] = _InputState(socket.socket_type, socket.identifier, attrs)
         snapshot.append((modifier, values))
 
     try:
@@ -282,16 +296,157 @@ def _reapply_inputs(
         return
     inputs = _modifier_inputs(modifier)
     sockets = _input_sockets(group)
+    renamed: dict[str, str] = {}
     for name, state in values.items():
         socket = sockets.get(name)
         if socket is None or socket.socket_type != state.socket_type:
             continue
+        if socket.identifier != state.identifier:
+            renamed[state.identifier] = socket.identifier
         wrapper = getattr(inputs, socket.identifier, None)
         if wrapper is None or not hasattr(wrapper, "value"):
             continue
         for attr, value in state.attrs.items():
             with suppress(Exception):  # best effort, per attribute
                 setattr(wrapper, attr, value)
+    if renamed:
+        _rename_input_paths(modifier, renamed)
+
+
+def _fcurves(owner: bpy.types.ID) -> list[bpy.types.FCurve]:
+    """The F-curves animating *owner*: those of its action and NLA strips
+    (the channels of the slot each one uses) and its drivers."""
+    animation = getattr(owner, "animation_data", None)
+    if animation is None:
+        return []
+    actions = [(animation.action, animation.action_slot)]
+    for track in animation.nla_tracks:
+        actions.extend((strip.action, strip.action_slot) for strip in track.strips)
+    curves: list[bpy.types.FCurve] = []
+    for action, slot in actions:
+        if action is None:
+            continue
+        for layer in action.layers:
+            for strip in layer.strips:
+                for bag in strip.channelbags:
+                    if slot is None or bag.slot_handle == slot.handle:
+                        curves.extend(bag.fcurves)
+    curves.extend(animation.drivers)
+    return curves
+
+
+def _rename_input_paths(
+    modifier: bpy.types.NodesModifier, renamed: dict[str, str]
+) -> None:
+    """Point the animation of *modifier*'s inputs at their new identifiers
+    (``modifiers["GN"].properties.inputs.Socket_1.value``, or the older
+    ``modifiers["GN"]["Socket_1"]``), all at once so swapped identifiers
+    don't collide."""
+    prefix = re.escape(f'modifiers["{bpy.utils.escape_identifier(modifier.name)}"]')
+    old = "|".join(re.escape(i) for i in sorted(renamed, key=len, reverse=True))
+    pattern = re.compile(rf'^({prefix}(?:\.properties\.inputs\.|\["))({old})(?![0-9])')
+    owner = modifier.id_data
+    assert isinstance(owner, bpy.types.ID)
+    for curve in _fcurves(owner):
+        path = pattern.sub(lambda m: m[1] + renamed[m[2]], curve.data_path)
+        if path != curve.data_path:
+            curve.data_path = path
+
+
+_NODE_PATH = re.compile(r'^nodes\["((?:[^"\\]|\\.)*)"\](.*)$', re.DOTALL)
+
+
+@dataclass
+class _NodeCurve:
+    curve: bpy.types.FCurve
+    node: str
+    rest: str
+    original: str
+    driver: bool
+
+
+class NodeAnimation:
+    """Keyframes and drivers on a tree's nodes, kept through a rebuild.
+
+    Blender deletes the animation of the nodes a rebuild removes, and a
+    rebuild into a new tree starts with none. Made before the rebuild, this
+    moves those curves out of the way (to a path that names no node); after
+    it, :meth:`restore` points each at the node of the rebuilt tree that
+    matches its old node (see :func:`nodebpy.layout.keep.match_nodes`),
+    moving the action and drivers over first when the rebuild is a new
+    tree. A curve whose node matches nothing, or whose property the new
+    node lacks, gets its old path back and is named in a warning.
+    """
+
+    def __init__(self, tree: bpy.types.NodeTree):
+        self.tree = tree
+        self.curves: list[_NodeCurve] = []
+        drivers = set()
+        if tree.animation_data is not None:
+            drivers = {curve.as_pointer() for curve in tree.animation_data.drivers}
+        for curve in _fcurves(tree):
+            match = _NODE_PATH.match(curve.data_path)
+            if match is None:
+                continue
+            name = match[1].replace('\\"', '"').replace("\\\\", "\\")
+            self.curves.append(
+                _NodeCurve(
+                    curve,
+                    name,
+                    match[2],
+                    curve.data_path,
+                    curve.as_pointer() in drivers,
+                )
+            )
+        self.keys = keep.node_keys(tree) if self.curves else {}
+        for i, item in enumerate(self.curves):
+            item.curve.data_path = f"nodebpy_kept[{i}]{item.rest}"
+
+    def restore(self, tree: bpy.types.NodeTree | None = None) -> None:
+        """Point the curves at the matching nodes of *tree*, the rebuild
+        (default: the tree they were read from, rebuilt in place)."""
+        if not self.curves:
+            return
+        tree = self.tree if tree is None else tree
+        if tree != self.tree:
+            self._move_to(tree)
+        matched = keep.match_nodes(self.keys, tree)
+        lost = []
+        for item in self.curves:
+            node = matched.get(item.node)
+            path = None
+            if node is not None:
+                name = bpy.utils.escape_identifier(node.name)
+                path = f'nodes["{name}"]{item.rest}'
+                try:
+                    tree.path_resolve(path)
+                except ValueError:  # pragma: no cover - matched nodes share sockets
+                    path = None
+            if path is None:
+                path = item.original
+                lost.append(item.original)
+            item.curve.data_path = path
+        self.curves = []
+        if lost:
+            warnings.warn(
+                f"Kept the animation of '{tree.name}' on the old paths, which "
+                "no node of the rebuilt tree has: " + ", ".join(lost),
+                stacklevel=2,
+            )
+
+    def _move_to(self, tree: bpy.types.NodeTree) -> None:
+        source = self.tree.animation_data
+        assert source is not None
+        target = tree.animation_data_create()
+        assert target is not None
+        if target.action is None and source.action is not None:
+            target.action = source.action
+            target.action_slot = source.action_slot
+        for item in self.curves:
+            if item.driver:
+                copy = target.drivers.from_existing(src_driver=item.curve)
+                assert copy is not None
+                item.curve = copy
 
 
 @dataclass
