@@ -15,6 +15,11 @@ handles all of them:
   what Geometry Nodes modifiers key their input values on, so the values
   would be lost. :func:`preserve_modifier_inputs` snapshots them by socket
   name and reapplies them afterwards.
+- A rebuilt tree is arranged afresh, which would undo the layout edits made
+  to the old one (moved, resized, collapsed, framed or relabelled nodes).
+  They are carried over to the matching nodes of the rebuild
+  (:mod:`nodebpy.layout.keep`), for ``clear=True`` trees and group classes
+  alike.
 - The tree the run produced has to be found among whatever the code did:
   the ``tree`` variable of the ``with g.tree(...) as tree:`` form, the newest
   top-level group it created, or the last group class it defined.
@@ -30,7 +35,8 @@ from typing import Any, cast
 
 import bpy
 
-from .builder import TreeBuilder
+from .builder import TreeBuilder, default_keep_edits
+from .layout import keep
 
 __all__ = [
     "GroupStash",
@@ -90,6 +96,17 @@ class GroupStash:
                 bpy.data.node_groups.remove(leftover)
             old.name = name
         self.stashed.clear()
+
+    def keep_edits(self) -> None:
+        """Carry the layout edits made to each old tree over to the tree the
+        run built under its name (see :mod:`nodebpy.layout.keep`)."""
+        for name, old in self.stashed.items():
+            new = bpy.data.node_groups.get(name)
+            if new is None or new == old or new.bl_idname != old.bl_idname:
+                continue
+            edits = keep.record(old)
+            if edits is not None:
+                keep.restore(edits, new)
 
     def replace(self) -> None:
         """Success path: for each name, if the run created a new tree of the
@@ -305,6 +322,7 @@ def run_source(
     *,
     filename: str = "<nodebpy>",
     namespace: dict[str, Any] | None = None,
+    keep_edits: bool = True,
 ) -> RunResult:
     """Execute nodebpy source for a live re-run.
 
@@ -326,6 +344,9 @@ def run_source(
         Extra globals merged over the defaults (``__name__``, ``__file__``
         and ``bpy``). A ``tree`` it carries over from an earlier run's
         :attr:`RunResult.namespace` is not mistaken for this run's tree.
+    keep_edits
+        Carry the layout edits made to each rebuilt tree since it was last
+        arranged over to its rebuild (see :mod:`nodebpy.layout.keep`).
 
     Notes
     -----
@@ -346,12 +367,14 @@ def run_source(
     prior = globals_.get("tree")
 
     existing = list(bpy.data.node_groups)
-    with preserve_modifier_inputs(existing):
+    with preserve_modifier_inputs(existing), default_keep_edits(keep_edits):
         try:
             exec(compile(code, filename, "exec"), globals_)  # noqa: S102
             # Resolved before the stash is replaced: building a defined-only
             # class must not find the old tree back under its name.
             tree = _produced_tree(globals_, before, prior)
+            if keep_edits:
+                stash.keep_edits()
         except BaseException:
             stash.restore()
             raise

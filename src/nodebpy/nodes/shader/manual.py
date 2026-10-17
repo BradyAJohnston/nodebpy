@@ -53,9 +53,15 @@ def material(
     arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
     clear: bool = False,
+    keep_edits: bool | None = None,
 ) -> MaterialBuilder:
     return MaterialBuilder(
-        name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
+        name,
+        collapse=collapse,
+        arrange=arrange,
+        fake_user=fake_user,
+        clear=clear,
+        keep_edits=keep_edits,
     )
 
 
@@ -66,6 +72,7 @@ def world(
     arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
     clear: bool = False,
+    keep_edits: bool | None = None,
     scene: bool = False,
 ) -> WorldBuilder:
     """Build a world's node tree; ``scene=True`` makes it the active scene's world.
@@ -79,6 +86,7 @@ def world(
         arrange=arrange,
         fake_user=fake_user,
         clear=clear,
+        keep_edits=keep_edits,
         scene=scene,
     )
 

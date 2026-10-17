@@ -23,6 +23,7 @@ from bpy.types import (
 
 from ..layout import ArrangeMethod
 from ..layout import arrange as _arrange_nodes
+from ..layout import keep as _keep
 from ..types import (
     SOCKET_COMPATIBILITY,
     Default,
@@ -86,6 +87,26 @@ def default_split_inputs(split: bool = True) -> Iterator[None]:
         yield
     finally:
         _DEFAULT_SPLIT_INPUTS.reset(token)
+
+
+# What TreeBuilder's keep_edits=None resolves to; see `default_keep_edits`.
+_DEFAULT_KEEP_EDITS: ContextVar[bool] = ContextVar(
+    "nodebpy_default_keep_edits", default=False
+)
+
+
+@contextmanager
+def default_keep_edits(keep: bool = True) -> Iterator[None]:
+    """Scope in which every ``TreeBuilder`` left at its default
+    ``keep_edits`` keeps the layout edits made to the tree it rebuilds with
+    ``clear=True`` (see :class:`TreeBuilder`). :func:`nodebpy.live.run_source`
+    runs its code in this scope.
+    """
+    token = _DEFAULT_KEEP_EDITS.set(keep)
+    try:
+        yield
+    finally:
+        _DEFAULT_KEEP_EDITS.reset(token)
 
 
 # The interface ``default_input`` values Blender actually accepts at runtime,
@@ -1140,6 +1161,7 @@ class TreeBuilder[TreeT: NodeTree]:
         ignore_visibility: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        keep_edits: bool | None = None,
         is_modifier: bool | None = None,
         is_tool: bool | None = None,
     ):
@@ -1156,6 +1178,10 @@ class TreeBuilder[TreeT: NodeTree]:
         # interface gives its sockets new identifiers, which is what
         # Geometry Nodes modifiers key their input values by, so those values
         # are snapshotted by socket name here and reapplied on exit.
+        # ``keep_edits`` (default: see default_keep_edits) carries the layout
+        # edits made to the tree since it was last arranged (moved, resized,
+        # collapsed, framed or relabelled nodes) over to the rebuild, onto
+        # the nodes that match; see nodebpy.layout.keep.
         if isinstance(tree, str):
             existing = bpy.data.node_groups.get(tree) if clear else None
             if existing is not None and existing.bl_idname == tree_type:
@@ -1165,6 +1191,11 @@ class TreeBuilder[TreeT: NodeTree]:
         else:
             self.tree = tree  # type: ignore
         self._preserved_inputs: AbstractContextManager[None] | None = None
+        self._kept_edits: _keep.Edits | None = None
+        if keep_edits is None:
+            keep_edits = _DEFAULT_KEEP_EDITS.get()
+        if clear and keep_edits and arrange is not None:
+            self._kept_edits = _keep.record(self.tree)
         if clear:
             from ..live import preserve_modifier_inputs
 
@@ -1199,6 +1230,7 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        keep_edits: bool | None = None,
         is_modifier: bool | None = None,
         is_tool: bool | None = None,
     ) -> TreeBuilder[GeometryNodeTree]:
@@ -1217,6 +1249,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 fake_user=fake_user,
                 split_inputs=split_inputs,
                 clear=clear,
+                keep_edits=keep_edits,
                 is_modifier=is_modifier,
                 is_tool=is_tool,
             ),
@@ -1232,6 +1265,7 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        keep_edits: bool | None = None,
     ) -> TreeBuilder[ShaderNodeTree]:
         """Create a shader node tree."""
         return cast(
@@ -1244,6 +1278,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 fake_user=fake_user,
                 split_inputs=split_inputs,
                 clear=clear,
+                keep_edits=keep_edits,
             ),
         )
 
@@ -1257,6 +1292,7 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        keep_edits: bool | None = None,
         scene: bool = False,
     ) -> TreeBuilder[CompositorNodeTree]:
         """Create a compositor node tree; ``scene=True`` also makes it the
@@ -1271,6 +1307,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 fake_user=fake_user,
                 split_inputs=split_inputs,
                 clear=clear,
+                keep_edits=keep_edits,
             ),
         )
         if scene:
@@ -1417,6 +1454,9 @@ class TreeBuilder[TreeT: NodeTree]:
             self.split_group_inputs()
         if self._arrange is not None:
             self.arrange()
+            if self._kept_edits is not None:
+                _keep.restore(self._kept_edits, self.tree)
+        self._kept_edits = None
         self._apply_input_defaults()
         if self._preserved_inputs is not None:
             self._preserved_inputs.__exit__(None, None, None)
@@ -1935,12 +1975,14 @@ class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
         fake_user: bool = False,
         ignore_visibility: bool = False,
         clear: bool = False,
+        keep_edits: bool | None = None,
     ):
         # With ``clear`` an existing material of that name is rebuilt in place
         # (objects keep it assigned) instead of creating ``Name.001``. A new
         # material starts with Blender's default Principled BSDF and Material
         # Output nodes, which are removed so the body builds from empty.
         material = bpy.data.materials.get(name) if clear else None
+        reused = material is not None
         if material is None:
             material = bpy.data.materials.new(name)
         assert material is not None
@@ -1954,6 +1996,7 @@ class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
             fake_user=fake_user,
             ignore_visibility=ignore_visibility,
             clear=True,
+            keep_edits=keep_edits if reused else False,
         )
 
 
@@ -1970,12 +2013,14 @@ class WorldBuilder(TreeBuilder[ShaderNodeTree]):
         fake_user: bool = False,
         ignore_visibility: bool = False,
         clear: bool = False,
+        keep_edits: bool | None = None,
         scene: bool = False,
     ):
         # With ``clear`` an existing world of that name is rebuilt in place (a
         # scene using it keeps it). A new world's default Background and World
         # Output nodes are removed so the body builds from empty.
         world = bpy.data.worlds.get(name) if clear else None
+        reused = world is not None
         if world is None:
             world = bpy.data.worlds.new(name)
         assert world is not None and world.node_tree is not None
@@ -1988,6 +2033,7 @@ class WorldBuilder(TreeBuilder[ShaderNodeTree]):
             fake_user=fake_user,
             ignore_visibility=ignore_visibility,
             clear=True,
+            keep_edits=keep_edits if reused else False,
         )
         if scene:
             active = bpy.context.scene

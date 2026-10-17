@@ -12,6 +12,7 @@ from bpy.types import NodeTree
 from .apply import apply
 from .config import SIMPLE_OPTIONS, SugiyamaOptions
 from .extract import extract, fit_collapsed_widths
+from .keep import stamp
 from .pipeline import Observer, Pipeline
 from .sugiyama import sugiyama_layout
 
@@ -81,3 +82,5 @@ def arrange(
         selected_only=selected_only,
     )
     apply(tree, binding, result)
+    # So a rebuild can tell whether the layout was edited since.
+    stamp(tree)

@@ -18,6 +18,10 @@
   keep input names unchanged when editing a tree a user has tuned. It also keeps the
   `is_modifier` / `is_tool` flags, but clears keyframes on node defaults and resets
   simulation caches: check `tree.tree.animation_data` first.
+- `keep_edits=True` (with `clear=True`) keeps the layout a user gave the tree since it
+  was last arranged: moved, resized, collapsed, coloured, relabelled and framed nodes
+  stay as they were on the nodes that still match, and new nodes go beside their
+  neighbours. A tree nobody touched is arranged afresh.
 - Wire nodes with nodebpy, not `tree.links.new(...)`. Tweaking a property on an
   existing node through bpy is fine.
 
@@ -77,8 +81,9 @@ result.created     # node groups that did not exist before
 ```
 
 It rebuilds the groups the code's classes claim, remaps their users, keeps modifier
-input values by socket name, and on an exception restores the previous state and
-re-raises. Top-level trees should still use `clear=True`.
+input values by socket name and layout edits (as `keep_edits=True`; pass
+`keep_edits=False` for a fresh layout), and on an exception restores the previous
+state and re-raises. Top-level trees should still use `clear=True`.
 
 ## 4. Group classes
 
