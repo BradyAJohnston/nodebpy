@@ -41,6 +41,7 @@ from .layout import keep
 __all__ = [
     "GroupStash",
     "RunResult",
+    "copy_asset",
     "group_names_in_source",
     "preserve_modifier_inputs",
     "run_source",
@@ -111,17 +112,54 @@ class GroupStash:
     def replace(self) -> None:
         """Success path: for each name, if the run created a new tree of the
         same type under it, point the old tree's users (group nodes,
-        modifiers, pinned editors) at the new one and remove the old;
-        otherwise the old tree keeps its original name. Empties the stash,
-        so calling it (or :meth:`restore`) again is a no-op."""
+        modifiers, pinned editors) at the new one, carry its asset status
+        over (:func:`copy_asset`) and remove the old; otherwise the old tree
+        keeps its original name. Empties the stash, so calling it (or
+        :meth:`restore`) again is a no-op."""
         for name, old in self.stashed.items():
             new = bpy.data.node_groups.get(name)
             if new is not None and new != old and new.bl_idname == old.bl_idname:
+                copy_asset(old, new)
                 old.user_remap(new)
                 bpy.data.node_groups.remove(old)
             else:
                 old.name = name
         self.stashed.clear()
+
+
+_ASSET_FIELDS = (
+    "description",
+    "author",
+    "copyright",
+    "license",
+    "catalog_id",
+    "use_preferred_import_method",
+    "preferred_import_method",
+)
+
+
+def copy_asset(old: bpy.types.ID, new: bpy.types.ID) -> None:
+    """Mark *new* as an asset as *old* is, with its metadata (description,
+    author, copyright, license, catalog, tags, import method) and custom
+    preview image. Does nothing if *old* is not an asset or *new* already
+    is one, so a build that marks its own tree keeps its own metadata."""
+    source = old.asset_data
+    if source is None or new.asset_data is not None:
+        return
+    new.asset_mark()
+    target = new.asset_data
+    assert target is not None
+    for name in _ASSET_FIELDS:
+        with suppress(AttributeError, TypeError):  # absent in this Blender
+            setattr(target, name, getattr(source, name))
+    for tag in source.tags:
+        target.tags.new(tag.name)
+    preview = old.preview
+    if preview is not None and preview.is_image_custom:
+        copy = new.preview_ensure()
+        assert copy is not None
+        copy.image_size = preview.image_size
+        copy.image_pixels_float = preview.image_pixels_float[:]
 
 
 def stash_groups(names: Iterable[str]) -> GroupStash:
