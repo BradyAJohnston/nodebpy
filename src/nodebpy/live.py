@@ -46,6 +46,7 @@ from typing import Any, cast
 import bpy
 
 from .builder import TreeBuilder, default_keep_edits
+from .builder.tree import _record_builds
 from .layout import keep
 
 __all__ = [
@@ -222,7 +223,10 @@ def _read_build(
 
 
 def stamp_build(tree: bpy.types.NodeTree) -> None:
-    """Record what *tree* computes now, as nodebpy built it."""
+    """Record what *tree* computes now, as nodebpy built it. A
+    ``TreeBuilder`` does this on exit when it rebuilt with ``clear=True``, and
+    for every tree under :func:`run_source`; a tree no rebuild will replace
+    needs no record."""
     _BUILT[tree.session_uid] = _read_build(tree)[0]
 
 
@@ -740,7 +744,11 @@ def run_source(
     prior = globals_.get("tree")
 
     existing = list(bpy.data.node_groups)
-    with preserve_modifier_inputs(existing), default_keep_edits(keep_edits):
+    with (
+        preserve_modifier_inputs(existing),
+        default_keep_edits(keep_edits),
+        _record_builds(),
+    ):
         try:
             exec(compile(code, filename, "exec"), globals_)  # noqa: S102
             # Resolved before the stash is replaced: building a defined-only

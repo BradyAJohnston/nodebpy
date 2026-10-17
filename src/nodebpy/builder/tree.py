@@ -112,6 +112,21 @@ def default_keep_edits(keep: bool = True) -> Iterator[None]:
         _DEFAULT_KEEP_EDITS.reset(token)
 
 
+# Whether every TreeBuilder records what it built (see nodebpy.live.stamp_build),
+# not only the clear=True rebuilds; run_source sets it for the group classes
+# it rebuilds. Recording costs a pass over the nodes, so other builds skip it.
+_RECORD_BUILDS: ContextVar[bool] = ContextVar("nodebpy_record_builds", default=False)
+
+
+@contextmanager
+def _record_builds() -> Iterator[None]:
+    token = _RECORD_BUILDS.set(True)
+    try:
+        yield
+    finally:
+        _RECORD_BUILDS.reset(token)
+
+
 # The interface ``default_input`` values Blender actually accepts at runtime,
 # per socket type (the RNA enum lists every option on every type, but
 # assignment validates a per-type subset — union across tree types here).
@@ -1201,6 +1216,7 @@ class TreeBuilder[TreeT: NodeTree]:
             self._kept_edits = _keep.record(self.tree)
         self._animation: NodeAnimation | None = None
         self._unedited_users: list[NodeTree] = []
+        self._record = clear or _RECORD_BUILDS.get()
         if clear:
             from ..live import (
                 NodeAnimation,
@@ -1483,12 +1499,13 @@ class TreeBuilder[TreeT: NodeTree]:
             self._preserved_inputs.__exit__(None, None, None)
             self._preserved_inputs = None
         self._warn_invalid_links()
-        from ..live import stamp_build
+        if self._record:
+            from ..live import stamp_build
 
-        stamp_build(self.tree)
-        for user in self._unedited_users:
-            stamp_build(user)
-        self._unedited_users = []
+            stamp_build(self.tree)
+            for user in self._unedited_users:
+                stamp_build(user)
+            self._unedited_users = []
         # Interface-menu defaults assigned from here on can't wait for a
         # context exit that already happened — apply them immediately
         # (see MenuSocket.default_value).
