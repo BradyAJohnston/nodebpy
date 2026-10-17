@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.39.0
+
+### Enhancements
+
+- **Invalid links raise an `InvalidLinkWarning`** when a tree's context exits, listing each link Blender can't evaluate (drawn red in the editor), with a note when a field reaches an input that takes a single value: `Separate XYZ.X -> Repeat Input.Iterations ('Iterations' takes a single value, not a field)`. These used to build without complaint. `tree.invalid_links()` returns them; muted links and links into sockets the node's settings hide aren't counted.
+
 ## v520.38.0
 
 ### Fixes

@@ -20,6 +20,10 @@ class SocketError(Exception):
     """Raised when a socket operation fails."""
 
 
+class InvalidLinkWarning(UserWarning):
+    """Emitted when a built tree holds links Blender can't evaluate."""
+
+
 _ENUM_NOT_FOUND = re.compile(
     r'enum "(?P<value>[^"]*)" not found in \((?P<options>.*)\)'
 )
