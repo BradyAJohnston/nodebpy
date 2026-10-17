@@ -45,6 +45,9 @@ __all__ = [
     "stamp",
 ]
 
+type SocketRef = tuple[str, int]
+"""A socket by name and the count of earlier sockets of that name."""
+
 type Keys = tuple[str | None, ...]
 """A node's match keys, strictest first; None where a key doesn't apply."""
 
@@ -147,7 +150,7 @@ def stamp(tree: NodeTree) -> None:
     _ARRANGED[tree.session_uid] = _layout_digest(tree)
 
 
-def _socket_ref(socket: NodeSocket, sockets: Iterable[NodeSocket]) -> tuple:
+def _socket_ref(socket: NodeSocket, sockets: Iterable[NodeSocket]) -> SocketRef:
     # Names rather than identifiers: rebuilding an interface gives its
     # sockets new identifiers.
     same = [s for s in sockets if s.name == socket.name]
@@ -180,13 +183,13 @@ def _values(node: Node) -> tuple:
     )
 
 
-def input_values(node: Node) -> dict[tuple, Any]:
+def input_values(node: Node) -> dict[SocketRef, Any]:
     """The values of *node*'s unlinked inputs, by socket name and the
     count of earlier sockets of that name."""
     return dict(_values(node))
 
 
-def input_ref(socket: NodeSocket) -> tuple:
+def input_ref(socket: NodeSocket) -> SocketRef:
     """The key of *socket* in :func:`input_values`."""
     assert socket.node is not None
     return _socket_ref(socket, socket.node.inputs)

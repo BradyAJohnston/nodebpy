@@ -177,7 +177,7 @@ _INTERFACE_FIELDS = (
 class _Build:
     """What a tree computed when nodebpy built it."""
 
-    nodes: dict[tuple[str, bool], list[dict[tuple, Any]]]
+    nodes: dict[tuple[str, bool], list[dict[keep.SocketRef, Any]]]
     """Each node's input values, grouped by what is left: its type,
     settings and inputs (the shape key of :func:`nodebpy.layout.keep.node_keys`,
     which leaves out values) and whether it is muted."""
@@ -194,11 +194,11 @@ type _Shape = tuple[str, bool]
 
 def _read_build(
     tree: bpy.types.NodeTree,
-) -> tuple[_Build, dict[_Shape, list[set[tuple]]]]:
+) -> tuple[_Build, dict[_Shape, list[set[keep.SocketRef]]]]:
     """*tree*'s :class:`_Build`, and alongside each node's values, the
     inputs of that node animated now. Reroutes, layout, names and labels
     are left out."""
-    animated: dict[str, set[tuple]] = {}
+    animated: dict[str, set[keep.SocketRef]] = {}
     for curve in _fcurves(tree):
         with suppress(ValueError):
             socket = tree.path_resolve(curve.data_path.rpartition(".")[0])
@@ -206,8 +206,8 @@ def _read_build(
                 refs = animated.setdefault(socket.node.name, set())
                 refs.add(keep.input_ref(socket))
     keys = keep.node_keys(tree)
-    nodes: dict[_Shape, list[dict[tuple, Any]]] = {}
-    skips: dict[_Shape, list[set[tuple]]] = {}
+    nodes: dict[_Shape, list[dict[keep.SocketRef, Any]]] = {}
+    skips: dict[_Shape, list[set[keep.SocketRef]]] = {}
     for node in tree.nodes:
         if node.name not in keys or node.bl_idname == "NodeReroute":
             continue
