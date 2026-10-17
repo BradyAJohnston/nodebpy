@@ -1,7 +1,11 @@
+import warnings
+
 import bpy
+import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
+from nodebpy.builder import InvalidLinkWarning
 from nodebpy.nodes.geometry.groups import PrincipalComponents
 
 
@@ -426,3 +430,38 @@ def test_clear_keeps_modifier_input_values():
 
     assert rebuilt.tree == tree.tree
     assert _modifier_value(modifier, rebuilt.tree, "Height") == 0.5
+
+
+def test_invalid_links_warn_on_exit():
+    with pytest.warns(InvalidLinkWarning) as record:
+        with g.tree("InvalidLinks") as tree:
+            zone = g.RepeatZone(g.Position().o.position.x)
+            geo = zone.items.geometry(g.Cube(), "Geometry")
+            geo.current >> geo.next
+            geo.result >> tree.outputs.geometry("Geometry")
+            g.Points(g.Index())
+
+    assert len(tree.invalid_links()) == 2
+    (warning,) = record
+    message = str(warning.message)
+    assert "2 links in 'InvalidLinks'" in message
+    assert (
+        "Separate XYZ.X -> Repeat Input.Iterations"
+        " ('Iterations' takes a single value, not a field)"
+    ) in message
+    assert "Index.Index -> Points.Count" in message
+
+
+def test_valid_and_muted_links_do_not_warn():
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", InvalidLinkWarning)
+        with g.tree("ValidLinks") as tree:
+            vector = g.Vector((0.0, 0.0, 1.0))
+            store = g.StoreNamedAttribute(g.Cube(), name="idx", value=g.Index())
+            store >> tree.outputs.geometry("Geometry")
+            link = tree.tree.links.new(
+                vector.node.outputs[0], store.node.inputs["Name"]
+            )
+            link.is_muted = True
+
+    assert tree.invalid_links() == []

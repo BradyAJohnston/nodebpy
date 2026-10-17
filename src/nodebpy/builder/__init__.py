@@ -5,7 +5,7 @@ from ..layout import (
     arrange,
     default_sugiyama_options,
 )
-from ._utils import SocketError, denormalize_name, normalize_name
+from ._utils import InvalidLinkWarning, SocketError, denormalize_name, normalize_name
 from .accessor import SocketAccessor
 from .asset import (
     AssetCompositorGroup,
@@ -123,6 +123,7 @@ __all__ = [
     "IntegerSocketGrid",
     "IntegerSocketList",
     "IntegerVectorSocket",
+    "InvalidLinkWarning",
     "Item",
     "ItemsMixin",
     "LinkingMixin",

@@ -154,6 +154,7 @@ with g.tree("Scatter Cubes", clear=True, is_modifier=True) as tree:
 | `RuntimeError: Node 'X' must be created within a TreeBuilder context manager` | A node class called outside `with g.tree(...)`. |
 | `TypeError: expected a NodeTree type, not TreeBuilder` | Assign `tree.tree`, not `tree`, to `mod.node_group`. |
 | `TypeError: ... already exists as GeometryNodeTree ... Use a unique _name` | Two group classes share a `_name` across tree types. |
+| `InvalidLinkWarning: Blender can't evaluate 1 link in ...: ... ('Count' takes a single value, not a field)` | A field (Position, Index, a per-element value) reaches an input that takes one value; compute that value without the field, e.g. with an Attribute Statistic or a group input. |
 | `DeprecationWarning: Blender deprecates the RotateEuler node` | Use the replacement it names (`g.RotateRotation`). |
 | `CodegenError` from `to_python` | A node with no nodebpy class; pass `strict=False` or register an emitter. |
 

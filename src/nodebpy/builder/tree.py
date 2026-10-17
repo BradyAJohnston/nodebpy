@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from collections import Counter
 from collections.abc import Iterator
 from contextlib import AbstractContextManager, contextmanager
@@ -33,6 +34,7 @@ from ..types import (
     _SocketShapeStructureType,
 )
 from ._utils import (
+    InvalidLinkWarning,
     SocketError,
     _allow_innactive_sockets,
     enum_value_error,
@@ -1419,11 +1421,64 @@ class TreeBuilder[TreeT: NodeTree]:
         if self._preserved_inputs is not None:
             self._preserved_inputs.__exit__(None, None, None)
             self._preserved_inputs = None
+        self._warn_invalid_links()
         # Interface-menu defaults assigned from here on can't wait for a
         # context exit that already happened — apply them immediately
         # (see MenuSocket.default_value).
         self._exited = True
         self.deactivate_tree()
+
+    def invalid_links(self) -> list[bpy.types.NodeLink]:
+        """Links Blender can't evaluate, drawn red in the node editor: most
+        often a field reaching an input that takes a single value, such as a
+        Repeat Zone's Iterations or Points' Count. Muted links and links to
+        sockets the node's settings hide or grey out aren't evaluated, so they
+        aren't reported."""
+
+        def evaluated(socket: NodeSocket | None) -> bool:
+            return (
+                socket is not None
+                and not socket.is_unavailable
+                and not socket.is_inactive
+            )
+
+        return [
+            link
+            for link in self.tree.links
+            if not link.is_valid
+            and not link.is_muted
+            and not link.is_hidden
+            and evaluated(link.from_socket)
+            and evaluated(link.to_socket)
+        ]
+
+    def _warn_invalid_links(self) -> None:
+        invalid = self.invalid_links()
+        if not invalid:
+            return
+        lines = []
+        for link in invalid:
+            source, target = link.from_socket, link.to_socket
+            assert source is not None and target is not None
+            assert link.from_node is not None and link.to_node is not None
+            line = (
+                f"  {link.from_node.name}.{source.name} -> "
+                f"{link.to_node.name}.{target.name}"
+            )
+            # Blender draws inputs that only take a single value as a line.
+            if (
+                target.display_shape == "LINE"
+                and source.inferred_structure_type == "FIELD"
+            ):
+                line += f" ('{target.name}' takes a single value, not a field)"
+            lines.append(line)
+        count = "1 link" if len(invalid) == 1 else f"{len(invalid)} links"
+        warnings.warn(
+            f"Blender can't evaluate {count} in '{self.tree.name}':\n"
+            + "\n".join(lines),
+            InvalidLinkWarning,
+            stacklevel=3,
+        )
 
     def _apply_input_defaults(self) -> None:
         if not self._menu_defaults:
