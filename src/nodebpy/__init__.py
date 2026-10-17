@@ -5,6 +5,7 @@ from .builder import (
     SugiyamaOptions,
     TreeBuilder,
     arrange,
+    default_keep_edits,
     default_split_inputs,
     default_sugiyama_options,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "arrange",
     "builder",
     "compositor",
+    "default_keep_edits",
     "default_split_inputs",
     "default_sugiyama_options",
     "export",

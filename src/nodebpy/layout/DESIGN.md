@@ -29,7 +29,7 @@ layout with the preset `config.SIMPLE_OPTIONS`.
 
 ## Modules
 
-Four modules import `bpy`: `api`, `extract`, `apply` and `node_size`.
+Five modules import `bpy`: `api`, `extract`, `apply`, `keep` and `node_size`.
 `__init__.py` only re-exports. Every other module is pure Python over plain
 data.
 
@@ -40,6 +40,7 @@ data.
 | `api.py` | `arrange()`, the public entry |
 | `extract.py` | Stage 1: the Blender tree as plain data |
 | `apply.py` | Stage 3: the edits carried out on the Blender tree |
+| `keep.py` | Layout edits carried over from a tree to its rebuild, onto the nodes that match (`TreeBuilder(keep_edits=True)`, `live.run_source`) |
 | `node_size.py` | A node's box and socket positions: measured when drawn, else estimated from the rows it draws |
 
 **Data and options**
@@ -268,7 +269,7 @@ that broke one.
   Those two exist because Python sees only part of Blender. A port reads
   the real `bNodeTree`, `bNodeTree::zones()` and the drawn sizes itself.
   The edit list becomes direct calls (`bke::node_add_link` and so on).
-- **What does not:** `api.py`, `extract.py`, `apply.py`, `node_size.py`,
+- **What does not:** `api.py`, `extract.py`, `apply.py`, `keep.py`, `node_size.py`,
   the observer and the test tooling.
 - **Coordinates:** `runtime->draw_bounds` and the socket locations are in
   view space, multiplied by the UI scale. `location` is not.
