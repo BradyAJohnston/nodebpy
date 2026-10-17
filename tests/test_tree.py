@@ -432,14 +432,19 @@ def test_clear_keeps_modifier_input_values():
     assert _modifier_value(modifier, rebuilt.tree, "Height") == 0.5
 
 
+def _build_invalid_links():
+    with g.tree("InvalidLinks") as tree:
+        zone = g.RepeatZone(g.Position().o.position.x)
+        geo = zone.items.geometry(g.Cube(), "Geometry")
+        geo.current >> geo.next
+        geo.result >> tree.outputs.geometry("Geometry")
+        g.Points(g.Index())
+    return tree
+
+
 def test_invalid_links_warn_on_exit():
     with pytest.warns(InvalidLinkWarning) as record:
-        with g.tree("InvalidLinks") as tree:
-            zone = g.RepeatZone(g.Position().o.position.x)
-            geo = zone.items.geometry(g.Cube(), "Geometry")
-            geo.current >> geo.next
-            geo.result >> tree.outputs.geometry("Geometry")
-            g.Points(g.Index())
+        tree = _build_invalid_links()
 
     assert len(tree.invalid_links()) == 2
     (warning,) = record
