@@ -89,10 +89,9 @@ def _round(value: Any) -> Any:
         return value.name_full
     if isinstance(value, (str, bool, int)) or value is None:
         return value
-    try:
-        return tuple(_round(v) for v in value)
-    except TypeError:
-        return str(value)
+    if isinstance(value, set):  # an enum with several options set
+        return tuple(sorted(value))
+    return tuple(_round(v) for v in value)
 
 
 def _xy(node: Node) -> tuple[float, float]:
@@ -208,14 +207,10 @@ class _Graph:
 
     @staticmethod
     def _source(socket: NodeSocket | None) -> NodeSocket | None:
-        seen = set()
         while socket is not None:
             node = socket.node
             if node is None or node.bl_idname != "NodeReroute":
                 break
-            if node in seen:
-                return None
-            seen.add(node)
             links = node.inputs[0].links
             socket = links[0].from_socket if links else None
         return socket

@@ -193,3 +193,101 @@ def test_run_source_keep_edits_off():
 
     assert rebuilt is not None
     assert _where(rebuilt, "Noise Texture") == arranged
+
+
+def _framed(**kwargs):
+    with g.tree("Framed", clear=True, **kwargs) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        with g.Frame("Code"):
+            offset = g.NoiseTexture(scale=2.0).o.factor * 0.2
+        g.Frame("Spare")
+        geo >> g.SetPosition(offset=offset) >> tree.outputs.geometry("Geometry")
+    return tree.tree
+
+
+def test_frames_nested_coloured_and_refitted():
+    tree = _framed()
+    outer = tree.nodes.new("NodeFrame")
+    outer.label = "Outer"
+    inner = tree.nodes.new("NodeFrame")
+    inner.label = "Inner"
+    inner.use_custom_color = True
+    inner.color = (0.2, 0.4, 0.6)
+    inner.parent = outer
+    tree.nodes["Set Position"].parent = inner
+    tree.nodes["Set Position"].location_absolute = (600.0, -400.0)
+    tree.nodes["Math"].location_absolute = (-300.0, 500.0)
+    tree.nodes.new("NodeFrame").label = "Empty"
+
+    _framed(keep_edits=True)
+
+    frames = {n.label: n for n in tree.nodes if n.bl_idname == "NodeFrame"}
+    assert set(frames) == {"Code", "Spare", "Outer", "Inner"}
+    assert frames["Inner"].parent == frames["Outer"]
+    assert tuple(frames["Inner"].color) == pytest.approx((0.2, 0.4, 0.6))
+    assert tree.nodes["Set Position"].parent == frames["Inner"]
+    assert tree.nodes["Math"].parent == frames["Code"]
+    # Shrink frames are fitted around their nodes, the outer one around
+    # the inner one.
+    for label, child in (("Inner", "Set Position"), ("Outer", "Inner")):
+        frame, node = frames[label], frames.get(child) or tree.nodes[child]
+        x, y = frame.location_absolute
+        cx, cy = node.location_absolute
+        assert x < cx < x + frame.width
+        assert y - frame.height < cy < y
+
+
+def test_graph_details_are_matched():
+    def build(**kwargs):
+        with g.tree("Inner Group", clear=True) as inner:
+            inner.inputs.float("Value") >> inner.outputs.float("Value")
+        with g.tree("Details", clear=True, **kwargs) as tree:
+            geo = tree.inputs.geometry("Geometry")
+            group = bpy.data.node_groups["Inner Group"]
+            node = tree.tree.nodes.new("GeometryNodeGroup")
+            node.node_tree = group
+            muted = tree.tree.links.new(g.Index().node.outputs[0], node.inputs["Value"])
+            muted.is_muted = True
+            # A chain of reroutes, and one with nothing feeding it.
+            first = tree.tree.nodes.new("NodeReroute")
+            second = tree.tree.nodes.new("NodeReroute")
+            unfed = tree.tree.nodes.new("NodeReroute")
+            g.ObjectInfo(bpy.data.objects["Cube"])
+            mesh = g.Cube()
+            tree.tree.links.new(mesh.node.outputs["Mesh"], first.inputs[0])
+            tree.tree.links.new(first.outputs[0], second.inputs[0])
+            join = g.JoinGeometry([geo])
+            tree.tree.links.new(second.outputs[0], join.node.inputs[0])
+            tree.tree.links.new(unfed.outputs[0], join.node.inputs[0])
+            join >> tree.outputs.geometry("Geometry")
+        return tree.tree
+
+    tree = build()
+    tree.nodes["Group"].location_absolute = (-700.0, 700.0)
+    tree.nodes["Cube"].outputs["UV Map"].hide = True
+
+    build(keep_edits=True)
+
+    assert _where(tree, "Group") == (-700.0, 700.0)
+    assert tree.nodes["Cube"].outputs["UV Map"].hide
+
+
+def test_round_sorts_option_sets():
+    assert keep._round({"B", "A"}) == ("A", "B")
+
+
+def test_nothing_matches():
+    tree = _build()
+    assert keep.record(tree) is None
+    tree.nodes["Noise Texture"].location_absolute = (-900.0, 300.0)
+    edits = keep.record(tree)
+    assert edits is not None
+    with g.tree("Other") as other:
+        g.Points(10) >> other.outputs.geometry("Geometry")
+    before = {n.name: _where(other.tree, n.name) for n in other.tree.nodes}
+    for layout in edits.nodes:
+        layout.keys = (None,) * 6
+
+    keep.restore(edits, other.tree)
+
+    assert {n.name: _where(other.tree, n.name) for n in other.tree.nodes} == before
