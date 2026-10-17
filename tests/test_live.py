@@ -11,6 +11,7 @@ from nodebpy.builder import CustomGeometryGroup
 from nodebpy.live import (
     GroupStash,
     RunResult,
+    copy_asset,
     group_names_in_source,
     preserve_modifier_inputs,
     run_source,
@@ -293,6 +294,49 @@ def test_run_source_class_form_rebuilds_on_change():
     assert [t.name for t in bpy.data.node_groups if t.name.startswith("Live")] == [
         "Live Group"
     ]
+
+
+def test_run_source_class_form_keeps_asset_status():
+    first = run_source(CLASS_FORM.format(body="pass")).tree
+    assert first is not None
+    first.asset_mark()
+    asset = first.asset_data
+    asset.description = "Moves things"
+    asset.author = "Someone"
+    asset.catalog_id = "12345678-1234-1234-1234-123456789abc"
+    asset.tags.new("deform")
+    preview = first.preview_ensure()
+    preview.image_size = (2, 2)
+    preview.image_pixels_float = [0.25] * 16
+
+    second = run_source(CLASS_FORM.format(body="g.Cube()")).tree
+
+    assert second is not None and second != first
+    asset = second.asset_data
+    assert asset is not None
+    assert asset.description == "Moves things"
+    assert asset.author == "Someone"
+    assert asset.catalog_id == "12345678-1234-1234-1234-123456789abc"
+    assert [tag.name for tag in asset.tags] == ["deform"]
+    assert second.preview.is_image_custom
+    assert tuple(second.preview.image_size) == (2, 2)
+    # Previews are stored as 8-bit pixels.
+    pixels = list(second.preview.image_pixels_float)
+    assert pixels == pytest.approx([0.25] * 16, abs=1 / 255)
+
+
+def test_copy_asset_leaves_a_marked_or_unmarked_target_alone():
+    old = bpy.data.node_groups.new("Old", "GeometryNodeTree")
+    new = bpy.data.node_groups.new("New", "GeometryNodeTree")
+    copy_asset(old, new)
+    assert new.asset_data is None
+
+    old.asset_mark()
+    old.asset_data.description = "old"
+    new.asset_mark()
+    new.asset_data.description = "built"
+    copy_asset(old, new)
+    assert new.asset_data.description == "built"
 
 
 def test_run_source_class_form_with_explicit_create_group():
