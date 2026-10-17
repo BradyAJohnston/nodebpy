@@ -378,6 +378,11 @@ class NodeAnimation:
     node lacks, gets its old path back and is named in a warning.
     """
 
+    tree: bpy.types.NodeTree
+    """The tree the animation was read from."""
+    keys: dict[str, keep.Keys]
+    """The match keys of that tree's nodes, by name."""
+
     def __init__(self, tree: bpy.types.NodeTree):
         self.tree = tree
         self.curves: list[_NodeCurve] = []
