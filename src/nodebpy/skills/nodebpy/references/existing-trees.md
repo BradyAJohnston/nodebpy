@@ -56,6 +56,10 @@ It works on hand-made trees too, and `tree.to_python()` on a builder. Options:
 - `in_place=True`: the header uses `clear=True`, so the code rebuilds the same datablock.
 - `top_level="class"`: emits a `CustomGeometryGroup` subclass (`Cls.create_group()`).
 - `snapshot_positions=True`: keeps hand-made positions (`arrange=None` plus positions).
+- `groups="reference"`: calls the classes that build a tree's groups (`g.Array(...)`,
+  `SliceToIndices(...)`, a live script's or your modules' classes) instead of writing
+  them out. Use it for live work; groups no loaded class builds, or edited by hand, are
+  still written out. `group_modules=[...]` imports modules to match against first.
 - `min_chain_length=3`, `format=True` (ruff, if installed).
 - `strict=True` raises `CodegenError` for a node with no nodebpy class; `strict=False`
   emits a placeholder, or register one: `from nodebpy.export.codegen import register_emitter`.

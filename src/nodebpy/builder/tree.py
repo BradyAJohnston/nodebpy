@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import warnings
 from collections import Counter
-from collections.abc import Iterator
+from collections.abc import Collection, Iterator
 from contextlib import AbstractContextManager, contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
@@ -1391,6 +1391,8 @@ class TreeBuilder[TreeT: NodeTree]:
         format: bool = True,
         nodebpy_pkg: str = "nodebpy",
         in_place: bool = False,
+        groups: Literal["inline", "reference"] = "inline",
+        group_modules: Collection[str] | None = None,
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -1409,6 +1411,8 @@ class TreeBuilder[TreeT: NodeTree]:
             format=format,
             nodebpy_pkg=nodebpy_pkg,
             in_place=in_place,
+            groups=groups,
+            group_modules=group_modules,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:
