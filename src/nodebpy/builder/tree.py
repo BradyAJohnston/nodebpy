@@ -7,7 +7,7 @@ from contextlib import AbstractContextManager, contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, ClassVar, Literal, Self, TypeVar, cast
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -64,6 +64,9 @@ from .socket import (
     StringSocket,
     VectorSocket,
 )
+
+if TYPE_CHECKING:
+    from ..live import NodeAnimation
 
 _SocketT = TypeVar("_SocketT", bound=Socket)
 
@@ -1196,12 +1199,15 @@ class TreeBuilder[TreeT: NodeTree]:
             keep_edits = _DEFAULT_KEEP_EDITS.get()
         if clear and keep_edits and arrange is not None:
             self._kept_edits = _keep.record(self.tree)
+        self._animation: NodeAnimation | None = None
         if clear:
-            from ..live import preserve_modifier_inputs
+            from ..live import NodeAnimation, preserve_modifier_inputs
 
             assert self.tree.interface is not None
             self._preserved_inputs = preserve_modifier_inputs([self.tree])
             self._preserved_inputs.__enter__()
+            # Removing the nodes would delete their keyframes and drivers.
+            self._animation = NodeAnimation(self.tree)
             self.tree.nodes.clear()
             self.tree.interface.clear()
 
@@ -1457,6 +1463,9 @@ class TreeBuilder[TreeT: NodeTree]:
             if self._kept_edits is not None:
                 _keep.restore(self._kept_edits, self.tree)
         self._kept_edits = None
+        if self._animation is not None:
+            self._animation.restore()
+            self._animation = None
         self._apply_input_defaults()
         if self._preserved_inputs is not None:
             self._preserved_inputs.__exit__(None, None, None)

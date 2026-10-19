@@ -12,6 +12,7 @@ title: Changelog
 ### Fixes
 
 - **`run_source` keeps a rebuilt group class an asset.** Replacing a group dropped its asset status, so its catalog, tags, description, author and custom preview were lost on every re-run. They now carry over to the rebuild, unless the build marks the tree as an asset itself. `nodebpy.live.copy_asset(old, new)` does the copy.
+- **Rebuilds keep keyframes and drivers.** `clear=True` deleted the animation of every node it removed, and a modifier input's keyframes stopped resolving because the rebuilt socket has a new identifier. Node keyframes and drivers now move to the matching node of the rebuild (by what it computes, as `keep_edits` matches nodes), modifier input animation follows the socket of the same name and type, and `run_source` moves a group class's action and drivers onto its rebuild. Animation that can't be placed keeps its old path and raises a warning naming it.
 
 ## v520.38.0
 
