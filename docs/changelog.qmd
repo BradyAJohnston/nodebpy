@@ -9,6 +9,10 @@ title: Changelog
 - **Invalid links raise an `InvalidLinkWarning`** when a tree's context exits, listing each link Blender can't evaluate (drawn red in the editor), with a note when a field reaches an input that takes a single value: `Separate XYZ.X -> Repeat Input.Iterations ('Iterations' takes a single value, not a field)`. These used to build without complaint. `tree.invalid_links()` returns them; muted links and links into sockets the node's settings hide aren't counted.
 - **Rebuilds keep the layout edits made to a tree.** With `keep_edits=True`, `g.tree("Name", clear=True, keep_edits=True)` matches the rebuilt nodes to the old ones and keeps how they were moved, resized, collapsed, coloured, relabelled or framed, along with sockets hidden by hand; a node that matches nothing goes beside its neighbours, clear of the others. Nodes are matched by what they compute, so changing a value or rewiring part of the tree keeps the rest in place. A tree whose layout is still the one it was last arranged with is arranged afresh. `nodebpy.live.run_source` does this for `clear=True` trees and group classes (`keep_edits=False` turns it off), and `default_keep_edits()` sets it for every `TreeBuilder` in a scope.
 
+### Fixes
+
+- **`run_source` keeps a rebuilt group class an asset.** Replacing a group dropped its asset status, so its catalog, tags, description, author and custom preview were lost on every re-run. They now carry over to the rebuild, unless the build marks the tree as an asset itself. `nodebpy.live.copy_asset(old, new)` does the copy.
+
 ## v520.38.0
 
 ### Fixes
