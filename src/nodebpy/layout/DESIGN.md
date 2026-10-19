@@ -29,7 +29,7 @@ layout with the preset `config.SIMPLE_OPTIONS`.
 
 ## Modules
 
-Four modules import `bpy`: `api`, `extract`, `apply` and `node_size`.
+Five modules import `bpy`: `api`, `extract`, `apply`, `keep` and `node_size`.
 `__init__.py` only re-exports. Every other module is pure Python over plain
 data.
 
@@ -40,6 +40,7 @@ data.
 | `api.py` | `arrange()`, the public entry |
 | `extract.py` | Stage 1: the Blender tree as plain data |
 | `apply.py` | Stage 3: the edits carried out on the Blender tree |
+| `keep.py` | Layout edits carried over from a tree to its rebuild, onto the nodes that match (`TreeBuilder(keep_edits=True)`, `live.run_source`) |
 | `node_size.py` | A node's box and socket positions: measured when drawn, else estimated from the rows it draws |
 
 **Data and options**
@@ -68,6 +69,7 @@ data.
 | `priority.py` | Link priorities: the trunk and the zone spines |
 | `ranking.py` | Rank: a column for every node |
 | `balancing.py` | Shorten the tallest columns |
+| `feeders.py` | Keep each feeder beside the node it feeds |
 | `ordering.py` | Order: the order within each column |
 | `placement.py` | Place: a height for every node (Brandes-Köpf) |
 | `spacing.py` | An x for every column |
@@ -113,15 +115,18 @@ picture. The rest prepare for one or clean up.
 | `remove_reroutes` | Take out the tree's own reroutes | `reroutes="all"` | `realize.py` |
 | `contract_stacks` | Make each stack of collapsed nodes one node | `stack_collapsed` | `stacking.py` |
 | **`rank`** | Give every node a column | always | `ranking.py` |
+| `move_feeders_right` | Move each node whose links out all go to one node of its frame to the column just before that node | always | `feeders.py` |
 | `balance_heights` | Move feeder chains left out of the tallest columns | `balance_heights` | `balancing.py` |
 | `pin_group_nodes` | Group Output to the last column (`pin_group_output`), Group Input to the first (`pin_group_input`) | always | `sugiyama.py` |
 | `merge_edges` | Let the long links from one output share dummy nodes | always | `long_links.py` |
 | `insert_dummy_nodes` | Split long links with a dummy node per column | always | `long_links.py` |
 | `add_columns` | List the nodes of each column | always | `build.py` |
 | **`order`** | Order each column to reduce crossings | always | `ordering.py` |
+| `tuck_feeders` | Put each moved feeder next to another node of its column feeding the same node | always | `feeders.py` |
 | `add_frame_borders` | Border nodes above and below each frame, per column | always | `sugiyama.py`, `model.py` |
 | **`place`** | Give every node its height | always | `placement.py` |
 | `pull_feeders` | Move each node whose links all go to one node level with that node, as far as its column allows | always | `placement.py` |
+| `pull_up_feeders` | Move each tucked feeder against the node it was tucked next to | always | `feeders.py` |
 | `snap_rows` | Move each node to its nearest grid row | `snap_to_grid` | `snapping.py` |
 | `dissolve_dummy_nodes` | Drop the dummy nodes | `reroutes="none"` | `reroutes.py` |
 | `align_reroutes` | Line reroutes and dummy nodes up with the sockets they join | always | `reroutes.py` |
@@ -264,7 +269,7 @@ that broke one.
   Those two exist because Python sees only part of Blender. A port reads
   the real `bNodeTree`, `bNodeTree::zones()` and the drawn sizes itself.
   The edit list becomes direct calls (`bke::node_add_link` and so on).
-- **What does not:** `api.py`, `extract.py`, `apply.py`, `node_size.py`,
+- **What does not:** `api.py`, `extract.py`, `apply.py`, `keep.py`, `node_size.py`,
   the observer and the test tooling.
 - **Coordinates:** `runtime->draw_bounds` and the socket locations are in
   view space, multiplied by the UI scale. `location` is not.

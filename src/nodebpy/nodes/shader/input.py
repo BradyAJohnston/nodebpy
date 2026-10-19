@@ -17,6 +17,7 @@ from ...types import (
     InputInteger,
     InputVector,
 )
+from .._mixins import _RaycastMixin
 
 
 class AmbientOcclusion(BaseNode):
@@ -80,7 +81,7 @@ class AmbientOcclusion(BaseNode):
         distance: InputFloat = 1.0,
         normal: InputVector = None,
         *,
-        samples: int = 0,
+        samples: int = 16,
         inside: bool = False,
         only_local: bool = False,
     ):
@@ -114,6 +115,117 @@ class AmbientOcclusion(BaseNode):
     @only_local.setter
     def only_local(self, value: bool) -> None:
         self.node.only_local = value
+
+
+class Attribute(BaseNode):
+    """
+    Retrieve attributes attached to objects or geometry
+
+    Parameters
+    ----------
+    lightindex : InputInteger
+        LightIndex
+
+    Inputs
+    ------
+    i.lightindex : IntegerSocket
+        LightIndex
+
+    Outputs
+    -------
+    o.color : ColorSocket
+        Color
+    o.vector : VectorSocket
+        Vector
+    o.factor : FloatSocket
+        Factor
+    o.alpha : FloatSocket
+        Alpha
+    """
+
+    _bl_idname = "ShaderNodeAttribute"
+    node: bpy.types.ShaderNodeAttribute
+
+    class _Inputs(SocketAccessor):
+        lightindex: IntegerSocket
+        """LightIndex"""
+
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+        vector: VectorSocket
+        """Vector"""
+        factor: FloatSocket
+        """Factor"""
+        alpha: FloatSocket
+        """Alpha"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        lightindex: InputInteger = 0,
+        *,
+        attribute_type: Literal[
+            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"
+        ] = "GEOMETRY",
+        attribute_name: str = "",
+    ):
+        super().__init__()
+        key_args = {"LightIndex": lightindex}
+        self.attribute_type = attribute_type
+        self.attribute_name = attribute_name
+        self._establish_links(**key_args)
+
+    @property
+    def attribute_type(
+        self,
+    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"]:
+        return self.node.attribute_type
+
+    @attribute_type.setter
+    def attribute_type(
+        self, value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"]
+    ) -> None:
+        self._set_enum("attribute_type", value)
+
+    @property
+    def attribute_name(self) -> str:
+        return self.node.attribute_name
+
+    @attribute_name.setter
+    def attribute_name(self, value: str) -> None:
+        self.node.attribute_name = value
+
+    @classmethod
+    def geometry(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Geometry'."""
+        return cls(attribute_type="GEOMETRY", attribute_name=attribute_name)
+
+    @classmethod
+    def object(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Object'."""
+        return cls(attribute_type="OBJECT", attribute_name=attribute_name)
+
+    @classmethod
+    def instancer(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Instancer'."""
+        return cls(attribute_type="INSTANCER", attribute_name=attribute_name)
+
+    @classmethod
+    def view_layer(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'View Layer'."""
+        return cls(attribute_type="VIEW_LAYER", attribute_name=attribute_name)
+
+    @classmethod
+    def light(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Light'."""
+        return cls(attribute_type="LIGHT", attribute_name=attribute_name)
 
 
 class Bevel(BaseNode):
@@ -166,7 +278,7 @@ class Bevel(BaseNode):
         radius: InputFloat = 0.05,
         normal: InputVector = None,
         *,
-        samples: int = 0,
+        samples: int = 4,
     ):
         super().__init__()
         key_args = {"Radius": radius, "Normal": normal}
@@ -379,7 +491,7 @@ class Fresnel(BaseNode):
 
         Outputs
         -------
-        o.fac : FloatSocket
+        o.factor : FloatSocket
             Factor
     """
 
@@ -393,7 +505,7 @@ class Fresnel(BaseNode):
         """Normal"""
 
     class _Outputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -650,7 +762,7 @@ class LightEvaluation(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["DIFFUSE", "GLOSSY"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class LightInfo(BaseNode):
@@ -955,7 +1067,7 @@ class PointInfo(BaseNode):
         self._establish_links(**key_args)
 
 
-class Raycast(BaseNode):
+class Raycast(_RaycastMixin, BaseNode):
     """
     Cast rays and retrieve information from the hit point
 
@@ -1155,7 +1267,7 @@ class Tangent(BaseNode):
 
     @direction_type.setter
     def direction_type(self, value: Literal["RADIAL", "UV_MAP"]) -> None:
-        self.node.direction_type = value
+        self._set_enum("direction_type", value)
 
     @property
     def axis(self) -> Literal["X", "Y", "Z"]:
@@ -1163,7 +1275,7 @@ class Tangent(BaseNode):
 
     @axis.setter
     def axis(self, value: Literal["X", "Y", "Z"]) -> None:
-        self.node.axis = value
+        self._set_enum("axis", value)
 
     @property
     def uv_map(self) -> str:
@@ -1355,7 +1467,7 @@ class Wireframe(BaseNode):
 
         Outputs
         -------
-        o.fac : FloatSocket
+        o.factor : FloatSocket
             Factor
     """
 
@@ -1367,7 +1479,7 @@ class Wireframe(BaseNode):
         """Size"""
 
     class _Outputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:

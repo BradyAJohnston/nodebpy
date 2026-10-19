@@ -1,6 +1,7 @@
 """Tests for nodebpy.live — re-running source safely in a live session."""
 
 import textwrap
+import warnings
 
 import bpy
 import pytest
@@ -9,12 +10,16 @@ from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.builder import CustomGeometryGroup
 from nodebpy.live import (
+    EditedTreeWarning,
     GroupStash,
     RunResult,
+    _fcurves,
+    copy_asset,
     group_names_in_source,
     preserve_modifier_inputs,
     run_source,
     stash_groups,
+    was_edited,
 )
 
 
@@ -295,6 +300,49 @@ def test_run_source_class_form_rebuilds_on_change():
     ]
 
 
+def test_run_source_class_form_keeps_asset_status():
+    first = run_source(CLASS_FORM.format(body="pass")).tree
+    assert first is not None
+    first.asset_mark()
+    asset = first.asset_data
+    asset.description = "Moves things"
+    asset.author = "Someone"
+    asset.catalog_id = "12345678-1234-1234-1234-123456789abc"
+    asset.tags.new("deform")
+    preview = first.preview_ensure()
+    preview.image_size = (2, 2)
+    preview.image_pixels_float = [0.25] * 16
+
+    second = run_source(CLASS_FORM.format(body="g.Cube()")).tree
+
+    assert second is not None and second != first
+    asset = second.asset_data
+    assert asset is not None
+    assert asset.description == "Moves things"
+    assert asset.author == "Someone"
+    assert asset.catalog_id == "12345678-1234-1234-1234-123456789abc"
+    assert [tag.name for tag in asset.tags] == ["deform"]
+    assert second.preview.is_image_custom
+    assert tuple(second.preview.image_size) == (2, 2)
+    # Previews are stored as 8-bit pixels.
+    pixels = list(second.preview.image_pixels_float)
+    assert pixels == pytest.approx([0.25] * 16, abs=1 / 255)
+
+
+def test_copy_asset_leaves_a_marked_or_unmarked_target_alone():
+    old = bpy.data.node_groups.new("Old", "GeometryNodeTree")
+    new = bpy.data.node_groups.new("New", "GeometryNodeTree")
+    copy_asset(old, new)
+    assert new.asset_data is None
+
+    old.asset_mark()
+    old.asset_data.description = "old"
+    new.asset_mark()
+    new.asset_data.description = "built"
+    copy_asset(old, new)
+    assert new.asset_data.description == "built"
+
+
 def test_run_source_class_form_with_explicit_create_group():
     code = CLASS_FORM.format(body="pass") + "\ntree = LiveGroup.create_group()\n"
     result = run_source(code)
@@ -503,3 +551,287 @@ def test_group_stash_replace_and_restore_are_idempotent():
     stash.restore()
     assert new.name == "Stash Me"
     del old
+
+
+# ---------------------------------------------------------------------------
+# animation across rebuilds
+# ---------------------------------------------------------------------------
+
+
+def _animated(first="multiply", **kwargs):
+    with g.tree("Animated", clear=True, **kwargs) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        tree.inputs.float("Extra")
+        scale = tree.inputs.float("Scale", 1.0)
+        if first != "multiply":
+            scale = g.Math(scale, 3.0, operation=first.upper()).o.value
+        value = g.Math.multiply(scale, 2.0)
+        offset = g.CombineXYZ(z=value)
+        geo >> g.SetPosition(offset=offset) >> tree.outputs.geometry("Geometry")
+    return tree.tree
+
+
+def _paths(owner):
+    return sorted(curve.data_path for curve in _fcurves(owner))
+
+
+def _multiply(tree):
+    return next(
+        n
+        for n in tree.nodes
+        if n.bl_idname == "ShaderNodeMath" and n.operation == "MULTIPLY"
+    )
+
+
+def test_rebuild_keeps_modifier_input_keyframes():
+    tree = _animated()
+    modifier = _modifier(tree)
+    obj = modifier.id_data
+    _set_input(modifier, "Scale", 1.0)
+    item = next(i for i in tree.interface.items_tree if i.name == "Scale")
+    path = getattr(modifier.properties.inputs, item.identifier).path_from_id("value")
+    obj.keyframe_insert(path, frame=1)
+    _set_input(modifier, "Scale", 4.0)
+    obj.keyframe_insert(path, frame=10)
+
+    _animated()
+
+    item = next(i for i in tree.interface.items_tree if i.name == "Scale")
+    (path,) = _paths(obj)
+    assert path == f'modifiers["GN"].properties.inputs.{item.identifier}.value'
+    assert obj.path_resolve(path) == 4.0
+
+
+def test_rebuild_keeps_node_keyframes_and_drivers():
+    tree = _animated()
+    multiply = _multiply(tree)
+    multiply.inputs[1].default_value = 2.0
+    multiply.inputs[1].keyframe_insert("default_value", frame=1)
+    multiply.inputs[1].default_value = 6.0
+    multiply.inputs[1].keyframe_insert("default_value", frame=10)
+    driver = multiply.inputs[0].driver_add("default_value")
+    driver.driver.expression = "frame"
+
+    # A node built before it takes its name.
+    _animated(first="add")
+
+    multiply = _multiply(tree)
+    assert multiply.name != "Math"
+    prefix = f'nodes["{multiply.name}"]'
+    assert _paths(tree) == [
+        f"{prefix}.inputs[0].default_value",
+        f"{prefix}.inputs[1].default_value",
+    ]
+    (keyed,) = [c for c in _fcurves(tree) if c.data_path.endswith("[1].default_value")]
+    assert keyed.evaluate(10) == pytest.approx(6.0)
+    assert tree.animation_data.drivers[0].driver.expression == "frame"
+
+
+def test_rebuild_warns_about_animation_it_cannot_place():
+    tree = _animated(first="add")
+    add = next(
+        n
+        for n in tree.nodes
+        if n.bl_idname == "ShaderNodeMath" and n.operation == "ADD"
+    )
+    add.inputs[1].keyframe_insert("default_value", frame=1)
+    path = f'nodes["{add.name}"].inputs[1].default_value'
+
+    with pytest.warns(UserWarning, match="Kept the animation of 'Animated'"):
+        _animated()
+
+    assert _paths(tree) == [path]
+
+
+ANIMATED_CLASS = textwrap.dedent(
+    """
+    from nodebpy import geometry as g
+    from nodebpy.builder import CustomGeometryGroup
+
+    class Animated(CustomGeometryGroup):
+        _name = "Animated Group"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            {body}
+            value = g.Math.multiply(1.0, 2.0)
+            geo >> g.SetPosition(offset=g.CombineXYZ(z=value)) >> tree.outputs.geometry("Geometry")
+    """
+)
+
+
+def test_run_source_moves_group_animation_to_the_rebuild():
+    first = run_source(ANIMATED_CLASS.format(body="pass")).tree
+    assert first is not None
+    multiply = _multiply(first)
+    multiply.inputs[1].keyframe_insert("default_value", frame=1)
+    multiply.inputs[0].driver_add("default_value").driver.expression = "frame"
+    action = first.animation_data.action
+
+    second = run_source(ANIMATED_CLASS.format(body="g.Cube()")).tree
+
+    assert second is not None and second != first
+    assert second.animation_data.action == action
+    multiply = _multiply(second)
+    prefix = f'nodes["{multiply.name}"]'
+    assert _paths(second) == [
+        f"{prefix}.inputs[0].default_value",
+        f"{prefix}.inputs[1].default_value",
+    ]
+
+
+def test_rebuild_keeps_nla_strips_and_tree_drivers():
+    tree = _animated()
+    multiply = _multiply(tree)
+    multiply.inputs[1].keyframe_insert("default_value", frame=1)
+    animation = tree.animation_data
+    track = animation.nla_tracks.new()
+    track.strips.new("Pushed", 1, animation.action)
+    animation.action = None
+    # A driver on a property of the tree, which addresses no node.
+    tree["amount"] = 1.0
+    tree.driver_add('["amount"]').driver.expression = "2"
+
+    _animated(first="add")
+
+    multiply = _multiply(tree)
+    assert _paths(tree) == sorted(
+        ['["amount"]', f'nodes["{multiply.name}"].inputs[1].default_value']
+    )
+
+
+# ---------------------------------------------------------------------------
+# changes made by hand
+# ---------------------------------------------------------------------------
+
+
+def test_rebuild_keeps_a_hand_edited_tree():
+    tree = _animated()
+    assert not was_edited(tree)
+    _multiply(tree).inputs[1].default_value = 9.0
+    assert was_edited(tree)
+
+    with pytest.warns(EditedTreeWarning, match="'Animated' was changed by hand"):
+        _animated()
+
+    backup = bpy.data.node_groups["Animated (edited)"]
+    assert backup.use_fake_user
+    assert _multiply(backup).inputs[1].default_value == 9.0
+    assert _multiply(tree).inputs[1].default_value == 2.0
+    assert not was_edited(tree)
+
+
+def test_layout_names_animation_and_reroutes_are_not_edits():
+    tree = _animated()
+    multiply = _multiply(tree)
+    multiply.location = (500.0, 500.0)
+    multiply.label = "Double"
+    multiply.name = "Doubler"
+    multiply.hide = True
+    multiply.inputs[1].keyframe_insert("default_value", frame=1)
+    multiply.inputs[1].default_value = 7.0  # animated, so it follows the frame
+    link = multiply.outputs[0].links[0]
+    target = link.to_socket
+    reroute = tree.nodes.new("NodeReroute")
+    tree.links.new(multiply.outputs[0], reroute.inputs[0])
+    tree.links.new(reroute.outputs[0], target)
+    assert not was_edited(tree)
+
+
+@pytest.mark.parametrize(
+    "edit",
+    [
+        lambda tree: setattr(_multiply(tree), "mute", True),
+        lambda tree: setattr(_multiply(tree), "operation", "ADD"),
+        lambda tree: tree.links.remove(_multiply(tree).outputs[0].links[0]),
+        lambda tree: tree.nodes.new("GeometryNodeMeshCube"),
+        lambda tree: tree.nodes.new("NodeGroupInput"),
+        lambda tree: tree.interface.new_socket("Added", socket_type="NodeSocketFloat"),
+    ],
+    ids=["mute", "setting", "link", "node", "another-alike", "interface"],
+)
+def test_changes_that_are_edits(edit):
+    tree = _animated()
+    edit(tree)
+    assert was_edited(tree)
+
+
+def test_run_source_keeps_a_hand_edited_group():
+    first = run_source(ANIMATED_CLASS.format(body="pass")).tree
+    assert first is not None
+    first.asset_mark()
+    _multiply(first).inputs[0].default_value = 4.0
+
+    with pytest.warns(EditedTreeWarning):
+        second = run_source(ANIMATED_CLASS.format(body="pass")).tree
+
+    backup = bpy.data.node_groups["Animated Group (edited)"]
+    assert backup == first
+    assert backup.asset_data is None and backup.users == 1  # the fake user
+    assert second is not None and second.name == "Animated Group"
+    assert _multiply(second).inputs[0].default_value == 1.0
+    assert second.asset_data is not None
+    # Not edited since this build: the next run replaces it quietly.
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        run_source(ANIMATED_CLASS.format(body="pass"))
+
+
+def test_second_hand_edited_rebuild_replaces_the_backup():
+    tree = _animated()
+    _multiply(tree).inputs[1].default_value = 9.0
+    with pytest.warns(EditedTreeWarning):
+        _animated()
+    _multiply(tree).inputs[1].default_value = 5.0
+    with pytest.warns(EditedTreeWarning):
+        _animated()
+    backups = [
+        t for t in bpy.data.node_groups if t.name.startswith("Animated (edited)")
+    ]
+    assert [_multiply(t).inputs[1].default_value for t in backups] == [5.0]
+
+
+def test_rebuilding_a_group_does_not_edit_its_users():
+    def build():
+        with g.tree("Inner", clear=True) as inner:
+            inner.inputs.float("Value") >> inner.outputs.float("Value")
+        with g.tree("Outer", clear=True) as outer:
+            node = outer.tree.nodes.new("GeometryNodeGroup")
+            node.node_tree = inner.tree
+            outer.tree.links.new(g.Index().node.outputs[0], node.inputs["Value"])
+            g.Points(10) >> outer.outputs.geometry("Geometry")
+        return outer.tree
+
+    outer = build()
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        build()
+    assert len(outer.links) == 2
+
+
+def test_run_source_does_not_edit_users_of_a_group_class():
+    code = ANIMATED_CLASS.format(body="pass") + textwrap.dedent(
+        """
+        with g.tree("Holder", clear=True) as holder:
+            Animated() >> holder.outputs.geometry("Geometry")
+        """
+    )
+    run_source(code)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        run_source(code)
+
+
+def test_failed_run_does_not_edit_users_of_a_group_class():
+    code = ANIMATED_CLASS.format(body="pass") + textwrap.dedent(
+        """
+        with g.tree("Holder", clear=True) as holder:
+            Animated() >> holder.outputs.geometry("Geometry")
+        """
+    )
+    run_source(code)
+    with pytest.raises(ZeroDivisionError):
+        run_source(ANIMATED_CLASS.format(body="1 / 0") + "\nAnimated.create_group()")
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        run_source(code)

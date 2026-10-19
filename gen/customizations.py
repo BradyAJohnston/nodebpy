@@ -271,12 +271,13 @@ _DOMAINS: dict[str, str] = {
 def _domain_factory_typed(
     node_name: str,
     data_types: list[str],
-    index: str | None = "group_index",
+    index: str | None = "group_id",
 ) -> str:
     """Build a nested ``<node>.<domain>.<dtype>()`` factory as class-body source.
 
     ``data_types`` are Blender ``data_type`` enum values; ``index`` names the
-    optional per-element index parameter (``None`` if the node has none). Each
+    optional per-element index parameter (``None`` if the node has none); a
+    ``group_id`` one still accepts its old name ``group_index``. Each
     method returns the parameterised node type (e.g. ``AccumulateField[FloatSocket]``)
     for precise typing — which is why they self-reference the class and are built
     here rather than in a shared mixin.
@@ -293,8 +294,12 @@ def _domain_factory_typed(
     for dtype in data_types:
         method, socket = _DATA_TYPE[dtype]
         input_type = "Input" + socket.replace("Socket", "")
+        lines.append("")
+        if index == "group_id":
+            lines.append(
+                f'        @_renamed_params({{"group_index": "group_id"}}, "{node_name}.<domain>.{method}")'
+            )
         lines += [
-            "",
             f'        def {method}(self, value: {input_type} = None{idx_param}) -> "{node_name}[{socket}]":',
             f'            """Create \'{node_name}\' on this domain with \'{dtype}\' data type."""',
             f'            return {node_name}(value{idx_arg}, domain=self._domain, data_type="{dtype}")',
@@ -306,10 +311,16 @@ def _domain_factory_typed(
     return "\n".join(lines)
 
 
+_GROUP_ID_FACTORY_IMPORTS = (
+    "from ...types import _AttributeDomains",
+    "from ...builder._utils import _renamed_params",
+)
+
+
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeAccumulateField",
-        imports=("from ...types import _AttributeDomains",),
+        imports=_GROUP_ID_FACTORY_IMPORTS,
         suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed(
             "AccumulateField", ["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
@@ -342,7 +353,7 @@ register_customization(
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldAverage",
-        imports=("from ...types import _AttributeDomains",),
+        imports=_GROUP_ID_FACTORY_IMPORTS,
         suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed("FieldAverage", ["FLOAT", "FLOAT_VECTOR"]),
     )
@@ -352,7 +363,7 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldMinAndMax",
         class_name="FieldMinAndMax",  # Blender display name is "Field Min & Max"
-        imports=("from ...types import _AttributeDomains",),
+        imports=_GROUP_ID_FACTORY_IMPORTS,
         suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed(
             "FieldMinAndMax", ["FLOAT", "INT", "FLOAT_VECTOR"]
@@ -384,8 +395,103 @@ register_customization(
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldVariance",
-        imports=("from ...types import _AttributeDomains",),
+        imports=_GROUP_ID_FACTORY_IMPORTS,
         suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed("FieldVariance", ["FLOAT", "FLOAT_VECTOR"]),
+    )
+)
+
+
+# Switch takes its type from the values it switches between when none is given
+# (a node passed in would otherwise link whichever output converts to Float).
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeSwitch",
+        bases=("_SwitchMixin",),
+        imports=("from .._mixins import _SwitchMixin",),
+        suppress=frozenset({"__init__"}),
+    )
+)
+
+# Blender 5.2 deprecates Rotate Euler ("Use the Rotate Rotation node instead").
+# It still works, so the class stays, warning on construction.
+register_customization(
+    NodeCustomization(
+        bl_idname="FunctionNodeRotateEuler",
+        bases=("_DeprecatedNodeMixin",),
+        imports=("from .._mixins import _DeprecatedNodeMixin",),
+        extra_body='    _replacement = "g.RotateRotation"',
+    )
+)
+
+
+# Viewer's inputs are viewer items; the mixin adds the ``items`` collection beside the generated
+# constructor.
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeViewer",
+        bases=("_ViewerMixin",),
+        imports=("from .._mixins import _ViewerMixin",),
+    )
+)
+
+# File Output's inputs are file output items; the mixin adds the ``items`` collection beside the generated
+# constructor.
+register_customization(
+    NodeCustomization(
+        bl_idname="CompositorNodeOutputFile",
+        bases=("_FileOutputMixin",),
+        imports=("from .._mixins import _FileOutputMixin",),
+    )
+)
+
+# Raycast samples attributes through its sample attribute items; the mixin adds the ``items`` collection beside the generated
+# constructor.
+register_customization(
+    NodeCustomization(
+        bl_idname="ShaderNodeRaycast",
+        bases=("_RaycastMixin",),
+        imports=("from .._mixins import _RaycastMixin",),
+    )
+)
+
+# Blender sizes ``vector`` by ``vector_dimensions`` (keeping hidden components),
+# so the node is sized to the value before it is written, then set to the
+# requested dimensions: ``Vector((1.0, 2.0), vector_dimensions=2)``.
+register_customization(
+    NodeCustomization(
+        bl_idname="FunctionNodeInputVector",
+        suppress=frozenset({"__init__"}),
+        extra_body="""    def __init__(
+        self,
+        vector: tuple[float, ...] = (0.0, 0.0, 0.0),
+        vector_dimensions: int = 3,
+    ):
+        super().__init__()
+        self.node.vector_dimensions = len(vector)
+        self.node.vector = vector
+        self.vector_dimensions = vector_dimensions""",
+    )
+)
+
+# Attribute's factories take the attribute name positionally, as in
+# ``s.Attribute.geometry("Color")``.
+register_customization(
+    NodeCustomization(
+        bl_idname="ShaderNodeAttribute",
+        suppress_factories_for=frozenset({"attribute_type"}),
+        extra_body="\n\n".join(
+            f'''    @classmethod
+    def {method}(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation '{label}'."""
+        return cls(attribute_type="{value}", attribute_name=attribute_name)'''
+            for method, label, value in (
+                ("geometry", "Geometry", "GEOMETRY"),
+                ("object", "Object", "OBJECT"),
+                ("instancer", "Instancer", "INSTANCER"),
+                ("view_layer", "View Layer", "VIEW_LAYER"),
+                ("light", "Light", "LIGHT"),
+            )
+        ),
     )
 )

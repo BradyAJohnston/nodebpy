@@ -70,7 +70,7 @@ class SliceToIndices(CustomGeometryGroup):
 
         range = stop - start
         length = IntegerMath.divide_ceiling(range, step).o.value.abs()
-        indices = FieldToList(length).integer((start + step) * Index())
+        indices = FieldToList(length).items.integer((start + step) * Index())
 
         indices >> tree.outputs.integer("Indices", structure_type="LIST")
 
@@ -298,7 +298,7 @@ class GeometryPrincipalComponents(CustomGeometryGroup):
             shortest_axis = tree.outputs.vector("Shortest Axis")
 
         geo = geo >> CaptureAttribute.point()
-        pca = PrincipalComponents(position=geo.capture(position))
+        pca = PrincipalComponents(position=geo.items.vector(position).output)
 
         SampleIndex.point.vector(geo, pca.o.group_center) >> center
         SampleIndex.point.quaternion(geo, pca.o.rotation) >> rotation
@@ -332,6 +332,6 @@ class ClipFieldToBox(CustomGeometryGroup):
         masked = tree.outputs.boolean("Clipped Field")
 
         pos = Position().o.position
-        local_pos = box.transform("RELATIVE").invert() @ pos * 0.5
+        local_pos = box.matrix("RELATIVE").invert() @ pos * 0.5
         result = abs(local_pos) < 0.5
         (result != invert) >> masked

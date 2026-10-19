@@ -14,7 +14,7 @@ from nodebpy.assets import (
     generate_asset_api,
     generate_asset_modules,
 )
-from nodebpy.builder import BaseNode, asset_group_base
+from nodebpy.builder import BaseNode, asset_group_base, link_assets
 from nodebpy.nodes import compositor as nc
 from nodebpy.nodes import geometry as ng
 from nodebpy.nodes import shader as ns
@@ -89,6 +89,82 @@ def test_generated_asset_chains():
         mesh = ng.SmoothByAngle(mesh=ng.Cube()).o.mesh
         arr = ng.Array(geometry=mesh, count=4)
         assert arr.o.geometry is not None
+
+
+class _CountLibraryReads:
+    """Stands in for ``bpy`` in the asset module, counting library reads."""
+
+    def __init__(self):
+        import bpy
+
+        self.reads = 0
+        outer = self
+
+        class _Libraries:
+            def __getattr__(self, name):
+                return getattr(bpy.data.libraries, name)
+
+            def load(self, *args, **kwargs):
+                outer.reads += 1
+                return bpy.data.libraries.load(*args, **kwargs)
+
+        class _Data:
+            libraries = _Libraries()
+
+            def __getattr__(self, name):
+                return getattr(bpy.data, name)
+
+        self.data = _Data()
+        self._bpy = bpy
+
+    def __getattr__(self, name):
+        return getattr(self._bpy, name)
+
+
+def _essential_geometry_assets(n):
+    """The first ``n`` geometry asset classes from the essentials library."""
+    path = _ESSENTIALS.path()
+    return [c for c in _asset_classes(ng) if c._library.path() == path][:n]
+
+
+@_needs_essentials
+def test_link_assets_reads_each_library_once(monkeypatch):
+    from nodebpy.builder import asset
+
+    classes = _essential_geometry_assets(3)
+    counter = _CountLibraryReads()
+    monkeypatch.setattr(asset, "bpy", counter)
+    trees = link_assets(*classes)
+    assert counter.reads == 1
+    assert [trees[cls].name for cls in classes] == [c._asset_name for c in classes]
+
+    # the groups' nodes reuse the linked trees without reading the library again
+    with ng.tree("t"):
+        for cls in classes:
+            assert cls().node.node_tree is trees[cls]
+    assert counter.reads == 1
+
+
+@_needs_essentials
+def test_link_assets_reuses_groups_in_the_file(monkeypatch):
+    from nodebpy.builder import asset
+
+    (cls,) = _essential_geometry_assets(1)
+    with ng.tree("t"):
+        tree = cls().node.node_tree
+    counter = _CountLibraryReads()
+    monkeypatch.setattr(asset, "bpy", counter)
+    assert link_assets(cls)[cls] is tree
+    assert counter.reads == 0
+
+
+def test_link_assets_missing_library():
+    class Missing(asset_group_base("GeometryNodeTree")):
+        _name = _asset_name = "Nope"
+        _library = BundledLibrary("does_not_exist.blend")
+
+    with pytest.raises(FileNotFoundError):
+        link_assets(Missing)
 
 
 # -- Library resolution --------------------------------------------------------

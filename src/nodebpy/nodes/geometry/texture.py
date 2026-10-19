@@ -76,7 +76,7 @@ class BrickTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -108,7 +108,7 @@ class BrickTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -218,7 +218,7 @@ class CheckerTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -238,7 +238,7 @@ class CheckerTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -409,7 +409,7 @@ class GaborTexture(BaseNode):
 
     @gabor_type.setter
     def gabor_type(self, value: Literal["2D", "3D"]) -> None:
-        self.node.gabor_type = value
+        self._set_enum("gabor_type", value)
 
 
 class GradientTexture(BaseNode):
@@ -430,7 +430,7 @@ class GradientTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -444,7 +444,7 @@ class GradientTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -535,7 +535,7 @@ class GradientTexture(BaseNode):
             "RADIAL",
         ],
     ) -> None:
-        self.node.gradient_type = value
+        self._set_enum("gradient_type", value)
 
 
 class ImageTexture(BaseNode):
@@ -613,7 +613,7 @@ class ImageTexture(BaseNode):
 
     @interpolation.setter
     def interpolation(self, value: Literal["Linear", "Closest", "Cubic"]) -> None:
-        self.node.interpolation = value
+        self._set_enum("interpolation", value)
 
     @property
     def extension(self) -> Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]:
@@ -621,7 +621,7 @@ class ImageTexture(BaseNode):
 
     @extension.setter
     def extension(self, value: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]) -> None:
-        self.node.extension = value
+        self._set_enum("extension", value)
 
 
 class MagicTexture(BaseNode):
@@ -650,7 +650,7 @@ class MagicTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -668,7 +668,7 @@ class MagicTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -684,7 +684,7 @@ class MagicTexture(BaseNode):
         scale: InputFloat = 5.0,
         distortion: InputFloat = 1.0,
         *,
-        turbulence_depth: int = 0,
+        turbulence_depth: int = 2,
     ):
         super().__init__()
         key_args = {"Vector": vector, "Scale": scale, "Distortion": distortion}
@@ -748,7 +748,7 @@ class NoiseTexture(BaseNode):
 
     Outputs
     -------
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     o.color : ColorSocket
         Color
@@ -778,7 +778,7 @@ class NoiseTexture(BaseNode):
         """Distortion"""
 
     class _Outputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
         color: ColorSocket
         """Color"""
@@ -802,7 +802,7 @@ class NoiseTexture(BaseNode):
         gain: InputFloat = 1.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
         noise_type: Literal[
             "MULTIFRACTAL",
             "RIDGED_MULTIFRACTAL",
@@ -810,7 +810,7 @@ class NoiseTexture(BaseNode):
             "FBM",
             "HETERO_TERRAIN",
         ] = "FBM",
-        normalize: bool = False,
+        normalize: bool = True,
     ):
         super().__init__()
         key_args = {
@@ -824,7 +824,8 @@ class NoiseTexture(BaseNode):
             "Gain": gain,
             "Distortion": distortion,
         }
-        self.noise_dimensions = noise_dimensions
+        if noise_dimensions is not None:
+            self.noise_dimensions = noise_dimensions
         self.noise_type = noise_type
         self.normalize = normalize
         self._establish_links(**key_args)
@@ -839,7 +840,7 @@ class NoiseTexture(BaseNode):
         lacunarity: InputFloat = 2.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Multifractal'. More uneven result (varies with location), more similar to a real terrain"""
         return cls(
@@ -865,7 +866,7 @@ class NoiseTexture(BaseNode):
         gain: InputFloat = 1.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Ridged Multifractal'. Create sharp peaks"""
         return cls(
@@ -893,7 +894,7 @@ class NoiseTexture(BaseNode):
         gain: InputFloat = 1.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Hybrid Multifractal'. Create peaks and valleys with different roughness values"""
         return cls(
@@ -919,8 +920,8 @@ class NoiseTexture(BaseNode):
         lacunarity: InputFloat = 2.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
-        normalize: bool = False,
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
+        normalize: bool = True,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'fBM'. The standard fractal Perlin noise"""
         return cls(
@@ -946,7 +947,7 @@ class NoiseTexture(BaseNode):
         offset: InputFloat = 0.0,
         distortion: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Hetero Terrain'. Similar to Hybrid Multifractal creates a heterogeneous terrain, but with the likeness of river channels"""
         return cls(
@@ -967,7 +968,7 @@ class NoiseTexture(BaseNode):
 
     @noise_dimensions.setter
     def noise_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
-        self.node.noise_dimensions = value
+        self._set_enum("noise_dimensions", value)
 
     @property
     def noise_type(
@@ -992,7 +993,7 @@ class NoiseTexture(BaseNode):
             "HETERO_TERRAIN",
         ],
     ) -> None:
-        self.node.noise_type = value
+        self._set_enum("noise_type", value)
 
     @property
     def normalize(self) -> bool:
@@ -1117,7 +1118,7 @@ class VoronoiTexture(BaseNode):
         exponent: InputFloat = 0.5,
         randomness: InputFloat = 1.0,
         *,
-        voronoi_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        voronoi_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
         distance: Literal[
             "EUCLIDEAN", "MANHATTAN", "CHEBYCHEV", "MINKOWSKI"
         ] = "EUCLIDEAN",
@@ -1138,7 +1139,8 @@ class VoronoiTexture(BaseNode):
             "Exponent": exponent,
             "Randomness": randomness,
         }
-        self.voronoi_dimensions = voronoi_dimensions
+        if voronoi_dimensions is not None:
+            self.voronoi_dimensions = voronoi_dimensions
         self.distance = distance
         self.feature = feature
         self.normalize = normalize
@@ -1150,7 +1152,7 @@ class VoronoiTexture(BaseNode):
 
     @voronoi_dimensions.setter
     def voronoi_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
-        self.node.voronoi_dimensions = value
+        self._set_enum("voronoi_dimensions", value)
 
     @property
     def distance(self) -> Literal["EUCLIDEAN", "MANHATTAN", "CHEBYCHEV", "MINKOWSKI"]:
@@ -1160,7 +1162,7 @@ class VoronoiTexture(BaseNode):
     def distance(
         self, value: Literal["EUCLIDEAN", "MANHATTAN", "CHEBYCHEV", "MINKOWSKI"]
     ) -> None:
-        self.node.distance = value
+        self._set_enum("distance", value)
 
     @property
     def feature(
@@ -1173,7 +1175,7 @@ class VoronoiTexture(BaseNode):
         self,
         value: Literal["F1", "F2", "SMOOTH_F1", "DISTANCE_TO_EDGE", "N_SPHERE_RADIUS"],
     ) -> None:
-        self.node.feature = value
+        self._set_enum("feature", value)
 
     @property
     def normalize(self) -> bool:
@@ -1226,7 +1228,7 @@ class WaveTexture(BaseNode):
     -------
     o.color : ColorSocket
         Color
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -1252,7 +1254,7 @@ class WaveTexture(BaseNode):
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -1355,7 +1357,7 @@ class WaveTexture(BaseNode):
 
     @wave_type.setter
     def wave_type(self, value: Literal["BANDS", "RINGS"]) -> None:
-        self.node.wave_type = value
+        self._set_enum("wave_type", value)
 
     @property
     def bands_direction(self) -> Literal["X", "Y", "Z", "DIAGONAL"]:
@@ -1363,7 +1365,7 @@ class WaveTexture(BaseNode):
 
     @bands_direction.setter
     def bands_direction(self, value: Literal["X", "Y", "Z", "DIAGONAL"]) -> None:
-        self.node.bands_direction = value
+        self._set_enum("bands_direction", value)
 
     @property
     def rings_direction(self) -> Literal["X", "Y", "Z", "SPHERICAL"]:
@@ -1371,7 +1373,7 @@ class WaveTexture(BaseNode):
 
     @rings_direction.setter
     def rings_direction(self, value: Literal["X", "Y", "Z", "SPHERICAL"]) -> None:
-        self.node.rings_direction = value
+        self._set_enum("rings_direction", value)
 
     @property
     def wave_profile(self) -> Literal["SIN", "SAW", "TRI"]:
@@ -1379,7 +1381,7 @@ class WaveTexture(BaseNode):
 
     @wave_profile.setter
     def wave_profile(self, value: Literal["SIN", "SAW", "TRI"]) -> None:
-        self.node.wave_profile = value
+        self._set_enum("wave_profile", value)
 
 
 class WhiteNoiseTexture(BaseNode):
@@ -1435,11 +1437,12 @@ class WhiteNoiseTexture(BaseNode):
         vector: InputVector = None,
         w: InputFloat = 0.0,
         *,
-        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] | None = None,
     ):
         super().__init__()
         key_args = {"Vector": vector, "W": w}
-        self.noise_dimensions = noise_dimensions
+        if noise_dimensions is not None:
+            self.noise_dimensions = noise_dimensions
         self._establish_links(**key_args)
 
     @property
@@ -1448,4 +1451,4 @@ class WhiteNoiseTexture(BaseNode):
 
     @noise_dimensions.setter
     def noise_dimensions(self, value: Literal["1D", "2D", "3D", "4D"]) -> None:
-        self.node.noise_dimensions = value
+        self._set_enum("noise_dimensions", value)

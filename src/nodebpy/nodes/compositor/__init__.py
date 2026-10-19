@@ -146,7 +146,6 @@ from .converter import (
     GetBundleItem,
     IDMask,
     ImplicitConversion,
-    IndexSwitch,
     Levels,
     RelativeToPixel,
     RGBToBW,
@@ -219,6 +218,7 @@ from .manual import (
     Float,
     Frame,
     Image,
+    IndexSwitch,
     MenuSwitch,
     tree,
 )

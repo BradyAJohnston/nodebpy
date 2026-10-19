@@ -1,0 +1,33 @@
+---
+title: Examples
+subtitle: Complete node trees written with `nodebpy`, each with a render of the result.
+listing:
+  id: examples
+  type: grid
+  grid-columns: 3
+  image-height: 190px
+  fields: [image, title, description, categories]
+  categories: true
+  sort: false
+  contents:
+    - voxelize.qmd
+    - lego.qmd
+    - city-builder.qmd
+    - repeat-grid.qmd
+    - golf-ball.qmd
+    - forest.qmd
+    - gears.qmd
+    - explosion.qmd
+    - arrow-field.qmd
+page-layout: full
+---
+
+Most of these are ports of examples from two earlier projects that also write Geometry Nodes as Python: [Geometry Script](https://github.com/carson-katri/geometry-script) by Carson Katri and [geonodes](https://github.com/al1brn/geonodes) by Alain Bernard.
+They are rewritten as `nodebpy` code rather than translated line for line, so each one also shows how the same idea reads in `nodebpy`, and each page links back to the original.
+
+Every example is a single script you can run in Blender's text editor or headless with the `bpy` module.
+The script builds the tree and any materials it needs; add the tree to an object as a Geometry Nodes modifier to see the result.
+The images are rendered by [`docs/examples/render.py`](https://github.com/BradyAJohnston/nodebpy/blob/main/docs/examples/render.py) as part of the documentation build.
+
+::: {#examples}
+:::

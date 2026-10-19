@@ -1,4 +1,7 @@
+import pytest
+
 from nodebpy import compositor as c
+from nodebpy.export import to_python
 
 
 def test_initial_compositor(snapshot):
@@ -145,9 +148,37 @@ def test_compositor_file_output():
     with c.tree():
         f = c.FileOutput()
 
-        assert not f.save_as_render
-        f.save_as_render = True
         assert f.save_as_render
-        assert not f.use_file_extension
-        f.use_file_extension = True
+        f.save_as_render = False
+        assert not f.save_as_render
         assert f.use_file_extension
+        f.use_file_extension = False
+        assert not f.use_file_extension
+
+
+def test_color_balance_whitepoint_argument_is_kept():
+    """The white point is stored in the temperature and tint sockets, so it is
+    applied after them rather than being overwritten by their defaults."""
+    with c.tree() as tree:
+        node = c.ColorBalance.white_point(input_whitepoint=(1.0, 0.6, 0.3))
+    assert node.i.input_temperature.default_value != pytest.approx(6500.0)
+    code = to_python(tree)
+    assert "whitepoint" not in code
+    assert "input_temperature=" in code
+
+
+def test_noise_texture_dimensions_follow_the_tree():
+    """Blender starts Noise Texture at 2D in the compositor and 3D elsewhere."""
+    from nodebpy import shader as s
+
+    with c.tree() as comp:
+        noise = c.NoiseTexture()
+    assert noise.noise_dimensions == "2D"
+    assert "noise_dimensions" not in to_python(comp)
+    with s.tree() as shade:
+        noise = s.NoiseTexture()
+    assert noise.noise_dimensions == "3D"
+    assert "noise_dimensions" not in to_python(shade)
+    with c.tree() as comp:
+        c.NoiseTexture(noise_dimensions="3D")
+    assert 'noise_dimensions="3D"' in to_python(comp)

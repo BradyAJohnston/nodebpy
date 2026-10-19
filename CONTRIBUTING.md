@@ -17,6 +17,17 @@ Tests run using `bpy` installed from pip (no need for Blender on `PATH`)
 uv run pytest -n 4
 ```
 
+## The agent skill
+
+`src/nodebpy/skills/nodebpy/` is the source of the agent skill and ships in the wheel;
+`skills/nodebpy/` at the repository root is the copy that `npx skills add` and the
+Claude Code marketplace (`.claude-plugin/`) read. After editing the source, run
+`make skills` to refresh the copy; a test fails when the two differ. Keep the skill
+in step with API changes in the same pull request, since it is what agents rely on for
+the current argument orders and method names: `SKILL.md` holds the loop, the core
+idioms and the errors table, and `references/` one file per task. `test_skill.py` runs
+every Python block in it against the package, so an outdated example fails the tests.
+
 ## Regenerating node classes
 
 Most node classes under `src/nodebpy/nodes/` are auto-generated from Blender's live node registry by the `gen/` package (kept outside `src/` so it never ships in the wheel). After a Blender / `bpy` version change, regenerate with:
@@ -29,6 +40,8 @@ which runs, in order:
 
 1. `uv run python -m gen` — regenerates the typed classes for Blender's bundled essentials asset libraries, then the node classes for every tree type
 2. `make format` — `ruff format`, `ruff check --fix`, and `ty check --fix src`
+
+CI regenerates on every pull request and fails when the checked-in classes differ from the generator's output, so a change to `gen/` ships with its regenerated classes. The generator imports the project's own `nodebpy` before `bpy`: Blender puts its extensions' site-packages first on the path when `bpy` loads, and a `nodebpy` installed there would otherwise shadow the sources being generated.
 
 For faster iteration you can regenerate a single tree type:
 

@@ -107,6 +107,7 @@ from .group import (
 )
 from .input import (
     AmbientOcclusion,
+    Attribute,
     Bevel,
     CameraData,
     Color,
@@ -133,7 +134,7 @@ from .interface import (
     EnableOutput,
 )
 from .manual import (
-    Attribute,
+    ClosureZone,
     Float,
     Frame,
     MenuSwitch,
@@ -142,9 +143,10 @@ from .manual import (
     RepeatZone,
     material,
     tree,
+    world,
 )
 from .output import (
-    AovOutput,
+    AOVOutput,
     LightOutput,
     LineStyleOutput,
     MaterialOutput,
@@ -178,7 +180,7 @@ from .shader import (
 )
 from .texture import (
     EnvironmentTexture,
-    IesTexture,
+    IESTexture,
     ImageTexture,
     SkyTexture,
 )
@@ -193,9 +195,9 @@ from .vector import (
 )
 
 __all__ = (
+    "AOVOutput",
     "AddShader",
     "AmbientOcclusion",
-    "AovOutput",
     "Attribute",
     "Background",
     "Bevel",
@@ -210,6 +212,7 @@ __all__ = (
     "Clamp",
     "ClosureInput",
     "ClosureOutput",
+    "ClosureZone",
     "Color",
     "ColorAttribute",
     "ColorRamp",
@@ -245,7 +248,7 @@ __all__ = (
     "HairBSDF",
     "Holdout",
     "HueSaturationValue",
-    "IesTexture",
+    "IESTexture",
     "ImageTexture",
     "ImplicitConversion",
     "IndexSwitch",
@@ -342,4 +345,5 @@ __all__ = (
     "WorldOutput",
     "material",
     "tree",
+    "world",
 )

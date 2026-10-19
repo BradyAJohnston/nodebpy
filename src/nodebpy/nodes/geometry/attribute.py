@@ -148,7 +148,7 @@ class BlurAttribute[T](BaseNode):
     def data_type(
         self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class DomainSize(BaseNode):
@@ -236,7 +236,7 @@ class DomainSize(BaseNode):
     def component(
         self, value: Literal["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"]
     ) -> None:
-        self.node.component = value
+        self._set_enum("component", value)
 
 
 class GetAttributeNames(BaseNode):

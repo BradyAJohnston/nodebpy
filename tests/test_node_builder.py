@@ -514,7 +514,7 @@ def test_placeholder():
         mix = v >> g.Mix.color(0.3, (0.5, 0.5, 0.5, 1.0), ...)
 
     assert not mix.i["Factor_Float"].socket.links
-    assert tuple(mix.i["A_Color"].socket.default_value) == (0.5, 0.5, 0.5, 1.0)
+    assert tuple(mix.i["A_Color"].default_value) == (0.5, 0.5, 0.5, 1.0)
     assert mix.i["B_Color"].socket.links
     assert mix.i["B_Color"].socket.links[0].from_node == v.node
 
@@ -586,6 +586,7 @@ for _mod, _tree_type in [
         )
 
 
+@pytest.mark.filterwarnings("ignore:Blender deprecates:DeprecationWarning")
 @pytest.mark.parametrize("module,tree_type,class_names", _all_node_params)
 def test_add_all_nodes(module, tree_type, class_names):
     def _test_node_property_access(node: BaseNode):

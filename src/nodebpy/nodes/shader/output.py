@@ -19,7 +19,7 @@ from ...types import (
 )
 
 
-class AovOutput(BaseNode):
+class AOVOutput(BaseNode):
     """
         Arbitrary Output Variables.
     Provide custom render passes for arbitrary shader node outputs
@@ -115,14 +115,15 @@ class LightOutput(BaseNode):
         self,
         surface: InputShader = None,
         *,
-        is_active_output: bool = False,
+        is_active_output: bool | None = None,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()
         key_args = {"Surface": surface}
-        self.is_active_output = is_active_output
         self.target = target
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:
@@ -138,7 +139,7 @@ class LightOutput(BaseNode):
 
     @target.setter
     def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
-        self.node.target = value
+        self._set_enum("target", value)
 
 
 class LineStyleOutput(BaseNode):
@@ -198,7 +199,7 @@ class LineStyleOutput(BaseNode):
         alpha: InputFloat = 1.0,
         alpha_fac: InputFloat = 1.0,
         *,
-        is_active_output: bool = False,
+        is_active_output: bool | None = None,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
         blend_type: Literal[
             "MIX",
@@ -231,12 +232,13 @@ class LineStyleOutput(BaseNode):
             "Alpha": alpha,
             "Alpha Fac": alpha_fac,
         }
-        self.is_active_output = is_active_output
         self.target = target
         self.blend_type = blend_type
         self.use_alpha = use_alpha
         self.use_clamp = use_clamp
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:
@@ -252,7 +254,7 @@ class LineStyleOutput(BaseNode):
 
     @target.setter
     def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
-        self.node.target = value
+        self._set_enum("target", value)
 
     @property
     def blend_type(
@@ -305,7 +307,7 @@ class LineStyleOutput(BaseNode):
             "VALUE",
         ],
     ) -> None:
-        self.node.blend_type = value
+        self._set_enum("blend_type", value)
 
     @property
     def use_alpha(self) -> bool:
@@ -381,7 +383,7 @@ class MaterialOutput(BaseNode):
         displacement: InputVector = None,
         thickness: InputFloat = None,
         *,
-        is_active_output: bool = False,
+        is_active_output: bool | None = None,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()
@@ -391,9 +393,10 @@ class MaterialOutput(BaseNode):
             "Displacement": displacement,
             "Thickness": thickness,
         }
-        self.is_active_output = is_active_output
         self.target = target
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:
@@ -409,7 +412,7 @@ class MaterialOutput(BaseNode):
 
     @target.setter
     def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
-        self.node.target = value
+        self._set_enum("target", value)
 
 
 class WorldOutput(BaseNode):
@@ -455,14 +458,15 @@ class WorldOutput(BaseNode):
         surface: InputShader = None,
         volume: InputShader = None,
         *,
-        is_active_output: bool = False,
+        is_active_output: bool | None = None,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
     ):
         super().__init__()
         key_args = {"Surface": surface, "Volume": volume}
-        self.is_active_output = is_active_output
         self.target = target
         self._establish_links(**key_args)
+        if is_active_output is not None:
+            self.is_active_output = is_active_output
 
     @property
     def is_active_output(self) -> bool:
@@ -478,4 +482,4 @@ class WorldOutput(BaseNode):
 
     @target.setter
     def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
-        self.node.target = value
+        self._set_enum("target", value)

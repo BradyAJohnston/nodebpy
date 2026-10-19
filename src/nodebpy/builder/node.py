@@ -26,7 +26,14 @@ from bpy.types import (
 )
 
 from ..types import SOCKET_COMPATIBILITY, Default, InputAny
-from ._utils import SocketError, _NodeLike, _SocketLike
+from ._combine import holds_sockets, link_combined
+from ._utils import (
+    SocketError,
+    _accept_renamed,
+    _NodeLike,
+    _SocketLike,
+    enum_value_error,
+)
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
@@ -96,6 +103,20 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     _default_input_id: str | None = None
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
+    # Parameters renamed after their socket's display name, per method (old
+    # name -> new name); the old name keeps working with a DeprecationWarning.
+    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {}
+
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        super().__init_subclass__(**kwargs)
+        for method, renames in cls.__dict__.get("_renamed_params", {}).items():
+            label = cls.__name__ if method == "__init__" else f"{cls.__name__}.{method}"
+            attr = cls.__dict__[method]
+            if isinstance(attr, classmethod):
+                func = _accept_renamed(attr.__func__, renames, label)
+                setattr(cls, method, classmethod(func))
+            else:
+                setattr(cls, method, _accept_renamed(attr, renames, label))
 
     def __init__(self, node: Node | None = None):
         tree = (
@@ -171,11 +192,21 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             node >> socket
             return node
 
+    def _set_enum(self, prop: str, value: Any) -> None:
+        """Set an enum property, suggesting the closest options for a typo."""
+        try:
+            setattr(self.node, prop, value)
+        except TypeError as error:
+            raise enum_value_error(error, f"{type(self).__name__}'s {prop}") from None
+
     def _set_input_default_value(self, input: NodeSocket, value: Any) -> None:
         """Set the default value for an input socket, handling type conversions."""
         assert hasattr(input, "default_value")
         stype = getattr(input, "type", None)
-        if stype == "VECTOR" and isinstance(value, (int, float)):
+        if holds_sockets(value):
+            # (1, 1, height): the sockets are combined into a node and linked
+            link_combined(self.tree, input, value)
+        elif stype == "VECTOR" and isinstance(value, (int, float)):
             input.default_value = [value] * len(input.default_value)  # type: ignore
         elif stype == "INT" and isinstance(value, float):
             input.default_value = int(value)  # type: ignore
@@ -238,6 +269,10 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         elif isinstance(value, _NodeLike):
             target_type = target.type if not named else self.i._get(target).type
             self._link_from(value.o._best_match(target_type), target)
+        elif getattr(value, "_as_rshift_target", None) is not None:
+            # an item handle stands for its output socket (and says so when
+            # it has none)
+            self._link_from(cast(Any, value)._default_output_socket, target)
         else:
             # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
             # but this needs to be a more generic solution for sockets which aren't available
@@ -320,6 +355,24 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         return SocketAccessor(self.node.inputs, "input", builder=self)
 
 
+def _match_compatible_data(
+    sockets: Iterable[NodeSocket], types: tuple[str, ...]
+) -> tuple[NodeSocket, str]:
+    """The socket among ``sockets`` that best fits one of ``types``, with
+    that type: the closest match in Blender's implicit-conversion order."""
+    possible = []
+    for socket in sockets:
+        compatible = SOCKET_COMPATIBILITY.get(socket.type, ())
+        for type in types:
+            if type in compatible:
+                possible.append((socket, type, compatible.index(type)))
+    if not possible:
+        raise SocketError("No compatible socket found")
+    possible.sort(key=lambda x: x[2])
+    socket, type, _ = possible[0]
+    return socket, type
+
+
 class DynamicInputsMixin(ABC):
     _socket_data_types: tuple[str, ...]
     _type_map: ClassVar[dict[str, str]] = {}
@@ -327,21 +380,9 @@ class DynamicInputsMixin(ABC):
     def _match_compatible_data(
         self, sockets: Iterable[NodeSocket], types: tuple[str, ...] | None = None
     ) -> tuple[NodeSocket, str]:
-        if types is None:
-            types = self._socket_data_types
-        possible = []
-        for socket in sockets:
-            compatible = SOCKET_COMPATIBILITY.get(socket.type, ())
-            for type in types:
-                if type in compatible:
-                    possible.append((socket, type, compatible.index(type)))
-
-        if len(possible) > 0:
-            possible.sort(key=lambda x: x[2])
-            best_value = possible[0]
-            return best_value[:2]
-
-        raise SocketError("No compatible socket found")
+        return _match_compatible_data(
+            sockets, self._socket_data_types if types is None else types
+        )
 
     def _find_best_socket_pair(
         self,

@@ -11,9 +11,10 @@ from ...builder.socket import (
 from ...types import (
     InputColor,
 )
+from .._mixins import _FileOutputMixin
 
 
-class FileOutput(BaseNode):
+class FileOutput(_FileOutputMixin, BaseNode):
     """
     Write image file to disk
     """
@@ -38,8 +39,8 @@ class FileOutput(BaseNode):
         self,
         directory: str = "",
         file_name: str = "",
-        save_as_render: bool = False,
-        use_file_extension: bool = False,
+        save_as_render: bool = True,
+        use_file_extension: bool = True,
     ):
         super().__init__()
         key_args = {}

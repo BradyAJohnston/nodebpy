@@ -19,15 +19,15 @@
       N13("Grid Divergence"):::geometry-node
       N14("Group Output"):::default-node
       N0 -->|"Topology->Topology"| N6
-      N1 -->|"Value->Float"| N6
+      N1 -->|"Value->Value"| N6
       N2 -->|"Boolean->Boolean"| N6
       N3 -->|"Vector->Vector"| N6
       N4 -->|"Integer->idx"| N6
-      N5 -->|"Factor->Float.001"| N6
+      N5 -->|"Factor->Factor"| N6
       N6 -->|"idx->Grid"| N7
       N7 -->|"Grid->Grid"| N9
       N9 -->|"Grid->Grid"| N11
-      N6 -->|"Float.001->Grid"| N8
+      N6 -->|"Factor->Grid"| N8
       N8 -->|"Grid->Grid"| N10
       N10 -->|"Laplacian->Grid"| N12
       N12 -->|"Gradient->Grid"| N13

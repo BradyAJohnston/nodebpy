@@ -358,7 +358,7 @@ class VolumeCoefficients(BaseNode):
             "HENYEY_GREENSTEIN", "FOURNIER_FORAND", "DRAINE", "RAYLEIGH", "MIE"
         ],
     ) -> None:
-        self.node.phase = value
+        self._set_enum("phase", value)
 
 
 class VolumeInfo(BaseNode):
@@ -529,4 +529,4 @@ class VolumeScatter(BaseNode):
             "HENYEY_GREENSTEIN", "FOURNIER_FORAND", "DRAINE", "RAYLEIGH", "MIE"
         ],
     ) -> None:
-        self.node.phase = value
+        self._set_enum("phase", value)

@@ -12,7 +12,7 @@ from .config import (
 )
 from .customizations import _CUSTOMIZATIONS, NodeCustomization
 from .model import NodeInfo, PropertyInfo, SocketInfo
-from .util import get_socket_param_name, normalize_name
+from .util import normalize_name
 
 
 def _mixin_parameter_lines(custom: NodeCustomization) -> list[str] | None:
@@ -54,6 +54,8 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     class_name = node_info.class_name_for_config(config)
     custom = _CUSTOMIZATIONS.get(node_info.bl_idname)
     suppress = custom.suppress if custom else frozenset()
+    output_names = node_info.output_attr_names
+    input_names = node_info.input_param_names
 
     # A node is generic when its output and/or input sockets change type across
     # enum values, with all varying sockets on a side sharing one type per value
@@ -85,8 +87,6 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     establish_links_params = []
 
     # Add input sockets as parameters
-    all_labels = [socket.label for socket in node_info.inputs]
-    sockets_use_same_name = all(label == all_labels[0] for label in all_labels)
 
     # For sockets that change type across enum states (e.g. a "Value" socket that is
     # Float in the default state but Vector when data_type="VECTOR"), widen the __init__
@@ -105,7 +105,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
                 _socket_type_variants[s.identifier].add(s.type_hint)
 
     for socket in node_info.inputs:
-        param_name = get_socket_param_name(socket, sockets_use_same_name)
+        param_name = input_names[socket.identifier]
         variants = _socket_type_variants[socket.identifier]
         if inputs_generic and socket.identifier in varying_inputs:
             # Generic input — accepts any socket type (matches the S annotation).
@@ -151,7 +151,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
                 _extra_sockets.append(socket)
 
     for socket in _extra_sockets:
-        param_name = get_socket_param_name(socket, sockets_use_same_name)
+        param_name = input_names[socket.identifier]
         init_params.append(f"{param_name}: {socket.type_hint} = None")
         establish_links_params.append((param_name, socket))
 
@@ -180,12 +180,28 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     # renamed to avoid colliding with a same-named socket (AxesToRotation's
     # ``primary_axis`` enum becomes ``primary`` because the Vector socket owns
     # ``primary_axis``).
+    def _optional_call(prop) -> str:
+        name = prop.format_name()
+        return f"        if {name} is not None:\n            self.{name} = {name}"
+
     property_calls = []
     for prop in node_info.properties:
         param_name = prop.format_name()
-        property_calls.append(f"""        self.{param_name} = {param_name}""")
+        if prop.optional and prop.prop_type == "ENUM":
+            # an enum can decide which sockets exist, so it goes before them
+            property_calls.append(_optional_call(prop))
+        elif not prop.optional:
+            property_calls.append(f"""        self.{param_name} = {param_name}""")
 
     property_setting = "\n".join(property_calls)
+
+    # Other optional properties go after the sockets, so a value derived from
+    # sockets (Color Balance's white points) is not overwritten by their defaults.
+    optional_setting = "".join(
+        "\n" + _optional_call(prop)
+        for prop in node_info.properties
+        if prop.optional and prop.prop_type != "ENUM"
+    )
 
     if _extra_sockets:
         # When there are enum-state-dependent sockets, set properties first so the
@@ -208,10 +224,29 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         for prop in node_info.properties
         if prop.format_name() not in suppress
     ]
+    # Parameters renamed after their socket's display name keep their old
+    # (identifier) name as a deprecated alias; BaseNode wraps the methods.
+    renamed: dict[str, dict[str, str]] = {}
+    if "__init__" not in suppress:
+        taken = {param.split(":")[0].strip() for param in init_params}
+        init_renames = {
+            normalize_name(socket.identifier): input_names[socket.identifier]
+            for socket in [*node_info.inputs, *_extra_sockets]
+            if input_names[socket.identifier] != normalize_name(socket.identifier)
+            and normalize_name(socket.identifier) not in taken
+        }
+        if init_renames:
+            renamed["__init__"] = init_renames
     enum_methods = node_info.generate_enum_class_methods(
         config,
         suppress,
         custom.suppress_factories_for if custom else frozenset(),
+        renamed,
+    )
+    renamed_block = (
+        f"    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {renamed!r}\n"
+        if renamed
+        else ""
     )
 
     # Add node type annotation — always use specific type so property access is typed
@@ -230,7 +265,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     elif all_init_sockets:
         doc_lines += ["Parameters", "----------"]
         for socket in all_init_sockets:
-            param_name = get_socket_param_name(socket, sockets_use_same_name)
+            param_name = input_names[socket.identifier]
             doc_lines.append(f"{param_name} : {socket.type_hint}")
             desc = socket.description if socket.description else socket.name
             doc_lines.append(f"    {desc}")
@@ -248,7 +283,8 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
                     elif "LIST" in socket.structure_type:
                         return_type = f"{return_type}List"
                     break
-            attr_name = normalize_name(socket.identifier)
+            names = output_names if prefix == "o" else input_names
+            attr_name = names[socket.identifier]
             desc = socket.description if socket.description else socket.name
             lines.append(f"{prefix}.{attr_name} : {return_type}")
             lines.append(f"    {desc}")
@@ -268,7 +304,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     # node is generic; see the flags computed at the top of this function.
     def _input_annotation(socket: SocketInfo) -> str:
         if inputs_generic and socket.identifier in varying_inputs:
-            attr_name = normalize_name(socket.identifier)
+            attr_name = input_names[socket.identifier]
             doc = socket.description or socket.name
             if socket.identifier in varying_grid_inputs:
                 param = "SGrid"
@@ -280,7 +316,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
             if doc:
                 ann += f'\n        """{doc}"""'
             return ann
-        return socket.format_accessor_annotation()
+        return socket.format_accessor_annotation(input_names[socket.identifier])
 
     # Build Inputs inner class
     input_annotations = [_input_annotation(socket) for socket in node_info.inputs] + [
@@ -303,7 +339,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     output_annotations = []
     for socket in node_info.outputs:
         if outputs_generic and socket.identifier in varying_outputs:
-            attr_name = normalize_name(socket.identifier)
+            attr_name = output_names[socket.identifier]
             doc = socket.description or socket.name
             if socket.identifier in varying_grid_outputs:
                 param = "SGrid"
@@ -316,7 +352,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
                 ann += f'\n        """{doc}"""'
             output_annotations.append(ann)
         else:
-            output_annotations.append(socket.format_accessor_annotation())
+            output_annotations.append(
+                socket.format_accessor_annotation(output_names[socket.identifier])
+            )
 
     outputs_base = generic_base if outputs_generic else "(SocketAccessor)"
     if output_annotations:
@@ -355,7 +393,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         init_return = " -> None" if init_signature == "(self)" else ""
         init_block = f"""    def __init__{init_signature}{init_return}:
         super().__init__(){init_body}
-        self._establish_links(**key_args)
+        self._establish_links(**key_args){optional_setting}
 """
 
     extra_body = f"\n{custom.extra_body}\n" if custom and custom.extra_body else ""
@@ -367,7 +405,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     _bl_idname = "{node_info.bl_idname}"
     node: {node_type_annotation}
-
+{renamed_block}
 {inputs_class}
 
 {outputs_class}
@@ -425,7 +463,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
                 mathutils_needed.add(mt)
 
     lines = ["# Auto-generated by `python -m gen` — do not edit manually."]
-    typing_imports = ["TYPE_CHECKING", "Literal"]
+    typing_imports = ["TYPE_CHECKING", "ClassVar", "Literal"]
     lines.append(f"from typing import {', '.join(typing_imports)}")
     lines.append("import bpy")
     if mathutils_needed:

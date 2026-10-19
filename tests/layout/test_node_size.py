@@ -176,8 +176,8 @@ def test_menu_switch_rows_follow_its_declaration():
     both its value input and its output."""
     with TreeBuilder("Declared", arrange=None):
         switch = g.MenuSwitch(data_type="BOOLEAN")
-        switch.add_item("A", True)
-        switch.add_item("B", False)
+        switch.items.new(True, "A")
+        switch.items.new(False, "B")
         node = switch.node
 
     rows = node_rows(node)

@@ -177,9 +177,9 @@ class SocketInfo:
                 return item
         raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
-    def format_accessor_annotation(self) -> str:
+    def format_accessor_annotation(self, attr_name: str | None = None) -> str:
         """Generate an annotation + attribute docstring for use in Inputs/Outputs inner classes."""
-        attr_name = normalize_name(self.identifier)
+        attr_name = attr_name or normalize_name(self.identifier)
 
         return_type = "Socket"
         for key, cls in _OUTPUT_SOCKET_CLASSES.items():
@@ -222,6 +222,8 @@ class PropertyInfo:
     # Every identifier the RNA enum declares (the stubs type the property with
     # this full set); ``enum_items`` holds only the values usable on this node.
     enum_all: list[str] = field(default_factory=list)
+    # Left to Blender unless passed; see ``OPTIONAL_PROPERTIES`` in introspect.
+    optional: bool = False
 
     def enum_values_to_literal(self) -> str:
         if not self.enum_items:
@@ -256,6 +258,8 @@ class PropertyInfo:
         return type
 
     def format_property_argument(self) -> str:
+        if self.optional:
+            return f"{self.format_name()}: {self.type_hint()} | None = None"
         match self.prop_type:
             case "ENUM":
                 default = f'"{self.default}"'
@@ -320,6 +324,12 @@ class PropertyInfo:
         )
         ignore = "  # ty: ignore[invalid-return-type]" if needs_ignore else ""
         setter_ignore = "  # ty: ignore[invalid-assignment]" if dynamic_enum else ""
+        # enum setters suggest the closest options when Blender rejects a value
+        setter = (
+            f'self._set_enum("{self.identifier}", value)'
+            if self.prop_type == "ENUM"
+            else f"self.node.{self.identifier} = value{setter_ignore}"
+        )
         return f"""    @property
 
     def {name}(self) -> {getter_type}:
@@ -327,7 +337,7 @@ class PropertyInfo:
 
     @{name}.setter
     def {name}(self, value: {setter_type}) -> None:
-        self.node.{self.identifier} = value{setter_ignore}
+        {setter}
 """
 
 
@@ -347,6 +357,75 @@ class NodeInfo:
     # Per-value socket snapshots for any input socket named "Type" that is a MENU.
     # Keyed by the socket identifier; each entry mirrors EnumInfo used for properties.
     type_socket_enums: list[EnumInfo] = field(default_factory=list)
+
+    @property
+    def all_input_sockets(self) -> list[SocketInfo]:
+        """Every input socket the node has in any enum state, by first appearance."""
+        sockets: dict[str, SocketInfo] = {}
+        for socket in self.inputs:
+            sockets.setdefault(socket.identifier, socket)
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                for socket in enum.sockets:
+                    sockets.setdefault(socket.identifier, socket)
+        for enum in self.type_socket_enums:
+            for socket in enum.sockets:
+                sockets.setdefault(socket.identifier, socket)
+        return list(sockets.values())
+
+    @property
+    def input_param_names(self) -> dict[str, str]:
+        """The constructor parameter (and ``i.<name>`` attribute) for each
+        input socket, by identifier.
+
+        Named after the socket's display name, as for outputs (Color Ramp's
+        ``Fac`` input is ``factor``). A name shared by several inputs in any
+        state (Mix's ``A_Float``/``A_Vector``), one that would shadow a
+        property parameter, or one that lands on another socket's parameter
+        keeps the identifier.
+        """
+        sockets = self.all_input_sockets
+        reserved = {prop.format_name() for prop in self.properties} | {"self", "cls"}
+        names = Counter(s.name for s in sockets)
+        params = {s.identifier: normalize_name(s.identifier) for s in sockets}
+        for s in sockets:
+            name = normalize_name(s.name)
+            if names[s.name] == 1 and name.isidentifier() and name not in reserved:
+                params[s.identifier] = name
+        while True:
+            counts = Counter(params.values())
+            clashes = [
+                ident
+                for ident, param in params.items()
+                if counts[param] > 1 and param != normalize_name(ident)
+            ]
+            if not clashes:
+                return params
+            for ident in clashes:
+                params[ident] = normalize_name(ident)
+
+    @property
+    def output_attr_names(self) -> dict[str, str]:
+        """The ``o.<name>`` accessor attribute for each output, by identifier.
+
+        Named after the socket's display name, as ``to_python`` writes them
+        (Attribute's ``Fac`` output is ``o.factor``). A name shared by several
+        outputs (Mix's four "Result" sockets), or one that doesn't normalize
+        to a distinct attribute, falls back to the identifier.
+        """
+        names = Counter(s.name for s in self.outputs)
+        by_name = {
+            s.identifier: normalize_name(s.name)
+            for s in self.outputs
+            if names[s.name] == 1 and normalize_name(s.name).isidentifier()
+        }
+        taken = Counter(by_name.values())
+        return {
+            s.identifier: by_name[s.identifier]
+            if taken.get(by_name.get(s.identifier, ""), 0) == 1
+            else normalize_name(s.identifier)
+            for s in self.outputs
+        }
 
     @property
     def node_docs_url(self) -> str | None:
@@ -629,14 +708,28 @@ class NodeInfo:
         config: TreeTypeConfig | None = None,
         suppress: frozenset[str] = frozenset(),
         suppress_props: frozenset[str] = frozenset(),
+        renamed: dict[str, dict[str, str]] | None = None,
     ) -> str:
         """Generate @classmethod convenience methods for enum operations.
 
         ``suppress`` names factory methods to omit and ``suppress_props`` enum
         properties whose factories are all omitted (a registered customization
-        replaces them).
+        replaces them). ``renamed`` collects, per factory, the parameters
+        renamed after their socket's display name (old name -> new name).
         """
         methods = []
+        input_params_by_id = self.input_param_names
+
+        def record(method_name: str, renames: dict[str, str], params: list[str]):
+            taken = {param.split(":")[0].strip() for param in params}
+            renames = {
+                old: new
+                for old, new in renames.items()
+                if old != new and old not in taken
+            }
+            if renamed is not None and renames:
+                renamed[method_name] = renames
+
         cls_name = self.class_name_for_config(config) if config else self.class_name
 
         for prop in self.properties:
@@ -662,9 +755,13 @@ class NodeInfo:
                 call_params = []
 
                 param_names = variant_param_names(enum.sockets)
+                renames: dict[str, str] = {}
                 for socket in enum.sockets:
-                    socket_name = get_socket_param_name(socket)
+                    socket_name = input_params_by_id[socket.identifier]
                     param_name = param_names[socket.identifier]
+                    if socket_name != normalize_name(socket.identifier):
+                        renames[param_name] = socket_name
+                        param_name = socket_name
 
                     if (
                         param_name
@@ -731,6 +828,7 @@ class NodeInfo:
 
                 if method_name in suppress:
                     continue
+                record(method_name, renames, input_params)
 
                 method = f'''
     @classmethod
@@ -758,9 +856,13 @@ class NodeInfo:
             call_params = []
 
             param_names = variant_param_names(enum.sockets)
+            renames = {}
             for socket in enum.sockets:
-                socket_name = get_socket_param_name(socket)
+                socket_name = input_params_by_id[socket.identifier]
                 param_name = param_names[socket.identifier]
+                if socket_name != normalize_name(socket.identifier):
+                    renames[param_name] = socket_name
+                    param_name = socket_name
 
                 if param_name and param_name != "" and param_name != type_param_name:
                     input_params.append(
@@ -788,6 +890,7 @@ class NodeInfo:
 
             if method_name in suppress:
                 continue
+            record(method_name, renames, input_params)
 
             method = f'''
     @classmethod

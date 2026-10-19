@@ -524,7 +524,8 @@ def test_socket_accessor():
         cube = g.Cube()
         sim = g.SimulationZone()
         (
-            sim.input.capture(cube)
+            cube
+            >> sim.items.geometry().initial
             >> g.TransformGeometry(translation=g.CombineXYZ(y=sim.delta_time))
             >> sim.output
             >> tree.outputs.geometry("MovedCube")
@@ -941,10 +942,10 @@ def test_float_socket_methods(snapshot):
         assert string.builder_node.i.decimals.default_value == 3
         assert isinstance(string.builder_node, g.ValueToString)
 
+        _assert_method(val.sign(), "SIGN")
+        _assert_method(val.min(0.0), "MINIMUM")
+        _assert_method(val.max(1.0), "MAXIMUM")
         for method, operation in [
-            ("sign", "SIGN"),
-            ("min", "MINIMUM"),
-            ("max", "MAXIMUM"),
             ("sin", "SINE"),
             ("cos", "COSINE"),
             ("tan", "TANGENT"),
@@ -1040,7 +1041,7 @@ def test_socket_builder_reference(snapshot):
     with g.tree() as tree:
         position = g.Position()
         pos = position.o.position
-        assert pos.builder_node
+        assert pos.builder_node is not None
         assert pos.builder_node.node == position.node
 
         _node = pos.builder_node.node
@@ -1399,10 +1400,17 @@ def test_vector_socket_new_methods():
         assert isinstance(result, VectorSocket)
         assert result.node.operation == "REFLECT"
 
+        result = vec.mul_add(2.0, other)
+        assert isinstance(result, VectorSocket)
+        assert result.node.operation == "MULTIPLY_ADD"
+        assert result.builder_node.i.vector.links[0].from_node == vec.node
+        assert tuple(result.node.inputs[1].default_value) == (2.0, 2.0, 2.0)
+        assert result.builder_node.i.vector_002.links[0].from_node == other.node
+
         ftl = g.FieldToList(10)
-        veclist = ftl.vector(vec)
-        assert ftl.i["VECTOR"].links
-        assert ftl.i["VECTOR"].links[0].from_node == vec.node
+        veclist = ftl.items.vector(vec).output
+        assert ftl.i["Position"].links
+        assert ftl.i["Position"].links[0].from_node == vec.node
         sorted = veclist.sort(veclist.length())
         assert isinstance(sorted, VectorSocketList)
         node = sorted.builder_node
@@ -1415,7 +1423,7 @@ def test_vector_socket_new_methods():
             node.i.sort_weight.links[0].from_node.bl_idname == g.VectorMath._bl_idname
         )
 
-        list = ftl.float(1.0)
+        list = ftl.items.float(1.0).output
         assert isinstance(list, FloatSocketList)
         assert list.node.bl_idname == g.FieldToList._bl_idname
 
@@ -1475,10 +1483,18 @@ def test_integer_socket_new_methods():
         assert inner.inputs[1].default_value == 0
         assert result.builder_node.i.value_001.default_value == 10
 
+        for method, operation in (("min", "MINIMUM"), ("max", "MAXIMUM")):
+            result = getattr(val, method)(3)
+            assert isinstance(result, IntegerSocket)
+            assert result.node.bl_idname == g.IntegerMath._bl_idname
+            assert result.node.operation == operation
+            assert result.builder_node.i.value.links[0].from_node == val.node
+            assert result.builder_node.i.value_001.default_value == 3
+
         result = val.modulo(7)
         assert isinstance(result, IntegerSocket)
         assert result.node.bl_idname == g.IntegerMath._bl_idname
-        assert result.node.operation == "MODULO"
+        assert result.node.operation == "FLOORED_MODULO"
         assert result.builder_node.i.value.links[0].from_node == val.node
         assert result.builder_node.i.value_001.default_value == 7
 
@@ -1581,17 +1597,32 @@ def test_all_domain_properties_reachable():
             input_pos.point.evaluate()
 
 
-def test_matrix_socket_transform_direction():
+def test_vector_socket_transform_direction():
     with g.tree():
         mat = g.CombineTransform().o.transform
         direction = g.Vector().o.vector
 
-        result = mat.transform_direction(direction)
+        result = direction.transform_direction(mat)
 
     assert isinstance(result, VectorSocket)
     assert result.node.bl_idname == g.TransformDirection._bl_idname
     assert result.builder_node.i.direction.links[0].from_node == direction.node
     assert result.builder_node.i.transform.links[0].from_node == mat.node
+
+
+def test_deprecated_matrix_transform_direction_and_object_transform():
+    with g.tree():
+        mat = g.CombineTransform().o.transform
+        direction = g.Vector().o.vector
+        obj = g.SelfObject().o.self_object
+        with pytest.warns(DeprecationWarning, match="VectorSocket.transform_direction"):
+            result = mat.transform_direction(direction)
+        assert result.node.bl_idname == g.TransformDirection._bl_idname
+        with pytest.warns(DeprecationWarning, match="ObjectSocket.matrix"):
+            legacy = obj.transform("RELATIVE")
+        assert isinstance(legacy, MatrixSocket)
+        assert legacy.node.transform_space == "RELATIVE"
+        assert isinstance(obj.matrix(), MatrixSocket)
 
 
 def test_accumulate_field_socket_methods():
@@ -1772,3 +1803,34 @@ def test_default_value_on_output_socket_error_names_input_sockets():
         value = tree.inputs.float("F")
         with pytest.raises(RuntimeError, match="only available on input sockets"):
             value.default_value = 1.0
+
+
+def test_grid_sdf_boolean_methods():
+    with g.tree():
+        a = g.GetNamedGrid(None, "a").o.grid
+        b = g.GetNamedGrid(None, "b").o.grid
+        for method, operation in (
+            ("sdf_union", "UNION"),
+            ("sdf_intersect", "INTERSECT"),
+            ("sdf_difference", "DIFFERENCE"),
+        ):
+            result = getattr(a, method)(b)
+            assert result.node.bl_idname == g.SDFGridBoolean._bl_idname
+            assert result.node.operation == operation
+        # difference subtracts the others from the receiver
+        grid_1 = result.node.inputs["Grid 1"]
+        assert grid_1.links[0].from_node == a.node
+        assert result.node.inputs["Grid 2"].links[0].from_node == b.node
+
+
+def test_data_block_info_methods():
+    with g.tree() as tree:
+        obj = tree.inputs.object("Object")
+        image = tree.inputs.image("Image")
+        assert obj.camera_info().node.bl_idname == g.CameraInfo._bl_idname
+        bone = obj.bone_info("Root")
+        assert bone.node.bl_idname == g.BoneInfo._bl_idname
+        assert bone.i.bone_name.default_value == "Root"
+        info = image.info(frame=3)
+        assert info.node.bl_idname == g.ImageInfo._bl_idname
+        assert info.i.frame.default_value == 3

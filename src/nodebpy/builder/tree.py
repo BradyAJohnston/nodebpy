@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import warnings
 from collections import Counter
-from collections.abc import Iterator
+from collections.abc import Collection, Iterator
 from contextlib import AbstractContextManager, contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, ClassVar, Literal, Self, TypeVar, cast
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -22,6 +23,7 @@ from bpy.types import (
 
 from ..layout import ArrangeMethod
 from ..layout import arrange as _arrange_nodes
+from ..layout import keep as _keep
 from ..types import (
     SOCKET_COMPATIBILITY,
     Default,
@@ -33,8 +35,10 @@ from ..types import (
     _SocketShapeStructureType,
 )
 from ._utils import (
+    InvalidLinkWarning,
     SocketError,
     _allow_innactive_sockets,
+    enum_value_error,
     resolve_socket_key,
     socket_key,
 )
@@ -61,6 +65,9 @@ from .socket import (
     VectorSocket,
 )
 
+if TYPE_CHECKING:
+    from ..live import NodeAnimation
+
 _SocketT = TypeVar("_SocketT", bound=Socket)
 
 # What TreeBuilder's split_inputs=None resolves to; see `default_split_inputs`.
@@ -83,6 +90,41 @@ def default_split_inputs(split: bool = True) -> Iterator[None]:
         yield
     finally:
         _DEFAULT_SPLIT_INPUTS.reset(token)
+
+
+# What TreeBuilder's keep_edits=None resolves to; see `default_keep_edits`.
+_DEFAULT_KEEP_EDITS: ContextVar[bool] = ContextVar(
+    "nodebpy_default_keep_edits", default=False
+)
+
+
+@contextmanager
+def default_keep_edits(keep: bool = True) -> Iterator[None]:
+    """Scope in which every ``TreeBuilder`` left at its default
+    ``keep_edits`` keeps the layout edits made to the tree it rebuilds with
+    ``clear=True`` (see :class:`TreeBuilder`). :func:`nodebpy.live.run_source`
+    runs its code in this scope.
+    """
+    token = _DEFAULT_KEEP_EDITS.set(keep)
+    try:
+        yield
+    finally:
+        _DEFAULT_KEEP_EDITS.reset(token)
+
+
+# Whether every TreeBuilder records what it built (see nodebpy.live.stamp_build),
+# not only the clear=True rebuilds; run_source sets it for the group classes
+# it rebuilds. Recording costs a pass over the nodes, so other builds skip it.
+_RECORD_BUILDS: ContextVar[bool] = ContextVar("nodebpy_record_builds", default=False)
+
+
+@contextmanager
+def _record_builds() -> Iterator[None]:
+    token = _RECORD_BUILDS.set(True)
+    try:
+        yield
+    finally:
+        _RECORD_BUILDS.reset(token)
 
 
 # The interface ``default_input`` values Blender actually accepts at runtime,
@@ -1137,7 +1179,12 @@ class TreeBuilder[TreeT: NodeTree]:
         ignore_visibility: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        keep_edits: bool | None = None,
+        is_modifier: bool | None = None,
+        is_tool: bool | None = None,
     ):
+        # ``is_modifier``/``is_tool`` flag a geometry node group for use as a
+        # modifier or as a node tool; None leaves the tree's flags as they are.
         # ``clear`` rebuilds in place: the tree is emptied (nodes, links and
         # interface) before the body runs, keeping the datablock so modifiers,
         # group nodes and pinned editors that reference it stay attached. With
@@ -1149,6 +1196,10 @@ class TreeBuilder[TreeT: NodeTree]:
         # interface gives its sockets new identifiers, which is what
         # Geometry Nodes modifiers key their input values by, so those values
         # are snapshotted by socket name here and reapplied on exit.
+        # ``keep_edits`` (default: see default_keep_edits) carries the layout
+        # edits made to the tree since it was last arranged (moved, resized,
+        # collapsed, framed or relabelled nodes) over to the rebuild, onto
+        # the nodes that match; see nodebpy.layout.keep.
         if isinstance(tree, str):
             existing = bpy.data.node_groups.get(tree) if clear else None
             if existing is not None and existing.bl_idname == tree_type:
@@ -1158,14 +1209,40 @@ class TreeBuilder[TreeT: NodeTree]:
         else:
             self.tree = tree  # type: ignore
         self._preserved_inputs: AbstractContextManager[None] | None = None
+        self._kept_edits: _keep.Edits | None = None
+        if keep_edits is None:
+            keep_edits = _DEFAULT_KEEP_EDITS.get()
+        if clear and keep_edits and arrange is not None:
+            self._kept_edits = _keep.record(self.tree)
+        self._animation: NodeAnimation | None = None
+        self._unedited_users: list[NodeTree] = []
+        self._record = clear or _RECORD_BUILDS.get()
         if clear:
-            from ..live import preserve_modifier_inputs
+            from ..live import (
+                NodeAnimation,
+                keep_edited,
+                preserve_modifier_inputs,
+                unedited_users,
+                was_edited,
+            )
 
+            self._unedited_users = unedited_users(self.tree)
+            if was_edited(self.tree):
+                copy = self.tree.copy()
+                assert copy is not None
+                keep_edited(copy, self.tree.name)
             assert self.tree.interface is not None
             self._preserved_inputs = preserve_modifier_inputs([self.tree])
             self._preserved_inputs.__enter__()
+            # Removing the nodes would delete their keyframes and drivers.
+            self._animation = NodeAnimation(self.tree)
             self.tree.nodes.clear()
             self.tree.interface.clear()
+
+        if is_modifier is not None:
+            self.is_modifier = is_modifier
+        if is_tool is not None:
+            self.is_tool = is_tool
 
         self._menu_defaults: list[_MenuDefault] = []
         self._exited = False
@@ -1187,8 +1264,15 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        keep_edits: bool | None = None,
+        is_modifier: bool | None = None,
+        is_tool: bool | None = None,
     ) -> TreeBuilder[GeometryNodeTree]:
-        """Create a geometry node tree."""
+        """Create a geometry node tree.
+
+        ``is_modifier`` and ``is_tool`` flag the group for use as a modifier
+        or as a node tool; ``None`` leaves an existing group's flags alone.
+        """
         return cast(
             "TreeBuilder[GeometryNodeTree]",
             cls(
@@ -1199,6 +1283,9 @@ class TreeBuilder[TreeT: NodeTree]:
                 fake_user=fake_user,
                 split_inputs=split_inputs,
                 clear=clear,
+                keep_edits=keep_edits,
+                is_modifier=is_modifier,
+                is_tool=is_tool,
             ),
         )
 
@@ -1212,6 +1299,7 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        keep_edits: bool | None = None,
     ) -> TreeBuilder[ShaderNodeTree]:
         """Create a shader node tree."""
         return cast(
@@ -1224,6 +1312,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 fake_user=fake_user,
                 split_inputs=split_inputs,
                 clear=clear,
+                keep_edits=keep_edits,
             ),
         )
 
@@ -1237,9 +1326,12 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         split_inputs: bool | None = None,
         clear: bool = False,
+        keep_edits: bool | None = None,
+        scene: bool = False,
     ) -> TreeBuilder[CompositorNodeTree]:
-        """Create a compositor node tree."""
-        return cast(
+        """Create a compositor node tree; ``scene=True`` also makes it the
+        active scene's compositor."""
+        builder = cast(
             "TreeBuilder[CompositorNodeTree]",
             cls(
                 name,
@@ -1249,8 +1341,14 @@ class TreeBuilder[TreeT: NodeTree]:
                 fake_user=fake_user,
                 split_inputs=split_inputs,
                 clear=clear,
+                keep_edits=keep_edits,
             ),
         )
+        if scene:
+            active = bpy.context.scene
+            assert active is not None, "no active scene to set the compositor on"
+            active.compositing_node_group = builder.tree
+        return builder
 
     @property
     def nodes(self) -> Nodes:
@@ -1264,6 +1362,24 @@ class TreeBuilder[TreeT: NodeTree]:
     def fake_user(self, value: bool) -> None:
         self.tree.use_fake_user = value
 
+    @property
+    def is_modifier(self) -> bool:
+        """Whether the group can be used as a Geometry Nodes modifier."""
+        return getattr(self.tree, "is_modifier", False)
+
+    @is_modifier.setter
+    def is_modifier(self, value: bool) -> None:
+        self.tree.is_modifier = value  # ty: ignore[unresolved-attribute]
+
+    @property
+    def is_tool(self) -> bool:
+        """Whether the group can be used as a node tool."""
+        return getattr(self.tree, "is_tool", False)
+
+    @is_tool.setter
+    def is_tool(self, value: bool) -> None:
+        self.tree.is_tool = value  # ty: ignore[unresolved-attribute]
+
     def to_python(
         self,
         min_chain_length: int = 3,
@@ -1275,6 +1391,8 @@ class TreeBuilder[TreeT: NodeTree]:
         format: bool = True,
         nodebpy_pkg: str = "nodebpy",
         in_place: bool = False,
+        groups: Literal["inline", "reference"] = "inline",
+        group_modules: Collection[str] | None = None,
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -1293,6 +1411,8 @@ class TreeBuilder[TreeT: NodeTree]:
             format=format,
             nodebpy_pkg=nodebpy_pkg,
             in_place=in_place,
+            groups=groups,
+            group_modules=group_modules,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:
@@ -1372,15 +1492,81 @@ class TreeBuilder[TreeT: NodeTree]:
             self.split_group_inputs()
         if self._arrange is not None:
             self.arrange()
+            if self._kept_edits is not None:
+                _keep.restore(self._kept_edits, self.tree)
+        self._kept_edits = None
+        if self._animation is not None:
+            self._animation.restore()
+            self._animation = None
         self._apply_input_defaults()
         if self._preserved_inputs is not None:
             self._preserved_inputs.__exit__(None, None, None)
             self._preserved_inputs = None
+        self._warn_invalid_links()
+        if self._record:
+            from ..live import stamp_build
+
+            stamp_build(self.tree)
+            for user in self._unedited_users:
+                stamp_build(user)
+            self._unedited_users = []
         # Interface-menu defaults assigned from here on can't wait for a
         # context exit that already happened — apply them immediately
         # (see MenuSocket.default_value).
         self._exited = True
         self.deactivate_tree()
+
+    def invalid_links(self) -> list[bpy.types.NodeLink]:
+        """Links Blender can't evaluate, drawn red in the node editor: most
+        often a field reaching an input that takes a single value, such as a
+        Repeat Zone's Iterations or Points' Count. Muted links and links to
+        sockets the node's settings hide or grey out aren't evaluated, so they
+        aren't reported."""
+
+        def evaluated(socket: NodeSocket | None) -> bool:
+            return (
+                socket is not None
+                and not socket.is_unavailable
+                and not socket.is_inactive
+            )
+
+        return [
+            link
+            for link in self.tree.links
+            if not link.is_valid
+            and not link.is_muted
+            and not link.is_hidden
+            and evaluated(link.from_socket)
+            and evaluated(link.to_socket)
+        ]
+
+    def _warn_invalid_links(self) -> None:
+        invalid = self.invalid_links()
+        if not invalid:
+            return
+        lines = []
+        for link in invalid:
+            source, target = link.from_socket, link.to_socket
+            assert source is not None and target is not None
+            assert link.from_node is not None and link.to_node is not None
+            line = (
+                f"  {link.from_node.name}.{source.name} -> "
+                f"{link.to_node.name}.{target.name}"
+            )
+            # Blender draws inputs that only take a single value as a line.
+            if (
+                target.display_shape == "LINE"
+                and source.inferred_structure_type == "FIELD"
+            ):
+                line += f" ('{target.name}' takes a single value, not a field)"
+            lines.append(line)
+        count = "1 link" if len(invalid) == 1 else f"{len(invalid)} links"
+        warnings.warn(
+            f"Blender can't evaluate {count} in '{self.tree.name}':\n"
+            + "\n".join(lines),
+            InvalidLinkWarning,
+            stacklevel=3,
+        )
 
     def _apply_input_defaults(self) -> None:
         if not self._menu_defaults:
@@ -1396,7 +1582,14 @@ class TreeBuilder[TreeT: NodeTree]:
                 continue
             item = value.resolve(self.tree)
             if item is not None:
-                item.default_value = value.default
+                try:
+                    item.default_value = value.default
+                except TypeError as error:
+                    node = getattr(item, "node", None)
+                    where = f"{node.name}'s " if node is not None else "The "
+                    raise enum_value_error(
+                        error, f"{where}'{item.name}' menu"
+                    ) from None
 
     def __len__(self) -> int:
         return len(self.nodes)
@@ -1767,6 +1960,13 @@ class TreeBuilder[TreeT: NodeTree]:
                 f"Incompatible socket types, {socket1.type} and {socket2.type}"
             )
 
+        if not self.ignore_visibility:
+            # a socket the node's settings hide (Vector Math's Vector output in
+            # Dot Product mode) takes the link but never passes anything along
+            for socket in (socket1, socket2):
+                if getattr(socket, "is_unavailable", False):
+                    raise RuntimeError(_unavailable_message(socket))
+
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
         assert link is not None
 
@@ -1823,12 +2023,14 @@ class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
         fake_user: bool = False,
         ignore_visibility: bool = False,
         clear: bool = False,
+        keep_edits: bool | None = None,
     ):
         # With ``clear`` an existing material of that name is rebuilt in place
         # (objects keep it assigned) instead of creating ``Name.001``. A new
         # material starts with Blender's default Principled BSDF and Material
         # Output nodes, which are removed so the body builds from empty.
         material = bpy.data.materials.get(name) if clear else None
+        reused = material is not None
         if material is None:
             material = bpy.data.materials.new(name)
         assert material is not None
@@ -1842,4 +2044,65 @@ class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
             fake_user=fake_user,
             ignore_visibility=ignore_visibility,
             clear=True,
+            keep_edits=keep_edits if reused else False,
         )
+
+
+class WorldBuilder(TreeBuilder[ShaderNodeTree]):
+    """Builds a world's node tree, as :class:`MaterialBuilder` does a
+    material's; ``world`` is the ``bpy.types.World``."""
+
+    def __init__(
+        self,
+        name: str = "World",
+        *,
+        collapse: bool = False,
+        arrange: ArrangeMethod = "sugiyama",
+        fake_user: bool = False,
+        ignore_visibility: bool = False,
+        clear: bool = False,
+        keep_edits: bool | None = None,
+        scene: bool = False,
+    ):
+        # With ``clear`` an existing world of that name is rebuilt in place (a
+        # scene using it keeps it). A new world's default Background and World
+        # Output nodes are removed so the body builds from empty.
+        world = bpy.data.worlds.get(name) if clear else None
+        reused = world is not None
+        if world is None:
+            world = bpy.data.worlds.new(name)
+        assert world is not None and world.node_tree is not None
+        self.world = world
+        self.world.use_fake_user = fake_user
+        super().__init__(
+            world.node_tree,
+            collapse=collapse,
+            arrange=arrange,
+            fake_user=fake_user,
+            ignore_visibility=ignore_visibility,
+            clear=True,
+            keep_edits=keep_edits if reused else False,
+        )
+        if scene:
+            active = bpy.context.scene
+            assert active is not None, "no active scene to set the world on"
+            active.world = world
+
+
+def _unavailable_message(socket: NodeSocket) -> str:
+    """Why ``socket`` can't be linked: what its node's settings make available."""
+    node = socket.node
+    assert node is not None
+    direction = "output" if socket.is_output else "input"
+    sockets = node.outputs if socket.is_output else node.inputs
+    available = [s.name for s in sockets or () if s.name and not s.is_unavailable]
+    base = set(bpy.types.Node.bl_rna.properties.keys())
+    settings = {
+        prop.identifier: getattr(node, prop.identifier)
+        for prop in node.bl_rna.properties
+        if prop.type == "ENUM" and not prop.is_readonly and prop.identifier not in base
+    }
+    return (
+        f"'{node.name}' has no '{socket.name}' {direction} with its current "
+        f"settings {settings}; available: {available}."
+    )

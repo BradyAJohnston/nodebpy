@@ -32,7 +32,7 @@ from .data import MARGIN, options, plain_chain, plain_node
 from .metrics import measure
 
 _PACKAGE = Path(layout.__file__).parent
-_BLENDER_SIDE = {"__init__", "api", "apply", "extract", "node_size"}
+_BLENDER_SIDE = {"__init__", "api", "apply", "extract", "keep", "node_size"}
 
 
 def _imports(module: Path) -> set[str]:

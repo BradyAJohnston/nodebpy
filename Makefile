@@ -2,6 +2,15 @@ generate:
 	uv run python -m gen
 	make format
 
+# Refresh the repository-root copy of the agent skill from the package source,
+# and give the Claude Code plugin manifest the package's version.
+.PHONY: skills
+skills:
+	rm -rf skills/nodebpy
+	mkdir -p skills
+	cp -r src/nodebpy/skills/nodebpy skills/nodebpy
+	v=$$(uv version --short); perl -0pi -e "s/\"version\": \"[^\"]*\"/\"version\": \"$$v\"/" .claude-plugin/plugin.json
+
 # Regenerate the socket draw-order table from Blender's node declarations
 # (network: sparse-clones the tag matching the installed bpy).
 socket-order:
@@ -20,6 +29,11 @@ format:
 	uv run ruff check --fix
 	uv run ty check --fix src
 	uv run ruff format
+
+# Render the example images (only those whose example or shot changed);
+# `make docs` also does this through the quarto pre-render step.
+examples:
+	uv run python docs/examples/render.py
 
 docs:
 	cd docs && uv run quartodoc build

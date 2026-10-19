@@ -1,10 +1,7 @@
-from typing import TYPE_CHECKING, Final, Literal
-
-from bpy.types import ShaderNodeAttribute
+from typing import Final
 
 from ...builder import (
     ArrangeMethod,
-    BaseNode,
     BooleanSocket,
     BundleSocket,
     ClosureSocket,
@@ -16,8 +13,8 @@ from ...builder import (
     ShaderSocket,
     TreeBuilder,
     VectorSocket,
+    WorldBuilder,
 )
-from ...builder.accessor import SocketAccessor
 from ...builder.socket import BaseSocket
 from ...types import (
     InputBoolean,
@@ -30,11 +27,11 @@ from ...types import (
     InputShader,
     InputVector,
 )
-from ..geometry import Frame, RepeatInput, RepeatOutput, RepeatZone
+from ..geometry import ClosureZone, Frame, RepeatInput, RepeatOutput, RepeatZone
 from ..geometry.manual import Float, MenuItems, _MenuSwitchBase
 
 __all__ = [
-    "Attribute",
+    "ClosureZone",
     "Float",
     "Frame",
     "MenuSwitch",
@@ -43,6 +40,7 @@ __all__ = [
     "RepeatZone",
     "material",
     "tree",
+    "world",
 ]
 
 tree: Final = TreeBuilder.shader
@@ -55,9 +53,41 @@ def material(
     arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
     clear: bool = False,
+    keep_edits: bool | None = None,
 ) -> MaterialBuilder:
     return MaterialBuilder(
-        name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
+        name,
+        collapse=collapse,
+        arrange=arrange,
+        fake_user=fake_user,
+        clear=clear,
+        keep_edits=keep_edits,
+    )
+
+
+def world(
+    name: str = "World",
+    *,
+    collapse: bool = False,
+    arrange: ArrangeMethod = "sugiyama",
+    fake_user: bool = False,
+    clear: bool = False,
+    keep_edits: bool | None = None,
+    scene: bool = False,
+) -> WorldBuilder:
+    """Build a world's node tree; ``scene=True`` makes it the active scene's world.
+
+    ``with s.world("Studio", clear=True, scene=True):`` then add a Background
+    linked into a World Output, as in a material.
+    """
+    return WorldBuilder(
+        name,
+        collapse=collapse,
+        arrange=arrange,
+        fake_user=fake_user,
+        clear=clear,
+        keep_edits=keep_edits,
+        scene=scene,
     )
 
 
@@ -117,86 +147,3 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
         cls, menu: InputMenu = None, items: MenuItems[InputShader] | None = None
     ) -> "MenuSwitch[ShaderSocket]":
         return MenuSwitch(menu, items, data_type="SHADER")
-
-
-class Attribute(BaseNode):
-    """
-    Retrieve attributes attached to objects or geometry
-    """
-
-    _bl_idname = "ShaderNodeAttribute"
-    node: ShaderNodeAttribute
-
-    def __init__(
-        self,
-        attribute_type: Literal[
-            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"
-        ] = "GEOMETRY",
-        attribute_name: str = "",
-    ):
-        super().__init__()
-        key_args = {}
-        self.attribute_type = attribute_type
-        self.attribute_name = attribute_name
-        self._establish_links(**key_args)
-
-    @classmethod
-    def geometry(cls, attribute_name: str = "") -> "Attribute":
-        """Create Attribute with operation 'Geometry'."""
-        return cls(attribute_type="GEOMETRY", attribute_name=attribute_name)
-
-    @classmethod
-    def object(cls, attribute_name: str = "") -> "Attribute":
-        """Create Attribute with operation 'Object'."""
-        return cls(attribute_type="OBJECT", attribute_name=attribute_name)
-
-    @classmethod
-    def instancer(cls, attribute_name: str = "") -> "Attribute":
-        """Create Attribute with operation 'Instancer'."""
-        return cls(attribute_type="INSTANCER", attribute_name=attribute_name)
-
-    @classmethod
-    def view_layer(cls, attribute_name: str = "") -> "Attribute":
-        """Create Attribute with operation 'View Layer'."""
-        return cls(attribute_type="VIEW_LAYER", attribute_name=attribute_name)
-
-    @classmethod
-    def light(cls, attribute_name: str = "") -> "Attribute":
-        """Create Attribute with operation 'Light'."""
-        return cls(attribute_type="LIGHT", attribute_name=attribute_name)
-
-    class _Outputs(SocketAccessor):
-        color: ColorSocket
-        """The attribute value as a color."""
-        vector: VectorSocket
-        """The attribute value as a vector."""
-        fac: FloatSocket
-        """The attribute value as a scalar factor."""
-        alpha: FloatSocket
-        """The attribute value as an alpha (scalar)."""
-
-    if TYPE_CHECKING:
-
-        @property
-        def o(self) -> _Outputs: ...
-
-    @property
-    def attribute_type(
-        self,
-    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"]:
-        return self.node.attribute_type
-
-    @attribute_type.setter
-    def attribute_type(
-        self,
-        value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"],
-    ) -> None:
-        self.node.attribute_type = value
-
-    @property
-    def attribute_name(self) -> str:
-        return self.node.attribute_name
-
-    @attribute_name.setter
-    def attribute_name(self, value: str) -> None:
-        self.node.attribute_name = value

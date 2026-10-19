@@ -163,10 +163,10 @@ def test_non_default_property():
 def test_factory_skips_props_it_does_not_take():
     """A prop Blender hides for the factory's variant forces the constructor."""
     with TreeBuilder("NoiseNormalize") as tree:
-        g.NoiseTexture(noise_type="RIDGED_MULTIFRACTAL", normalize=True)
+        g.NoiseTexture(noise_type="RIDGED_MULTIFRACTAL", normalize=False)
     code = to_python(tree)
     assert "g.NoiseTexture.ridged_multifractal(" not in code
-    assert "normalize=True" in code
+    assert "normalize=False" in code
 
 
 def test_default_property_omitted():
@@ -202,6 +202,50 @@ def test_value_output_default_round_trips():
         node for node in rebuilt.tree.nodes if node.bl_idname == "ShaderNodeValue"
     )
     assert value_node.outputs[0].default_value == pytest.approx(0.05)
+
+
+@pytest.mark.parametrize(
+    "build",
+    [
+        lambda x, v, s: g.Math.logarithm(x),
+        lambda x, v, s: g.Math.ping_pong(x),
+        lambda x, v, s: g.Math.wrap(x),
+        lambda x, v, s: g.VectorMath.cross_product(v),
+        lambda x, v, s: g.VectorMath.dot_product(v),
+        lambda x, v, s: g.VectorMath.reflect(v),
+        lambda x, v, s: g.SliceString(s),
+    ],
+    ids=["log", "ping_pong", "wrap", "cross", "dot", "reflect", "slice"],
+)
+def test_socket_methods_keep_the_nodes_defaults(build):
+    """A node written as a socket method keeps its unlinked inputs, also
+    where the method's defaults differ from Blender's (``log()`` is natural,
+    the node's base is 0.5)."""
+    with TreeBuilder("MethodDefaults") as tree:
+        x = tree.inputs.float("X")
+        v = tree.inputs.vector("V")
+        s = tree.inputs.string("S")
+        node = build(x, v, s)
+        if isinstance(node, g.SliceString):
+            node >> tree.outputs.string("Out")
+        else:
+            node >> tree.outputs.float("Out")
+
+    def unlinked(node_tree):
+        (found,) = (n for n in node_tree.nodes if n.bl_idname == node.node.bl_idname)
+        return [
+            (
+                i.identifier,
+                tuple(i.default_value) if i.type == "VECTOR" else i.default_value,
+            )
+            for i in found.inputs
+            if i.enabled and not i.is_linked and hasattr(i, "default_value")
+        ]
+
+    code = to_python(tree, format=False)
+    namespace: dict = {}
+    exec(code, namespace)
+    assert unlinked(namespace["tree"].tree) == pytest.approx(unlinked(tree.tree)), code
 
 
 def test_fanout_assigns_variable():
@@ -326,6 +370,25 @@ def test_default_does_not_snapshot_positions():
     code = to_python(tree, format=False)
     assert "arrange=None" not in code
     assert "layout_snapshot" not in code
+
+
+def test_with_form_emits_modifier_and_tool_flags():
+    """The modifier/tool flags are constructor options, so the with form
+    carries them (the class form keeps them in _tree_properties)."""
+    with TreeBuilder("Flagged", is_modifier=True, is_tool=True) as tree:
+        tree.inputs.geometry("Geometry") >> tree.outputs.geometry("Geometry")
+    code = to_python(tree, format=False)
+    assert (
+        'with TreeBuilder("Flagged", is_modifier=True, is_tool=True) as tree:' in code
+    )
+    assert "is_modifier" not in to_python(TreeBuilder("Unflagged"), format=False)
+
+    _force_fresh_group_build()
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"]
+    assert rebuilt.tree is not tree.tree
+    assert rebuilt.is_modifier and rebuilt.is_tool
 
 
 def test_in_place_emits_clear_and_rebuilds_same_datablock():
@@ -878,12 +941,12 @@ def test_math_no_lift_when_unlinked():
 
 
 def test_math_non_liftable_stays_as_call():
-    """Non-liftable operation (INVERSE_SQUARE_ROOT) stays a call — via the factory shortcut."""
-    with TreeBuilder("MathInverseSquareRoot") as tree:
+    """Non-liftable operation (truncated MODULO) stays a call — via the factory shortcut."""
+    with TreeBuilder("MathTruncatedModulo") as tree:
         val = tree.inputs.float("Value", 1.0)
-        g.Math.inverse_square_root(val) >> tree.outputs.float("Result")
+        g.Math.truncated_modulo(val, 3.0) >> tree.outputs.float("Result")
     code = to_python(tree)
-    assert "g.Math.inverse_square_root(value)" in code
+    assert "g.Math.truncated_modulo(value, 3.0)" in code
 
 
 def test_math_fanout_assigns_variable():
@@ -980,7 +1043,7 @@ def test_multi_input_socket_becomes_tuple():
         b = g.UVSphere()
         g.JoinGeometry((a, b)) >> tree.outputs.geometry()
     code = _assert_roundtrip(tree)
-    assert "g.JoinGeometry(geometry=(g.Cube(), g.UVSphere()))" in code
+    assert "g.JoinGeometry((g.Cube(), g.UVSphere()))" in code
 
 
 def test_geometry_to_instance_emits_positional_args():
@@ -1064,6 +1127,29 @@ def test_integer_math_lifts_to_operators():
     code = _assert_roundtrip(tree)
     assert "i // 2 + abs(i)" in code
     assert "IntegerMath" not in code
+
+
+def test_integer_operators_round_trip():
+    """Bitwise ops lift to Bit Math operators, % to floored modulo, / to a
+    float Math divide; a truncated MODULO and Boolean Math fed by integers
+    stay calls, since the operators would build other nodes."""
+    with TreeBuilder("IntOperators") as tree:
+        i = tree.inputs.integer("I")
+        j = tree.inputs.integer("J")
+        ((i & j) | ~i) >> tree.outputs.integer("Bits")
+        (i % j) >> tree.outputs.integer("Mod")
+        (i / j) >> tree.outputs.float("Div")
+        g.IntegerMath.modulo(i, j) >> tree.outputs.integer("Truncated")
+        g.BooleanMath.l_and(i, j) >> tree.outputs.boolean("Logic")
+    code = _assert_roundtrip(tree)
+    for expected in (
+        "i & j | ~i",
+        "i % j",
+        "i / j",
+        "IntegerMath.modulo(",
+        "g.BooleanMath(",
+    ):
+        assert expected in code, expected
 
 
 def test_compare_emits_factory_path():
@@ -1229,6 +1315,7 @@ def test_vector_math_methods():
         a.length() >> tree.outputs.float("Len")
         a.normalize() >> tree.outputs.vector("Norm")
         a.distance(b) >> tree.outputs.float("Dist")
+        a.mul_add(b, (0.0, 0.0, 0.0)) >> tree.outputs.vector("MulAdd")
     code = _assert_roundtrip(tree)
     for expected in (
         "a.dot(b)",
@@ -1236,6 +1323,7 @@ def test_vector_math_methods():
         "a.length()",
         "a.normalize()",
         "a.distance(b)",
+        "a.mul_add(b, (0.0, 0.0, 0.0))",
     ):
         assert expected in code, expected
     assert "VectorMath" not in code
@@ -1259,6 +1347,130 @@ def test_clamp_method():
         val.clamp(0.2, 0.8) >> tree.outputs.float("Out")
     code = _assert_roundtrip(tree)
     assert "value.clamp(0.2" in code
+
+
+def test_min_max_methods():
+    """The argument is always emitted, even at the node's 0.5 socket default."""
+    with TreeBuilder("MinMaxMethod") as tree:
+        val = tree.inputs.float("Value", 0.5)
+        count = tree.inputs.integer("Count")
+        val.max(0.5).min(2.0) >> tree.outputs.float("Out")
+        count.max(0).min(10) >> tree.outputs.integer("Count")
+    code = _assert_roundtrip(tree)
+    assert "value.max(0.5).min(2.0)" in code
+    assert "count.max(0).min(10)" in code
+
+
+def test_vector_methods_lift():
+    """Vector Math methods lift, always writing their required arguments."""
+    with TreeBuilder("VectorMethodsLift") as tree:
+        v = tree.inputs.vector("V")
+        w = tree.inputs.vector("W")
+        m = tree.inputs.matrix("M")
+        v.min(w) >> tree.outputs.vector("Min")
+        v.max((0.0, 0.0, 0.0)) >> tree.outputs.vector("Max")
+        v.floor() >> tree.outputs.vector("Floor")
+        v.sin() >> tree.outputs.vector("Sin")
+        v.snap((0.5, 0.5, 0.5)) >> tree.outputs.vector("Snap")
+        v.wrap((0.0, 0.0, 0.0), (1.0, 1.0, 1.0)) >> tree.outputs.vector("Wrap")
+        v.faceforward(w, (0.0, 0.0, 0.0)) >> tree.outputs.vector("Face")
+        v.refract(w, 1.45) >> tree.outputs.vector("Refract")
+        v.project_point(m) >> tree.outputs.vector("Projected")
+        v.euler_to_rotation() >> tree.outputs.rotation("Rotation")
+    code = _assert_roundtrip(tree)
+    for snippet in (
+        "v.min(w)",
+        "v.max((0.0, 0.0, 0.0))",
+        "v.floor()",
+        "v.sin()",
+        "v.snap((0.5, 0.5, 0.5))",
+        "v.wrap((0.0, 0.0, 0.0), (1.0, 1.0, 1.0))",
+        "v.faceforward(w, (0.0, 0.0, 0.0))",
+        "v.refract(w, 1.45)",
+        "v.project_point(m)",
+        "v.euler_to_rotation()",
+    ):
+        assert snippet in code, snippet
+    assert "VectorMath" not in code
+
+
+def test_scalar_methods_lift():
+    with TreeBuilder("ScalarMethodsLift") as tree:
+        f = tree.inputs.float("F")
+        i = tree.inputs.integer("I")
+        f.smooth_min(0.5, 0.0) >> tree.outputs.float("SMin")
+        f.inverse_sqrt() >> tree.outputs.float("InvSqrt")
+        i.divide_round(2) >> tree.outputs.integer("DivRound")
+        i.gcd(0) >> tree.outputs.integer("GCD")
+        i.to_float() >> tree.outputs.float("Float")
+        i.shift(0) >> tree.outputs.integer("Shift")
+        i.rotate(-2) >> tree.outputs.integer("Rotate")
+    code = _assert_roundtrip(tree)
+    for snippet in (
+        "f.smooth_min(0.5, 0.0)",
+        "f.inverse_sqrt()",
+        "i.divide_round(2)",
+        "i.gcd(0)",
+        "i.to_float()",
+        "i.shift(0)",
+        "i.rotate(-2)",
+    ):
+        assert snippet in code, snippet
+
+
+def test_color_hash_blur_methods_lift():
+    with TreeBuilder("ColorHashBlur") as tree:
+        c = tree.inputs.color("C")
+        f = tree.inputs.float("F")
+        s = tree.inputs.string("S")
+        c.gamma(2.2) >> tree.outputs.color("Gamma")
+        f.hash(3) >> tree.outputs.integer("HashF")
+        s.hash() >> tree.outputs.integer("HashS")
+        c.blur(2) >> tree.outputs.color("Blur")
+    code = _assert_roundtrip(tree)
+    for snippet in ("c_.gamma(2.2)", "f.hash(3)", "s_.hash()", "c_.blur(2)"):
+        assert snippet in code, snippet
+
+
+def test_color_arithmetic_round_trips():
+    """Colour-colour arithmetic builds Mix nodes, which rebuild faithfully."""
+    with TreeBuilder("ColorArithmeticRoundTrip") as tree:
+        a = tree.inputs.color("A")
+        b = tree.inputs.color("B")
+        (a + b) >> tree.outputs.color("Add")
+        (a / (0.5, 0.5, 0.5, 1.0)) >> tree.outputs.color("Div")
+        (a * 0.5) >> tree.outputs.vector("Scaled")
+    _assert_roundtrip(tree)
+
+
+def test_bundle_and_data_block_methods_lift():
+    with TreeBuilder("BundleMethods") as tree:
+        bundle = tree.inputs.bundle("Bundle")
+        geo = tree.inputs.geometry("Geometry")
+        material = tree.inputs.material("Material")
+        collection = tree.inputs.collection("Collection")
+        bundle.get.float("x") >> tree.outputs.float("X")
+        bundle.get.geometry("mesh") >> tree.outputs.geometry("Mesh")
+        bundle.has("x") >> tree.outputs.boolean("Has")
+        bundle.paths() >> tree.outputs.string("Paths", structure_type="LIST")
+        geo.set_bundle(bundle) >> tree.outputs.geometry("WithBundle")
+        geo.bundle() >> tree.outputs.bundle("FromGeometry")
+        material.selection() >> tree.outputs.boolean("Selection")
+        collection.children().objects >> tree.outputs.object(
+            "Objects", structure_type="LIST"
+        )
+    code = _assert_roundtrip(tree)
+    for snippet in (
+        'bundle.get.float("x")',
+        'bundle.get.geometry("mesh")',
+        'bundle.has("x")',
+        "bundle.paths()",
+        "geometry.set_bundle(bundle)",
+        "geometry.bundle()",
+        "material.selection()",
+        "collection.children(",
+    ):
+        assert snippet in code, snippet
 
 
 def test_string_methods():
@@ -1314,13 +1526,13 @@ def test_matrix_methods():
         mat.invert() >> tree.outputs.matrix("Inverted")
         mat.transpose() >> tree.outputs.matrix("Transposed")
         mat.determinant() >> tree.outputs.float("Det")
-        mat.transform_direction(vec) >> tree.outputs.vector("Dir")
+        vec.transform_direction(mat) >> tree.outputs.vector("Dir")
     code = _assert_roundtrip(tree)
     for expected in (
         "mat.invert()",
         "mat.transpose()",
         "mat.determinant()",
-        "mat.transform_direction(vec)",
+        "vec.transform_direction(mat)",
     ):
         assert expected in code, expected
 
@@ -1635,14 +1847,14 @@ def test_repeat_zone_emits_handle_form():
     with TreeBuilder("RepeatHandles") as tree:
         out = tree.outputs.geometry("Geometry")
         zone = g.RepeatZone(10)
-        value = zone.item("value", initial=1.0)
+        value = zone.items.float(1.0, "value")
         (value.current + 1.0) >> value.next
-        cube = zone.item("cube", g.Cube())
+        cube = zone.items.geometry(g.Cube(), "cube")
         cube.current >> g.SetPosition(offset=(0, 0, 0.1)) >> cube.next
         cube.result >> out
     code = to_python(tree)
     assert "g.RepeatZone(10)" in code
-    assert 'value = repeat_zone.items.float("value", 1.0)' in code
+    assert 'value = repeat_zone.items.float(1.0, "value")' in code
     assert ">> value.next" in code
     assert "cube.result >> geometry" in code
 
@@ -1652,8 +1864,8 @@ def test_roundtrip_structural_repeat_zone():
         iterations = tree.inputs.integer("Iterations", 5)
         out = tree.outputs.geometry("Geometry")
         zone = g.RepeatZone(iterations)
-        cube = zone.item("cube", g.Cube())
-        fac = zone.item("fac", initial=0.5)
+        cube = zone.items.geometry(g.Cube(), "cube")
+        fac = zone.items.float(0.5, "fac")
         (fac.current * 2.0) >> fac.next
         cube.current >> g.SetPosition(offset=(0, 0, 0.1)) >> cube.next
         cube.result >> g.SetShadeSmooth(shade_smooth=fac.result > 1.0) >> out
@@ -1665,7 +1877,7 @@ def test_roundtrip_structural_simulation_zone():
         out = tree.outputs.geometry("Geometry")
         zone = g.SimulationZone({"cube": g.Cube()})
         input, output = zone
-        pos = input.capture(g.Position())
+        pos = zone.items.vector(g.Position()).current
         pos >> output
         g.Boolean(False) >> output.i.skip
         input >> g.SetPosition(offset=zone.delta_time * g.Vector((0, 0, 0.1))) >> output
@@ -1681,15 +1893,16 @@ def test_roundtrip_structural_foreach_zone():
         out = tree.outputs.geometry("Geometry")
         cube = g.Cube()
         zone = g.ForEachGeometryElementZone(cube, domain="FACE")
-        pos = zone.item("Pos", g.Position())
+        pos = zone.items.vector(g.Position(), "Pos")
         transformed = g.Cone() >> g.TransformGeometry(translation=pos.output)
-        main = zone.main_item("Out", type="VECTOR")
+        main = zone.main_items.vector(name="Out")
         pos.output >> main.input
-        zone.generated_item("Gen", transformed, domain="FACE")
+        zone.generated_items.geometry(transformed, "Gen", domain="FACE")
         transformed >> zone.output
         g.JoinGeometry([zone.generation.output, cube]) >> out
     code = _assert_roundtrip(tree)
-    assert 'domain="FACE"' in code
+    assert "g.ForEachGeometryElementZone.face(" in code
+    assert 'domain="FACE"' in code  # the generation item keeps its keyword
     assert ">> for_each.generation.input" in code
     assert "for_each.generation.output" in code
 
@@ -1697,9 +1910,9 @@ def test_roundtrip_structural_foreach_zone():
 def test_zone_unreferenced_item_declared_without_variable():
     with TreeBuilder("RepeatUnused") as tree:
         zone = g.RepeatZone(3)
-        zone.item("spare", type="VECTOR")
+        zone.items.vector(name="spare")
     code = _assert_roundtrip(tree)
-    assert 'repeat_zone.items.vector("spare")' in code
+    assert 'repeat_zone.items.vector(name="spare")' in code
     assert "= repeat_zone.items." not in code
 
 
@@ -1838,22 +2051,16 @@ def test_menu_switch_item_descriptions_roundtrip():
     assert rebuilt.enum_items["Mesh"].description == ""
 
 
-def test_menu_interface_default_deferred_after_body():
-    """A menu interface input's default is set after the body, not inline: its
-    valid values only exist once the consuming MenuSwitch has been linked, so
-    setting it at creation would raise ``enum "X" not found in ()``."""
+def test_menu_interface_default_inline():
+    """A menu interface input's default is passed at creation — the builder
+    defers it to context exit, once the consuming MenuSwitch defines the enum."""
     with TreeBuilder("MenuIface") as tree:
         shape = tree.inputs.menu("Shape", "Circle")
         out = tree.outputs.integer("Out")
         g.MenuSwitch.integer(shape, {"Line": 0, "Circle": 1, "Curve": 2}) >> out
-    code = _assert_roundtrip(tree)  # exec would raise if the default were inline
-    lines = code.splitlines()
-    create = next(i for i, ln in enumerate(lines) if "tree.inputs.menu(" in ln)
-    deferred = next(
-        i for i, ln in enumerate(lines) if 'shape.default_value = "Circle"' in ln
-    )
-    assert '"Circle"' not in lines[create]  # not passed at creation
-    assert deferred > create  # set later, after the MenuSwitch in the body
+    code = _assert_roundtrip(tree)
+    assert 'tree.inputs.menu("Shape", "Circle")' in code
+    assert ".default_value =" not in code
 
 
 def test_index_switch_emits_factory_tuple():
@@ -1886,7 +2093,7 @@ def test_capture_attribute_emits_items_dict():
         ) >> tree.outputs.geometry("Stored")
     code = _assert_roundtrip(tree)
     assert "g.CaptureAttribute.point(geometry=geo)" in code
-    assert 'pos = capture.items.vector("Pos", g.Position())' in code
+    assert 'pos = capture.items.vector(g.Position(), "Pos")' in code
     assert "pos.output" in code
 
 
@@ -1898,12 +2105,12 @@ def test_multi_word_output_accessor_round_trips():
         cap = g.CaptureAttribute.point(geo, items={"Flip and Cyclic": g.Position()})
         cap.o["Flip and Cyclic"] >> tree.outputs.vector("V")
     code = _assert_roundtrip(tree)
-    assert 'capture.items.vector("Flip and Cyclic", g.Position())' in code
+    assert 'capture.items.vector(g.Position(), "Flip and Cyclic")' in code
 
 
 def test_field_to_grid_emits_items_dict():
     """FieldToGrid round-trips as the data-type factory plus typed item
-    declarations; consumed items are read through ``.grid``."""
+    declarations; consumed items are read through ``.output``."""
     with TreeBuilder("FieldGridRT") as tree:
         grid = tree.inputs.float("Grid", structure_type="GRID")
         mask = g.FieldToGrid.boolean(
@@ -1912,8 +2119,9 @@ def test_field_to_grid_emits_items_dict():
         mask.o["Mask"] >> tree.outputs.boolean("Out", structure_type="GRID")
     code = _assert_roundtrip(tree)
     assert "g.FieldToGrid.boolean(topology=grid)" in code
-    assert 'mask = field_to_grid.items.boolean("Mask", ' in code
-    assert "mask.grid" in code
+    assert "mask = field_to_grid.items.boolean(" in code
+    assert ', "Mask")' in code
+    assert "mask.output" in code
     assert "field_0" not in code
 
 
@@ -1929,8 +2137,8 @@ def test_bake_emits_items_dict():
         ) >> tree.outputs.geometry("Stored")
     code = _assert_roundtrip(tree)
     assert "g.Bake()" in code
-    assert 'geometry = bake.items.geometry("Geometry", geo)' in code
-    assert 'factor = bake.items.float("Factor", 1.5)' in code
+    assert 'geometry = bake.items.geometry(geo, "Geometry")' in code
+    assert 'factor = bake.items.float(1.5, "Factor")' in code
     assert "item_0" not in code  # not the raw Item_N socket kwargs
 
 
@@ -1960,8 +2168,8 @@ def test_combine_and_separate_bundle_round_trip():
         parts.o["Factor"] >> tree.outputs.float("F")
     code = _assert_roundtrip(tree)
     assert "g.CombineBundle()" in code
-    assert 'combine_bundle.items.geometry("Geometry", geo)' in code
-    assert 'combine_bundle.items.float("Factor", val)' in code
+    assert 'combine_bundle.items.geometry(geo, "Geometry")' in code
+    assert 'combine_bundle.items.float(val, "Factor")' in code
     assert "g.SeparateBundle(combine_bundle.o.bundle)" in code
     assert 'geometry = separate_bundle.items.geometry("Geometry")' in code
     assert "item_0" not in code  # not the raw Item_N socket kwargs
@@ -1983,8 +2191,8 @@ def test_evaluate_closure_round_trip():
         ev.o["Geometry"] >> tree.outputs.geometry("Out")
     code = _assert_roundtrip(tree)
     assert "g.EvaluateClosure(fn)" in code
-    assert 'evaluate_closure.inputs.geometry("Geometry", geo)' in code
-    assert 'evaluate_closure.inputs.float("Strength", strength)' in code
+    assert 'evaluate_closure.inputs.geometry(geo, "Geometry")' in code
+    assert 'evaluate_closure.inputs.float(strength, "Strength")' in code
     assert 'geometry = evaluate_closure.outputs.geometry("Geometry")' in code
     assert "item_0" not in code
 
@@ -1994,13 +2202,13 @@ def test_bundle_structure_type_and_defaults_round_trip():
     item defaults and non-AUTO structure types."""
     with TreeBuilder("BundleStructRT") as tree:
         cb = g.CombineBundle()
-        cb.items.float("a", 0.5)
-        cb.items.vector("Field", structure_type="FIELD")
+        cb.items.float(0.5, "a")
+        cb.items.vector(name="Field", structure_type="FIELD")
         sb = g.SeparateBundle(cb.o.bundle)
-        sb.items.float("a") >> tree.outputs.float("Out")
+        sb.items.float("a").output >> tree.outputs.float("Out")
     code = _assert_roundtrip(tree)
-    assert 'combine_bundle.items.float("a", 0.5)' in code
-    assert 'combine_bundle.items.vector("Field", structure_type="FIELD")' in code
+    assert 'combine_bundle.items.float(0.5, "a")' in code
+    assert 'combine_bundle.items.vector(name="Field", structure_type="FIELD")' in code
 
 
 def test_capture_color_item_round_trips():
@@ -2008,10 +2216,10 @@ def test_capture_color_item_round_trips():
     typed factory pins the type where dict inference would drift to VECTOR."""
     with TreeBuilder("CaptureColorRT") as tree:
         cap = g.CaptureAttribute(g.Cube())
-        cap.items.color("Col")
+        cap.items.color(name="Col")
         cap.o.geometry >> tree.outputs.geometry("Out")
     code = _assert_roundtrip(tree)
-    assert 'capture.items.color("Col"' in code
+    assert 'capture.items.color((0.8, 0.8, 0.8, 1.0), "Col")' in code
 
 
 def test_bundle_define_signature_round_trip():
@@ -2019,9 +2227,9 @@ def test_bundle_define_signature_round_trip():
     and an item whose output is never read declares without a variable."""
     with TreeBuilder("BundleSigRT") as tree:
         cb = g.CombineBundle(define_signature=True)
-        cb.items.float("a", 0.5)
+        cb.items.float(0.5, "a")
         sb = g.SeparateBundle(cb.o.bundle, define_signature=True)
-        sb.items.float("a") >> tree.outputs.float("Out")
+        sb.items.float("a").output >> tree.outputs.float("Out")
         sb.items.integer("unused")
     code = _assert_roundtrip(tree)
     assert code.count("define_signature=True") == 2
@@ -2037,7 +2245,10 @@ def test_bundle_and_closure_dict_fallback(monkeypatch):
     with TreeBuilder("FallbackRT") as tree:
         val = tree.inputs.float("Val")
         cz = g.ClosureZone()
-        cz.input_item("F", "FLOAT") >> cz.output_item("G", "FLOAT")
+        (
+            cz.inputs.new("F", type="FLOAT").output
+            >> cz.outputs.new("G", type="FLOAT").input
+        )
         cb = g.CombineBundle({"a": val}, define_signature=True)
         sb = g.SeparateBundle(cb.o.bundle, {"a": "FLOAT"}, define_signature=True)
         ev = g.EvaluateClosure(
@@ -2054,8 +2265,8 @@ def test_bundle_and_closure_dict_fallback(monkeypatch):
     assert '"a": "FLOAT"' in code
     assert 'input_items={"X": val}' in code
     assert 'output_items={"Y": "FLOAT"}' in code
-    assert '.input_item("F", "FLOAT")' in code
-    assert '.output_item("G", "FLOAT")' in code
+    assert '.inputs.new("F", type="FLOAT")' in code
+    assert '.outputs.new("G", type="FLOAT")' in code
     assert code.count("define_signature=True") == 3
 
 
@@ -2066,7 +2277,7 @@ def test_typed_items_node_falls_through_without_factory(monkeypatch):
 
     with TreeBuilder("BakeFallback") as tree:
         bake = g.Bake()
-        bake.items.float("Val", 1.5)
+        bake.items.float(1.5, "Val")
     monkeypatch.delitem(cg._SWITCH_METHOD, "FLOAT")
     code = to_python(tree, format=False)
     assert "g.Bake" in code
@@ -2085,13 +2296,13 @@ def test_items_emitters_skip_foreign_nodes():
 
 
 def test_closure_zone_round_trip():
-    """A ClosureZone defines a closure body: input_item reads feed the body,
-    output_item targets collect results, and .closure produces the closure."""
+    """A ClosureZone defines a closure body: input item reads feed the body,
+    output item targets collect results, and .closure produces the closure."""
     with TreeBuilder("ClosureZoneRT") as tree:
         cz = g.ClosureZone()
-        geo = cz.input_item("Geometry", "GEOMETRY")
-        g.SetPosition(geometry=geo).o.geometry >> cz.output_item("Geometry", "GEOMETRY")
-        g.CombineXYZ(x=1.0).o.vector >> cz.output_item("Force", "VECTOR")
+        geo = cz.inputs.geometry("Geometry").output
+        g.SetPosition(geometry=geo).o.geometry >> cz.outputs.geometry("Geometry").input
+        g.CombineXYZ(x=1.0).o.vector >> cz.outputs.vector("Force").input
         ev = g.EvaluateClosure(
             cz.closure,
             input_items={"Geometry": tree.inputs.geometry("Geo")},
@@ -2118,34 +2329,34 @@ def test_font_sound_items_round_trip():
         menu = g.MenuSwitch.sound(items={"A": sound, "B": sound})
 
         bundle = g.CombineBundle()
-        bundle.items.font("f", idx.o.output)
-        bundle.items.sound("s", menu.o.output)
+        bundle.items.font(idx.o.output, "f")
+        bundle.items.sound(menu.o.output, "s")
         parts = g.SeparateBundle(bundle.o.bundle)
-        parts.items.font("f") >> tree.outputs.font("Font Out")
-        parts.items.sound("s") >> tree.outputs.sound("Sound Out")
+        parts.items.font("f").output >> tree.outputs.font("Font Out")
+        parts.items.sound("s").output >> tree.outputs.sound("Sound Out")
 
         cz = g.ClosureZone()
         cz_font = cz.inputs.font("Font")
-        cz_font >> cz.outputs.font("Font")
+        cz_font.output >> cz.outputs.font("Font").input
         ev = g.EvaluateClosure(cz.closure)
-        ev.inputs.font("Font", font)
-        ev.outputs.font("Font") >> tree.outputs.font("Closure Out")
+        ev.inputs.font(font, "Font")
+        ev.outputs.font("Font").output >> tree.outputs.font("Closure Out")
 
         zone = g.RepeatZone(3)
-        item = zone.items.sound("S", sound)
+        item = zone.items.sound(sound, "S")
         item.current >> item.next
         item.result >> tree.outputs.sound("Repeat Out")
     code = _assert_roundtrip(tree)
     assert "g.IndexSwitch.font(" in code
     assert "g.MenuSwitch.sound(" in code
-    assert 'combine_bundle.items.font("f"' in code
-    assert 'combine_bundle.items.sound("s"' in code
+    assert "combine_bundle.items.font(" in code
+    assert "combine_bundle.items.sound(" in code
     assert 'separate_bundle.items.font("f")' in code
     assert 'separate_bundle.items.sound("s")' in code
     assert '.inputs.font("Font")' in code
-    assert 'evaluate_closure.inputs.font("Font", font)' in code
-    assert '.items.sound("S", sound)' in code
-    assert "input_item(" not in code and "item_0" not in code
+    assert 'evaluate_closure.inputs.font(font, "Font")' in code
+    assert '.items.sound(sound, "S")' in code
+    assert ".new(" not in code and "item_0" not in code
 
 
 # ---------------------------------------------------------------------------
@@ -2622,6 +2833,40 @@ def test_grid_common_methods_lift():
         assert snippet in code, snippet
 
 
+def test_sdf_grid_boolean_round_trips():
+    """SDF Grid Boolean's multi-input Grid 2 round-trips through the
+    union / intersect factories and the constructor, in input order (#246)."""
+    with TreeBuilder("SDFBoolean") as tree:
+        a = _named_grid(tree)
+        b = g.GetNamedGrid(tree.inputs.geometry("B"), "density").o.grid
+        c = g.GetNamedGrid(tree.inputs.geometry("C"), "density").o.grid
+        g.SDFGridBoolean.union([a, b]) >> tree.outputs.float("U", structure_type="GRID")
+        g.SDFGridBoolean.intersect([a, b, c]) >> tree.outputs.float(
+            "I", structure_type="GRID"
+        )
+        g.SDFGridBoolean.difference(a, [b, c]) >> tree.outputs.float(
+            "D", structure_type="GRID"
+        )
+    code = _assert_roundtrip(tree)
+    assert "g.SDFGridBoolean.union(" in code
+    assert "g.SDFGridBoolean.intersect(" in code
+
+
+def test_grid_setter_methods_lift():
+    """set_background / set_transform / advect lift to grid socket methods."""
+    with TreeBuilder("GridSetters") as tree:
+        grid = _named_grid(tree)
+        velocity = g.GetNamedGrid.vector(tree.inputs.geometry("Flow"), "vel").o.grid
+        grid.set_background(0.5) >> tree.outputs.float("B", structure_type="GRID")
+        grid.set_transform(tree.inputs.matrix("M")) >> tree.outputs.float(
+            "T", structure_type="GRID"
+        )
+        grid.advect(velocity, 0.5) >> tree.outputs.float("A", structure_type="GRID")
+    code = _assert_roundtrip(tree)
+    for snippet in (".set_background(0.5)", ".set_transform(m)", ".advect("):
+        assert snippet in code, snippet
+
+
 def test_grid_method_defers_when_rebuild_loses_structure():
     """A grid whose GRID structure is only *propagated* (an EvaluateClosure
     output) is lost on rebuild — the rebuilt output item carries no GRID
@@ -2858,10 +3103,10 @@ def test_closure_to_list_roundtrip():
         zone = g.ClosureZone()
         index = zone.inputs.integer("Index")
         item = zone.outputs.integer("Item")
-        g.Math.multiply(index, 2.0) >> item
+        g.Math.multiply(index.output, 2.0) >> item.input
         ctl = g.ClosureToList(count=count, closure=zone.closure)
         values = ctl.items.integer("Item")
-        values >> tree.outputs.integer("Values")
+        values.output >> tree.outputs.integer("Values")
 
     node = ctl.node
     assert [(i.name, i.socket_type) for i in node.list_items] == [("Item", "INT")]
@@ -3037,7 +3282,7 @@ def test_axes_to_rotation_socket_property_collision():
 
     code = _assert_roundtrip(tree)
     assert "secondary_axis=" not in code
-    assert "g.AxesToRotation(primary_axis=v)" in code
+    assert "g.AxesToRotation(v)" in code
 
     # A non-default enum is applied by the constructor (the renamed ``primary``
     # param writes the bpy ``primary_axis`` property), emitted under that param,
@@ -3096,9 +3341,26 @@ def test_duplicate_separators_on_one_source_stay_explicit():
         g.CombineColor(red=s1.o.red, green=s2.o.green) >> tree.outputs.color("Result")
 
     code = _assert_roundtrip(tree)
-    assert code.count("g.SeparateColor(color=color)") == 2
+    assert code.count("g.SeparateColor(color)") == 2
     # not dissolved to the accessor sugar
     assert "color.r" not in code and "color.g" not in code
+
+
+def test_constructor_first_argument_positional():
+    """A constant input node's value, or a constructor's first parameter when
+    it is the only argument, is passed without its keyword."""
+    with TreeBuilder("Positional") as tree:
+        vec = g.Vector((1.0, 2.0, 3.0))
+        points = g.Points(g.Integer(5))
+        g.SetPosition(points, offset=vec) >> tree.outputs.geometry("Geometry")
+        g.String("hi") >> tree.outputs.string("String")
+
+    code = _assert_roundtrip(tree)
+    assert "g.Integer(5)" in code
+    assert 'g.String("hi")' in code
+    assert "g.Vector((1.0, 2.0, 3.0))" in code
+    assert "g.Points(g.Integer(5))" in code
+    assert "offset=" in code
 
 
 MN_FILE_PATH = (
@@ -3144,7 +3406,7 @@ def test_roundtrip_mn_assets(name):
 
 def test_codegen_list_methods(snapshot):
     with g.tree() as tree:
-        lst = g.FieldToList(10).vector()
+        lst = g.FieldToList(10).items.vector().output
         lst.filter(g.RandomValue.boolean()) >> tree.outputs.vector("Filtered")
 
     string = tree.to_python()
@@ -3539,3 +3801,87 @@ def test_probe_trees_keeps_one_emptied_tree_per_type_then_removes_it():
         assert second == (first, 0)
         assert "__nodebpy_codegen_probe__" in bpy.data.node_groups
     assert set(bpy.data.node_groups.keys()) == before
+
+
+def _active_outputs(tree):
+    return [n.name for n in tree.nodes if getattr(n, "is_active_output", False)]
+
+
+def test_first_output_stays_active():
+    """Like the editor, a second output of the same type does not take over."""
+    with TreeBuilder.shader("Two Outputs") as tree:
+        first = s.MaterialOutput(surface=s.PrincipledBSDF())
+        s.MaterialOutput(surface=s.Emission())
+    assert _active_outputs(tree.tree) == [first.node.name]
+
+
+def test_single_output_exports_without_active_flag():
+    with TreeBuilder.shader("One Output") as tree:
+        s.MaterialOutput(surface=s.PrincipledBSDF())
+    assert "is_active_output" not in to_python(tree)
+
+
+def test_active_output_round_trips():
+    """A later output made active is rebuilt as the active one."""
+    with TreeBuilder.shader("Second Active") as tree:
+        s.MaterialOutput(surface=s.PrincipledBSDF())
+        second = s.MaterialOutput(surface=s.Emission(), is_active_output=True)
+    assert _active_outputs(tree.tree) == [second.node.name]
+    code = to_python(tree, format=False)
+    assert code.count("is_active_output=True") == 1
+    ns: dict = {}
+    exec(code, ns)
+    active = _active_outputs(ns["tree"].tree)
+    assert len(active) == 1
+    assert ns["tree"].tree.nodes[active[0]].inputs[0].links[0].from_node.bl_idname == (
+        "ShaderNodeEmission"
+    )
+
+
+def test_shared_classes_export_with_the_trees_alias():
+    """Classes several modules share (Value, Combine XYZ, the repeat and closure
+    zones) are written with the exported tree's alias, not the geometry one."""
+    with c.tree("Alias Comp") as comp:
+        x = c.Value()
+        image = comp.inputs.color("Image")
+        c.Blur(image, size=(x, 2)) >> comp.outputs.color("Image")
+    with s.tree("Alias Shader") as shader:
+        zone = s.RepeatZone(3)
+        item = zone.items.float(s.Value(), "x")
+        item.current * 2 >> item.next
+        item.result >> shader.outputs.float("F")
+        closure = s.ClosureZone()
+        closure.inputs.float("i").output >> closure.outputs.float("o").input
+    for tree, alias in ((comp, "c"), (shader, "s")):
+        code = _assert_roundtrip(tree)
+        assert "geometry as g" not in code and "g." not in code, code
+        assert f"{alias}.Value()" in code
+    assert "c.CombineXYZ(" in to_python(comp)
+    code = to_python(shader)
+    assert "s.RepeatZone(3)" in code and "s.ClosureZone()" in code
+
+
+def test_tree_aliases_fall_back_to_geometry():
+    """A class the emitted tree's module lacks keeps the geometry alias."""
+    from types import SimpleNamespace
+
+    from nodebpy.export.codegen import _CURRENT_TREE, _find_cls, _tree_alias
+
+    token = _CURRENT_TREE.set("ShaderNodeTree")
+    try:
+        assert _find_cls("GeometryNodeSetPosition")[0] == "g"
+        assert _find_cls("ShaderNodeValue")[0] == "s"
+    finally:
+        _CURRENT_TREE.reset(token)
+    ctx = SimpleNamespace(
+        node_tree=SimpleNamespace(bl_idname="ShaderNodeTree"), used_aliases=set()
+    )
+    assert _tree_alias(ctx, "SimulationZone") == "g.SimulationZone"
+    assert _tree_alias(ctx, "RepeatZone") == "s.RepeatZone"
+    assert ctx.used_aliases == {"g", "s"}
+
+
+def test_unlinked_reroute_exports_with_the_trees_alias():
+    with c.tree("Alias Reroute") as tree:
+        tree.tree.nodes.new("NodeReroute")
+    assert "c.Reroute()" in to_python(tree, keep_reroutes=True)

@@ -192,7 +192,7 @@ class Displacement(BaseNode):
 
     @space.setter
     def space(self, value: Literal["OBJECT", "WORLD"]) -> None:
-        self.node.space = value
+        self._set_enum("space", value)
 
 
 class Mapping(BaseNode):
@@ -332,7 +332,7 @@ class Mapping(BaseNode):
     def vector_type(
         self, value: Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"]
     ) -> None:
-        self.node.vector_type = value
+        self._set_enum("vector_type", value)
 
 
 class Normal(BaseNode):
@@ -459,7 +459,7 @@ class NormalMap(BaseNode):
         self,
         value: Literal["TANGENT", "OBJECT", "WORLD", "BLENDER_OBJECT", "BLENDER_WORLD"],
     ) -> None:
-        self.node.space = value
+        self._set_enum("space", value)
 
     @property
     def uv_map(self) -> str:
@@ -475,7 +475,7 @@ class NormalMap(BaseNode):
 
     @convention.setter
     def convention(self, value: Literal["OPENGL", "DIRECTX"]) -> None:
-        self.node.convention = value
+        self._set_enum("convention", value)
 
     @property
     def base(self) -> Literal["ORIGINAL", "DISPLACED"]:
@@ -483,7 +483,7 @@ class NormalMap(BaseNode):
 
     @base.setter
     def base(self, value: Literal["ORIGINAL", "DISPLACED"]) -> None:
-        self.node.base = value
+        self._set_enum("base", value)
 
 
 class VectorDisplacement(BaseNode):
@@ -555,7 +555,7 @@ class VectorDisplacement(BaseNode):
 
     @space.setter
     def space(self, value: Literal["TANGENT", "OBJECT", "WORLD"]) -> None:
-        self.node.space = value
+        self._set_enum("space", value)
 
 
 class VectorTransform(BaseNode):
@@ -672,7 +672,7 @@ class VectorTransform(BaseNode):
 
     @vector_type.setter
     def vector_type(self, value: Literal["POINT", "VECTOR", "NORMAL"]) -> None:
-        self.node.vector_type = value
+        self._set_enum("vector_type", value)
 
     @property
     def convert_from(self) -> Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"]:
@@ -682,7 +682,7 @@ class VectorTransform(BaseNode):
     def convert_from(
         self, value: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"]
     ) -> None:
-        self.node.convert_from = value
+        self._set_enum("convert_from", value)
 
     @property
     def convert_to(self) -> Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"]:
@@ -690,4 +690,4 @@ class VectorTransform(BaseNode):
 
     @convert_to.setter
     def convert_to(self, value: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"]) -> None:
-        self.node.convert_to = value
+        self._set_enum("convert_to", value)

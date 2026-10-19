@@ -16,6 +16,7 @@ from ...builder.socket import (
     MatrixSocket,
     MenuSocket,
     StringSocket,
+    StringSocketList,
     VectorSocket,
     VectorSocketGrid,
 )
@@ -214,7 +215,7 @@ class AdvectGrid[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class ClipGrid[T](BaseNode):
@@ -414,7 +415,7 @@ class ClipGrid[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class CubeGridTopology(BaseNode):
@@ -613,7 +614,7 @@ class DeactivateVoxels[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class DistributePointsInGrid(BaseNode):
@@ -725,7 +726,7 @@ class DistributePointsInGrid(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["DENSITY_RANDOM", "DENSITY_GRID"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class DistributePointsInVolume(BaseNode):
@@ -814,6 +815,51 @@ class DistributePointsInVolume(BaseNode):
             "Spacing": spacing,
             "Threshold": threshold,
         }
+
+        self._establish_links(**key_args)
+
+
+class GetGridNames(BaseNode):
+    """
+    Retrieves the names of all grids stored in a volume as a list of strings
+
+    Parameters
+    ----------
+    volume : InputGeometry
+        Volume
+
+    Inputs
+    ------
+    i.volume : GeometrySocket
+        Volume
+
+    Outputs
+    -------
+    o.names : StringSocketList
+        Names
+    """
+
+    _bl_idname = "GeometryNodeGetGridNames"
+    node: bpy.types.GeometryNodeGetGridNames
+
+    class _Inputs(SocketAccessor):
+        volume: GeometrySocket
+        """Volume"""
+
+    class _Outputs(SocketAccessor):
+        names: StringSocketList
+        """Names"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, volume: InputGeometry = None):
+        super().__init__()
+        key_args = {"Volume": volume}
 
         self._establish_links(**key_args)
 
@@ -933,7 +979,7 @@ class GetNamedGrid[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridCurl(BaseNode):
@@ -1130,7 +1176,7 @@ class GridDilateErode[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridDivergence(BaseNode):
@@ -1310,7 +1356,7 @@ class GridInfo[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridLaplacian(BaseNode):
@@ -1461,7 +1507,7 @@ class GridMean[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridMedian[T](BaseNode):
@@ -1569,7 +1615,7 @@ class GridMedian[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridSolvePoisson(BaseNode):
@@ -1828,7 +1874,7 @@ class GridTopologyBoolean[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class GridToMesh(BaseNode):
@@ -2000,7 +2046,7 @@ class GridToPoints[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class MeshToDensityGrid(BaseNode):
@@ -2489,7 +2535,7 @@ class PruneGrid[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SDFGridFillet(BaseNode):
@@ -2974,7 +3020,7 @@ class SampleGrid[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SampleGridIndex[T, TGrid](BaseNode):
@@ -3097,7 +3143,7 @@ class SampleGridIndex[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SetGridBackground[T, TGrid](BaseNode):
@@ -3233,7 +3279,7 @@ class SetGridBackground[T, TGrid](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class SetGridTransform[T](BaseNode):
@@ -3330,7 +3376,7 @@ class SetGridTransform[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class StoreNamedGrid[T](BaseNode):
@@ -3446,7 +3492,7 @@ class StoreNamedGrid[T](BaseNode):
     def data_type(
         self, value: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]
     ) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)
 
 
 class VolumeCube(BaseNode):
@@ -3716,4 +3762,4 @@ class VoxelizeGrid[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
-        self.node.data_type = value
+        self._set_enum("data_type", value)

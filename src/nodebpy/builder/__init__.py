@@ -5,7 +5,7 @@ from ..layout import (
     arrange,
     default_sugiyama_options,
 )
-from ._utils import SocketError, denormalize_name, normalize_name
+from ._utils import InvalidLinkWarning, SocketError, denormalize_name, normalize_name
 from .accessor import SocketAccessor
 from .asset import (
     AssetCompositorGroup,
@@ -16,6 +16,7 @@ from .asset import (
     PackageLibrary,
     asset_group_base,
     build_from_source,
+    link_assets,
 )
 from .items import Item, ItemsMixin, MenuItem
 from .mixins import LinkingMixin, OperatorMixin
@@ -80,6 +81,8 @@ from .tree import (
     PanelContext,
     SocketContext,
     TreeBuilder,
+    WorldBuilder,
+    default_keep_edits,
     default_split_inputs,
 )
 
@@ -121,6 +124,7 @@ __all__ = [
     "IntegerSocketGrid",
     "IntegerSocketList",
     "IntegerVectorSocket",
+    "InvalidLinkWarning",
     "Item",
     "ItemsMixin",
     "LinkingMixin",
@@ -156,11 +160,14 @@ __all__ = [
     "VectorSocket",
     "VectorSocketGrid",
     "VectorSocketList",
+    "WorldBuilder",
     "arrange",
     "asset_group_base",
     "build_from_source",
+    "default_keep_edits",
     "default_split_inputs",
     "default_sugiyama_options",
     "denormalize_name",
+    "link_assets",
     "normalize_name",
 ]

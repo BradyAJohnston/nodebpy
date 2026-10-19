@@ -1,7 +1,11 @@
+import warnings
+
 import bpy
+import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
+from nodebpy.builder import InvalidLinkWarning
 from nodebpy.nodes.geometry.groups import PrincipalComponents
 
 
@@ -308,6 +312,28 @@ def test_nested_tree_panel_reuses_by_parent():
     assert sockets["C"].parent == inner  # reused, not duplicated
 
 
+def test_modifier_and_tool_flags():
+    with g.tree("Flags", is_modifier=True) as tree:
+        pass
+    assert tree.is_modifier and tree.tree.is_modifier
+    assert not tree.is_tool
+    tree.is_tool = True
+    assert tree.tree.is_tool
+
+    # None leaves an existing group's flags alone when rebuilding in place
+    with g.tree("Flags", clear=True) as same:
+        pass
+    assert same.tree is tree.tree
+    assert same.is_modifier and same.is_tool
+    with g.tree("Flags", clear=True, is_modifier=False) as same:
+        pass
+    assert not same.is_modifier and same.is_tool
+
+    with TreeBuilder("Plain", is_tool=True) as plain:
+        pass
+    assert plain.is_tool and not plain.is_modifier
+
+
 def test_clear_rebuilds_existing_tree_in_place():
     with g.tree("Rebuild In Place") as tree:
         (
@@ -404,3 +430,43 @@ def test_clear_keeps_modifier_input_values():
 
     assert rebuilt.tree == tree.tree
     assert _modifier_value(modifier, rebuilt.tree, "Height") == 0.5
+
+
+def _build_invalid_links():
+    with g.tree("InvalidLinks") as tree:
+        zone = g.RepeatZone(g.Position().o.position.x)
+        geo = zone.items.geometry(g.Cube(), "Geometry")
+        geo.current >> geo.next
+        geo.result >> tree.outputs.geometry("Geometry")
+        g.Points(g.Index())
+    return tree
+
+
+def test_invalid_links_warn_on_exit():
+    with pytest.warns(InvalidLinkWarning) as record:
+        tree = _build_invalid_links()
+
+    assert len(tree.invalid_links()) == 2
+    (warning,) = record
+    message = str(warning.message)
+    assert "2 links in 'InvalidLinks'" in message
+    assert (
+        "Separate XYZ.X -> Repeat Input.Iterations"
+        " ('Iterations' takes a single value, not a field)"
+    ) in message
+    assert "Index.Index -> Points.Count" in message
+
+
+def test_valid_and_muted_links_do_not_warn():
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", InvalidLinkWarning)
+        with g.tree("ValidLinks") as tree:
+            vector = g.Vector((0.0, 0.0, 1.0))
+            store = g.StoreNamedAttribute(g.Cube(), name="idx", value=g.Index())
+            store >> tree.outputs.geometry("Geometry")
+            link = tree.tree.links.new(
+                vector.node.outputs[0], store.node.inputs["Name"]
+            )
+            link.is_muted = True
+
+    assert tree.invalid_links() == []

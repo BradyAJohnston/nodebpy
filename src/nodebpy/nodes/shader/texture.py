@@ -75,7 +75,7 @@ class EnvironmentTexture(BaseNode):
 
     @projection.setter
     def projection(self, value: Literal["EQUIRECTANGULAR", "MIRROR_BALL"]) -> None:
-        self.node.projection = value
+        self._set_enum("projection", value)
 
     @property
     def interpolation(self) -> Literal["Linear", "Closest", "Cubic", "Smart"]:
@@ -85,10 +85,10 @@ class EnvironmentTexture(BaseNode):
     def interpolation(
         self, value: Literal["Linear", "Closest", "Cubic", "Smart"]
     ) -> None:
-        self.node.interpolation = value
+        self._set_enum("interpolation", value)
 
 
-class IesTexture(BaseNode):
+class IESTexture(BaseNode):
     """
     Match real world lights with IES files, which store the directional intensity distribution of light sources
 
@@ -108,7 +108,7 @@ class IesTexture(BaseNode):
 
     Outputs
     -------
-    o.fac : FloatSocket
+    o.factor : FloatSocket
         Factor
     """
 
@@ -122,7 +122,7 @@ class IesTexture(BaseNode):
         """Strength"""
 
     class _Outputs(SocketAccessor):
-        fac: FloatSocket
+        factor: FloatSocket
         """Factor"""
 
     if TYPE_CHECKING:
@@ -149,7 +149,7 @@ class IesTexture(BaseNode):
     @classmethod
     def internal(
         cls, vector: InputVector = None, strength: InputFloat = 1.0
-    ) -> "IesTexture":
+    ) -> "IESTexture":
         """Create IES Texture with operation 'Internal'. Use internal text data-block"""
         return cls(mode="INTERNAL", vector=vector, strength=strength)
 
@@ -160,7 +160,7 @@ class IesTexture(BaseNode):
         strength: InputFloat = 1.0,
         *,
         filepath: str = "",
-    ) -> "IesTexture":
+    ) -> "IESTexture":
         """Create IES Texture with operation 'External'. Use external .ies file"""
         return cls(mode="EXTERNAL", vector=vector, strength=strength, filepath=filepath)
 
@@ -178,7 +178,7 @@ class IesTexture(BaseNode):
 
     @mode.setter
     def mode(self, value: Literal["INTERNAL", "EXTERNAL"]) -> None:
-        self.node.mode = value
+        self._set_enum("mode", value)
 
 
 class ImageTexture(BaseNode):
@@ -246,7 +246,7 @@ class ImageTexture(BaseNode):
 
     @projection.setter
     def projection(self, value: Literal["FLAT", "BOX", "SPHERE", "TUBE"]) -> None:
-        self.node.projection = value
+        self._set_enum("projection", value)
 
     @property
     def interpolation(self) -> Literal["Linear", "Closest", "Cubic", "Smart"]:
@@ -256,7 +256,7 @@ class ImageTexture(BaseNode):
     def interpolation(
         self, value: Literal["Linear", "Closest", "Cubic", "Smart"]
     ) -> None:
-        self.node.interpolation = value
+        self._set_enum("interpolation", value)
 
     @property
     def projection_blend(self) -> float:
@@ -272,7 +272,7 @@ class ImageTexture(BaseNode):
 
     @extension.setter
     def extension(self, value: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]) -> None:
-        self.node.extension = value
+        self._set_enum("extension", value)
 
 
 class SkyTexture(BaseNode):
@@ -330,8 +330,8 @@ class SkyTexture(BaseNode):
         aerosol_density: float = 1.0,
         ozone_density: float = 1.0,
         sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
-        turbidity: float = 0.0,
-        ground_albedo: float = 0.0,
+        turbidity: float = 2.2,
+        ground_albedo: float = 0.3,
     ):
         super().__init__()
         key_args = {"Vector": vector}
@@ -412,7 +412,7 @@ class SkyTexture(BaseNode):
         vector: InputVector = None,
         *,
         sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
-        turbidity: float = 0.0,
+        turbidity: float = 2.2,
     ) -> "SkyTexture":
         """Create Sky Texture with operation 'Preetham'. Preetham 1999 (Legacy)"""
         return cls(
@@ -428,8 +428,8 @@ class SkyTexture(BaseNode):
         vector: InputVector = None,
         *,
         sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
-        turbidity: float = 0.0,
-        ground_albedo: float = 0.0,
+        turbidity: float = 2.2,
+        ground_albedo: float = 0.3,
     ) -> "SkyTexture":
         """Create Sky Texture with operation 'Hosek / Wilkie'. Hosek / Wilkie 2012 (Legacy)"""
         return cls(
@@ -455,7 +455,7 @@ class SkyTexture(BaseNode):
             "SINGLE_SCATTERING", "MULTIPLE_SCATTERING", "PREETHAM", "HOSEK_WILKIE"
         ],
     ) -> None:
-        self.node.sky_type = value
+        self._set_enum("sky_type", value)
 
     @property
     def sun_disc(self) -> bool:

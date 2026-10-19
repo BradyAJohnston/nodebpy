@@ -12,6 +12,9 @@ import nodebpy
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
+from nodebpy.builder.socket import IntegerSocket
+
+from .evaluate import evaluate
 
 
 class TestPowerOperator:
@@ -72,7 +75,16 @@ class TestModuloOperator:
             result = g.Integer(10) % 3
 
         assert result.node.bl_idname == "FunctionNodeIntegerMath"
-        assert result.node.operation == "MODULO"
+        assert result.node.operation == "FLOORED_MODULO"
+
+    def test_integer_modulo_matches_python(self):
+        with g.tree("TestIntModuloValues") as tree:
+            values = {
+                f"v{i}": g.Integer(a).o.integer % b
+                for i, (a, b) in enumerate([(-7, 3), (7, -3), (7, 3)])
+            }
+            result = evaluate(tree, **values)
+        assert [result[f"v{i}"] for i in range(3)] == [-7 % 3, 7 % -3, 7 % 3]
 
     def test_vector_modulo(self):
         with g.tree("TestVectorModulo"):
@@ -997,6 +1009,25 @@ class TestColorSocketOperatorMath:
         assert result10.node.data_type == "FLOAT"
 
 
+class TestIntegerBitwiseOperators:
+    def test_bitwise_operators_use_bit_math(self):
+        with g.tree("IntBitwise") as tree:
+            a = g.Integer(12).o.integer
+            b = g.Integer(10).o.integer
+            values = {"and_": a & b, "or_": a | 3, "xor": 6 ^ b, "not_": ~a}
+            for socket in values.values():
+                assert isinstance(socket, IntegerSocket)
+                assert socket.node.bl_idname == g.BitMath._bl_idname
+            result = evaluate(tree, **values)
+        assert result == {"and_": 12 & 10, "or_": 12 | 3, "xor": 6 ^ 10, "not_": ~12}
+
+    def test_boolean_operators_unchanged(self):
+        with g.tree("BoolStillBoolean"):
+            a = g.Boolean(True).o.boolean
+            assert (a & a).node.bl_idname == g.BooleanMath._bl_idname
+            assert (~a).node.bl_idname == g.BooleanMath._bl_idname
+
+
 class TestIntegerSocketOperators:
     def test_integer_socket_operations(self):
         "Only Geometry Nodes has Integer Math node so for now we fallback on Math"
@@ -1093,3 +1124,30 @@ def test_scalar_socket_with_vector_tuple_uses_vector_math(expr, operation, scala
         result = expr(scalar())
         assert result.node.bl_idname == "ShaderNodeVectorMath"
         assert result.node.operation == operation
+
+
+class TestSocketTruthValue:
+    """A socket's value is only known when the tree runs, so Python can't
+    branch on it: bool() on a socket raises instead of silently treating it
+    as true (#242). Nodes keep normal truthiness."""
+
+    def test_builtins_that_branch_on_a_socket_raise(self):
+        with g.tree("SocketTruth"):
+            a = g.Value(1.0).o.value
+            b = g.Value(2.0).o.value
+            for expression in (
+                lambda: max(a, b),
+                lambda: min(a, 5),
+                lambda: bool(a > 0),
+                lambda: a > 0 and b,
+            ):
+                with pytest.raises(TypeError, match=r"\.max\(\)/\.min\(\)"):
+                    expression()
+
+    def test_nodes_and_identity_checks_still_work(self):
+        with g.tree("SocketIdentity"):
+            node = g.Value(1.0)
+            a = node.o.value
+            assert node  # only sockets refuse bool()
+            assert a is not None
+            assert a in [a]

@@ -304,7 +304,7 @@ def test_build_add_reroutes(tmp_path):
     with TreeBuilder("Routed") as tree:
         cube = g.Cube()
         sim = g.SimulationZone({"cube": cube})
-        pos = sim.item("Position", g.Position())
+        pos = sim.items.vector(g.Position())
         (pos.current + 0.1) >> pos.next
         offset = sim.delta_time * g.Vector((0, 0, 0.1)) * pos.current
         sim.input >> g.SetPosition(offset=offset) >> sim.output

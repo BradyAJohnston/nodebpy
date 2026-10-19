@@ -36,6 +36,17 @@ with g.tree() as tree:
 tree
 ```
 
+A vector, rotation or color input can also take a tuple that mixes plain values and sockets.
+The parts known only when the tree runs can't go into the socket's default, so they are combined with a `Combine XYZ` (or `Combine Color`) node that is linked in instead:
+
+```{python}
+with g.tree() as tree:
+    height = tree.inputs.float("Height", 2.0)
+    g.Cube(size=(1, 1, height)) >> tree.outputs.geometry("Geometry")
+
+tree
+```
+
 ### Default Inputs
 
 Some inputs read something other than their stored value when nothing is
@@ -136,6 +147,21 @@ with g.tree() as tree:
 tree
 ```
 
+#### Which socket owns a method
+
+A socket method lives on the value that continues down the chain, so the result has the same role as the receiver: `vec.transform(matrix)` and `vec.transform_direction(matrix)` apply a matrix to a vector (as a point, so translation applies, or as a direction, so it does not), `rot.rotate(other)` rotates a rotation, and `mat.invert()` keeps the matrix. Getters that produce another type read as nouns: `mat.translation`, `obj.matrix()`, `obj.location()`.
+
+The two selector factories are the deliberate exceptions. `fac.mix.float(a, b)` and `condition.switch.geometry(false, true)` sit on the factor or boolean that drives a Mix or Switch node, and return the mixed or chosen value:
+
+```{python}
+with g.tree() as tree:
+    fac = g.NoiseTexture().o.factor
+    mixed = fac.mix.vector((0, 0, 0), (1, 1, 1))
+    picked = (fac > 0.5).switch.geometry(g.Cube(), g.IcoSphere())
+
+tree
+```
+
 #### Other Accessors
 
 Similar methods also exist for `SocketColor`, `SocketMatrix`
@@ -167,6 +193,42 @@ with g.tree() as tree:
 tree
 ```
 
+Arithmetic between two colors uses a Mix node and keeps the left color's alpha. With a scalar or a vector the color acts as a vector, so a texture's color can still drive a vector or rotation input.
+
+```{python}
+with g.tree() as tree:
+    col = g.CombineColor().o.color
+    tinted = col * (1.0, 0.8, 0.6, 1.0)  # Mix (Multiply), a color
+    offset = g.NoiseTexture().o.color * 0.2  # Vector Math (Scale), a vector
+tree
+```
+
+##### Bundle
+
+Bundle sockets store and read items by path. A read names the type it expects, and joining with `|` keeps the later bundle's item when a path is in both.
+
+```{python}
+with g.tree() as tree:
+    settings = g.CombineBundle().o.bundle.store("radius", 0.5).store("count", 8)
+    overrides = g.CombineBundle().o.bundle.store("radius", 1.0)
+    merged = settings | overrides
+    g.MeshCircle(merged.get.integer("count"), merged.get.float("radius"))
+tree
+```
+
+##### Python builtins
+
+`round()`, `math.floor()`, `math.ceil()` and `math.trunc()` on a float socket return an integer socket through Float To Integer, as they return an `int` in Python; the `.round()`/`.floor()` methods keep a float. Float To Integer rounds halves away from zero, where Python's `round()` rounds them to even.
+
+```{python}
+import math
+
+with g.tree() as tree:
+    count = math.ceil(g.Value(2.5).o.value * 3)
+    g.MeshLine(count=count)
+tree
+```
+
 ## Enum Options
 
 Many options aren't available as sockets. These are exposed on the node class itself.
@@ -190,6 +252,8 @@ class EvaluateAtIndex(BaseNode):
 ```
 
 They are set during the class construction, but can also be set and changed afterwards.
+A value the node doesn't have raises a `TypeError` that lists its options and suggests the closest, so `g.Math(operation="SUBSTRACT")` asks "Did you mean 'SUBTRACT'?".
+Menu sockets such as Resample Curve's `mode` do the same.
 
 ```{python}
 with g.tree() as tree:
@@ -222,6 +286,20 @@ with g.tree():
 
 assert eod1.data_type == eod2.data_type
 assert eod1.domain == eod2.domain
+```
+
+### Switches pick their type
+
+`Switch`, `IndexSwitch` and `MenuSwitch` work out their type from the values they are given when you don't name one, so a node passed in is linked through its output of that type: the meshes below, rather than the UV Maps.
+Plain Python values decide only when nothing is linked (`g.Switch(cond, 1, 2)` is an integer switch), and values of different types raise an error naming each one.
+The class methods, or `input_type=` / `data_type=`, still set the type explicitly.
+
+```{python}
+with g.tree():
+    use_sphere = g.Boolean(True)
+    switch = g.Switch(use_sphere, g.Cube(), g.UVSphere())
+
+assert switch.input_type == "GEOMETRY"
 ```
 
 A similar approach is taken for the `Compare` node, with the first being data type and then secondarily the comparison operation.

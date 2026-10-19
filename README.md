@@ -3,6 +3,7 @@
 [![Run
 Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml)
 [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy)
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://app.codspeed.io/BradyAJohnston/nodebpy?utm_source=badge)
 
 Build node trees in Blender more elegantly with Python code. Geometry Nodes, Shader Nodes and Compositor nodes are all fully supported, with type hints and IDE auto-completion throughout.
 
@@ -15,21 +16,19 @@ pip install nodebpy
 ```python
 from nodebpy import geometry as g
 
-with g.tree("AnotherTree", collapse=True) as tree:
-    rotation = (
+with g.tree("AnotherTree", collapse=True, is_modifier=True) as tree:
+    rot = (
         g.RandomValue.vector(min=-1, seed=2)
         >> g.AlignRotationToVector()
         >> g.RotateRotation(rotate_by=g.AxisAngleToRotation(angle=0.3))
     )
+    pos = g.Position() * 2.0 + (0, 0.2, 0.3)
 
-    _ = (
+    (
         tree.inputs.integer("Count", 10)
         >> g.Points(position=g.RandomValue.vector(min=-1))
-        >> g.InstanceOnPoints(instance=g.Cube(), rotation=rotation)
-        >> g.SetPosition(
-            position=g.Position() * 2.0 + (0, 0.2, 0.3),
-            offset=(0, 0, 0.1),
-        )
+        >> g.InstanceOnPoints(instance=g.Cube(), rotation=rot)
+        >> g.SetPosition(position=pos, offset=(0, 0, 0.1))
         >> g.RealizeInstances()
         >> g.InstanceOnPoints(g.Cube(), instance=...)
         >> tree.outputs.geometry("Instances")
@@ -43,6 +42,22 @@ with g.tree("AnotherTree", collapse=True) as tree:
 - Nodes are linked with the `>>` operator, which picks the most compatible socket pair automatically (much like Node Wrangler's <kbd>Alt</kbd> + <kbd>Right Click</kbd> drag) — or address sockets explicitly through the `.i.*` / `.o.*` accessors.
 - Python's arithmetic, comparison and boolean operators create the matching `Math` / `VectorMath` / `Compare` / `BooleanMath` nodes: `g.Value(1.0) * 2 + (0, 0, 1)`.
 - Existing node trees — including ones wired up by hand in the GUI — can be exported back to `nodebpy` source with `to_python()`.
+
+## Agent skill
+
+nodebpy ships an [Agent Skill](https://agentskills.io) that teaches AI coding agents to
+write, check and port node trees with it. Install it into any skills-aware agent
+(Claude Code, Codex, Cursor, Copilot, OpenCode and others) from the repository:
+
+```sh
+npx skills add BradyAJohnston/nodebpy
+```
+
+Claude Code can also take it as a plugin (`/plugin marketplace add BradyAJohnston/nodebpy`,
+then `/plugin install nodebpy@nodebpy`), and the installed package carries the same
+skill, matched to its version: `nodebpy skill install` copies it into `~/.claude/skills`
+and `nodebpy skill path` prints where it is. `nodebpy lookup search|show|socket` is the
+lookup the skill uses to find classes, sockets and options.
 
 ## Documentation
 
