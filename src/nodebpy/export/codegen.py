@@ -4154,6 +4154,8 @@ def to_python(
     typed_groups: Collection[str] | None = None,
     root_interface: GroupInterface | None = None,
     in_place: bool = False,
+    groups: Literal["inline", "reference"] = "inline",
+    group_modules: Collection[str] | None = None,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -4235,6 +4237,19 @@ def to_python(
         tree of the same name, so edits to them only take effect through
         :func:`nodebpy.live.run_source`. Ignored with ``top_level="class"``
         (a class is rebuilt by ``run_source``, not by a header).
+    groups: "inline" | "reference"
+        ``"inline"`` (default) writes every nested group out as a class.
+        ``"reference"`` calls the class that already builds a group instead,
+        so a tree using Blender's bundled assets (``g.Array``), nodebpy's own
+        groups or a group class from your own modules exports as just that
+        tree — the code you would have written. A group no loaded class builds,
+        or one changed by hand since nodebpy built it, is still written out.
+        See :mod:`nodebpy.export._groups` for how groups are matched.
+    group_modules: Collection[str] | None
+        With ``groups="reference"``: modules (packages include their
+        submodules) to import first, so their group classes can be matched.
+        By default, the package of dumped sources that the nearest
+        ``pyproject.toml``'s ``[tool.nodebpy.assets]`` table names, if any.
 
     Returns
     -------
@@ -4250,6 +4265,14 @@ def to_python(
             f"external_groups without a group_class_names entry: {sorted(missing)}"
         )
 
+    if groups == "reference":
+        from . import _groups
+
+        modules = group_modules
+        if modules is None:
+            modules = _groups.configured_modules()
+        _groups.import_modules(modules)
+
     collector = _GroupCollector(
         min_chain_length=min_chain_length,
         strict=strict,
@@ -4261,6 +4284,8 @@ def to_python(
         typed_groups=set(typed_groups or ()),
         root_interface=root_interface,
         root_tree_name=node_tree.name if root_interface is not None else None,
+        reference_groups=groups == "reference",
+        nodebpy_pkg=nodebpy_pkg,
         # Reserve every assigned name so a locally derived one never shadows a
         # class the caller imports from another module.
         used_names=set(class_names.values()),
@@ -4301,6 +4326,11 @@ def to_python(
             f"from {nodebpy_pkg}.builder import "
             + ", ".join(sorted(collector.bases_used))
         )
+    for module, names in sorted(collector.group_imports.items()):
+        imported = (
+            n if n == local else f"{n} as {local}" for n, local in names.items()
+        )
+        lines.append(f"from {module} import " + ", ".join(sorted(imported)))
     # Group classes are top-level defs: two blank lines around each (PEP 8).
     for class_def in collector.class_defs:
         lines.extend(["", "", class_def])
@@ -4577,6 +4607,56 @@ class _GroupCollector:
     used_aliases: set[str] = field(default_factory=set)
     # bpy.types names the emitted ``tree: TreeBuilder[...]`` annotations need.
     tree_param_types: set[str] = field(default_factory=set)
+    # groups="reference": call the loaded class that builds a group instead
+    # of emitting one (see nodebpy.export._groups).
+    reference_groups: bool = False
+    nodebpy_pkg: str = "nodebpy"
+    # Module → {class name: name it is imported as} for referenced classes.
+    group_imports: dict[str, dict[str, str]] = field(default_factory=dict)
+    referenced: dict[type, str | None] = field(default_factory=dict)
+
+    def reference(self, node: Node) -> tuple[str, dict[str, str] | None] | None:
+        """The name to call a loaded class by when it builds ``node``'s
+        group, with its typed parameters (see :func:`_groups.reference`)."""
+        if not self.reference_groups:
+            return None
+        from . import _groups
+
+        ref = _groups.reference(node)
+        if ref is None:
+            return None
+        if ref.cls not in self.referenced:
+            self.referenced[ref.cls] = self._reference_name(ref.cls)
+        name = self.referenced[ref.cls]
+        return None if name is None else (name, ref.params)
+
+    def _reference_name(self, cls: type) -> str | None:
+        import nodebpy
+
+        from . import _groups
+
+        name = cls.__name__
+        for alias, module in _ALIAS_MODULES.items():
+            if getattr(getattr(nodebpy, module), name, None) is cls:
+                self.used_aliases.add(alias)
+                return f"{alias}.{name}"
+        if cls.__module__ in _groups.SCRIPT_MODULES:
+            # Defined by the script the code goes back into: no import, and
+            # no other name to give it.
+            if name in self.used_names:
+                return None
+            self.used_names.add(name)
+            return name
+        module = cls.__module__
+        if module == "nodebpy" or module.startswith("nodebpy."):
+            module = self.nodebpy_pkg + module[len("nodebpy") :]
+        local, n = name, 1
+        while local in self.used_names:
+            n += 1
+            local = f"{name}{n}"
+        self.used_names.add(local)
+        self.group_imports.setdefault(module, {})[name] = local
+        return local
 
     def register(self, node_tree: NodeTree) -> str:
         """Ensure a class exists for ``node_tree`` and return its name."""
@@ -6121,7 +6201,6 @@ def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
     inner = node.node_tree
     if inner is None or ctx.collector is None:
         return None  # unknown group → fall through to the unsupported path
-    class_name = ctx.collector.register(inner)
     iface_defaults = _group_input_defaults(inner)
 
     # A typed class (merged dump) declares one parameter per input socket, so
@@ -6129,10 +6208,14 @@ def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
     # the typed __init__ generator via typed_param_names, both derived from
     # the same live tree.
     typed_params: dict[str, str] | None = None
-    if inner.name in ctx.collector.typed_groups:
-        from ..builder._utils import typed_param_names
+    if (referenced := ctx.collector.reference(node)) is not None:
+        class_name, typed_params = referenced
+    else:
+        class_name = ctx.collector.register(inner)
+        if inner.name in ctx.collector.typed_groups:
+            from ..builder._utils import typed_param_names
 
-        typed_params = typed_param_names(node.inputs)
+            typed_params = typed_param_names(node.inputs)
 
     # _establish_links matches a kwarg key against socket names. A name shared
     # by several interface sockets (a group may declare two "Scale" inputs) is
