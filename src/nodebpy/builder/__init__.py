@@ -82,6 +82,7 @@ from .tree import (
     SocketContext,
     TreeBuilder,
     WorldBuilder,
+    default_keep_edits,
     default_split_inputs,
 )
 
@@ -163,6 +164,7 @@ __all__ = [
     "arrange",
     "asset_group_base",
     "build_from_source",
+    "default_keep_edits",
     "default_split_inputs",
     "default_sugiyama_options",
     "denormalize_name",
