@@ -779,6 +779,7 @@ MaterialBuilder(
     fake_user=False,
     ignore_visibility=False,
     clear=False,
+    keep_edits=None,
 )
 ```
 
@@ -811,6 +812,7 @@ MaterialBuilder(
 | [deactivate_tree](#nodebpy.builder.tree.MaterialBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
 | [disable_arrange](#nodebpy.builder.tree.MaterialBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.MaterialBuilder.geometry) | Create a geometry node tree. |
+| [invalid_links](#nodebpy.builder.tree.MaterialBuilder.invalid_links) | Links Blender can’t evaluate, drawn red in the node editor: most |
 | [link](#nodebpy.builder.tree.MaterialBuilder.link) |  |
 | [panel](#nodebpy.builder.tree.MaterialBuilder.panel) | A panel that can group input *and* output sockets together |
 | [shader](#nodebpy.builder.tree.MaterialBuilder.shader) | Create a shader node tree. |
@@ -850,6 +852,7 @@ compositor(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
     scene=False,
 )
 ```
@@ -883,6 +886,7 @@ geometry(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
     is_modifier=None,
     is_tool=None,
 )
@@ -891,6 +895,14 @@ geometry(
 Create a geometry node tree.
 
 `is_modifier` and `is_tool` flag the group for use as a modifier or as a node tool; `None` leaves an existing group’s flags alone.
+
+##### invalid_links
+
+``` python
+invalid_links()
+```
+
+Links Blender can’t evaluate, drawn red in the node editor: most often a field reaching an input that takes a single value, such as a Repeat Zone’s Iterations or Points’ Count. Muted links and links to sockets the node’s settings hide or grey out aren’t evaluated, so they aren’t reported.
 
 ##### link
 
@@ -917,6 +929,7 @@ shader(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
 )
 ```
 
@@ -983,6 +996,8 @@ to_python(
     format=True,
     nodebpy_pkg='nodebpy',
     in_place=False,
+    groups='inline',
+    group_modules=None,
 )
 ```
 
@@ -1761,6 +1776,7 @@ TreeBuilder(
     ignore_visibility=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
     is_modifier=None,
     is_tool=None,
 )
@@ -1798,6 +1814,7 @@ Supports geometry, shader, and compositor node trees.
 | [deactivate_tree](#nodebpy.builder.tree.TreeBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
 | [disable_arrange](#nodebpy.builder.tree.TreeBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.TreeBuilder.geometry) | Create a geometry node tree. |
+| [invalid_links](#nodebpy.builder.tree.TreeBuilder.invalid_links) | Links Blender can’t evaluate, drawn red in the node editor: most |
 | [link](#nodebpy.builder.tree.TreeBuilder.link) |  |
 | [panel](#nodebpy.builder.tree.TreeBuilder.panel) | A panel that can group input *and* output sockets together |
 | [shader](#nodebpy.builder.tree.TreeBuilder.shader) | Create a shader node tree. |
@@ -1837,6 +1854,7 @@ compositor(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
     scene=False,
 )
 ```
@@ -1870,6 +1888,7 @@ geometry(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
     is_modifier=None,
     is_tool=None,
 )
@@ -1878,6 +1897,14 @@ geometry(
 Create a geometry node tree.
 
 `is_modifier` and `is_tool` flag the group for use as a modifier or as a node tool; `None` leaves an existing group’s flags alone.
+
+##### invalid_links
+
+``` python
+invalid_links()
+```
+
+Links Blender can’t evaluate, drawn red in the node editor: most often a field reaching an input that takes a single value, such as a Repeat Zone’s Iterations or Points’ Count. Muted links and links to sockets the node’s settings hide or grey out aren’t evaluated, so they aren’t reported.
 
 ##### link
 
@@ -1904,6 +1931,7 @@ shader(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
 )
 ```
 
@@ -1970,6 +1998,8 @@ to_python(
     format=True,
     nodebpy_pkg='nodebpy',
     in_place=False,
+    groups='inline',
+    group_modules=None,
 )
 ```
 
@@ -2011,6 +2041,7 @@ WorldBuilder(
     fake_user=False,
     ignore_visibility=False,
     clear=False,
+    keep_edits=None,
     scene=False,
 )
 ```
@@ -2046,6 +2077,7 @@ Builds a world’s node tree, as :class:`MaterialBuilder` does a material’s; `
 | [deactivate_tree](#nodebpy.builder.tree.WorldBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
 | [disable_arrange](#nodebpy.builder.tree.WorldBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.WorldBuilder.geometry) | Create a geometry node tree. |
+| [invalid_links](#nodebpy.builder.tree.WorldBuilder.invalid_links) | Links Blender can’t evaluate, drawn red in the node editor: most |
 | [link](#nodebpy.builder.tree.WorldBuilder.link) |  |
 | [panel](#nodebpy.builder.tree.WorldBuilder.panel) | A panel that can group input *and* output sockets together |
 | [shader](#nodebpy.builder.tree.WorldBuilder.shader) | Create a shader node tree. |
@@ -2085,6 +2117,7 @@ compositor(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
     scene=False,
 )
 ```
@@ -2118,6 +2151,7 @@ geometry(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
     is_modifier=None,
     is_tool=None,
 )
@@ -2126,6 +2160,14 @@ geometry(
 Create a geometry node tree.
 
 `is_modifier` and `is_tool` flag the group for use as a modifier or as a node tool; `None` leaves an existing group’s flags alone.
+
+##### invalid_links
+
+``` python
+invalid_links()
+```
+
+Links Blender can’t evaluate, drawn red in the node editor: most often a field reaching an input that takes a single value, such as a Repeat Zone’s Iterations or Points’ Count. Muted links and links to sockets the node’s settings hide or grey out aren’t evaluated, so they aren’t reported.
 
 ##### link
 
@@ -2152,6 +2194,7 @@ shader(
     fake_user=False,
     split_inputs=None,
     clear=False,
+    keep_edits=None,
 )
 ```
 
@@ -2218,6 +2261,8 @@ to_python(
     format=True,
     nodebpy_pkg='nodebpy',
     in_place=False,
+    groups='inline',
+    group_modules=None,
 )
 ```
 
@@ -2229,7 +2274,16 @@ See :func:`nodebpy.codegen.to_python` for parameter details.
 
 | Name | Description |
 |----|----|
+| [default_keep_edits](#nodebpy.builder.tree.default_keep_edits) | Scope in which every `TreeBuilder` left at its default |
 | [default_split_inputs](#nodebpy.builder.tree.default_split_inputs) | Scope in which every `TreeBuilder` left at its default |
+
+### default_keep_edits
+
+``` python
+default_keep_edits(keep=True)
+```
+
+Scope in which every `TreeBuilder` left at its default `keep_edits` keeps the layout edits made to the tree it rebuilds with `clear=True` (see :class:`TreeBuilder`). :func:`nodebpy.live.run_source` runs its code in this scope.
 
 ### default_split_inputs
 

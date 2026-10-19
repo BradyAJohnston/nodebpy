@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.38.0</span>
+    <span class="navbar-title">nodebpy 520.39.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -768,6 +768,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.TreeBuilder.deactivate_tree" id="toc-nodebpy.TreeBuilder.deactivate_tree" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.deactivate_tree">deactivate_tree</a></li>
   <li><a href="#nodebpy.TreeBuilder.disable_arrange" id="toc-nodebpy.TreeBuilder.disable_arrange" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.disable_arrange">disable_arrange</a></li>
   <li><a href="#nodebpy.TreeBuilder.geometry" id="toc-nodebpy.TreeBuilder.geometry" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.geometry">geometry</a></li>
+  <li><a href="#nodebpy.TreeBuilder.invalid_links" id="toc-nodebpy.TreeBuilder.invalid_links" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.invalid_links">invalid_links</a></li>
   <li><a href="#nodebpy.TreeBuilder.link" id="toc-nodebpy.TreeBuilder.link" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.link">link</a></li>
   <li><a href="#nodebpy.TreeBuilder.panel" id="toc-nodebpy.TreeBuilder.panel" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.panel">panel</a></li>
   <li><a href="#nodebpy.TreeBuilder.shader" id="toc-nodebpy.TreeBuilder.shader" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.shader">shader</a></li>
@@ -798,9 +799,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    ignore_visibility<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    clear<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    is_modifier<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    is_tool<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    keep_edits<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    is_modifier<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    is_tool<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Builder for creating Blender node trees with a clean Python API.</p>
 <p>Supports geometry, shader, and compositor node trees.</p>
 <section id="attributes" class="level2">
@@ -903,30 +905,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Create a geometry node tree.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.TreeBuilder.invalid_links">invalid_links</a></td>
+<td>Links Blender can’t evaluate, drawn red in the node editor: most</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.TreeBuilder.link">link</a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.TreeBuilder.panel">panel</a></td>
 <td>A panel that can group input <em>and</em> output sockets together</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.TreeBuilder.shader">shader</a></td>
 <td>Create a shader node tree.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.TreeBuilder.split_group_inputs">split_group_inputs</a></td>
 <td>Split the Group Input node into one instance per consumer node,</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.TreeBuilder.to_mermaid">to_mermaid</a></td>
 <td>Generate a Mermaid diagram that represents this tree.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.TreeBuilder.to_plot">to_plot</a></td>
 <td>Draw this tree to an image, styled like Blender’s node editor,</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.TreeBuilder.to_python">to_python</a></td>
 <td>Generate Python source that recreates this tree using nodebpy.</td>
 </tr>
@@ -955,8 +961,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    clear<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    scene<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    keep_edits<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    scene<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a compositor node tree; <code>scene=True</code> also makes it the active scene’s compositor.</p>
 </section>
 <section id="nodebpy.TreeBuilder.deactivate_tree" class="level3">
@@ -979,42 +986,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    clear<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    is_modifier<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    is_tool<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    keep_edits<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    is_modifier<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    is_tool<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a geometry node tree.</p>
 <p><code>is_modifier</code> and <code>is_tool</code> flag the group for use as a modifier or as a node tool; <code>None</code> leaves an existing group’s flags alone.</p>
 </section>
+<section id="nodebpy.TreeBuilder.invalid_links" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.invalid_links">invalid_links</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>invalid_links()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Links Blender can’t evaluate, drawn red in the node editor: most often a field reaching an input that takes a single value, such as a Repeat Zone’s Iterations or Points’ Count. Muted links and links to sockets the node’s settings hide or grey out aren’t evaluated, so they aren’t reported.</p>
+</section>
 <section id="nodebpy.TreeBuilder.link" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.link">link</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>link(socket1, socket2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>link(socket1, socket2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.TreeBuilder.panel" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.panel">panel</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>panel(name, <span class="op">*</span>, description<span class="op">=</span><span class="st">''</span>, default_closed<span class="op">=</span><span class="va">False</span>, reuse<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>panel(name, <span class="op">*</span>, description<span class="op">=</span><span class="st">''</span>, default_closed<span class="op">=</span><span class="va">False</span>, reuse<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A panel that can group input <em>and</em> output sockets together (<code>tree.inputs.panel</code> / <code>tree.outputs.panel</code> group one direction). Reuses an existing same-named panel under the same parent, so a mixed panel can be declared in separate input and output passes; pass <code>reuse=False</code> to always create a fresh panel — Blender allows several same-named sibling panels, and rebuilding such an interface must not fold them into one. Passing an existing panel (or a previous <code>tree.panel(...)</code> context) instead of a name reopens exactly that panel — the unambiguous spelling generated code uses for the second direction pass over a same-named sibling.</p>
 </section>
 <section id="nodebpy.TreeBuilder.shader" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.shader">shader</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>shader(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'Shader Nodes'</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    clear<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>shader(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'Shader Nodes'</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    clear<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    keep_edits<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a shader node tree.</p>
 </section>
 <section id="nodebpy.TreeBuilder.split_group_inputs" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.split_group_inputs">split_group_inputs</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>split_group_inputs()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>split_group_inputs()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Each instance is named (and labelled, so the editor header shows it) after the interface sockets it carries, making it easy to spot when scanning the tree (Blender de-duplicates repeated names with <code>.001</code> suffixes as usual), and parented into its consumer’s frame so the arranger’s frame clustering keeps the pair together. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with <code>split_inputs=True</code>, or inside a :func:<code>~nodebpy.builder.default_split_inputs</code> scope.</p>
 </section>
 <section id="nodebpy.TreeBuilder.to_mermaid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.to_mermaid">to_mermaid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>to_mermaid(fenced<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>to_mermaid(fenced<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a Mermaid diagram that represents this tree.</p>
 <p>This can be used for documentation or visualization purposes. The Mermaid syntax is supported by many tools, including GitHub and Jupyter notebooks.</p>
 <section id="arguments" class="level4 doc-section doc-section-arguments">
@@ -1049,32 +1063,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.TreeBuilder.to_plot" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.to_plot">to_plot</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>to_plot(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    filepath,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    dpi<span class="op">=</span><span class="dv">150</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    node<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    open_panels<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    axes<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>to_plot(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    filepath,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    dpi<span class="op">=</span><span class="dv">150</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    node<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    open_panels<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    axes<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Draw this tree to an image, styled like Blender’s node editor, for headless review (<code>pip install nodebpy[plot]</code>): its internals, or with <code>node=True</code> the single group node a user adds to another tree, showing the interface sockets with their default values.</p>
 <p>See :func:<code>nodebpy.export.to_plot</code>.</p>
 </section>
 <section id="nodebpy.TreeBuilder.to_python" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.to_python">to_python</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>to_python(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    min_chain_length<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    strict<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    max_inline_width<span class="op">=</span><span class="dv">88</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    snapshot_positions<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    keep_reroutes<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    top_level<span class="op">=</span><span class="st">'with'</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">format</span><span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    nodebpy_pkg<span class="op">=</span><span class="st">'nodebpy'</span>,</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    in_place<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>to_python(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    min_chain_length<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    strict<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    max_inline_width<span class="op">=</span><span class="dv">88</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    snapshot_positions<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    keep_reroutes<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    top_level<span class="op">=</span><span class="st">'with'</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">format</span><span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    nodebpy_pkg<span class="op">=</span><span class="st">'nodebpy'</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    in_place<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    groups<span class="op">=</span><span class="st">'inline'</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    group_modules<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate Python source that recreates this tree using nodebpy.</p>
 <p>See :func:<code>nodebpy.codegen.to_python</code> for parameter details.</p>
 

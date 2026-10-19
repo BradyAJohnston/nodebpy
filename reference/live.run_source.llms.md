@@ -1,7 +1,7 @@
 # live.run_source
 
 ``` python
-run_source(code, *, filename='<nodebpy>', namespace=None)
+run_source(code, *, filename='<nodebpy>', namespace=None, keep_edits=True)
 ```
 
 Execute nodebpy source for a live re-run.
@@ -15,6 +15,7 @@ Existing groups the code’s classes claim by `_name` are stashed so `create_gro
 | code | str | The source to run. | *required* |
 | filename | str | Filename for the compiled code, so tracebacks point at the caller’s Text block or file. | `'<nodebpy>'` |
 | namespace | dict\[str, Any\] \| None | Extra globals merged over the defaults (`__name__`, `__file__` and `bpy`). A `tree` it carries over from an earlier run’s :attr:`RunResult.namespace` is not mistaken for this run’s tree. | `None` |
+| keep_edits | bool | Carry the layout edits made to each rebuilt tree since it was last arranged over to its rebuild (see :mod:`nodebpy.layout.keep`). | `True` |
 
 ## Notes
 

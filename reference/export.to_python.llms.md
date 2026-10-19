@@ -16,6 +16,8 @@ to_python(
     typed_groups=None,
     root_interface=None,
     in_place=False,
+    groups='inline',
+    group_modules=None,
 )
 ```
 
@@ -39,6 +41,8 @@ Generate Python code that recreates the given node tree using nodebpy.
 | typed_groups | Collection\[str\] \| None | Tree names whose classes carry a typed `__init__` (merged dump classes) — group calls to them are emitted with the normalized parameter names from `typed_param_names` instead of socket-name keyword keys. | `None` |
 | root_interface | GroupInterface \| None | Typed-interface parts (docstring, class attributes, accessors and `__init__`) spliced into the top-level tree’s class in `class` mode, ahead of `_build_group`. | `None` |
 | in_place | bool | If True, the `with` header is emitted as `with g.tree("Name", clear=True) as tree:` so running the source rebuilds the exported tree in place — the same datablock, emptied first — instead of creating a `Name.001` copy, keeping modifiers, group nodes and pinned editors attached across re-runs. Only the top-level tree is rebuilt this way: nested groups are emitted as `Custom*Group` classes whose `create_group()` reuses an existing tree of the same name, so edits to them only take effect through :func:`nodebpy.live.run_source`. Ignored with `top_level="class"` (a class is rebuilt by `run_source`, not by a header). | `False` |
+| groups | Literal\['inline', 'reference'\] | `"inline"` (default) writes every nested group out as a class. `"reference"` calls the class that already builds a group instead, so a tree using Blender’s bundled assets (`g.Array`), nodebpy’s own groups or a group class from your own modules exports as just that tree — the code you would have written. A group no loaded class builds, or one changed by hand since nodebpy built it, is still written out. See :mod:`nodebpy.export._groups` for how groups are matched. | `'inline'` |
+| group_modules | Collection\[str\] \| None | With `groups="reference"`: modules (packages include their submodules) to import first, so their group classes can be matched. By default, the package of dumped sources that the nearest `pyproject.toml`’s `[tool.nodebpy.assets]` table names, if any. | `None` |
 
 ## Returns
 

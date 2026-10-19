@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.38.0</span>
+    <span class="navbar-title">nodebpy 520.39.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -772,7 +772,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="nodebpy.live.run_source" class="level1">
 <h1>live.run_source</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>run_source(code, <span class="op">*</span>, filename<span class="op">=</span><span class="st">'&lt;nodebpy&gt;'</span>, namespace<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>run_source(code, <span class="op">*</span>, filename<span class="op">=</span><span class="st">'&lt;nodebpy&gt;'</span>, namespace<span class="op">=</span><span class="va">None</span>, keep_edits<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Execute nodebpy source for a live re-run.</p>
 <p>Existing groups the code’s classes claim by <code>_name</code> are stashed so <code>create_group()</code> builds fresh, Geometry Nodes modifier input values on every pre-existing tree are preserved across the rebuild, and the stashed trees’ users are remapped onto the new builds afterwards. On any exception the stash is restored and the exception re-raised unchanged; <code>filename</code> is what its traceback names. Nothing is printed or captured.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
@@ -781,7 +781,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <colgroup>
 <col style="width: 4%">
 <col style="width: 10%">
-<col style="width: 79%">
+<col style="width: 78%">
 <col style="width: 6%">
 </colgroup>
 <thead>
@@ -810,6 +810,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>dict[str, Any] | None</td>
 <td>Extra globals merged over the defaults (<code>__name__</code>, <code>__file__</code> and <code>bpy</code>). A <code>tree</code> it carries over from an earlier run’s :attr:<code>RunResult.namespace</code> is not mistaken for this run’s tree.</td>
 <td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>keep_edits</td>
+<td>bool</td>
+<td>Carry the layout edits made to each rebuilt tree since it was last arranged over to its rebuild (see :mod:<code>nodebpy.layout.keep</code>).</td>
+<td><code>True</code></td>
 </tr>
 </tbody>
 </table>

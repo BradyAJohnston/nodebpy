@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.38.0</span>
+    <span class="navbar-title">nodebpy 520.39.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -761,6 +761,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
   <ul class="collapse">
+  <li><a href="#nodebpy.live.GroupStash.keep_edits" id="toc-nodebpy.live.GroupStash.keep_edits" class="nav-link" data-scroll-target="#nodebpy.live.GroupStash.keep_edits">keep_edits</a></li>
   <li><a href="#nodebpy.live.GroupStash.replace" id="toc-nodebpy.live.GroupStash.replace" class="nav-link" data-scroll-target="#nodebpy.live.GroupStash.replace">replace</a></li>
   <li><a href="#nodebpy.live.GroupStash.restore" id="toc-nodebpy.live.GroupStash.restore" class="nav-link" data-scroll-target="#nodebpy.live.GroupStash.restore">restore</a></li>
   </ul></li>
@@ -807,23 +808,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.live.GroupStash.keep_edits">keep_edits</a></td>
+<td>Carry the layout edits made to each old tree over to the tree the</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.live.GroupStash.replace">replace</a></td>
 <td>Success path: for each name, if the run created a new tree of the</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.live.GroupStash.restore">restore</a></td>
 <td>Failure path: remove any partial build under an original name and</td>
 </tr>
 </tbody>
 </table>
+<section id="nodebpy.live.GroupStash.keep_edits" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.live.GroupStash.keep_edits">keep_edits</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>keep_edits()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Carry the layout edits made to each old tree over to the tree the run built under its name (see :mod:<code>nodebpy.layout.keep</code>).</p>
+</section>
 <section id="nodebpy.live.GroupStash.replace" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.live.GroupStash.replace">replace</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>replace()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Success path: for each name, if the run created a new tree of the same type under it, point the old tree’s users (group nodes, modifiers, pinned editors) at the new one and remove the old; otherwise the old tree keeps its original name. Empties the stash, so calling it (or :meth:<code>restore</code>) again is a no-op.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>replace()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Success path: for each name, if the run created a new tree of the same type under it, point the old tree’s users (group nodes, modifiers, pinned editors) at the new one, carry its asset status over (:func:<code>copy_asset</code>) and remove the old; otherwise the old tree keeps its original name. Empties the stash, so calling it (or :meth:<code>restore</code>) again is a no-op.</p>
 </section>
 <section id="nodebpy.live.GroupStash.restore" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.live.GroupStash.restore">restore</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>restore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>restore()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Failure path: remove any partial build under an original name and give the old trees their names back. Empties the stash, so calling it (or :meth:<code>replace</code>) again is a no-op.</p>
 
 

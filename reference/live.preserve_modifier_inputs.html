@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.38.0</span>
+    <span class="navbar-title">nodebpy 520.39.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -771,6 +771,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>preserve_modifier_inputs(trees)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Keep Geometry Nodes modifier input values across an interface rebuild.</p>
 <p>Snapshots the input state of every Geometry Nodes modifier (on any object) whose <code>node_group</code> is one of <code>trees</code>, keyed by interface socket <em>name</em>: the value, and whether the input reads a named attribute instead (<code>type</code> and <code>attribute_name</code>). On exit — also when the body raised, so a failed in-place rebuild keeps the values of the sockets it did build — each entry whose socket name still exists on the modifier’s (possibly rebuilt, possibly remapped) tree is reapplied; sockets whose type changed are skipped, as is anything that fails to apply — the reapply step never raises.</p>
+<p>Keyframes and drivers on those inputs are kept too: they address an input by its socket identifier, which a rebuild changes, so their paths are rewritten to the new identifier of the socket with the same name and type.</p>
 
 
 </section>

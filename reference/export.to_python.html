@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.38.0</span>
+    <span class="navbar-title">nodebpy 520.39.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -787,15 +787,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    typed_groups<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    root_interface<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    in_place<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    groups<span class="op">=</span><span class="st">'inline'</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    group_modules<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate Python code that recreates the given node tree using nodebpy.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 2%">
-<col style="width: 4%">
-<col style="width: 90%">
+<col style="width: 5%">
+<col style="width: 89%">
 <col style="width: 1%">
 </colgroup>
 <thead>
@@ -890,6 +892,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>bool</td>
 <td>If True, the <code>with</code> header is emitted as <code>with g.tree("Name", clear=True) as tree:</code> so running the source rebuilds the exported tree in place — the same datablock, emptied first — instead of creating a <code>Name.001</code> copy, keeping modifiers, group nodes and pinned editors attached across re-runs. Only the top-level tree is rebuilt this way: nested groups are emitted as <code>Custom*Group</code> classes whose <code>create_group()</code> reuses an existing tree of the same name, so edits to them only take effect through :func:<code>nodebpy.live.run_source</code>. Ignored with <code>top_level="class"</code> (a class is rebuilt by <code>run_source</code>, not by a header).</td>
 <td><code>False</code></td>
+</tr>
+<tr class="odd">
+<td>groups</td>
+<td>Literal['inline', 'reference']</td>
+<td><code>"inline"</code> (default) writes every nested group out as a class. <code>"reference"</code> calls the class that already builds a group instead, so a tree using Blender’s bundled assets (<code>g.Array</code>), nodebpy’s own groups or a group class from your own modules exports as just that tree — the code you would have written. A group no loaded class builds, or one changed by hand since nodebpy built it, is still written out. See :mod:<code>nodebpy.export._groups</code> for how groups are matched.</td>
+<td><code>'inline'</code></td>
+</tr>
+<tr class="even">
+<td>group_modules</td>
+<td>Collection[str] | None</td>
+<td>With <code>groups="reference"</code>: modules (packages include their submodules) to import first, so their group classes can be matched. By default, the package of dumped sources that the nearest <code>pyproject.toml</code>’s <code>[tool.nodebpy.assets]</code> table names, if any.</td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>

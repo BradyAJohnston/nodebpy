@@ -178,6 +178,7 @@ material(
     arrange='sugiyama',
     fake_user=False,
     clear=False,
+    keep_edits=None,
 )
 ```
 
@@ -191,6 +192,7 @@ world(
     arrange='sugiyama',
     fake_user=False,
     clear=False,
+    keep_edits=None,
     scene=False,
 )
 ```
