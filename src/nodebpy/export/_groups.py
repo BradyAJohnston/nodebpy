@@ -24,9 +24,10 @@ import inspect
 import os
 import pkgutil
 import sys
-from collections.abc import Iterable, Iterator
+from collections.abc import Collection, Iterable, Iterator, Mapping
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import bpy
 
@@ -131,22 +132,50 @@ def _builds(cls: type[NodeGroupBuilder], tree: bpy.types.NodeTree) -> bool:
     )
 
 
-def find_class(tree: bpy.types.NodeTree) -> type[NodeGroupBuilder] | None:
-    """The loaded class that builds or links *tree*, the latest defined when
-    several do (a live script defines its classes again on every run)."""
+def namespace_classes(
+    namespace: Mapping[str, Any],
+) -> dict[type[NodeGroupBuilder], str]:
+    """The group classes bound in *namespace* (a script's globals), each with
+    the name it is bound to there; a public name over a private one."""
+    names: dict[type[NodeGroupBuilder], str] = {}
+    for name, value in namespace.items():
+        if not (isinstance(value, type) and issubclass(value, NodeGroupBuilder)):
+            continue
+        if value not in names or names[value].startswith("_"):
+            names[value] = name
+    return names
+
+
+def tree_name(cls: type[NodeGroupBuilder]) -> str | None:
+    """The name of the tree *cls* builds or links, if it doesn't choose one
+    per instance."""
+    if issubclass(cls, _AssetGroupMixin):
+        return cls._asset_name
+    if cls._group_name is not NodeGroupBuilder._group_name:
+        return None
+    return getattr(cls, "_name", None)
+
+
+def find_class(
+    tree: bpy.types.NodeTree, prefer: Collection[type] = ()
+) -> type[NodeGroupBuilder] | None:
+    """The loaded class that builds or links *tree*: one in *prefer* if any
+    does, else the latest defined (a live script defines its classes again
+    on every run, so older copies linger)."""
     from ..live import was_edited
 
     if tree.library is None and was_edited(tree):
         return None
     found = [cls for cls in _group_classes() if _builds(cls, tree)]
-    return found[-1] if found else None
+    preferred = [cls for cls in found if cls in prefer]
+    return (preferred or found)[-1] if found else None
 
 
-def reference(node: bpy.types.Node) -> Reference | None:
+def reference(node: bpy.types.Node, prefer: Collection[type] = ()) -> Reference | None:
     """How to call the class that builds *node*'s group, or ``None`` when no
     loaded class does or its ``__init__`` can't take the node's inputs."""
     tree = getattr(node, "node_tree", None)
-    cls = find_class(tree) if tree is not None else None
+    cls = find_class(tree, prefer) if tree is not None else None
     if cls is None:
         return None
     if cls.__init__ is NodeGroupBuilder.__init__:

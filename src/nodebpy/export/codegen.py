@@ -31,6 +31,7 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from functools import cache
+from types import ModuleType
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 import numpy as np
@@ -4156,6 +4157,7 @@ def to_python(
     in_place: bool = False,
     groups: Literal["inline", "reference"] = "inline",
     group_modules: Collection[str] | None = None,
+    namespace: Mapping[str, Any] | None = None,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -4250,6 +4252,15 @@ def to_python(
         submodules) to import first, so their group classes can be matched.
         By default, the package of dumped sources that the nearest
         ``pyproject.toml``'s ``[tool.nodebpy.assets]`` table names, if any.
+    namespace: Mapping[str, Any] | None
+        The globals of the script the code goes back into, such as
+        :attr:`nodebpy.live.RunResult.namespace`. A group class bound there
+        is called by that name, without an import, and is preferred over
+        other loaded classes building the same tree; a class reached through
+        a module bound there is called as ``module.Class``. A group written
+        out takes the name of the script's class for it, so the code
+        replaces that class. :meth:`nodebpy.live.RunResult.to_python` passes
+        it for you.
 
     Returns
     -------
@@ -4273,6 +4284,21 @@ def to_python(
             modules = _groups.configured_modules()
         _groups.import_modules(modules)
 
+    script: dict[type, str] = {}
+    modules: dict[str, ModuleType] = {}
+    if namespace is not None:
+        from . import _groups
+
+        for cls, name in _groups.namespace_classes(namespace).items():
+            script[cls] = name
+            if (built := _groups.tree_name(cls)) is not None:
+                class_names.setdefault(built, name)
+        modules = {
+            name: value
+            for name, value in namespace.items()
+            if isinstance(value, ModuleType) and not name.startswith("__")
+        }
+
     collector = _GroupCollector(
         min_chain_length=min_chain_length,
         strict=strict,
@@ -4286,6 +4312,8 @@ def to_python(
         root_tree_name=node_tree.name if root_interface is not None else None,
         reference_groups=groups == "reference",
         nodebpy_pkg=nodebpy_pkg,
+        script_classes=script,
+        script_modules=modules,
         # Reserve every assigned name so a locally derived one never shadows a
         # class the caller imports from another module.
         used_names=set(class_names.values()),
@@ -4614,6 +4642,10 @@ class _GroupCollector:
     # Module → {class name: name it is imported as} for referenced classes.
     group_imports: dict[str, dict[str, str]] = field(default_factory=dict)
     referenced: dict[type, str | None] = field(default_factory=dict)
+    # The script's group classes by the name it binds them to, and the
+    # modules it binds (see to_python's ``namespace``).
+    script_classes: dict[type, str] = field(default_factory=dict)
+    script_modules: dict[str, ModuleType] = field(default_factory=dict)
 
     def reference(self, node: Node) -> tuple[str, dict[str, str] | None] | None:
         """The name to call a loaded class by when it builds ``node``'s
@@ -4622,7 +4654,7 @@ class _GroupCollector:
             return None
         from . import _groups
 
-        ref = _groups.reference(node)
+        ref = _groups.reference(node, prefer=self.script_classes.keys())
         if ref is None:
             return None
         if ref.cls not in self.referenced:
@@ -4640,6 +4672,11 @@ class _GroupCollector:
             if getattr(getattr(nodebpy, module), name, None) is cls:
                 self.used_aliases.add(alias)
                 return f"{alias}.{name}"
+        if cls in self.script_classes:
+            return self.script_classes[cls]
+        for bound, module in self.script_modules.items():
+            if getattr(module, name, None) is cls:
+                return f"{bound}.{name}"
         if cls.__module__ in _groups.SCRIPT_MODULES:
             # Defined by the script the code goes back into: no import, and
             # no other name to give it.
