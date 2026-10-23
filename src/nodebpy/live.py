@@ -38,6 +38,7 @@ from __future__ import annotations
 import ast
 import re
 import warnings
+from collections import Counter
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass, field
@@ -51,6 +52,7 @@ from .layout import keep
 
 __all__ = [
     "EditedTreeWarning",
+    "GroupLinks",
     "GroupStash",
     "NodeAnimation",
     "RunResult",
@@ -141,7 +143,9 @@ class GroupStash:
                 # Animated values are left out of the record of the build.
                 stamp_build(new)
                 users = unedited_users(old)
+                links = GroupLinks(old)
                 old.user_remap(new)
+                links.restore(new)
                 for user in users:
                     stamp_build(user)
                 if was_edited(old):
@@ -281,6 +285,148 @@ def unedited_users(tree: bpy.types.NodeTree) -> list[bpy.types.NodeTree]:
         if uses and not was_edited(other):
             users.append(other)
     return users
+
+
+type _SocketKey = tuple[str, str, int]
+"""A group node socket by what its group's interface calls it: name, type,
+and which of the sockets with that name and type it is. A rebuilt interface
+gives its sockets new identifiers, so identifiers can't follow them."""
+
+type _End = tuple[str, str, _SocketKey]
+"""The other end of a link: node name, socket identifier and socket key."""
+
+
+def _socket_keys(
+    sockets: Iterable[bpy.types.NodeSocket],
+) -> list[tuple[bpy.types.NodeSocket, _SocketKey]]:
+    keyed = []
+    seen: Counter[tuple[str, str]] = Counter()
+    for socket in sockets:
+        if socket.identifier.startswith("__extend__"):
+            continue
+        base = (socket.name, socket.type)
+        keyed.append((socket, (*base, seen[base])))
+        seen[base] += 1
+    return keyed
+
+
+@dataclass
+class _GroupNode:
+    tree: bpy.types.NodeTree
+    node: str
+    inputs: dict[_SocketKey, list[_End]]
+    outputs: dict[_SocketKey, list[_End]]
+    values: dict[_SocketKey, Any]
+
+
+class GroupLinks:
+    """The links and input values of every group node using *group*, so that
+    a rebuild of *group*, which gives its interface sockets new identifiers
+    and drops what those were linked to, can put them back.
+
+    Sockets are matched by name and type (see ``_SocketKey``); a socket the
+    rebuild no longer has loses its links and value."""
+
+    def __init__(self, group: bpy.types.NodeTree):
+        self.group: bpy.types.NodeTree = group
+        self.nodes: list[_GroupNode] = []
+        self.defaults: dict[str, Any] = _input_defaults(group)
+        for tree in _node_trees():
+            if tree == group:
+                continue
+            for node in tree.nodes:
+                if getattr(node, "node_tree", None) == group:
+                    self.nodes.append(self._record(tree, node))
+
+    def _end(self, socket: bpy.types.NodeSocket | None) -> _End:
+        assert socket is not None and socket.node is not None
+        node = socket.node
+        sockets = node.outputs if socket.is_output else node.inputs
+        keys = {s.identifier: key for s, key in _socket_keys(sockets)}
+        return (node.name, socket.identifier, keys.get(socket.identifier, ("", "", 0)))
+
+    def _record(self, tree: bpy.types.NodeTree, node: bpy.types.Node) -> _GroupNode:
+        state = _GroupNode(tree, node.name, {}, {}, {})
+        for socket, key in _socket_keys(node.inputs):
+            state.inputs[key] = [
+                self._end(link.from_socket) for link in socket.links or ()
+            ]
+            # Only values set on the node: the rest follow the rebuilt
+            # interface's defaults, as a new group node's would.
+            value = _copy_value(getattr(socket, "default_value", None))
+            if value != self.defaults.get(socket.identifier, value):
+                state.values[key] = value
+        for socket, key in _socket_keys(node.outputs):
+            state.outputs[key] = [
+                self._end(link.to_socket) for link in socket.links or ()
+            ]
+        return state
+
+    def _socket(
+        self, tree: bpy.types.NodeTree, end: _End, output: bool
+    ) -> bpy.types.NodeSocket | None:
+        name, identifier, key = end
+        node = tree.nodes.get(name)
+        if node is None:
+            return None
+        sockets = node.outputs if output else node.inputs
+        if getattr(node, "node_tree", None) == self.group:
+            # Another group node of the rebuilt group: its identifiers
+            # changed too.
+            return next((s for s, k in _socket_keys(sockets) if k == key), None)
+        return next((s for s in sockets if s.identifier == identifier), None)
+
+    def restore(self, group: bpy.types.NodeTree | None = None) -> None:
+        """Link and set the group nodes again, now using *group* (by default
+        the group recorded, rebuilt in place)."""
+        if group is not None:
+            self.group = group
+        nodes = [
+            (state, node)
+            for state in self.nodes
+            if (node := state.tree.nodes.get(state.node)) is not None
+            and getattr(node, "node_tree", None) == self.group
+        ]
+        # Pointing a group node at a new tree keeps the links of the sockets
+        # whose identifiers both trees have, whatever those sockets are now.
+        for state, node in nodes:
+            for socket in (*node.inputs, *node.outputs):
+                for link in socket.links or ():
+                    state.tree.links.remove(link)
+        # A socket added to a group's interface reaches its group nodes
+        # before the builder sets its default.
+        defaults = _input_defaults(self.group)
+        for state, node in nodes:
+            links = state.tree.links
+            for socket, key in _socket_keys(node.inputs):
+                value = state.values.get(key, defaults.get(socket.identifier))
+                if value is not None:
+                    with suppress(TypeError, ValueError, AttributeError):
+                        socket.default_value = value  # ty: ignore[unresolved-attribute]
+                for end in state.inputs.get(key, ()):
+                    source = self._socket(state.tree, end, output=True)
+                    if source is not None and not _linked(source, socket):
+                        links.new(source, socket)
+            for socket, key in _socket_keys(node.outputs):
+                for end in state.outputs.get(key, ()):
+                    target = self._socket(state.tree, end, output=False)
+                    if target is not None and not _linked(socket, target):
+                        links.new(socket, target)
+
+
+def _input_defaults(group: bpy.types.NodeTree) -> dict[str, Any]:
+    assert group.interface is not None
+    return {
+        item.identifier: _copy_value(item.default_value)
+        for item in group.interface.items_tree
+        if isinstance(item, bpy.types.NodeTreeInterfaceSocket)
+        and item.in_out == "INPUT"
+        and hasattr(item, "default_value")
+    }
+
+
+def _linked(source: bpy.types.NodeSocket, target: bpy.types.NodeSocket) -> bool:
+    return any(link.from_socket == source for link in target.links or ())
 
 
 def keep_edited(tree: bpy.types.NodeTree, name: str) -> bpy.types.NodeTree:

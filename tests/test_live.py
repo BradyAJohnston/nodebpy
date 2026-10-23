@@ -835,3 +835,124 @@ def test_failed_run_does_not_edit_users_of_a_group_class():
     with warnings.catch_warnings():
         warnings.simplefilter("error", EditedTreeWarning)
         run_source(code)
+
+
+# ---------------------------------------------------------------------------
+# GroupLinks: group nodes keep their links when their group is rebuilt
+# ---------------------------------------------------------------------------
+
+
+def _inner(extra=False, amount=1.0, drop_out=False):
+    with g.tree("Inner", clear=True) as inner:
+        geo = inner.inputs.geometry("Geometry")
+        if extra:
+            inner.inputs.float("Extra")
+        value = inner.inputs.float("Amount", amount)
+        inner.inputs.float("Amount", 0.5)
+        geo >> g.SetPosition(offset=(0, 0, value)) >> inner.outputs.geometry("Geometry")
+        if not drop_out:
+            (value * 2) >> inner.outputs.float("Out")
+    return inner.tree
+
+
+def _links(tree):
+    """Each link by node names and socket names, a repeated socket name
+    numbered by its place among those of that name."""
+
+    def ref(socket):
+        sockets = socket.node.outputs if socket.is_output else socket.node.inputs
+        same = [s.identifier for s in sockets if s.name == socket.name]
+        return (socket.node.name, socket.name, same.index(socket.identifier))
+
+    return sorted((ref(link.from_socket), ref(link.to_socket)) for link in tree.links)
+
+
+def _outer():
+    group = bpy.data.node_groups["Inner"]
+    with TreeBuilder("Outer", arrange=None) as outer:
+        geo = outer.inputs.geometry("Geometry")
+        first = g.Group()
+        first.node.node_tree = group
+        second = g.Group()
+        second.node.node_tree = group
+        links = outer.tree.links
+        links.new(geo.socket, first.node.inputs["Geometry"])
+        first.node.inputs[1].default_value = 3.0
+        # The second "Amount", and a link between two nodes of the group.
+        links.new(g.Index().node.outputs[0], first.node.inputs[2])
+        links.new(first.node.outputs["Geometry"], second.node.inputs["Geometry"])
+        links.new(first.node.outputs["Out"], second.node.inputs[1])
+        join = g.JoinGeometry()
+        links.new(second.node.outputs["Geometry"], join.node.inputs[0])
+        links.new(first.node.outputs["Geometry"], join.node.inputs[0])
+        join >> outer.outputs.geometry("Geometry")
+    return outer.tree
+
+
+def test_clear_rebuild_keeps_the_links_of_its_group_nodes():
+    _inner()
+    outer = _outer()
+    before = _links(outer)
+
+    _inner(extra=True, amount=2.0)
+
+    assert _links(outer) == before
+    first, second = outer.nodes["Group"], outer.nodes["Group.001"]
+    assert first.inputs["Amount"].default_value == 3.0  # set on the node
+    assert second.inputs["Extra"].default_value == 0.0
+    # Untouched values follow the rebuilt interface's defaults.
+    assert first.inputs[3].default_value == 0.5
+    assert not was_edited(outer)
+
+
+def test_sockets_the_rebuild_drops_lose_their_links():
+    _inner()
+    outer = _outer()
+
+    _inner(drop_out=True)
+
+    assert "Out" not in [link.from_socket.name for link in outer.links]
+    assert outer.nodes["Group.001"].inputs["Amount"].default_value == 1.0
+
+
+def test_run_source_keeps_the_links_of_a_group_class():
+    code = textwrap.dedent(
+        """
+        from nodebpy import geometry as g
+        from nodebpy.builder import CustomGeometryGroup
+
+        class Inner(CustomGeometryGroup):
+            _name = "Inner"
+
+            def _build_group(self, tree):
+                geo = tree.inputs.geometry("Geometry")
+                {extra}
+                value = tree.inputs.float("Amount", 1.0)
+                tree.inputs.float("Amount", 0.5)
+                geo >> g.SetPosition(offset=(0, 0, value)) >> tree.outputs.geometry("Geometry")
+                (value * 2) >> tree.outputs.float("Out")
+        """
+    )
+    run_source(code.format(extra="pass"))
+    outer = _outer()
+    before = _links(outer)
+
+    run_source(code.format(extra='tree.inputs.float("Extra")'))
+
+    assert outer.nodes["Group"].node_tree == bpy.data.node_groups["Inner"]
+    assert _links(outer) == before
+    assert outer.nodes["Group"].inputs["Amount"].default_value == 3.0
+
+
+def test_links_to_removed_nodes_are_left_out():
+    from nodebpy.live import GroupLinks
+
+    group = _inner()
+    outer = _outer()
+    links = GroupLinks(group)
+    outer.nodes.remove(outer.nodes["Index"])
+    outer.nodes.remove(outer.nodes["Join Geometry"])
+
+    links.restore()
+
+    assert len(outer.links) == 3

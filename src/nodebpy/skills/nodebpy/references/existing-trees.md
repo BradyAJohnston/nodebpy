@@ -14,9 +14,9 @@
   stay attached. Without `clear=True` the same name makes `Name.001`, and the modifier
   still shows the old tree. `s.tree`, `s.material` and `c.tree` take `clear=` too; for
   a tree you hold, `TreeBuilder(existing_bpy_tree, clear=True)`.
-- `clear=True` carries Geometry Nodes modifier input values, and their keyframes and
-  drivers, over by socket name, so keep input names unchanged when editing a tree a
-  user has tuned. Keyframes and drivers on node values move to the matching node of the
+- `clear=True` carries Geometry Nodes modifier input values (with their keyframes and
+  drivers) and the links and values of group nodes using the tree over by socket name,
+  so keep input names unchanged when editing a tree a user has tuned. Keyframes and drivers on node values move to the matching node of the
   rebuild; any it can't place stay on their old path and raise a warning. It also keeps
   the `is_modifier` / `is_tool` flags, but resets simulation caches.
 - A rebuild of a tree someone changed by hand (nodes, links, values, the interface)
