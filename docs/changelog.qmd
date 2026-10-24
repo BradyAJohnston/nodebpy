@@ -2,7 +2,7 @@
 title: Changelog
 ---
 
-## v520.41.0
+## v520.40.1
 
 ### Fixes
 
