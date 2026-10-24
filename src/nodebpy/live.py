@@ -38,6 +38,7 @@ from __future__ import annotations
 import ast
 import re
 import warnings
+from collections import Counter
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass, field
@@ -46,11 +47,12 @@ from typing import Any, cast
 import bpy
 
 from .builder import TreeBuilder, default_keep_edits
-from .builder.tree import _record_builds
+from .builder.tree import _defer_edited, _record_builds
 from .layout import keep
 
 __all__ = [
     "EditedTreeWarning",
+    "GroupLinks",
     "GroupStash",
     "NodeAnimation",
     "RunResult",
@@ -59,6 +61,8 @@ __all__ = [
     "keep_edited",
     "preserve_modifier_inputs",
     "run_source",
+    "same_build",
+    "settle_edited",
     "stamp_build",
     "stash_groups",
     "unedited_users",
@@ -141,10 +145,12 @@ class GroupStash:
                 # Animated values are left out of the record of the build.
                 stamp_build(new)
                 users = unedited_users(old)
+                links = GroupLinks(old)
                 old.user_remap(new)
+                links.restore(new)
                 for user in users:
                     stamp_build(user)
-                if was_edited(old):
+                if was_edited(old) and not same_build(new, old):
                     keep_edited(old, name)
                 else:
                     bpy.data.node_groups.remove(old)
@@ -236,8 +242,17 @@ def was_edited(tree: bpy.types.NodeTree) -> bool:
     of an input that isn't animated (animated values follow the frame, and
     rebuilds keep animation). False for a tree not built in this session."""
     built = _BUILT.get(tree.session_uid)
-    if built is None:
-        return False
+    return built is not None and _differs(tree, built)
+
+
+def same_build(tree: bpy.types.NodeTree, other: bpy.types.NodeTree) -> bool:
+    """Whether *tree* computes what *other* does, by the measure of
+    :func:`was_edited`: the code written out from a tree changed by hand
+    rebuilds it the same, so nothing the rebuild replaced was lost."""
+    return not _differs(tree, _read_build(other)[0])
+
+
+def _differs(tree: bpy.types.NodeTree, built: _Build) -> bool:
     now, skips = _read_build(tree)
     if now.interface != built.interface or now.nodes.keys() != built.nodes.keys():
         return True
@@ -283,7 +298,162 @@ def unedited_users(tree: bpy.types.NodeTree) -> list[bpy.types.NodeTree]:
     return users
 
 
-def keep_edited(tree: bpy.types.NodeTree, name: str) -> bpy.types.NodeTree:
+type _SocketKey = tuple[str, str, int]
+"""A group node socket by what its group's interface calls it: name, type,
+and which of the sockets with that name and type it is. A rebuilt interface
+gives its sockets new identifiers, so identifiers can't follow them."""
+
+type _End = tuple[str, str, _SocketKey]
+"""The other end of a link: node name, socket identifier and socket key."""
+
+
+def _socket_keys(
+    sockets: Iterable[bpy.types.NodeSocket],
+) -> list[tuple[bpy.types.NodeSocket, _SocketKey]]:
+    keyed = []
+    seen: Counter[tuple[str, str]] = Counter()
+    for socket in sockets:
+        if socket.identifier.startswith("__extend__"):
+            continue
+        base = (socket.name, socket.type)
+        keyed.append((socket, (*base, seen[base])))
+        seen[base] += 1
+    return keyed
+
+
+@dataclass
+class _GroupNode:
+    tree: bpy.types.NodeTree
+    node: str
+    inputs: dict[_SocketKey, list[_End]]
+    outputs: dict[_SocketKey, list[_End]]
+    values: dict[_SocketKey, Any]
+
+
+class GroupLinks:
+    """The links and input values of every group node using *group*, so that
+    a rebuild of *group*, which gives its interface sockets new identifiers
+    and drops what those were linked to, can put them back.
+
+    Sockets are matched by name and type (see ``_SocketKey``); a socket the
+    rebuild no longer has loses its links and value."""
+
+    def __init__(self, group: bpy.types.NodeTree):
+        self.group: bpy.types.NodeTree = group
+        self.nodes: list[_GroupNode] = []
+        self.defaults: dict[str, Any] = _input_defaults(group)
+        for tree in _node_trees():
+            if tree == group:
+                continue
+            for node in tree.nodes:
+                if getattr(node, "node_tree", None) == group:
+                    self.nodes.append(self._record(tree, node))
+
+    def _end(self, socket: bpy.types.NodeSocket | None) -> _End:
+        assert socket is not None and socket.node is not None
+        node = socket.node
+        sockets = node.outputs if socket.is_output else node.inputs
+        keys = {s.identifier: key for s, key in _socket_keys(sockets)}
+        return (node.name, socket.identifier, keys.get(socket.identifier, ("", "", 0)))
+
+    def _record(self, tree: bpy.types.NodeTree, node: bpy.types.Node) -> _GroupNode:
+        state = _GroupNode(tree, node.name, {}, {}, {})
+        for socket, key in _socket_keys(node.inputs):
+            state.inputs[key] = [
+                self._end(link.from_socket) for link in socket.links or ()
+            ]
+            # Only values set on the node: the rest follow the rebuilt
+            # interface's defaults, as a new group node's would.
+            value = _copy_value(getattr(socket, "default_value", None))
+            if value != self.defaults.get(socket.identifier, value):
+                state.values[key] = value
+        for socket, key in _socket_keys(node.outputs):
+            state.outputs[key] = [
+                self._end(link.to_socket) for link in socket.links or ()
+            ]
+        return state
+
+    def _socket(
+        self, tree: bpy.types.NodeTree, end: _End, output: bool
+    ) -> bpy.types.NodeSocket | None:
+        name, identifier, key = end
+        node = tree.nodes.get(name)
+        if node is None:
+            return None
+        sockets = node.outputs if output else node.inputs
+        if getattr(node, "node_tree", None) == self.group:
+            # Another group node of the rebuilt group: its identifiers
+            # changed too.
+            return next((s for s, k in _socket_keys(sockets) if k == key), None)
+        return next((s for s in sockets if s.identifier == identifier), None)
+
+    def restore(self, group: bpy.types.NodeTree | None = None) -> None:
+        """Link and set the group nodes again, now using *group* (by default
+        the group recorded, rebuilt in place)."""
+        if group is not None:
+            self.group = group
+        nodes = [
+            (state, node)
+            for state in self.nodes
+            if (node := state.tree.nodes.get(state.node)) is not None
+            and getattr(node, "node_tree", None) == self.group
+        ]
+        # Pointing a group node at a new tree keeps the links of the sockets
+        # whose identifiers both trees have, whatever those sockets are now.
+        for state, node in nodes:
+            for socket in (*node.inputs, *node.outputs):
+                for link in socket.links or ():
+                    state.tree.links.remove(link)
+        # A socket added to a group's interface reaches its group nodes
+        # before the builder sets its default.
+        defaults = _input_defaults(self.group)
+        for state, node in nodes:
+            links = state.tree.links
+            for socket, key in _socket_keys(node.inputs):
+                value = state.values.get(key, defaults.get(socket.identifier))
+                if value is not None:
+                    with suppress(TypeError, ValueError, AttributeError):
+                        socket.default_value = value  # ty: ignore[unresolved-attribute]
+                for end in state.inputs.get(key, ()):
+                    source = self._socket(state.tree, end, output=True)
+                    if source is not None and not _linked(source, socket):
+                        links.new(source, socket)
+            for socket, key in _socket_keys(node.outputs):
+                for end in state.outputs.get(key, ()):
+                    target = self._socket(state.tree, end, output=False)
+                    if target is not None and not _linked(socket, target):
+                        links.new(socket, target)
+
+
+def _input_defaults(group: bpy.types.NodeTree) -> dict[str, Any]:
+    assert group.interface is not None
+    return {
+        item.identifier: _copy_value(item.default_value)
+        for item in group.interface.items_tree
+        if isinstance(item, bpy.types.NodeTreeInterfaceSocket)
+        and item.in_out == "INPUT"
+        and hasattr(item, "default_value")
+    }
+
+
+def _linked(source: bpy.types.NodeSocket, target: bpy.types.NodeSocket) -> bool:
+    return any(link.from_socket == source for link in target.links or ())
+
+
+def settle_edited(tree: bpy.types.NodeTree, edited: bpy.types.NodeTree) -> None:
+    """Keep *edited*, a copy of a tree changed by hand that the rebuild
+    *tree* replaced (see :func:`keep_edited`), unless *tree* computes the
+    same (:func:`same_build`), as when it was built from the code written
+    out from the changed tree; then the copy is removed."""
+    if same_build(tree, edited):
+        bpy.data.node_groups.remove(edited)
+    else:
+        keep_edited(edited, tree.name)
+
+
+def keep_edited(
+    tree: bpy.types.NodeTree, name: str, *, stacklevel: int = 4
+) -> bpy.types.NodeTree:
     """Keep *tree*, changed by hand, as ``"<name> (edited)"`` (replacing an
     older one of that name), with a fake user and no asset mark, and warn
     that the rebuild of *name* replaced it."""
@@ -301,7 +471,7 @@ def keep_edited(tree: bpy.types.NodeTree, name: str) -> bpy.types.NodeTree:
         f"rebuild replaces those changes; the changed tree is kept as "
         f"'{tree.name}'.",
         EditedTreeWarning,
-        stacklevel=4,
+        stacklevel=stacklevel,
     )
     return tree
 
@@ -644,6 +814,49 @@ class RunResult:
     namespace: dict[str, Any]
     """The globals the code ran in."""
 
+    def to_python(self, **options: Any) -> str:
+        """The code for :attr:`tree` as it is now, to put back into the
+        script that built it, edits made in Blender since included.
+
+        This is :func:`nodebpy.export.to_python` with defaults for that:
+
+        - ``groups="reference"``: groups a class builds (the script's own,
+          Blender's bundled assets, nodebpy's, your modules') are called, not
+          written out, and a class is called by the name the script binds it
+          to, without an import (``namespace=``\\ :attr:`namespace`). A group
+          changed by hand since it was built is written out under the name
+          of the script's class for it, to replace that class.
+        - A tree one of the script's classes builds comes back as that class
+          (``top_level="class"``); any other as a ``with`` block that rebuilds
+          the tree in place (``in_place=True``).
+
+        *options* are passed on to :func:`~nodebpy.export.to_python` and
+        override these.
+
+        Raises
+        ------
+        ValueError
+            The run produced no tree.
+        """
+        from .export import to_python
+        from .export._groups import namespace_classes, tree_name
+
+        if self.tree is None:
+            raise ValueError("The run produced no tree to write out")
+        tree = self.tree
+        builds = any(
+            tree_name(cls) == tree.name
+            and getattr(cls, "_tree_idname", None) == tree.bl_idname
+            for cls in namespace_classes(self.namespace)
+        )
+        options.setdefault("groups", "reference")
+        options.setdefault("namespace", self.namespace)
+        if builds:
+            options.setdefault("top_level", "class")
+        else:
+            options.setdefault("in_place", True)
+        return to_python(tree, **options)
+
 
 def _is_group_class(value: Any, module_name: str | None) -> bool:
     return (
@@ -748,9 +961,12 @@ def run_source(
         preserve_modifier_inputs(existing),
         default_keep_edits(keep_edits),
         _record_builds(),
+        _defer_edited() as edited,
     ):
         try:
             exec(compile(code, filename, "exec"), globals_)  # noqa: S102
+            # The copies of trees changed by hand are not the run's trees.
+            before |= {copy.session_uid for _, copy in edited}
             # Resolved before the stash is replaced: building a defined-only
             # class must not find the old tree back under its name.
             tree = _produced_tree(globals_, before, prior)
@@ -758,10 +974,14 @@ def run_source(
                 stash.keep_edits()
         except BaseException:
             stash.restore()
+            for rebuilt, copy in edited:
+                keep_edited(copy, rebuilt.name)
             raise
         # Inside the preserve context: remapping a modifier onto the rebuilt
         # tree resets its inputs just like an in-place rebuild does.
         stash.replace()
+        for rebuilt, copy in edited:
+            settle_edited(rebuilt, copy)
 
     created = [g for g in bpy.data.node_groups if g.session_uid not in before]
     return RunResult(tree=tree, created=created, namespace=globals_)

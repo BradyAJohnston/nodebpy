@@ -11,6 +11,18 @@ title: Changelog
 - `allow_usage_in_scene_compositor_effect` joined the round-tripped tree-level properties.
 - A `Switch` whose values don't decide its type takes the type a new node has in that tree, as Blender 5.3 starts shader and compositor Switches as Color.
 
+## v520.40.0
+
+### Enhancements
+
+- **`RunResult.to_python()` writes a live tree's code back for its script.** After `result = run_source(code)` and edits made to `result.tree` in Blender, `result.to_python()` returns the code for the tree as it is now, ready to put back into the script. It only writes that tree: groups a class builds (the script's own, Blender's bundled assets, nodebpy's, your modules') are called, by the name the script binds them to and without an import. A tree a script class builds comes back as that class, any other as a `with ... clear=True` block, and a group edited by hand is written out under the name of the script's class for it, to replace it. Options are those of `to_python`, which also takes the script's globals as `namespace=`.
+
+### Fixes
+
+- **Re-running code written out from an edited tree keeps no backup of it.** A `clear=True` rebuild or a `run_source` re-run of a tree changed by hand kept the changed tree as `"<name> (edited)"` and raised an `EditedTreeWarning`, even when the code came from `to_python` of that tree and rebuilt it the same. Now the backup is kept, and the warning raised, only when the rebuild computes something else. `nodebpy.live.same_build(tree, other)` compares two trees.
+
+- **Rebuilding a group keeps what its group nodes are linked to.** A `clear=True` rebuild of a group, or a `run_source` re-run of a group class, gives its interface sockets new identifiers, which cut the links of every group node using it in other trees (or, under `run_source`, moved some of them onto whichever socket took the old identifier), and reset the values set on those nodes. The links and values now carry over to the socket of the same name and type; inputs left at their default take the rebuilt interface's default. `nodebpy.live.GroupLinks(group)` records them and `.restore()` puts them back.
+
 ## v520.39.0
 
 ### Enhancements

@@ -66,7 +66,7 @@ from .socket import (
 )
 
 if TYPE_CHECKING:
-    from ..live import NodeAnimation
+    from ..live import GroupLinks, NodeAnimation
 
 _SocketT = TypeVar("_SocketT", bound=Socket)
 
@@ -125,6 +125,25 @@ def _record_builds() -> Iterator[None]:
         yield
     finally:
         _RECORD_BUILDS.reset(token)
+
+
+# Under run_source: each tree changed by hand that a clear=True rebuild
+# replaced, as (the rebuild, a copy of the changed tree). run_source settles
+# them once it has put its rebuilt groups in place of the old ones, which the
+# copies use too, so that a rebuild can be compared with the tree it replaced.
+_EDITED_COPIES: ContextVar[list[tuple[NodeTree, NodeTree]] | None] = ContextVar(
+    "nodebpy_edited_copies", default=None
+)
+
+
+@contextmanager
+def _defer_edited() -> Iterator[list[tuple[NodeTree, NodeTree]]]:
+    copies: list[tuple[NodeTree, NodeTree]] = []
+    token = _EDITED_COPIES.set(copies)
+    try:
+        yield copies
+    finally:
+        _EDITED_COPIES.reset(token)
 
 
 # The interface ``default_input`` values Blender actually accepts at runtime,
@@ -1215,12 +1234,14 @@ class TreeBuilder[TreeT: NodeTree]:
         if clear and keep_edits and arrange is not None:
             self._kept_edits = _keep.record(self.tree)
         self._animation: NodeAnimation | None = None
+        self._group_links: GroupLinks | None = None
+        self._edited: NodeTree | None = None
         self._unedited_users: list[NodeTree] = []
         self._record = clear or _RECORD_BUILDS.get()
         if clear:
             from ..live import (
+                GroupLinks,
                 NodeAnimation,
-                keep_edited,
                 preserve_modifier_inputs,
                 unedited_users,
                 was_edited,
@@ -1228,14 +1249,16 @@ class TreeBuilder[TreeT: NodeTree]:
 
             self._unedited_users = unedited_users(self.tree)
             if was_edited(self.tree):
-                copy = self.tree.copy()
-                assert copy is not None
-                keep_edited(copy, self.tree.name)
+                # Kept as "<name> (edited)" on exit, unless the rebuild
+                # computes the same (the code was written out from it).
+                self._edited = self.tree.copy()
             assert self.tree.interface is not None
             self._preserved_inputs = preserve_modifier_inputs([self.tree])
             self._preserved_inputs.__enter__()
             # Removing the nodes would delete their keyframes and drivers.
             self._animation = NodeAnimation(self.tree)
+            # A new interface drops what group nodes using the tree link to.
+            self._group_links = GroupLinks(self.tree)
             self.tree.nodes.clear()
             self.tree.interface.clear()
 
@@ -1498,11 +1521,23 @@ class TreeBuilder[TreeT: NodeTree]:
         if self._animation is not None:
             self._animation.restore()
             self._animation = None
+        if self._group_links is not None:
+            self._group_links.restore()
+            self._group_links = None
         self._apply_input_defaults()
         if self._preserved_inputs is not None:
             self._preserved_inputs.__exit__(None, None, None)
             self._preserved_inputs = None
         self._warn_invalid_links()
+        if self._edited is not None:
+            copies = _EDITED_COPIES.get()
+            if copies is not None:
+                copies.append((self.tree, self._edited))
+            else:
+                from ..live import settle_edited
+
+                settle_edited(self.tree, self._edited)
+            self._edited = None
         if self._record:
             from ..live import stamp_build
 

@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -209,7 +209,7 @@ css = [
 
 [[package]]
 name = "bpy"
-version = "5.3.0b0+202610190948"
+version = "5.3.0b0+202610240914"
 source = { registry = "https://bradyajohnston.github.io/dailybpy" }
 dependencies = [
     { name = "cattrs" },
@@ -219,9 +219,9 @@ dependencies = [
     { name = "zstandard" },
 ]
 wheels = [
-    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-10-19/bpy-5.3.0b0%2B202610190948-cp313-cp313-macosx_13_0_arm64.whl" },
-    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-10-19/bpy-5.3.0b0%2B202610190948-cp313-cp313-manylinux_2_39_x86_64.whl" },
-    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-10-19/bpy-5.3.0b0%2B202610190948-cp313-cp313-win_amd64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202610240914/bpy-5.3.0b0%2B202610240914-cp313-cp313-macosx_13_0_arm64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202610240914/bpy-5.3.0b0%2B202610240914-cp313-cp313-manylinux_2_39_x86_64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202610240914/bpy-5.3.0b0%2B202610240914-cp313-cp313-win_amd64.whl" },
 ]
 
 [[package]]
@@ -715,11 +715,11 @@ wheels = [
 
 [[package]]
 name = "fake-bpy-module"
-version = "20261019"
+version = "20261024"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a6/21/005c448856f6fc939c8079ba557b60675bbd8cd47ad2b35ab8b37c90505a/fake_bpy_module-20261019.tar.gz", hash = "sha256:229cb469184ec45ae534b30327802b3db51e6b4ef5d3736a0a3e0957e2486ba6", size = 975082, upload-time = "2026-10-19T11:29:51.936Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/56/a4/b1a4213c6788a8657c19261427472451ba600343f814b98bc5a1e1522d62/fake_bpy_module-20261024.tar.gz", hash = "sha256:606a27b5a93c6c68214fc5618e8f86d8a5935993d0295eb05fc8116a97d8971f", size = 974543, upload-time = "2026-10-24T10:00:46.899Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/e5/78455505ddaaa02448cbf1402eb6ae1111add79a4f862a17c96b05748fc2/fake_bpy_module-20261019-py3-none-any.whl", hash = "sha256:9fd2c3c7470c8cb994f76bdbf293fa79dd2907bdb1d1765bd10a8c58706047b4", size = 1123731, upload-time = "2026-10-19T11:29:50.388Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/de/732a7c53bae5d0c5117fdcbe280f742163cf333b281d4019b6eff202bf73/fake_bpy_module-20261024-py3-none-any.whl", hash = "sha256:3ae508fe9de5e77e97bd194844d0e66707efba1f30c746dd771a8d937f967c45", size = 1123003, upload-time = "2026-10-24T10:00:44.311Z" },
 ]
 
 [[package]]

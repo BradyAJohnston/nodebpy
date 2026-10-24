@@ -7,7 +7,24 @@ authors = [
     { name = "Brady Johnston", email = "brady.johnston@me.com" }
 ]
 requires-python = ">=3.13"
-license = { text = "GPL-3.0-or-later" }
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+keywords = ["blender", "bpy", "nodes", "geometry-nodes", "shader", "compositor", "procedural"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://bradyajohnston.github.io/nodebpy"
+Documentation = "https://bradyajohnston.github.io/nodebpy"
+Repository = "https://github.com/BradyAJohnston/nodebpy"
+Issues = "https://github.com/BradyAJohnston/nodebpy/issues"
+Changelog = "https://bradyajohnston.github.io/nodebpy/changelog.html"
 
 [project.scripts]
 nodebpy = "nodebpy.__main__:main"
