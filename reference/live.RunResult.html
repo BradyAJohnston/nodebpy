@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.39.0</span>
+    <span class="navbar-title">nodebpy 520.40.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -759,6 +759,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.live.RunResult" id="toc-nodebpy.live.RunResult" class="nav-link active" data-scroll-target="#nodebpy.live.RunResult">live.RunResult</a>
   <ul class="collapse">
   <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
+  <ul class="collapse">
+  <li><a href="#nodebpy.live.RunResult.to_python" id="toc-nodebpy.live.RunResult.to_python" class="nav-link" data-scroll-target="#nodebpy.live.RunResult.to_python">to_python</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -797,8 +801,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+</section>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.live.RunResult.to_python">to_python</a></td>
+<td>The code for :attr:<code>tree</code> as it is now, to put back into the</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.live.RunResult.to_python" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.live.RunResult.to_python">to_python</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>to_python(<span class="op">**</span>options)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The code for :attr:<code>tree</code> as it is now, to put back into the script that built it, edits made in Blender since included.</p>
+<p>This is :func:<code>nodebpy.export.to_python</code> with defaults for that:</p>
+<ul>
+<li><code>groups="reference"</code>: groups a class builds (the script’s own, Blender’s bundled assets, nodebpy’s, your modules’) are called, not written out, and a class is called by the name the script binds it to, without an import (<code>namespace=</code>&nbsp;:attr:<code>namespace</code>). A group changed by hand since it was built is written out under the name of the script’s class for it, to replace that class.</li>
+<li>A tree one of the script’s classes builds comes back as that class (<code>top_level="class"</code>); any other as a <code>with</code> block that rebuilds the tree in place (<code>in_place=True</code>).</li>
+</ul>
+<p><em>options</em> are passed on to :func:<code>~nodebpy.export.to_python</code> and override these.</p>
+<section id="raises" class="level4 doc-section doc-section-raises">
+<h4 class="doc-section doc-section-raises anchored" data-anchor-id="raises">Raises</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>ValueError</td>
+<td>The run produced no tree.</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
+</section>
 </section>
 </section>
 

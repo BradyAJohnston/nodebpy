@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.39.0</span>
+    <span class="navbar-title">nodebpy 520.40.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -789,7 +789,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    in_place<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    groups<span class="op">=</span><span class="st">'inline'</span>,</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    group_modules<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    namespace<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate Python code that recreates the given node tree using nodebpy.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
@@ -903,6 +904,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>group_modules</td>
 <td>Collection[str] | None</td>
 <td>With <code>groups="reference"</code>: modules (packages include their submodules) to import first, so their group classes can be matched. By default, the package of dumped sources that the nearest <code>pyproject.toml</code>’s <code>[tool.nodebpy.assets]</code> table names, if any.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>namespace</td>
+<td>Mapping[str, Any] | None</td>
+<td>The globals of the script the code goes back into, such as :attr:<code>nodebpy.live.RunResult.namespace</code>. A group class bound there is called by that name, without an import, and is preferred over other loaded classes building the same tree; a class reached through a module bound there is called as <code>module.Class</code>. A group written out takes the name of the script’s class for it, so the code replaces that class. :meth:<code>nodebpy.live.RunResult.to_python</code> passes it for you.</td>
 <td><code>None</code></td>
 </tr>
 </tbody>
