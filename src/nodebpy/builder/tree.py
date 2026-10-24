@@ -66,7 +66,7 @@ from .socket import (
 )
 
 if TYPE_CHECKING:
-    from ..live import NodeAnimation
+    from ..live import GroupLinks, NodeAnimation
 
 _SocketT = TypeVar("_SocketT", bound=Socket)
 
@@ -1215,10 +1215,12 @@ class TreeBuilder[TreeT: NodeTree]:
         if clear and keep_edits and arrange is not None:
             self._kept_edits = _keep.record(self.tree)
         self._animation: NodeAnimation | None = None
+        self._group_links: GroupLinks | None = None
         self._unedited_users: list[NodeTree] = []
         self._record = clear or _RECORD_BUILDS.get()
         if clear:
             from ..live import (
+                GroupLinks,
                 NodeAnimation,
                 keep_edited,
                 preserve_modifier_inputs,
@@ -1236,6 +1238,8 @@ class TreeBuilder[TreeT: NodeTree]:
             self._preserved_inputs.__enter__()
             # Removing the nodes would delete their keyframes and drivers.
             self._animation = NodeAnimation(self.tree)
+            # A new interface drops what group nodes using the tree link to.
+            self._group_links = GroupLinks(self.tree)
             self.tree.nodes.clear()
             self.tree.interface.clear()
 
@@ -1498,6 +1502,9 @@ class TreeBuilder[TreeT: NodeTree]:
         if self._animation is not None:
             self._animation.restore()
             self._animation = None
+        if self._group_links is not None:
+            self._group_links.restore()
+            self._group_links = None
         self._apply_input_defaults()
         if self._preserved_inputs is not None:
             self._preserved_inputs.__exit__(None, None, None)

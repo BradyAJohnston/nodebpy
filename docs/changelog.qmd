@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.40.0
+
+### Fixes
+
+- **Rebuilding a group keeps what its group nodes are linked to.** A `clear=True` rebuild of a group, or a `run_source` re-run of a group class, gives its interface sockets new identifiers, which cut the links of every group node using it in other trees (or, under `run_source`, moved some of them onto whichever socket took the old identifier), and reset the values set on those nodes. The links and values now carry over to the socket of the same name and type; inputs left at their default take the rebuilt interface's default. `nodebpy.live.GroupLinks(group)` records them and `.restore()` puts them back.
+
 ## v520.39.0
 
 ### Enhancements
