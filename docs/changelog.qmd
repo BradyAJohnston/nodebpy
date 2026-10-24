@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.41.0
+
+### Fixes
+
+- **`nodebpy.__version__` and `nodebpy --version` give the version of the nodebpy imported.** They read the first nodebpy metadata found after `bpy` was imported, which puts Blender's extension site-packages first; an extension that carries its own nodebpy (Molecular Nodes does) gave its version instead.
+
 ## v520.40.0
 
 ### Enhancements
