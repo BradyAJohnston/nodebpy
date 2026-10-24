@@ -1772,11 +1772,9 @@ def _parse_args(argv: list[str] | None = None):
             "-P <.../nodebpy/__main__.py> -- <subcommand ...>"
         ),
     )
-    from importlib.metadata import version
+    from nodebpy import __version__
 
-    parser.add_argument(
-        "--version", action="version", version=f"nodebpy {version('nodebpy')}"
-    )
+    parser.add_argument("--version", action="version", version=f"nodebpy {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
     from nodebpy import _lookup, _skill
 
