@@ -7,6 +7,7 @@ import bpy
 from ...builder import BaseNode, SocketAccessor
 from ...builder.socket import (
     BooleanSocket,
+    BundleSocket,
     ColorSocket,
     FloatSocket,
     FontSocket,
@@ -21,6 +22,7 @@ from ...builder.socket import (
 from ...types import (
     InputAny,
     InputBoolean,
+    InputBundle,
     InputColor,
     InputFloat,
     InputFont,
@@ -95,6 +97,7 @@ class EnableOutput[T](BaseNode):
             "STRING",
             "MENU",
             "OBJECT",
+            "BUNDLE",
             "FONT",
             "INT_VECTOR",
         ] = "FLOAT",
@@ -175,6 +178,13 @@ class EnableOutput[T](BaseNode):
         return EnableOutput(data_type="OBJECT", enable=enable, value=value)
 
     @classmethod
+    def bundle(
+        cls, enable: InputBoolean = False, value: InputBundle = None
+    ) -> "EnableOutput[BundleSocket]":
+        """Create Enable Output with operation 'Bundle'."""
+        return EnableOutput(data_type="BUNDLE", enable=enable, value=value)
+
+    @classmethod
     def font(
         cls, enable: InputBoolean = False, value: InputFont = None
     ) -> "EnableOutput[FontSocket]":
@@ -202,6 +212,7 @@ class EnableOutput[T](BaseNode):
         "STRING",
         "MENU",
         "OBJECT",
+        "BUNDLE",
         "FONT",
         "INT_VECTOR",
     ]:
@@ -221,6 +232,7 @@ class EnableOutput[T](BaseNode):
             "STRING",
             "MENU",
             "OBJECT",
+            "BUNDLE",
             "FONT",
             "INT_VECTOR",
         ],

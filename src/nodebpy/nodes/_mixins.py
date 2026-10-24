@@ -34,6 +34,7 @@ from ..builder.items import (
     _ALL_ITEM_TYPES,
     _DEFAULT_NAMES,
     Item,
+    ItemCollection,
     _deprecated,
     _FieldItems,
     _socket_for_item,
@@ -41,6 +42,7 @@ from ..builder.items import (
     _SocketValueItems,
     _ValueItems,
 )
+from ..builder.socket import BaseSocket
 from ..types import (
     InputAny,
     InputBoolean,
@@ -126,6 +128,17 @@ class _BakeMixin(ItemsMixin):
         items: Mapping[str, InputAny] | Iterable[InputAny] | None = None,
         **kwargs: InputAny,
     ):
+        """
+        Parameters
+        ----------
+        *args : InputLinkable | str
+            Values to bake, each as an item named after the socket it comes
+            from; a socket-type string declares an unlinked item.
+        items : dict[str, InputLinkable | str] | None
+            Items by name: a value to bake, or a socket-type string.
+        **kwargs : InputLinkable | str
+            More items by name.
+        """
         super().__init__()
         self.items._add_all(args)
         self.items._add_all(items)
@@ -161,6 +174,14 @@ class _CombineBundleMixin(ItemsMixin):
         *,
         define_signature: bool = False,
     ):
+        """
+        Parameters
+        ----------
+        items : dict[str, InputAny] | None
+            Bundle items by name: a value or a link, with the type inferred.
+        define_signature : bool
+            Whether the node defines the bundle's signature.
+        """
         super().__init__()
         self.items._add_all(items)
         self.node.define_signature = define_signature
@@ -198,6 +219,17 @@ class _SeparateBundleMixin(ItemsMixin):
         *,
         define_signature: bool = False,
     ):
+        """
+        Parameters
+        ----------
+        bundle : InputBundle
+            The bundle to separate.
+        items : dict[str, str] | None
+            The items to pull out, by name, each with its socket type
+            (``"FLOAT"``, ``"GEOMETRY"``, ...).
+        define_signature : bool
+            Whether the node defines the bundle's signature.
+        """
         super().__init__()
         self.node.define_signature = define_signature
         self.items._add_all(items)
@@ -239,6 +271,17 @@ class _ClosureToListMixin(ItemsMixin):
         closure: InputClosure = None,
         items: Mapping[str, str] | None = None,
     ):
+        """
+        Parameters
+        ----------
+        count : InputInteger
+            How many times the closure is evaluated.
+        closure : InputClosure
+            The closure to evaluate.
+        items : dict[str, str] | None
+            The output lists by name, each with the socket type of its
+            elements (``"FLOAT"``, ``"GEOMETRY"``, ...).
+        """
         super().__init__()
         self.items._add_all(items)
         self._establish_links(Count=count, Closure=closure)
@@ -289,6 +332,14 @@ class _FormatStringMixin(ItemsMixin):
         | Iterable[InputString | InputInteger | InputFloat]
         | None = None,
     ):
+        """
+        Parameters
+        ----------
+        format : InputString
+            The template, with ``{name}`` fields.
+        items : Mapping[str, InputString | InputInteger | InputFloat] | None
+            The values inserted into the template, by field name.
+        """
         super().__init__()
         self.items._add_all(items)
         self._establish_links(Format=format)
@@ -349,6 +400,106 @@ class _FieldToListItems(_ValueItems[Item]):
         return self._typed(value, name, "MENU")
 
 
+class _UnnamedItems[T: BaseSocket](ItemCollection["Item[T]"]):
+    """Unnamed items, all of the owner's data type, each with an input
+    socket: Index Switch and Combine List."""
+
+    _has_output = False
+
+    def new(self, value: InputAny = None) -> Item[T]:
+        """Add an item, linked from or defaulting to ``value``."""
+        return self._declare(value, "", self._owner.data_type)
+
+    def _add_all(self, items: Mapping[str, Any] | Iterable[Any] | None) -> None:
+        for value in items or ():
+            self.new(value)
+
+
+class _UnnamedItemsMixin(ItemsMixin):
+    """Items machinery for nodes whose items are unnamed and untyped, with
+    the node's ``data_type`` fixing the type of every item and each item's
+    input socket identified as ``Item_<identifier>``: Index Switch and
+    Combine List. ``_items_collection`` and ``data_type`` come from the
+    node class."""
+
+    if TYPE_CHECKING:
+        node: Any
+
+        @property
+        def data_type(self) -> str: ...
+
+    @property
+    def items(self) -> _UnnamedItems[Any]:
+        """The node's items, one input socket each."""
+        return _UnnamedItems(self)
+
+    @property
+    def _socket_data_types(self) -> tuple[str, ...]:
+        # "FLOAT" is the data_type spelling of socket.type "VALUE".
+        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
+
+    def _new_item(self, name: str, type: str) -> Any:
+        return self._items.new()
+
+    def _item_socket(self, item: Any, *, output: bool = False) -> bpy.types.NodeSocket:
+        if output:
+            raise ValueError("the items have no output sockets")
+        identifier = f"Item_{item.identifier}"
+        for socket in self.node.inputs:
+            if socket.identifier == identifier:
+                return socket
+        raise KeyError(f"No input socket for item {item.identifier}")
+
+
+_CombineListDataType = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "MENU",
+    "OBJECT",
+    "IMAGE",
+    "GEOMETRY",
+    "COLLECTION",
+    "MATERIAL",
+    "BUNDLE",
+    "CLOSURE",
+    "FONT",
+    "SOUND",
+]
+
+
+class _CombineListMixin(_UnnamedItemsMixin):
+    """Items constructor for the Combine List node: one input per item,
+    all of the node's ``data_type``, combined into a list."""
+
+    _items_collection = "combine_list_items"
+
+    def __init__(
+        self,
+        items: Iterable[InputAny] = (),
+        *,
+        data_type: _CombineListDataType = "FLOAT",
+    ):
+        """
+        Parameters
+        ----------
+        items : Iterable[InputAny]
+            One input per item: a default value, something to link from, or
+            None for an input left open.
+        data_type : str
+            The type of every item and of the list.
+        """
+        super().__init__()
+        self.node.data_type = data_type
+        self._items.clear()
+        self.items._add_all(items)
+
+
 class _FieldToListMixin(ItemsMixin):
     """Items constructor for the Field to List node, which gathers field
     values into typed socket lists."""
@@ -374,6 +525,17 @@ class _FieldToListMixin(ItemsMixin):
         *,
         fields: dict[str, InputLinkable | str] | None = None,
     ):
+        """
+        Parameters
+        ----------
+        count : InputInteger
+            The length of the lists.
+        items : dict[str, InputLinkable | str] | None
+            The fields to gather, by name: a value or a link, or a
+            socket-type string for an input left open.
+        fields : dict[str, InputLinkable | str] | None
+            Deprecated name of ``items``.
+        """
         super().__init__()
         if fields is not None:
             _deprecated("FieldToList(fields=)", "FieldToList(items=)")
@@ -504,6 +666,7 @@ _SwitchType = Literal[
     "FONT",
     "SOUND",
     "INT_VECTOR",  # compositor only
+    "SHADER",  # shader only
 ]
 
 
@@ -520,16 +683,20 @@ class _SwitchMixin:
     def __init__(
         self,
         switch: InputBoolean = False,
-        false: InputAny = 0.0,
-        true: InputAny = 0.0,
+        false: InputAny = None,
+        true: InputAny = None,
         *,
         input_type: _SwitchType | None = None,
     ):
         super().__init__()
         if input_type is None:
+            # when the values don't decide, the type a new node has in this
+            # tree (Color in shader and compositor trees)
             input_type = cast(
                 "_SwitchType",
-                infer_node_type(self.node, "input_type", (false, true)),
+                infer_node_type(
+                    self.node, "input_type", (false, true), default=self.node.input_type
+                ),
             )
         self.input_type = input_type
         self._establish_links(**{"Switch": switch, "False": false, "True": true})

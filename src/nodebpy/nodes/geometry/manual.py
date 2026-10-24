@@ -95,6 +95,7 @@ from ...types import (
     _AttributeDomains,
     _GridDataTypes,
 )
+from .._mixins import _UnnamedItems, _UnnamedItemsMixin
 from .zone import (
     ClosureInput,
     ClosureOutput,
@@ -1337,22 +1338,7 @@ class JoinGeometry(BaseNode):
             self._link(*self._find_best_socket_pair(source, self))
 
 
-class _IndexSwitchItems[T: BaseSocket](ItemCollection["Item[T]"]):
-    """The Index Switch's items: unnamed, all of the switch's data type,
-    each with an input socket."""
-
-    _has_output = False
-
-    def new(self, value: InputAny = None) -> "Item[T]":
-        """Add an item, linked from or defaulting to ``value``."""
-        return self._declare(value, "", self._owner.data_type)
-
-    def _add_all(self, items: Mapping[str, Any] | Iterable[Any] | None) -> None:
-        for value in items or ():
-            self.new(value)
-
-
-class _IndexSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
+class _IndexSwitchBase[T: BaseSocket](_UnnamedItemsMixin, BaseNode):
     """Base class for Index Switch nodes across tree types: the items, and the
     type inferred from them. Each tree's subclass adds its typed variants."""
 
@@ -1382,31 +1368,9 @@ class _IndexSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
         self._establish_links(Index=index)
 
     @property
-    def items(self) -> "_IndexSwitchItems[T]":
+    def items(self) -> "_UnnamedItems[T]":
         """The switch's items, one input socket each."""
-        return _IndexSwitchItems(self)
-
-    @property
-    def _socket_data_types(self) -> tuple[str, ...]:
-        # items are untyped; the node-level data_type fixes the type for all
-        # of them ("FLOAT" is the data_type spelling of socket.type "VALUE")
-        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
-
-    def _new_item(self, name: str, type: str) -> bpy.types.IndexSwitchItem:
-        # index switch items are unnamed and untyped
-        return self._items.new()
-
-    def _item_socket(
-        self, item: bpy.types.IndexSwitchItem, *, output: bool = False
-    ) -> NodeSocket:
-        if output:
-            raise ValueError("Index switch items do not have output sockets")
-        identifier = f"Item_{item.identifier}"
-        assert self.node.inputs is not None
-        for socket in self.node.inputs:
-            if socket.identifier == identifier:
-                return socket
-        raise KeyError(f"No input socket for index switch item {item.identifier}")
+        return _UnnamedItems(self)
 
     @property
     def data_type(self) -> SOCKET_TYPES:

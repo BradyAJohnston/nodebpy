@@ -15,7 +15,7 @@ records, per node ``bl_idname``, the sequence of drawn items.
 Run with either a Blender source checkout or let it sparse-clone the
 matching tag::
 
-    uv run python -m gen.socket_order                # clones v<bpy version>, or main before its tag exists
+    uv run python -m gen.socket_order                # clones v<bpy version>, or its build branch before the tag exists
     uv run python -m gen.socket_order --source ~/blender-src
     uv run python -m gen.socket_order --tag v5.2.0
 
@@ -237,8 +237,11 @@ def _bpy_version() -> tuple[int, int, int]:
 
 
 def _bpy_tag() -> str:
-    """The tag of the installed ``bpy``'s version, or ``main`` while that
-    version is unreleased and has no tag yet (a daily build)."""
+    """The tag of the installed ``bpy``'s version, or the branch it was built
+    from while that version is unreleased and has no tag yet (a daily build:
+    ``main``, or ``blender-vX.Y-release`` once the version is in beta)."""
+    import bpy
+
     tag = "v{}.{}.{}".format(*_bpy_version())
     listed = subprocess.run(
         ["git", "ls-remote", "--tags", REPO, tag],
@@ -247,8 +250,9 @@ def _bpy_tag() -> str:
         check=False,
     )
     if listed.returncode == 0 and not listed.stdout.strip():
-        print(f"No tag {tag} upstream yet: using main")
-        return "main"
+        branch = bpy.app.build_branch.decode() or "main"
+        print(f"No tag {tag} upstream yet: using {branch}")
+        return branch
     return tag
 
 
