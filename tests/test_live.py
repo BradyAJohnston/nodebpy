@@ -956,3 +956,126 @@ def test_links_to_removed_nodes_are_left_out():
     links.restore()
 
     assert len(outer.links) == 3
+
+
+# ---------------------------------------------------------------------------
+# RunResult.to_python
+# ---------------------------------------------------------------------------
+
+LIVE_SCRIPT = textwrap.dedent(
+    """
+    from nodebpy import geometry as g
+    from nodebpy.builder import CustomGeometryGroup
+
+    class Offset(CustomGeometryGroup):
+        _name = "Offset"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            amount = tree.inputs.float("Amount", 1.0)
+            geo >> g.SetPosition(offset=(0, 0, amount)) >> tree.outputs.geometry("Geometry")
+
+    {body}
+    """
+)
+WITH_BODY = """
+with g.tree("Live", clear=True) as tree:
+    geo = tree.inputs.geometry("Geometry")
+    geo >> g.Array(count=4) >> Offset(Amount=2.0) >> tree.outputs.geometry("Geometry")
+"""
+
+
+def test_run_result_to_python_writes_the_edited_tree_only():
+    result = run_source(LIVE_SCRIPT.format(body=WITH_BODY))
+    assert result.tree is not None
+    result.tree.nodes.new("GeometryNodeSubdivisionSurface")
+
+    code = result.to_python()
+
+    assert "class " not in code
+    assert 'with TreeBuilder("Live", clear=True) as tree:' in code
+    assert "Offset(Geometry=g.Array(geometry=geometry, count=4), Amount=2.0)" in code
+    assert "g.SubdivisionSurface()" in code
+
+    # Back into the script, in place of the with block.
+    again = run_source(LIVE_SCRIPT.format(body=code))
+    assert again.tree == result.tree
+    assert "Subdivision Surface" in again.tree.nodes
+
+
+def test_run_result_to_python_writes_a_class_back_as_the_class():
+    result = run_source(LIVE_SCRIPT.format(body=""))
+    assert result.tree is not None and result.tree.name == "Offset"
+
+    code = result.to_python()
+
+    assert "class Offset(CustomGeometryGroup):" in code
+    assert "with TreeBuilder" not in code
+    assert result.to_python(top_level="with").startswith("from nodebpy import")
+
+
+def test_run_result_to_python_without_a_tree():
+    with pytest.raises(ValueError, match="no tree"):
+        run_source("x = 1").to_python()
+
+
+def _backups():
+    return [t.name for t in bpy.data.node_groups if t.name.endswith("(edited)")]
+
+
+def test_rerunning_the_written_out_code_keeps_no_backup():
+    result = run_source(LIVE_SCRIPT.format(body=WITH_BODY))
+    assert result.tree is not None
+    result.tree.nodes.new("GeometryNodeSubdivisionSurface")
+    code = LIVE_SCRIPT.format(body=result.to_python())
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        again = run_source(code)
+    assert _backups() == []
+    assert [t.name for t in again.created] == ["Offset"]  # the class, rebuilt
+
+    # A hand edit the code doesn't have is still kept.
+    result.tree.nodes.new("GeometryNodeMeshToPoints")
+    with pytest.warns(EditedTreeWarning):
+        run_source(code)
+    assert _backups() == ["Live (edited)"]
+
+
+def test_written_out_class_reruns_without_a_backup():
+    result = run_source(LIVE_SCRIPT.format(body=""))
+    assert result.tree is not None
+    result.tree.nodes["Set Position"].mute = True
+    code = result.to_python()
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        run_source(code)
+    assert _backups() == []
+
+
+def test_written_out_code_rebuilds_without_a_backup_outside_run_source():
+    with g.tree("Plain", clear=True) as tree:
+        g.Points(3) >> tree.outputs.geometry("Geometry")
+    tree.tree.nodes["Points"].inputs["Count"].default_value = 9
+    code = tree.to_python(in_place=True)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", EditedTreeWarning)
+        exec(code, {})  # noqa: S102
+    assert _backups() == []
+    assert tree.tree.nodes["Points"].inputs["Count"].default_value == 9
+
+
+def test_failed_run_keeps_the_edited_tree():
+    result = run_source(LIVE_SCRIPT.format(body=WITH_BODY))
+    assert result.tree is not None
+    result.tree.nodes.new("GeometryNodeSubdivisionSurface")
+    failing = WITH_BODY.replace(
+        'geo = tree.inputs.geometry("Geometry")',
+        'geo = tree.inputs.geometry("Geometry")\n    1 / 0',
+    )
+
+    with pytest.warns(EditedTreeWarning), pytest.raises(ZeroDivisionError):
+        run_source(LIVE_SCRIPT.format(body=failing))
+    assert _backups() == ["Live (edited)"]

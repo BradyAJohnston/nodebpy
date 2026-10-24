@@ -317,3 +317,48 @@ def test_package_library_assets(tmp_path):
         import gc
 
         gc.collect()
+
+
+def test_namespace_names_classes_and_modules(package):
+    import importlib
+
+    module = importlib.import_module("mygroups.lift")
+    other = importlib.import_module("otherlift")
+    tree = _uses_lifts(module.Lift, other.Lift)
+
+    namespace = {"_hidden": module.Lift, "Raise": module.Lift, "lifts": other}
+    code = to_python(tree, groups="reference", group_modules=[], namespace=namespace)
+
+    assert "import" not in code.split("from nodebpy import TreeBuilder")[0]
+    assert "lifts.Lift(geometry=Raise(geometry=geometry, amount=3.0)" in code
+
+
+def test_namespace_names_a_written_out_class():
+    result = run_source(SCRIPT)
+    bpy.data.node_groups["Offset"].nodes["Set Position"].mute = True
+    namespace = {**result.namespace, "Moved": result.namespace["Offset"]}
+    del namespace["Offset"]
+
+    assert result.tree is not None
+    code = to_python(result.tree, groups="reference", namespace=namespace)
+
+    assert "class Moved(CustomGeometryGroup)" in code
+    assert "Moved(Geometry=geometry" in code
+
+
+def test_namespace_class_is_preferred_to_an_older_copy():
+    run_source(SCRIPT)
+    newer = run_source(SCRIPT)
+    assert newer.tree is not None
+
+    code = to_python(
+        newer.tree, groups="reference", namespace={"Mine": newer.namespace["Offset"]}
+    )
+
+    assert "Mine(Geometry=geometry" in code
+
+
+def test_tree_names():
+    assert _groups.tree_name(g.Array) == "Array"
+    assert _groups.tree_name(SliceToIndices) == "Slice to Indices"
+    assert _groups.tree_name(_Variant) is None

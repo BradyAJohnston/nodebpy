@@ -93,6 +93,24 @@ input values by socket name and layout edits (as `keep_edits=True`; pass
 `keep_edits=False` for a fresh layout), and on an exception restores the previous
 state and re-raises. Top-level trees should still use `clear=True`.
 
+When the user has edited the tree in Blender since the run, `result.to_python()` gives
+the code for it as it is now, to put back into the script:
+
+```python
+result = run_source(code_string)
+# ... the user edits result.tree in Blender ...
+print(result.to_python())
+```
+
+It writes only that tree: groups that a class builds (the script's own classes, Blender's
+bundled assets, nodebpy's groups, classes from the user's modules) are called by the
+name the script uses for them, not written out. A tree one of the script's classes
+builds comes back as that class; any other as a `with ... clear=True` block. A group
+edited by hand is written out as a class of the same name, to replace the script's.
+Running the result again rebuilds the tree without an `EditedTreeWarning`, since it
+already holds the edits. Without the `RunResult`, use
+`to_python(tree, groups="reference", namespace=globals())`.
+
 ## 4. Group classes
 
 A sub-graph used in several places, or one a user should see as one node, belongs in a
