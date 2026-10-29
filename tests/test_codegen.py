@@ -3588,6 +3588,24 @@ def test_datablock_interface_default_emits_guarded_lookup():
     assert item.default_value is None
 
 
+def test_image_texture_image_roundtrip():
+    img = bpy.data.images.new("CodegenImage", 4, 4)
+    try:
+        with TreeBuilder.shader("ImageTex") as tree:
+            tex = s.ImageTexture(image=img, interpolation="Closest")
+            s.MaterialOutput(tex.o.color)
+        code = _assert_roundtrip(tree)
+        assert 'image=bpy.data.images.get("CodegenImage")' in code
+        ns: dict = {}
+        exec(code, ns)
+        (rebuilt,) = (
+            n for n in ns["tree"].tree.nodes if n.bl_idname == "ShaderNodeTexImage"
+        )
+        assert rebuilt.image == img
+    finally:
+        bpy.data.images.remove(img)
+
+
 def test_empty_panels_roundtrip():
     """Panels holding no sockets — including one nested under a populated
     panel and a fully empty parent/child pair — are still emitted and

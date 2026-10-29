@@ -1562,11 +1562,21 @@ class Font(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self) -> None:
+    def __init__(self, font: bpy.types.VectorFont | None = None):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
+        if font is not None:
+            self.font = font
+
+    @property
+    def font(self) -> bpy.types.VectorFont | None:
+        return self.node.font
+
+    @font.setter
+    def font(self, value: bpy.types.VectorFont | None) -> None:
+        self.node.font = value
 
 
 class HandleTypeSelection(_HandleModeMixin, BaseNode):
@@ -1697,11 +1707,21 @@ class Image(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self) -> None:
+    def __init__(self, image: bpy.types.Image | None = None):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
+        if image is not None:
+            self.image = image
+
+    @property
+    def image(self) -> bpy.types.Image | None:
+        return self.node.image
+
+    @image.setter
+    def image(self, value: bpy.types.Image | None) -> None:
+        self.node.image = value
 
 
 class ImageInfo(BaseNode):

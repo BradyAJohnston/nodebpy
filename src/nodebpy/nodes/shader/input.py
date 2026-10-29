@@ -1086,11 +1086,25 @@ class TextureCoordinate(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, from_instancer: bool = False):
+    def __init__(
+        self,
+        object: bpy.types.Object | None = None,
+        from_instancer: bool = False,
+    ):
         super().__init__()
         key_args = {}
         self.from_instancer = from_instancer
         self._establish_links(**key_args)
+        if object is not None:
+            self.object = object
+
+    @property
+    def object(self) -> bpy.types.Object | None:
+        return self.node.object
+
+    @object.setter
+    def object(self, value: bpy.types.Object | None) -> None:
+        self.node.object = value
 
     @property
     def from_instancer(self) -> bool:

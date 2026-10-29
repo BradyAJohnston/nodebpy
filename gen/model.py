@@ -215,7 +215,10 @@ class PropertyInfo:
 
     identifier: str
     name: str
-    prop_type: Literal["ENUM", "BOOLEAN", "INT", "FLOAT", "STRING", "COLOR", "VECTOR"]
+    prop_type: Literal[
+        "ENUM", "BOOLEAN", "INT", "FLOAT", "STRING", "COLOR", "VECTOR", "POINTER"
+    ]
+    # for POINTER, the datablock type (``Image``)
     subtype: str | None = None
     enum_items: list[EnumInfo] = field(default_factory=list)
     default: Any = None
@@ -252,6 +255,8 @@ class PropertyInfo:
                     type = "tuple[{}]".format(", ".join(["float"] * len(self.default)))
             case "STRING":
                 type = "str"
+            case "POINTER":
+                type = f"bpy.types.{self.subtype}"
             case _:
                 raise ValueError(f"Unsupported property type: {self.prop_type}")
 
@@ -304,6 +309,8 @@ class PropertyInfo:
             # Getter returns the actual bpy type; setter also accepts plain tuples
             getter_type = mathutils_type
             setter_type = f"{mathutils_type} | {scalar_type}"
+        elif self.prop_type == "POINTER":
+            getter_type = setter_type = f"{scalar_type} | None"
         else:
             getter_type = scalar_type
             setter_type = scalar_type

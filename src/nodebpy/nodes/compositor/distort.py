@@ -616,21 +616,43 @@ class MovieDistortion(BaseNode):
         self,
         image: InputColor = (0.8, 0.8, 0.8, 1.0),
         type: InputMenu | Literal["Undistort", "Distort"] = "Undistort",
+        *,
+        clip: bpy.types.MovieClip | None = None,
     ):
         super().__init__()
         key_args = {"Image": image, "Type": type}
 
         self._establish_links(**key_args)
+        if clip is not None:
+            self.clip = clip
 
     @classmethod
-    def undistort(cls, image: InputColor = (0.8, 0.8, 0.8, 1.0)) -> "MovieDistortion":
+    def undistort(
+        cls,
+        image: InputColor = (0.8, 0.8, 0.8, 1.0),
+        *,
+        clip: bpy.types.MovieClip | None = None,
+    ) -> "MovieDistortion":
         """Create Movie Distortion node with type 'Undistort'."""
-        return cls(image=image, type="Undistort")
+        return cls(image=image, clip=clip, type="Undistort")
 
     @classmethod
-    def distort(cls, image: InputColor = (0.8, 0.8, 0.8, 1.0)) -> "MovieDistortion":
+    def distort(
+        cls,
+        image: InputColor = (0.8, 0.8, 0.8, 1.0),
+        *,
+        clip: bpy.types.MovieClip | None = None,
+    ) -> "MovieDistortion":
         """Create Movie Distortion node with type 'Distort'."""
-        return cls(image=image, type="Distort")
+        return cls(image=image, clip=clip, type="Distort")
+
+    @property
+    def clip(self) -> bpy.types.MovieClip | None:
+        return self.node.clip
+
+    @clip.setter
+    def clip(self, value: bpy.types.MovieClip | None) -> None:
+        self.node.clip = value
 
 
 class PlaneTrackDeform(BaseNode):
@@ -703,6 +725,7 @@ class PlaneTrackDeform(BaseNode):
         samples: InputInteger = 16,
         shutter: InputFloat = 0.5,
         *,
+        clip: bpy.types.MovieClip | None = None,
         tracking_object: str = "",
         plane_track_name: str = "",
     ):
@@ -716,6 +739,16 @@ class PlaneTrackDeform(BaseNode):
         self.tracking_object = tracking_object
         self.plane_track_name = plane_track_name
         self._establish_links(**key_args)
+        if clip is not None:
+            self.clip = clip
+
+    @property
+    def clip(self) -> bpy.types.MovieClip | None:
+        return self.node.clip
+
+    @clip.setter
+    def clip(self, value: bpy.types.MovieClip | None) -> None:
+        self.node.clip = value
 
     @property
     def tracking_object(self) -> str:
@@ -1084,6 +1117,8 @@ class Stabilize2D(BaseNode):
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
         extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
         extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        *,
+        clip: bpy.types.MovieClip | None = None,
     ):
         super().__init__()
         key_args = {
@@ -1096,6 +1131,16 @@ class Stabilize2D(BaseNode):
         }
 
         self._establish_links(**key_args)
+        if clip is not None:
+            self.clip = clip
+
+    @property
+    def clip(self) -> bpy.types.MovieClip | None:
+        return self.node.clip
+
+    @clip.setter
+    def clip(self, value: bpy.types.MovieClip | None) -> None:
+        self.node.clip = value
 
 
 class Transform(BaseNode):
