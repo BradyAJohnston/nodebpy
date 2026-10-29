@@ -3615,6 +3615,35 @@ def test_material_output_target_factory_roundtrip():
     assert "s.MaterialOutput.cycles(" in code
 
 
+def test_material_exports_as_material():
+    with s.material("CodegenMaterial") as tree:
+        s.MaterialOutput(s.PrincipledBSDF(roughness=0.2))
+    material = tree.material
+    for source in (material, material.node_tree, tree):
+        code = to_python(source, format=False)
+        assert 'with s.material("CodegenMaterial") as tree:' in code
+        ns: dict = {}
+        exec(code, ns)
+        rebuilt = ns["tree"]
+        assert rebuilt.material.name.startswith("CodegenMaterial")
+        assert _structure(rebuilt.tree) == _structure(tree.tree), code
+
+
+def test_world_exports_as_world():
+    with s.world("CodegenWorld") as tree:
+        s.WorldOutput(s.Background(strength=2.0))
+    code = to_python(tree.world, format=False)
+    assert 'with s.world("CodegenWorld") as tree:' in code
+    ns: dict = {}
+    exec(code, ns)
+    assert _structure(ns["tree"].tree) == _structure(tree.tree), code
+
+
+def test_to_python_rejects_non_tree():
+    with pytest.raises(TypeError, match="not Object"):
+        to_python(bpy.data.objects.new("NotATree", None))
+
+
 def test_empty_panels_roundtrip():
     """Panels holding no sockets — including one nested under a populated
     panel and a fully empty parent/child pair — are still emitted and
