@@ -31,6 +31,7 @@ class Script(BaseNode):
 
     def __init__(
         self,
+        script: bpy.types.Text | None = None,
         filepath: str = "",
         mode: Literal["INTERNAL", "EXTERNAL"] = "INTERNAL",
         use_auto_update: bool = False,
@@ -45,11 +46,24 @@ class Script(BaseNode):
         self.bytecode = bytecode
         self.bytecode_hash = bytecode_hash
         self._establish_links(**key_args)
+        if script is not None:
+            self.script = script
 
     @classmethod
-    def internal(cls, *, bytecode: str = "", bytecode_hash: str = "") -> "Script":
+    def internal(
+        cls,
+        *,
+        script: bpy.types.Text | None = None,
+        bytecode: str = "",
+        bytecode_hash: str = "",
+    ) -> "Script":
         """Create Script with operation 'Internal'. Use internal text data-block"""
-        return cls(mode="INTERNAL", bytecode=bytecode, bytecode_hash=bytecode_hash)
+        return cls(
+            mode="INTERNAL",
+            script=script,
+            bytecode=bytecode,
+            bytecode_hash=bytecode_hash,
+        )
 
     @classmethod
     def external(
@@ -68,6 +82,14 @@ class Script(BaseNode):
             bytecode=bytecode,
             bytecode_hash=bytecode_hash,
         )
+
+    @property
+    def script(self) -> bpy.types.Text | None:
+        return self.node.script
+
+    @script.setter
+    def script(self, value: bpy.types.Text | None) -> None:
+        self.node.script = value
 
     @property
     def filepath(self) -> str:

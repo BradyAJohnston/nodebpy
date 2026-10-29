@@ -60,6 +60,7 @@ class EnvironmentTexture(BaseNode):
         self,
         vector: InputVector = None,
         *,
+        image: bpy.types.Image | None = None,
         projection: Literal["EQUIRECTANGULAR", "MIRROR_BALL"] = "EQUIRECTANGULAR",
         interpolation: Literal["Linear", "Closest", "Cubic", "Smart"] = "Linear",
     ):
@@ -68,6 +69,16 @@ class EnvironmentTexture(BaseNode):
         self.projection = projection
         self.interpolation = interpolation
         self._establish_links(**key_args)
+        if image is not None:
+            self.image = image
+
+    @property
+    def image(self) -> bpy.types.Image | None:
+        return self.node.image
+
+    @image.setter
+    def image(self, value: bpy.types.Image | None) -> None:
+        self.node.image = value
 
     @property
     def projection(self) -> Literal["EQUIRECTANGULAR", "MIRROR_BALL"]:
@@ -137,6 +148,7 @@ class IESTexture(BaseNode):
         vector: InputVector = None,
         strength: InputFloat = 1.0,
         *,
+        ies: bpy.types.Text | None = None,
         filepath: str = "",
         mode: Literal["INTERNAL", "EXTERNAL"] = "INTERNAL",
     ):
@@ -145,13 +157,19 @@ class IESTexture(BaseNode):
         self.filepath = filepath
         self.mode = mode
         self._establish_links(**key_args)
+        if ies is not None:
+            self.ies = ies
 
     @classmethod
     def internal(
-        cls, vector: InputVector = None, strength: InputFloat = 1.0
+        cls,
+        vector: InputVector = None,
+        strength: InputFloat = 1.0,
+        *,
+        ies: bpy.types.Text | None = None,
     ) -> "IESTexture":
         """Create IES Texture with operation 'Internal'. Use internal text data-block"""
-        return cls(mode="INTERNAL", vector=vector, strength=strength)
+        return cls(mode="INTERNAL", vector=vector, strength=strength, ies=ies)
 
     @classmethod
     def external(
@@ -163,6 +181,14 @@ class IESTexture(BaseNode):
     ) -> "IESTexture":
         """Create IES Texture with operation 'External'. Use external .ies file"""
         return cls(mode="EXTERNAL", vector=vector, strength=strength, filepath=filepath)
+
+    @property
+    def ies(self) -> bpy.types.Text | None:
+        return self.node.ies
+
+    @ies.setter
+    def ies(self, value: bpy.types.Text | None) -> None:
+        self.node.ies = value
 
     @property
     def filepath(self) -> str:
@@ -227,6 +253,7 @@ class ImageTexture(BaseNode):
         self,
         vector: InputVector = None,
         *,
+        image: bpy.types.Image | None = None,
         projection: Literal["FLAT", "BOX", "SPHERE", "TUBE"] = "FLAT",
         interpolation: Literal["Linear", "Closest", "Cubic", "Smart"] = "Linear",
         projection_blend: float = 0.0,
@@ -239,6 +266,16 @@ class ImageTexture(BaseNode):
         self.projection_blend = projection_blend
         self.extension = extension
         self._establish_links(**key_args)
+        if image is not None:
+            self.image = image
+
+    @property
+    def image(self) -> bpy.types.Image | None:
+        return self.node.image
+
+    @image.setter
+    def image(self, value: bpy.types.Image | None) -> None:
+        self.node.image = value
 
     @property
     def projection(self) -> Literal["FLAT", "BOX", "SPHERE", "TUBE"]:

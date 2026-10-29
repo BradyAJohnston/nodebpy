@@ -612,6 +612,7 @@ class Defocus(BaseNode):
         image: InputColor = (1.0, 1.0, 1.0, 1.0),
         z: InputFloat = 1.0,
         *,
+        scene: bpy.types.Scene | None = None,
         bokeh: Literal[
             "OCTAGON", "HEPTAGON", "HEXAGON", "PENTAGON", "SQUARE", "TRIANGLE", "CIRCLE"
         ] = "CIRCLE",
@@ -630,6 +631,16 @@ class Defocus(BaseNode):
         self.use_zbuffer = use_zbuffer
         self.z_scale = z_scale
         self._establish_links(**key_args)
+        if scene is not None:
+            self.scene = scene
+
+    @property
+    def scene(self) -> bpy.types.Scene | None:
+        return self.node.scene
+
+    @scene.setter
+    def scene(self, value: bpy.types.Scene | None) -> None:
+        self.node.scene = value
 
     @property
     def bokeh(
