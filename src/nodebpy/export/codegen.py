@@ -6593,17 +6593,6 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
         f"    {zone_ref.name} = {Call(ctor, kwargs=kwargs).render()}"
     )
 
-    generation_items = list(out_node.generation_items)
-    if not generation_items or generation_items[0].socket_type != "GEOMETRY":
-        raise CodegenError(
-            f"foreach zone '{node.name}': the first generation item is not "
-            "the default Geometry item, which the zone wrapper cannot rebuild"
-        )
-    if generation_items[0].name != "Geometry":
-        ctx.pending_lines.append(
-            f"    {zone_ref.name}.generation.name = {_fmt(generation_items[0].name)}"
-        )
-
     plans: list[_ZoneItemPlan] = []
     in_inputs = _prefixed_sockets(node, "Input_")
     in_outputs = _prefixed_sockets(node, "Input_", output=True)
@@ -6639,9 +6628,7 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
         )
     gen_inputs = _prefixed_sockets(out_node, "Generation_")
     gen_outputs = _prefixed_sockets(out_node, "Generation_", output=True)
-    for i, item in enumerate(generation_items):
-        if i == 0:
-            continue  # the wrapper creates the default Geometry item itself
+    for i, item in enumerate(out_node.generation_items):
         extra: dict[str, Expr] = {}
         if item.domain != "POINT":
             extra["domain"] = Lit(item.domain)
@@ -6664,8 +6651,6 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
     )
     current_map["Index"] = Attr(zone_ref, "index")
     current_map["Element"] = Attr(zone_ref, "input.o.element")
-    targets[gen_inputs[0].identifier] = Attr(zone_ref, "generation.input")
-    outputs[gen_outputs[0].identifier] = Attr(zone_ref, "generation.output")
     outputs["Geometry"] = Attr(zone_ref, "output")
 
     ctx.zones[out_node.name] = _ZoneState(targets, outputs)
