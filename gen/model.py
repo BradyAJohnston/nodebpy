@@ -746,6 +746,7 @@ class NodeInfo:
                     "operation",
                     "domain",
                     "mode",
+                    "target",
                 ]
                 and "type" not in prop.identifier
                 or prop.identifier in ["blend_type", "direction_type"]
