@@ -1088,7 +1088,7 @@ Each face’s sculpt face set value
 ### Font
 
 ``` python
-Font()
+Font(font=None)
 ```
 
 Output a font
@@ -1097,6 +1097,7 @@ Output a font
 
 | Name | Description |
 |----|----|
+| [`font`](#nodebpy.nodes.geometry.input.Font.font) |  |
 | [`i`](#nodebpy.nodes.geometry.input.Font.i) |  |
 | [`name`](#nodebpy.nodes.geometry.input.Font.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.Font.node) |  |
@@ -1205,7 +1206,7 @@ Retrieve a stable random identifier value from the “id” attribute on the poi
 ### Image
 
 ``` python
-Image()
+Image(image=None)
 ```
 
 Input an image data-block
@@ -1215,6 +1216,7 @@ Input an image data-block
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.Image.i) |  |
+| [`image`](#nodebpy.nodes.geometry.input.Image.image) |  |
 | [`name`](#nodebpy.nodes.geometry.input.Image.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.Image.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.Image.o) |  |

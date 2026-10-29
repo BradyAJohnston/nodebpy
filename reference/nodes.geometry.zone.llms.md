@@ -453,7 +453,7 @@ For Each Geometry Element Output node
 | Name | Description |
 |----|----|
 | [`domain`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.domain) |  |
-| [`i`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.i) |  |
+| [`i`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items) | The node’s items; subclasses return their typed collection. |
 | [`items_generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items_generated) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.name) | The name of the node being wrapped by this instance. |
@@ -528,7 +528,7 @@ ForEachGeometryElementZone(geometry=None, selection=True, *, domain='POINT')
 | [`face`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.face) |  |
 | [`generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated) |  |
 | [`generated_items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_items) | Generation items: values stored on the generated geometry. |
-| [`generation`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generation) | Handle for the default generation item (the generated geometry). |
+| [`generation`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generation) | The `Geometry` generation item, added when the zone has none. |
 | [`index`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.index) |  |
 | [`input`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.input) |  |
 | [`inputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.inputs) |  |

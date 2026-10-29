@@ -595,7 +595,7 @@ Perform both chroma keying (to remove the backdrop) and despill (to correct colo
 ### KeyingScreen
 
 ``` python
-KeyingScreen(smoothness=0.0, *, tracking_object='')
+KeyingScreen(smoothness=0.0, *, clip=None, tracking_object='')
 ```
 
 Create plates for use as a color reference for keying nodes
@@ -610,6 +610,7 @@ Create plates for use as a color reference for keying nodes
 
 | Name | Description |
 |----|----|
+| [`clip`](#nodebpy.nodes.compositor.matte.KeyingScreen.clip) |  |
 | [`i`](#nodebpy.nodes.compositor.matte.KeyingScreen.i) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.KeyingScreen.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.KeyingScreen.node) |  |

@@ -28,7 +28,7 @@ Generate Python code that recreates the given node tree using nodebpy.
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| tree | NodeTree \| TreeBuilder\[Any\] | The node tree to export. | *required* |
+| tree | NodeTree \| TreeBuilder\[Any\] \| Material \| World | The node tree to export. With `top_level="with"`, a material or world (or its node tree) is rebuilt with `s.material(...)` / `s.world(...)`. | *required* |
 | min_chain_length | int | Minimum number of items (including interface endpoints) for a linear pipeline to be expressed with `>>` syntax; shorter runs are emitted as flat assignments. | `3` |
 | strict | bool | If True (default), raise :class:`CodegenError` for nodes that have no nodebpy class and no registered emitter. If False, emit a `var = None # TODO` placeholder instead. | `True` |
 | max_inline_width | int \| None | Longest rendered expression (in characters) that may inline into its consumer’s statement; longer values bind to a variable first, so deep graphs split into steps instead of collapsing into one huge statement. `>>` chain continuations are exempt — a pipeline stays one statement; statements longer than 88 columns wrap in parentheses with one `>>` segment per line. `None` disables the budget. | `88` |

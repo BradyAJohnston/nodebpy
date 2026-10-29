@@ -222,6 +222,8 @@ Mask(
     motion_blur=False,
     samples=16,
     shutter=0.5,
+    *,
+    mask=None,
 )
 ```
 
@@ -244,6 +246,7 @@ Input mask from a mask data-block, created in the image editor
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.Mask.i) |  |
+| [`mask`](#nodebpy.nodes.compositor.input.Mask.mask) |  |
 | [`name`](#nodebpy.nodes.compositor.input.Mask.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.Mask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.Mask.o) |  |
@@ -270,7 +273,7 @@ Input mask from a mask data-block, created in the image editor
 ### MovieClip
 
 ``` python
-MovieClip()
+MovieClip(clip=None)
 ```
 
 Input image or movie from a movie clip data-block, typically used for motion tracking
@@ -279,6 +282,7 @@ Input image or movie from a movie clip data-block, typically used for motion tra
 
 | Name | Description |
 |----|----|
+| [`clip`](#nodebpy.nodes.compositor.input.MovieClip.clip) |  |
 | [`i`](#nodebpy.nodes.compositor.input.MovieClip.i) |  |
 | [`name`](#nodebpy.nodes.compositor.input.MovieClip.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.MovieClip.node) |  |
@@ -323,7 +327,7 @@ Input normalized normal values to other nodes in the tree
 ### RenderLayers
 
 ``` python
-RenderLayers(layer='ViewLayer')
+RenderLayers(scene=None, layer='ViewLayer')
 ```
 
 Input render passes from a scene render
@@ -337,6 +341,7 @@ Input render passes from a scene render
 | [`name`](#nodebpy.nodes.compositor.input.RenderLayers.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.RenderLayers.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.RenderLayers.o) |  |
+| [`scene`](#nodebpy.nodes.compositor.input.RenderLayers.scene) |  |
 | [`tree`](#nodebpy.nodes.compositor.input.RenderLayers.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
@@ -496,7 +501,14 @@ Generate a factor value (from 0.0 to 1.0) between scene start and end time, usin
 ### TrackPosition
 
 ``` python
-TrackPosition(mode='Absolute', frame=0, *, tracking_object='', track_name='')
+TrackPosition(
+    mode='Absolute',
+    frame=0,
+    *,
+    clip=None,
+    tracking_object='',
+    track_name='',
+)
 ```
 
 Provide information about motion tracking points, such as x and y values
@@ -512,6 +524,7 @@ Provide information about motion tracking points, such as x and y values
 
 | Name | Description |
 |----|----|
+| [`clip`](#nodebpy.nodes.compositor.input.TrackPosition.clip) |  |
 | [`i`](#nodebpy.nodes.compositor.input.TrackPosition.i) |  |
 | [`name`](#nodebpy.nodes.compositor.input.TrackPosition.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.TrackPosition.node) |  |

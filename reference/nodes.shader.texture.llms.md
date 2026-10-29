@@ -17,6 +17,7 @@
 EnvironmentTexture(
     vector=None,
     *,
+    image=None,
     projection='EQUIRECTANGULAR',
     interpolation='Linear',
 )
@@ -35,6 +36,7 @@ Sample an image file as an environment texture. Typically used to light the scen
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.texture.EnvironmentTexture.i) |  |
+| [`image`](#nodebpy.nodes.shader.texture.EnvironmentTexture.image) |  |
 | [`interpolation`](#nodebpy.nodes.shader.texture.EnvironmentTexture.interpolation) |  |
 | [`name`](#nodebpy.nodes.shader.texture.EnvironmentTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.EnvironmentTexture.node) |  |
@@ -57,7 +59,7 @@ Sample an image file as an environment texture. Typically used to light the scen
 ### IESTexture
 
 ``` python
-IESTexture(vector=None, strength=1.0, *, filepath='', mode='INTERNAL')
+IESTexture(vector=None, strength=1.0, *, ies=None, filepath='', mode='INTERNAL')
 ```
 
 Match real world lights with IES files, which store the directional intensity distribution of light sources
@@ -75,6 +77,7 @@ Match real world lights with IES files, which store the directional intensity di
 |----|----|
 | [`filepath`](#nodebpy.nodes.shader.texture.IESTexture.filepath) |  |
 | [`i`](#nodebpy.nodes.shader.texture.IESTexture.i) |  |
+| [`ies`](#nodebpy.nodes.shader.texture.IESTexture.ies) |  |
 | [`mode`](#nodebpy.nodes.shader.texture.IESTexture.mode) |  |
 | [`name`](#nodebpy.nodes.shader.texture.IESTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.IESTexture.node) |  |
@@ -99,7 +102,7 @@ Create IES Texture with operation ‘External’. Use external .ies file
 ##### internal
 
 ``` python
-internal(vector=None, strength=1.0)
+internal(vector=None, strength=1.0, *, ies=None)
 ```
 
 Create IES Texture with operation ‘Internal’. Use internal text data-block
@@ -123,6 +126,7 @@ Create IES Texture with operation ‘Internal’. Use internal text data-block
 ImageTexture(
     vector=None,
     *,
+    image=None,
     projection='FLAT',
     interpolation='Linear',
     projection_blend=0.0,
@@ -144,6 +148,7 @@ Sample an image file as a texture
 |----|----|
 | [`extension`](#nodebpy.nodes.shader.texture.ImageTexture.extension) |  |
 | [`i`](#nodebpy.nodes.shader.texture.ImageTexture.i) |  |
+| [`image`](#nodebpy.nodes.shader.texture.ImageTexture.image) |  |
 | [`interpolation`](#nodebpy.nodes.shader.texture.ImageTexture.interpolation) |  |
 | [`name`](#nodebpy.nodes.shader.texture.ImageTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.ImageTexture.node) |  |

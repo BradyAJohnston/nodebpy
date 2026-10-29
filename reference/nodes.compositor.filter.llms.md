@@ -352,6 +352,7 @@ Defocus(
     image=(1.0, 1.0, 1.0, 1.0),
     z=1.0,
     *,
+    scene=None,
     bokeh='CIRCLE',
     angle=0.0,
     f_stop=128.0,
@@ -382,6 +383,7 @@ Apply depth of field in 2D, using a Z depth map or mask
 | [`name`](#nodebpy.nodes.compositor.filter.Defocus.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Defocus.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Defocus.o) |  |
+| [`scene`](#nodebpy.nodes.compositor.filter.Defocus.scene) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Defocus.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_zbuffer`](#nodebpy.nodes.compositor.filter.Defocus.use_zbuffer) |  |
 | [`z_scale`](#nodebpy.nodes.compositor.filter.Defocus.z_scale) |  |

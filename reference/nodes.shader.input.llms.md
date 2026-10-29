@@ -657,7 +657,7 @@ Generate a tangent direction for the Anisotropic BSDF
 ### TextureCoordinate
 
 ``` python
-TextureCoordinate(from_instancer=False)
+TextureCoordinate(object=None, from_instancer=False)
 ```
 
     Retrieve multiple types of texture coordinates.
@@ -690,6 +690,7 @@ Typically used as inputs for texture nodes
 | [`name`](#nodebpy.nodes.shader.input.TextureCoordinate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.TextureCoordinate.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.TextureCoordinate.o) |  |
+| [`object`](#nodebpy.nodes.shader.input.TextureCoordinate.object) |  |
 | [`tree`](#nodebpy.nodes.shader.input.TextureCoordinate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### UVAlongStroke

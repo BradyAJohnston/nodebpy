@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.40.0</span>
+    <span class="navbar-title">nodebpy 520.41.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -1796,7 +1796,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.distort.MovieDistortion" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.distort.MovieDistortion">MovieDistortion</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>MovieDistortion(image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), <span class="bu">type</span><span class="op">=</span><span class="st">'Undistort'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>MovieDistortion(image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), <span class="bu">type</span><span class="op">=</span><span class="st">'Undistort'</span>, <span class="op">*</span>, clip<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Remove lens distortion from footage, using motion tracking camera lens settings</p>
 <section id="parameters-6" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
@@ -1842,22 +1842,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.clip"><code>clip</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.i"><code>i</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1886,12 +1890,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.distort.MovieDistortion.distort" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.distort.MovieDistortion.distort">distort</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>distort(image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>distort(image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), <span class="op">*</span>, clip<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Movie Distortion node with type ‘Distort’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.distort.MovieDistortion.undistort" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.distort.MovieDistortion.undistort">undistort</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>undistort(image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>undistort(image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), <span class="op">*</span>, clip<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Movie Distortion node with type ‘Undistort’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1943,9 +1947,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    samples<span class="op">=</span><span class="dv">16</span>,</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    shutter<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    tracking_object<span class="op">=</span><span class="st">''</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    plane_track_name<span class="op">=</span><span class="st">''</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    clip<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    tracking_object<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    plane_track_name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Replace flat planes in footage by another image, detected by plane tracks from motion tracking</p>
 <section id="parameters-7" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
@@ -1997,30 +2002,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.clip"><code>clip</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i"><code>i</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.plane_track_name"><code>plane_track_name</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tracking_object"><code>tracking_object</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2499,7 +2508,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Bilinear'</span>,</span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    extension_x<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    clip<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Stabilize footage using 2D stabilization motion tracking settings</p>
 <section id="parameters-10" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
@@ -2569,22 +2580,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.clip"><code>clip</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.i"><code>i</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>

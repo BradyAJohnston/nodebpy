@@ -73,6 +73,38 @@ Output light information to a light object
 | [`target`](#nodebpy.nodes.shader.output.LightOutput.target) |  |
 | [`tree`](#nodebpy.nodes.shader.output.LightOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [all](#nodebpy.nodes.shader.output.LightOutput.all) | Create Light Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output |
+| [cycles](#nodebpy.nodes.shader.output.LightOutput.cycles) | Create Light Output with operation ‘Cycles’. Use shaders for Cycles renderer |
+| [eevee](#nodebpy.nodes.shader.output.LightOutput.eevee) | Create Light Output with operation ‘EEVEE’. Use shaders for EEVEE renderer |
+
+##### all
+
+``` python
+all(surface=None, *, is_active_output=None)
+```
+
+Create Light Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output
+
+##### cycles
+
+``` python
+cycles(surface=None, *, is_active_output=None)
+```
+
+Create Light Output with operation ‘Cycles’. Use shaders for Cycles renderer
+
+##### eevee
+
+``` python
+eevee(surface=None, *, is_active_output=None)
+```
+
+Create Light Output with operation ‘EEVEE’. Use shaders for EEVEE renderer
+
 **Inputs**
 
 | Attribute   | Type           | Description |
@@ -122,6 +154,68 @@ Control the mixing of texture information into the base color of line styles
 | [`use_alpha`](#nodebpy.nodes.shader.output.LineStyleOutput.use_alpha) |  |
 | [`use_clamp`](#nodebpy.nodes.shader.output.LineStyleOutput.use_clamp) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [all](#nodebpy.nodes.shader.output.LineStyleOutput.all) | Create Line Style Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output |
+| [cycles](#nodebpy.nodes.shader.output.LineStyleOutput.cycles) | Create Line Style Output with operation ‘Cycles’. Use shaders for Cycles renderer |
+| [eevee](#nodebpy.nodes.shader.output.LineStyleOutput.eevee) | Create Line Style Output with operation ‘EEVEE’. Use shaders for EEVEE renderer |
+
+##### all
+
+``` python
+all(
+    color=(1.0, 0.0, 1.0, 1.0),
+    color_fac=1.0,
+    alpha=1.0,
+    alpha_fac=1.0,
+    *,
+    is_active_output=None,
+    blend_type='MIX',
+    use_alpha=False,
+    use_clamp=False,
+)
+```
+
+Create Line Style Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output
+
+##### cycles
+
+``` python
+cycles(
+    color=(1.0, 0.0, 1.0, 1.0),
+    color_fac=1.0,
+    alpha=1.0,
+    alpha_fac=1.0,
+    *,
+    is_active_output=None,
+    blend_type='MIX',
+    use_alpha=False,
+    use_clamp=False,
+)
+```
+
+Create Line Style Output with operation ‘Cycles’. Use shaders for Cycles renderer
+
+##### eevee
+
+``` python
+eevee(
+    color=(1.0, 0.0, 1.0, 1.0),
+    color_fac=1.0,
+    alpha=1.0,
+    alpha_fac=1.0,
+    *,
+    is_active_output=None,
+    blend_type='MIX',
+    use_alpha=False,
+    use_clamp=False,
+)
+```
+
+Create Line Style Output with operation ‘EEVEE’. Use shaders for EEVEE renderer
+
 **Inputs**
 
 | Attribute     | Type          | Description |
@@ -168,6 +262,59 @@ Output surface material information for use in rendering
 | [`target`](#nodebpy.nodes.shader.output.MaterialOutput.target) |  |
 | [`tree`](#nodebpy.nodes.shader.output.MaterialOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [all](#nodebpy.nodes.shader.output.MaterialOutput.all) | Create Material Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output |
+| [cycles](#nodebpy.nodes.shader.output.MaterialOutput.cycles) | Create Material Output with operation ‘Cycles’. Use shaders for Cycles renderer |
+| [eevee](#nodebpy.nodes.shader.output.MaterialOutput.eevee) | Create Material Output with operation ‘EEVEE’. Use shaders for EEVEE renderer |
+
+##### all
+
+``` python
+all(
+    surface=None,
+    volume=None,
+    displacement=None,
+    thickness=None,
+    *,
+    is_active_output=None,
+)
+```
+
+Create Material Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output
+
+##### cycles
+
+``` python
+cycles(
+    surface=None,
+    volume=None,
+    displacement=None,
+    thickness=None,
+    *,
+    is_active_output=None,
+)
+```
+
+Create Material Output with operation ‘Cycles’. Use shaders for Cycles renderer
+
+##### eevee
+
+``` python
+eevee(
+    surface=None,
+    volume=None,
+    displacement=None,
+    thickness=None,
+    *,
+    is_active_output=None,
+)
+```
+
+Create Material Output with operation ‘EEVEE’. Use shaders for EEVEE renderer
+
 **Inputs**
 
 | Attribute        | Type           | Description  |
@@ -203,6 +350,38 @@ Output light color information to the scene’s World
 | [`o`](#nodebpy.nodes.shader.output.WorldOutput.o) |  |
 | [`target`](#nodebpy.nodes.shader.output.WorldOutput.target) |  |
 | [`tree`](#nodebpy.nodes.shader.output.WorldOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [all](#nodebpy.nodes.shader.output.WorldOutput.all) | Create World Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output |
+| [cycles](#nodebpy.nodes.shader.output.WorldOutput.cycles) | Create World Output with operation ‘Cycles’. Use shaders for Cycles renderer |
+| [eevee](#nodebpy.nodes.shader.output.WorldOutput.eevee) | Create World Output with operation ‘EEVEE’. Use shaders for EEVEE renderer |
+
+##### all
+
+``` python
+all(surface=None, volume=None, *, is_active_output=None)
+```
+
+Create World Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output
+
+##### cycles
+
+``` python
+cycles(surface=None, volume=None, *, is_active_output=None)
+```
+
+Create World Output with operation ‘Cycles’. Use shaders for Cycles renderer
+
+##### eevee
+
+``` python
+eevee(surface=None, volume=None, *, is_active_output=None)
+```
+
+Create World Output with operation ‘EEVEE’. Use shaders for EEVEE renderer
 
 **Inputs**
 

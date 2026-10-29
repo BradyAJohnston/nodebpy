@@ -345,7 +345,7 @@ Map a texture using UV coordinates, to apply a texture to objects in compositing
 ### MovieDistortion
 
 ``` python
-MovieDistortion(image=(0.8, 0.8, 0.8, 1.0), type='Undistort')
+MovieDistortion(image=(0.8, 0.8, 0.8, 1.0), type='Undistort', *, clip=None)
 ```
 
 Remove lens distortion from footage, using motion tracking camera lens settings
@@ -361,6 +361,7 @@ Remove lens distortion from footage, using motion tracking camera lens settings
 
 | Name | Description |
 |----|----|
+| [`clip`](#nodebpy.nodes.compositor.distort.MovieDistortion.clip) |  |
 | [`i`](#nodebpy.nodes.compositor.distort.MovieDistortion.i) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.MovieDistortion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.MovieDistortion.node) |  |
@@ -377,7 +378,7 @@ Remove lens distortion from footage, using motion tracking camera lens settings
 ##### distort
 
 ``` python
-distort(image=(0.8, 0.8, 0.8, 1.0))
+distort(image=(0.8, 0.8, 0.8, 1.0), *, clip=None)
 ```
 
 Create Movie Distortion node with type ‘Distort’.
@@ -385,7 +386,7 @@ Create Movie Distortion node with type ‘Distort’.
 ##### undistort
 
 ``` python
-undistort(image=(0.8, 0.8, 0.8, 1.0))
+undistort(image=(0.8, 0.8, 0.8, 1.0), *, clip=None)
 ```
 
 Create Movie Distortion node with type ‘Undistort’.
@@ -412,6 +413,7 @@ PlaneTrackDeform(
     samples=16,
     shutter=0.5,
     *,
+    clip=None,
     tracking_object='',
     plane_track_name='',
 )
@@ -432,6 +434,7 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 
 | Name | Description |
 |----|----|
+| [`clip`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.clip) |  |
 | [`i`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.node) |  |
@@ -641,6 +644,8 @@ Stabilize2D(
     interpolation='Bilinear',
     extension_x='Clip',
     extension_y='Clip',
+    *,
+    clip=None,
 )
 ```
 
@@ -661,6 +666,7 @@ Stabilize footage using 2D stabilization motion tracking settings
 
 | Name | Description |
 |----|----|
+| [`clip`](#nodebpy.nodes.compositor.distort.Stabilize2D.clip) |  |
 | [`i`](#nodebpy.nodes.compositor.distort.Stabilize2D.i) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.Stabilize2D.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Stabilize2D.node) |  |
