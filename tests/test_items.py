@@ -165,6 +165,7 @@ def test_deprecated_entry_points_still_work():
         cap = g.CaptureAttribute(g.Cube())
         zone = g.RepeatZone(2)
         fe = g.ForEachGeometryElementZone(g.Cube())
+        fe.generated_items.geometry(g.Cone())  # stores the generated fields below
         ms = g.MenuSwitch.float()
         cz = g.ClosureZone()
         ftl = g.FieldToList(2)

@@ -346,6 +346,11 @@ class LinkingMixin:
                 (i for i in inputs if i.identifier.startswith("__extend__")), None
             )
             if extend is not None and outputs:
+                # a node with several (For Each's main and generation items)
+                # picks the one the source's type belongs to
+                pick = getattr(target, "_extend_input", None)
+                if pick is not None:
+                    extend = pick(outputs[0])
                 return extend, outputs[0]
             return None
 
