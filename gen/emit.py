@@ -92,7 +92,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         """Mirror the filter used in generate_enum_class_methods."""
         return not (
             (
-                prop.identifier not in ["operation", "domain", "mode"]
+                prop.identifier not in ["operation", "domain", "mode", "target"]
                 and "type" not in prop.identifier
             )
             or prop.identifier in ["blend_type", "direction_type"]

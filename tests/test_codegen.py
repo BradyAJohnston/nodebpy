@@ -3606,6 +3606,15 @@ def test_image_texture_image_roundtrip():
         bpy.data.images.remove(img)
 
 
+def test_material_output_target_factory_roundtrip():
+    with TreeBuilder.shader("OutputTargets") as tree:
+        s.MaterialOutput.eevee(s.PrincipledBSDF())
+        s.MaterialOutput.cycles(s.Emission())
+    code = _assert_roundtrip(tree)
+    assert "s.MaterialOutput.eevee(" in code
+    assert "s.MaterialOutput.cycles(" in code
+
+
 def test_empty_panels_roundtrip():
     """Panels holding no sockets — including one nested under a populated
     panel and a fully empty parent/child pair — are still emitted and
