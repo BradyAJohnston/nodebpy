@@ -35,7 +35,15 @@ from types import ModuleType
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 import numpy as np
-from bpy.types import ID, FunctionNodeCompare, Node, NodeSocket, NodeTree
+from bpy.types import (
+    ID,
+    FunctionNodeCompare,
+    Material,
+    Node,
+    NodeSocket,
+    NodeTree,
+    World,
+)
 
 from ..types import Default
 from ._floats import (
@@ -4141,7 +4149,7 @@ def _format_with_ruff(code: str) -> str:
 
 
 def to_python(
-    tree: NodeTree | TreeBuilder[Any],
+    tree: NodeTree | TreeBuilder[Any] | Material | World,
     min_chain_length: int = 3,
     strict: bool = True,
     max_inline_width: int | None = 88,
@@ -4163,8 +4171,10 @@ def to_python(
 
     Parameters
     ----------
-    tree: TreeBuilder[Any] | bpy.types.NodeTree
-        The node tree to export.
+    tree: TreeBuilder[Any] | bpy.types.NodeTree | bpy.types.Material | bpy.types.World
+        The node tree to export. With ``top_level="with"``, a material or
+        world (or its node tree) is rebuilt with ``s.material(...)`` /
+        ``s.world(...)``.
     min_chain_length: int
         Minimum number of items (including interface endpoints) for a linear
         pipeline to be expressed with ``>>`` syntax; shorter runs are emitted
@@ -4267,7 +4277,18 @@ def to_python(
     str
         Python source code as a string.
     """
+    owner: Material | World | None = None
+    if isinstance(tree, (Material, World)):
+        owner = tree
+        tree = tree.node_tree  # ty: ignore[invalid-assignment]
     node_tree: NodeTree = tree.tree if hasattr(tree, "tree") else tree  # ty: ignore[invalid-assignment]
+    if not isinstance(node_tree, NodeTree):
+        raise TypeError(
+            "to_python() takes a node tree, TreeBuilder, material or world, "
+            f"not {type(tree).__name__}"
+        )
+    if owner is None and node_tree.is_embedded_data:
+        owner = _embedded_tree_owner(node_tree)
 
     class_names = dict(group_class_names or {})
     externals = set(external_groups or ())
@@ -4328,6 +4349,8 @@ def to_python(
     else:
         emission = _emit_tree(node_tree, collector)
         used_aliases = emission.used_aliases | collector.used_aliases
+        if owner is not None:
+            used_aliases.add("s")
 
     # 5. Assemble the module: imports, group classes, then the tree block (only
     #    in "with" mode), each top-level block separated by two blank lines.
@@ -4371,6 +4394,9 @@ def to_python(
 
         constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
         ctor_args = [_fmt(node_tree.name)]
+        if owner is not None:
+            constructor = "s.material" if isinstance(owner, Material) else "s.world"
+            ctor_args = [_fmt(owner.name)]
         # Auto-layout dissolves reroutes and overwrites locations, so disable it
         # for either option.
         if snapshot_positions or keep_reroutes:
@@ -5030,6 +5056,16 @@ def _render_group_class(
             inner = inner + [""] + splits
     body = [("    " + line) if line else "" for line in inner]
     return "\n".join(header + body)
+
+
+def _embedded_tree_owner(node_tree: NodeTree) -> Material | World | None:
+    """The material or world whose node tree ``node_tree`` is, if any."""
+    import bpy
+
+    for owner in (*bpy.data.materials, *bpy.data.worlds):
+        if owner.node_tree == node_tree:
+            return owner
+    return None
 
 
 def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
