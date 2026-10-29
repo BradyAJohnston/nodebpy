@@ -637,6 +637,9 @@ class ForEachGeometryElementZone(_ZonePair):
         self.input = ForEachGeometryElementInput()
         self.output = ForEachGeometryElementOutput()
         self._pair()
+        # Like the other zones, start without Blender's default Geometry item;
+        # declare generated geometry with ``generated_items.geometry()``.
+        self.output.node.generation_items.clear()
         self.output.domain = domain
         self.input._establish_links(Geometry=geometry, Selection=selection)
 
@@ -664,12 +667,18 @@ class ForEachGeometryElementZone(_ZonePair):
         """The current element as geometry, read inside the zone body."""
         return self.input.o.element
 
+    # -- deprecated entry points, removed in 530 --
+
     @property
     def generation(self) -> "Item[GeometrySocket]":
-        """Handle for the default generation item (the generated geometry)."""
-        return cast("Item[GeometrySocket]", self.generated_items[0])
-
-    # -- deprecated entry points, removed in 530 --
+        """The ``Geometry`` generation item, added when the zone has none."""
+        _deprecated(
+            "zone.generation", 'zone.generated_items.geometry(value, "Geometry")'
+        )
+        for item in self.generated_items:
+            if item.name == "Geometry" and item.socket_type == "GEOMETRY":
+                return cast("Item[GeometrySocket]", item)
+        return self.generated_items.geometry(name="Geometry")
 
     @property
     def inputs(self) -> _ForEachItems:
@@ -777,20 +786,11 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     _bl_idname = "GeometryNodeForeachGeometryElementOutput"
     node: bpy.types.GeometryNodeForeachGeometryElementOutput
 
-    class _Inputs(SocketAccessor):
-        generation_0: GeometrySocket
-        """The geometry to generate elements from."""
-
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
         """The output geometry after processing all elements."""
-        generation_0: GeometrySocket
-        """The generated geometry output."""
 
     if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
 
         @property
         def o(self) -> _Outputs: ...
@@ -805,6 +805,13 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         key_args.update(kwargs)
         self.domain = domain
         self._establish_links(**key_args)
+
+    def _extend_input(self, source: bpy.types.NodeSocket) -> bpy.types.NodeSocket:
+        # Main items can't hold geometry: geometry linked into the output is
+        # added as a generation item.
+        kind = "generation" if source.type == "GEOMETRY" else "main"
+        assert self.node.inputs is not None
+        return next(s for s in self.node.inputs if s.identifier == f"__extend__{kind}")
 
     @property
     def items_generated(
