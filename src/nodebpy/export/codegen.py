@@ -6558,14 +6558,14 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
     )
 
     generation_items = list(out_node.generation_items)
-    if (
-        not generation_items
-        or generation_items[0].socket_type != "GEOMETRY"
-        or generation_items[0].name != "Geometry"
-    ):
+    if not generation_items or generation_items[0].socket_type != "GEOMETRY":
         raise CodegenError(
             f"foreach zone '{node.name}': the first generation item is not "
             "the default Geometry item, which the zone wrapper cannot rebuild"
+        )
+    if generation_items[0].name != "Geometry":
+        ctx.pending_lines.append(
+            f"    {zone_ref.name}.generation.name = {_fmt(generation_items[0].name)}"
         )
 
     plans: list[_ZoneItemPlan] = []

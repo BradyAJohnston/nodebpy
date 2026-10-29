@@ -1907,6 +1907,25 @@ def test_roundtrip_structural_foreach_zone():
     assert "for_each.generation.output" in code
 
 
+def test_roundtrip_foreach_zone_renamed_generation_item():
+    with TreeBuilder("ForEachRenamed") as tree:
+        out = tree.outputs.geometry("Geometry")
+        zone = g.ForEachGeometryElementZone(g.Points(4))
+        zone.generation.name = "Points"
+        zone.element >> zone.output
+        zone.generation.output >> out
+    code = _assert_roundtrip(tree)
+    assert 'for_each.generation.name = "Points"' in code
+    ns: dict = {}
+    exec(code, ns)
+    (zone_out,) = (
+        n
+        for n in ns["tree"].tree.nodes
+        if n.bl_idname == "GeometryNodeForeachGeometryElementOutput"
+    )
+    assert zone_out.generation_items[0].name == "Points"
+
+
 def test_zone_unreferenced_item_declared_without_variable():
     with TreeBuilder("RepeatUnused") as tree:
         zone = g.RepeatZone(3)
