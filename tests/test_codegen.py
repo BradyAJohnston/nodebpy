@@ -1897,14 +1897,57 @@ def test_roundtrip_structural_foreach_zone():
         transformed = g.Cone() >> g.TransformGeometry(translation=pos.output)
         main = zone.main_items.vector(name="Out")
         pos.output >> main.input
-        zone.generated_items.geometry(transformed, "Gen", domain="FACE")
+        gen = zone.generated_items.geometry(transformed, "Gen", domain="FACE")
         transformed >> zone.output
-        g.JoinGeometry([zone.generation.output, cube]) >> out
+        g.JoinGeometry([gen.output, cube]) >> out
     code = _assert_roundtrip(tree)
     assert "g.ForEachGeometryElementZone.face(" in code
     assert 'domain="FACE"' in code  # the generation item keeps its keyword
-    assert ">> for_each.generation.input" in code
-    assert "for_each.generation.output" in code
+    assert ">> gen.input" in code
+    assert "gen.output" in code
+
+
+@pytest.mark.parametrize(
+    "items",
+    [
+        [("GEOMETRY", "Points")],  # the default item, renamed
+        [],  # removed
+        [("FLOAT", "Value"), ("GEOMETRY", "Geometry")],  # geometry not first
+    ],
+)
+def test_roundtrip_foreach_zone_edited_generation_items(items):
+    """Generation items edited away from Blender's default Geometry item
+    (as in the editor or by another tool) export as declared items."""
+    with TreeBuilder("ForEachEdited") as tree:
+        out = tree.outputs.geometry("Geometry")
+        zone_out = tree.tree.nodes.new("GeometryNodeForeachGeometryElementOutput")
+        zone_in = tree.tree.nodes.new("GeometryNodeForeachGeometryElementInput")
+        zone_in.pair_with_output(zone_out)
+        zone_out.generation_items.clear()
+        for socket_type, name in items:
+            zone_out.generation_items.new(socket_type, name)
+        tree.tree.links.new(zone_out.outputs["Geometry"], out.socket)
+    code = _assert_roundtrip(tree)
+    ns: dict = {}
+    exec(code, ns)
+    (rebuilt,) = (
+        n
+        for n in ns["tree"].tree.nodes
+        if n.bl_idname == "GeometryNodeForeachGeometryElementOutput"
+    )
+    assert [(i.socket_type, i.name) for i in rebuilt.generation_items] == items
+
+
+def test_foreach_zone_starts_without_generation_items():
+    with TreeBuilder("ForEachEmpty"):
+        zone = g.ForEachGeometryElementZone()
+        assert len(zone.generated_items) == 0
+        with pytest.warns(DeprecationWarning, match="zone.generation"):
+            gen = zone.generation
+        assert (gen.name, gen.socket_type) == ("Geometry", "GEOMETRY")
+        with pytest.warns(DeprecationWarning):
+            assert zone.generation.output.socket == gen.output.socket
+        assert len(zone.generated_items) == 1
 
 
 def test_zone_unreferenced_item_declared_without_variable():

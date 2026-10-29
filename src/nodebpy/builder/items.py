@@ -246,6 +246,10 @@ class Item(Generic[_InT, _OutT]):
     def name(self) -> str:
         return self._item.name
 
+    @name.setter
+    def name(self, value: str) -> None:
+        self._item.name = value
+
     @property
     def socket_type(self) -> str:
         # some collections (capture_items, grid_items) call this data_type

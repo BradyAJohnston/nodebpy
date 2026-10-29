@@ -545,7 +545,7 @@ def build_import_microscopy_meshes() -> TreeBuilder:
             ),
         )
 
-        sna.o.geometry >> zone.output.i.generation_0
+        zone.generated_items.geometry(sna.o.geometry, "Geometry")
         (
             zone.output.o.geometry
             >> g.TransformGeometry(mode="Matrix", transform=affine_mat)
