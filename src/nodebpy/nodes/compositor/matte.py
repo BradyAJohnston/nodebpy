@@ -1105,12 +1105,23 @@ class KeyingScreen(BaseNode):
         self,
         smoothness: InputFloat = 0.0,
         *,
+        clip: bpy.types.MovieClip | None = None,
         tracking_object: str = "",
     ):
         super().__init__()
         key_args = {"Smoothness": smoothness}
         self.tracking_object = tracking_object
         self._establish_links(**key_args)
+        if clip is not None:
+            self.clip = clip
+
+    @property
+    def clip(self) -> bpy.types.MovieClip | None:
+        return self.node.clip
+
+    @clip.setter
+    def clip(self, value: bpy.types.MovieClip | None) -> None:
+        self.node.clip = value
 
     @property
     def tracking_object(self) -> str:

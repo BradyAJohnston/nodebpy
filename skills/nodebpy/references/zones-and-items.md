@@ -64,9 +64,10 @@ Set Position then decides whether the offset sees this step's value.
 zone = g.ForEachGeometryElementZone.face(geometry, selection=True)
 pos = zone.items.vector(g.Position(), "Pos")              # a field in, a value inside
 zone.main_items.float(pos.output.x, "Out")               # written back per element
-zone.generated_items.geometry(g.Cube(size=0.1), "Gen")   # geometry made per element
-# zone.index and zone.element inside; results on zone.output.o.<name>; the default
-# generated geometry is zone.generation (.input to feed, .output to read)
+gen = zone.generated_items.geometry(g.Cube(size=0.1), "Gen")  # geometry made per element
+# zone.index and zone.element inside; results on zone.output.o.<name>; the zone starts
+# with no generated items, read each one's result on its handle (gen.output). A
+# non-geometry generated item is stored on the geometry item declared before it.
 ```
 
 ## 5. Closure zones

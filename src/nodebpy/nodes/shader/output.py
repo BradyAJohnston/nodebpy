@@ -125,6 +125,27 @@ class LightOutput(BaseNode):
         if is_active_output is not None:
             self.is_active_output = is_active_output
 
+    @classmethod
+    def all(
+        cls, surface: InputShader = None, *, is_active_output: bool | None = None
+    ) -> "LightOutput":
+        """Create Light Output with operation 'All'. Use shaders for all renderers and viewports, unless there exists a more specific output"""
+        return cls(target="ALL", surface=surface, is_active_output=is_active_output)
+
+    @classmethod
+    def eevee(
+        cls, surface: InputShader = None, *, is_active_output: bool | None = None
+    ) -> "LightOutput":
+        """Create Light Output with operation 'EEVEE'. Use shaders for EEVEE renderer"""
+        return cls(target="EEVEE", surface=surface, is_active_output=is_active_output)
+
+    @classmethod
+    def cycles(
+        cls, surface: InputShader = None, *, is_active_output: bool | None = None
+    ) -> "LightOutput":
+        """Create Light Output with operation 'Cycles'. Use shaders for Cycles renderer"""
+        return cls(target="CYCLES", surface=surface, is_active_output=is_active_output)
+
     @property
     def is_active_output(self) -> bool:
         return self.node.is_active_output
@@ -239,6 +260,144 @@ class LineStyleOutput(BaseNode):
         self._establish_links(**key_args)
         if is_active_output is not None:
             self.is_active_output = is_active_output
+
+    @classmethod
+    def all(
+        cls,
+        color: InputColor = (1.0, 0.0, 1.0, 1.0),
+        color_fac: InputFloat = 1.0,
+        alpha: InputFloat = 1.0,
+        alpha_fac: InputFloat = 1.0,
+        *,
+        is_active_output: bool | None = None,
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        use_alpha: bool = False,
+        use_clamp: bool = False,
+    ) -> "LineStyleOutput":
+        """Create Line Style Output with operation 'All'. Use shaders for all renderers and viewports, unless there exists a more specific output"""
+        return cls(
+            target="ALL",
+            color=color,
+            color_fac=color_fac,
+            alpha=alpha,
+            alpha_fac=alpha_fac,
+            is_active_output=is_active_output,
+            blend_type=blend_type,
+            use_alpha=use_alpha,
+            use_clamp=use_clamp,
+        )
+
+    @classmethod
+    def eevee(
+        cls,
+        color: InputColor = (1.0, 0.0, 1.0, 1.0),
+        color_fac: InputFloat = 1.0,
+        alpha: InputFloat = 1.0,
+        alpha_fac: InputFloat = 1.0,
+        *,
+        is_active_output: bool | None = None,
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        use_alpha: bool = False,
+        use_clamp: bool = False,
+    ) -> "LineStyleOutput":
+        """Create Line Style Output with operation 'EEVEE'. Use shaders for EEVEE renderer"""
+        return cls(
+            target="EEVEE",
+            color=color,
+            color_fac=color_fac,
+            alpha=alpha,
+            alpha_fac=alpha_fac,
+            is_active_output=is_active_output,
+            blend_type=blend_type,
+            use_alpha=use_alpha,
+            use_clamp=use_clamp,
+        )
+
+    @classmethod
+    def cycles(
+        cls,
+        color: InputColor = (1.0, 0.0, 1.0, 1.0),
+        color_fac: InputFloat = 1.0,
+        alpha: InputFloat = 1.0,
+        alpha_fac: InputFloat = 1.0,
+        *,
+        is_active_output: bool | None = None,
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        use_alpha: bool = False,
+        use_clamp: bool = False,
+    ) -> "LineStyleOutput":
+        """Create Line Style Output with operation 'Cycles'. Use shaders for Cycles renderer"""
+        return cls(
+            target="CYCLES",
+            color=color,
+            color_fac=color_fac,
+            alpha=alpha,
+            alpha_fac=alpha_fac,
+            is_active_output=is_active_output,
+            blend_type=blend_type,
+            use_alpha=use_alpha,
+            use_clamp=use_clamp,
+        )
 
     @property
     def is_active_output(self) -> bool:
@@ -398,6 +557,66 @@ class MaterialOutput(BaseNode):
         if is_active_output is not None:
             self.is_active_output = is_active_output
 
+    @classmethod
+    def all(
+        cls,
+        surface: InputShader = None,
+        volume: InputShader = None,
+        displacement: InputVector = None,
+        thickness: InputFloat = None,
+        *,
+        is_active_output: bool | None = None,
+    ) -> "MaterialOutput":
+        """Create Material Output with operation 'All'. Use shaders for all renderers and viewports, unless there exists a more specific output"""
+        return cls(
+            target="ALL",
+            surface=surface,
+            volume=volume,
+            displacement=displacement,
+            thickness=thickness,
+            is_active_output=is_active_output,
+        )
+
+    @classmethod
+    def eevee(
+        cls,
+        surface: InputShader = None,
+        volume: InputShader = None,
+        displacement: InputVector = None,
+        thickness: InputFloat = None,
+        *,
+        is_active_output: bool | None = None,
+    ) -> "MaterialOutput":
+        """Create Material Output with operation 'EEVEE'. Use shaders for EEVEE renderer"""
+        return cls(
+            target="EEVEE",
+            surface=surface,
+            volume=volume,
+            displacement=displacement,
+            thickness=thickness,
+            is_active_output=is_active_output,
+        )
+
+    @classmethod
+    def cycles(
+        cls,
+        surface: InputShader = None,
+        volume: InputShader = None,
+        displacement: InputVector = None,
+        thickness: InputFloat = None,
+        *,
+        is_active_output: bool | None = None,
+    ) -> "MaterialOutput":
+        """Create Material Output with operation 'Cycles'. Use shaders for Cycles renderer"""
+        return cls(
+            target="CYCLES",
+            surface=surface,
+            volume=volume,
+            displacement=displacement,
+            thickness=thickness,
+            is_active_output=is_active_output,
+        )
+
     @property
     def is_active_output(self) -> bool:
         return self.node.is_active_output
@@ -467,6 +686,54 @@ class WorldOutput(BaseNode):
         self._establish_links(**key_args)
         if is_active_output is not None:
             self.is_active_output = is_active_output
+
+    @classmethod
+    def all(
+        cls,
+        surface: InputShader = None,
+        volume: InputShader = None,
+        *,
+        is_active_output: bool | None = None,
+    ) -> "WorldOutput":
+        """Create World Output with operation 'All'. Use shaders for all renderers and viewports, unless there exists a more specific output"""
+        return cls(
+            target="ALL",
+            surface=surface,
+            volume=volume,
+            is_active_output=is_active_output,
+        )
+
+    @classmethod
+    def eevee(
+        cls,
+        surface: InputShader = None,
+        volume: InputShader = None,
+        *,
+        is_active_output: bool | None = None,
+    ) -> "WorldOutput":
+        """Create World Output with operation 'EEVEE'. Use shaders for EEVEE renderer"""
+        return cls(
+            target="EEVEE",
+            surface=surface,
+            volume=volume,
+            is_active_output=is_active_output,
+        )
+
+    @classmethod
+    def cycles(
+        cls,
+        surface: InputShader = None,
+        volume: InputShader = None,
+        *,
+        is_active_output: bool | None = None,
+    ) -> "WorldOutput":
+        """Create World Output with operation 'Cycles'. Use shaders for Cycles renderer"""
+        return cls(
+            target="CYCLES",
+            surface=surface,
+            volume=volume,
+            is_active_output=is_active_output,
+        )
 
     @property
     def is_active_output(self) -> bool:

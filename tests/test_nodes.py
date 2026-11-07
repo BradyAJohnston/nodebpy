@@ -749,9 +749,8 @@ def test_foreachgeometryelement_zone():
         )
         zone.main_items.vector(pos)
         zone.generated_items.vector(pos)
-        zone.generated_items.geometry(transformed)
-        _ = transformed >> zone.output
-        _ = g.JoinGeometry([zone.output.o._get("Generation_0"), cube]) >> out
+        gen = zone.generated_items.geometry(transformed)
+        _ = g.JoinGeometry([gen.output, cube]) >> out
 
     input, output = zone
     with pytest.raises(IndexError):
@@ -768,9 +767,20 @@ def test_foreachgeometryelement_zone():
     assert input.i.selection.socket.links[0].from_node == tree.nodes["Compare"]
     assert tree.nodes["Compare"].data_type == "FLOAT"
     assert tree.nodes["Compare"].operation == "GREATER_THAN"
-    assert len(zone.output.items_generated) == 3
-    assert zone.output.items_generated[1].socket_type == "VECTOR"
-    assert zone.output.items_generated[2].socket_type == "GEOMETRY"
+    assert len(zone.output.items_generated) == 2
+    assert zone.output.items_generated[0].socket_type == "VECTOR"
+    assert zone.output.items_generated[1].socket_type == "GEOMETRY"
+
+
+def test_foreach_zone_geometry_into_output_adds_generation_item():
+    with TreeBuilder():
+        zone = g.ForEachGeometryElementZone(g.Cube())
+        cone = g.Cone()
+        cone >> zone.output
+        (item,) = zone.output.node.generation_items
+        assert (item.name, item.socket_type) == ("Mesh", "GEOMETRY")
+        assert not zone.output.node.main_items
+        assert zone.generated_items[0].input.socket.links[0].from_node == cone.node
 
 
 def test_zone_capture_names_and_domains():
@@ -780,8 +790,8 @@ def test_zone_capture_names_and_domains():
         gen = zone.generated_items.vector(pos, "MyGen", domain="FACE").output
         assert zone.items[0].name == "MyPos"
         assert pos.name == "MyPos"
-        assert zone.output.items_generated[1].name == "MyGen"
-        assert zone.output.items_generated[1].domain == "FACE"
+        assert zone.output.items_generated[0].name == "MyGen"
+        assert zone.output.items_generated[0].domain == "FACE"
         assert gen.name == "MyGen"
 
         rzone = g.RepeatZone(3)
@@ -851,11 +861,11 @@ def test_foreach_item_handles():
         assert out.input.socket.links[0].from_socket == pos.output.socket
         gen = zone.generated_items.geometry(g.Cone(), "Gen", domain="FACE")
         assert gen.socket_type == "GEOMETRY"
-        assert zone.output.items_generated[1].name == "Gen"
+        assert zone.output.items_generated[0].name == "Gen"
         unlinked = zone.generated_items.boolean(name="Mask", domain="FACE")
-        assert zone.output.items_generated[2].domain == "FACE"
+        assert zone.output.items_generated[1].domain == "FACE"
         defaulted = zone.generated_items.new(0.5, "Weight")
-        assert zone.output.items_generated[3].socket_type == "FLOAT"
+        assert zone.output.items_generated[2].socket_type == "FLOAT"
         assert defaulted.input.socket.default_value == pytest.approx(0.5)
         with pytest.raises(TypeError):
             zone.generated_items.new(name="nope")
@@ -971,7 +981,7 @@ def test_foreach_zone_typed_items():
         gen = zone.generated_items.vector(pos.output, "GenV", domain="FACE")
         assert gen.socket_type == "VECTOR"
         assert isinstance(gen.output, VectorSocket)
-        assert zone.output.items_generated[1].domain == "FACE"
+        assert zone.output.items_generated[0].domain == "FACE"
         gen_geo = zone.generated_items.geometry(g.Cone(), "Gen2")
         assert gen_geo.socket_type == "GEOMETRY"
 
@@ -1098,8 +1108,7 @@ def test_foreach_zone_typed_items_all_types():
             assert factory(name=f"gen_{i}", domain="FACE").socket_type == expected
         assert len(zone.items) == len(input_pairs)
         assert len(zone.main_items) == len(main_pairs)
-        # the default Geometry generation item plus the declared ones
-        assert len(zone.output.items_generated) == len(generated_pairs) + 1
+        assert len(zone.output.items_generated) == len(generated_pairs)
 
 
 def test_evaluate_closure_typed_items_all_types():

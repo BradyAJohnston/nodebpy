@@ -239,6 +239,23 @@ def collect_property_info(node, node_type):
                     optional=prop.identifier in OPTIONAL_PROPERTIES,
                 )
             )
+        elif (
+            prop.type == "POINTER"
+            and not prop.is_readonly
+            and prop.identifier != "node_tree"
+            and issubclass(getattr(bpy.types, prop.fixed_type.identifier), bpy.types.ID)
+        ):
+            # A datablock (Image Texture's image, Texture Coordinate's object):
+            # left to Blender unless passed, as a fresh node holds none.
+            properties.append(
+                PropertyInfo(
+                    identifier=prop.identifier,
+                    name=prop.name,
+                    prop_type="POINTER",
+                    subtype=prop.fixed_type.identifier,
+                    optional=True,
+                )
+            )
     return properties
 
 

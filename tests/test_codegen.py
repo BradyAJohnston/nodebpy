@@ -1897,14 +1897,57 @@ def test_roundtrip_structural_foreach_zone():
         transformed = g.Cone() >> g.TransformGeometry(translation=pos.output)
         main = zone.main_items.vector(name="Out")
         pos.output >> main.input
-        zone.generated_items.geometry(transformed, "Gen", domain="FACE")
+        gen = zone.generated_items.geometry(transformed, "Gen", domain="FACE")
         transformed >> zone.output
-        g.JoinGeometry([zone.generation.output, cube]) >> out
+        g.JoinGeometry([gen.output, cube]) >> out
     code = _assert_roundtrip(tree)
     assert "g.ForEachGeometryElementZone.face(" in code
     assert 'domain="FACE"' in code  # the generation item keeps its keyword
-    assert ">> for_each.generation.input" in code
-    assert "for_each.generation.output" in code
+    assert ">> gen.input" in code
+    assert "gen.output" in code
+
+
+@pytest.mark.parametrize(
+    "items",
+    [
+        [("GEOMETRY", "Points")],  # the default item, renamed
+        [],  # removed
+        [("FLOAT", "Value"), ("GEOMETRY", "Geometry")],  # geometry not first
+    ],
+)
+def test_roundtrip_foreach_zone_edited_generation_items(items):
+    """Generation items edited away from Blender's default Geometry item
+    (as in the editor or by another tool) export as declared items."""
+    with TreeBuilder("ForEachEdited") as tree:
+        out = tree.outputs.geometry("Geometry")
+        zone_out = tree.tree.nodes.new("GeometryNodeForeachGeometryElementOutput")
+        zone_in = tree.tree.nodes.new("GeometryNodeForeachGeometryElementInput")
+        zone_in.pair_with_output(zone_out)
+        zone_out.generation_items.clear()
+        for socket_type, name in items:
+            zone_out.generation_items.new(socket_type, name)
+        tree.tree.links.new(zone_out.outputs["Geometry"], out.socket)
+    code = _assert_roundtrip(tree)
+    ns: dict = {}
+    exec(code, ns)
+    (rebuilt,) = (
+        n
+        for n in ns["tree"].tree.nodes
+        if n.bl_idname == "GeometryNodeForeachGeometryElementOutput"
+    )
+    assert [(i.socket_type, i.name) for i in rebuilt.generation_items] == items
+
+
+def test_foreach_zone_starts_without_generation_items():
+    with TreeBuilder("ForEachEmpty"):
+        zone = g.ForEachGeometryElementZone()
+        assert len(zone.generated_items) == 0
+        with pytest.warns(DeprecationWarning, match="zone.generation"):
+            gen = zone.generation
+        assert (gen.name, gen.socket_type) == ("Geometry", "GEOMETRY")
+        with pytest.warns(DeprecationWarning):
+            assert zone.generation.output.socket == gen.output.socket
+        assert len(zone.generated_items) == 1
 
 
 def test_zone_unreferenced_item_declared_without_variable():
@@ -3543,6 +3586,62 @@ def test_datablock_interface_default_emits_guarded_lookup():
         i for i in rebuilt.interface.items_tree if getattr(i, "name", "") == "Target"
     )
     assert item.default_value is None
+
+
+def test_image_texture_image_roundtrip():
+    img = bpy.data.images.new("CodegenImage", 4, 4)
+    try:
+        with TreeBuilder.shader("ImageTex") as tree:
+            tex = s.ImageTexture(image=img, interpolation="Closest")
+            s.MaterialOutput(tex.o.color)
+        code = _assert_roundtrip(tree)
+        assert 'image=bpy.data.images.get("CodegenImage")' in code
+        ns: dict = {}
+        exec(code, ns)
+        (rebuilt,) = (
+            n for n in ns["tree"].tree.nodes if n.bl_idname == "ShaderNodeTexImage"
+        )
+        assert rebuilt.image == img
+    finally:
+        bpy.data.images.remove(img)
+
+
+def test_material_output_target_factory_roundtrip():
+    with TreeBuilder.shader("OutputTargets") as tree:
+        s.MaterialOutput.eevee(s.PrincipledBSDF())
+        s.MaterialOutput.cycles(s.Emission())
+    code = _assert_roundtrip(tree)
+    assert "s.MaterialOutput.eevee(" in code
+    assert "s.MaterialOutput.cycles(" in code
+
+
+def test_material_exports_as_material():
+    with s.material("CodegenMaterial") as tree:
+        s.MaterialOutput(s.PrincipledBSDF(roughness=0.2))
+    material = tree.material
+    for source in (material, material.node_tree, tree):
+        code = to_python(source, format=False)
+        assert 'with s.material("CodegenMaterial") as tree:' in code
+        ns: dict = {}
+        exec(code, ns)
+        rebuilt = ns["tree"]
+        assert rebuilt.material.name.startswith("CodegenMaterial")
+        assert _structure(rebuilt.tree) == _structure(tree.tree), code
+
+
+def test_world_exports_as_world():
+    with s.world("CodegenWorld") as tree:
+        s.WorldOutput(s.Background(strength=2.0))
+    code = to_python(tree.world, format=False)
+    assert 'with s.world("CodegenWorld") as tree:' in code
+    ns: dict = {}
+    exec(code, ns)
+    assert _structure(ns["tree"].tree) == _structure(tree.tree), code
+
+
+def test_to_python_rejects_non_tree():
+    with pytest.raises(TypeError, match="not Object"):
+        to_python(bpy.data.objects.new("NotATree", None))
 
 
 def test_empty_panels_roundtrip():

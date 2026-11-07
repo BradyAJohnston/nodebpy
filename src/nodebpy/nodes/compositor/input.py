@@ -399,6 +399,8 @@ class Mask(BaseNode):
         motion_blur: InputBoolean = False,
         samples: InputInteger = 16,
         shutter: InputFloat = 0.5,
+        *,
+        mask: bpy.types.Mask | None = None,
     ):
         super().__init__()
         key_args = {
@@ -412,6 +414,16 @@ class Mask(BaseNode):
         }
 
         self._establish_links(**key_args)
+        if mask is not None:
+            self.mask = mask
+
+    @property
+    def mask(self) -> bpy.types.Mask | None:
+        return self.node.mask
+
+    @mask.setter
+    def mask(self, value: bpy.types.Mask | None) -> None:
+        self.node.mask = value
 
 
 class MovieClip(BaseNode):
@@ -461,11 +473,21 @@ class MovieClip(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self) -> None:
+    def __init__(self, clip: bpy.types.MovieClip | None = None):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
+        if clip is not None:
+            self.clip = clip
+
+    @property
+    def clip(self) -> bpy.types.MovieClip | None:
+        return self.node.clip
+
+    @clip.setter
+    def clip(self, value: bpy.types.MovieClip | None) -> None:
+        self.node.clip = value
 
 
 class Normal(BaseNode):
@@ -533,11 +555,25 @@ class RenderLayers(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, layer: str = "ViewLayer"):
+    def __init__(
+        self,
+        scene: bpy.types.Scene | None = None,
+        layer: str = "ViewLayer",
+    ):
         super().__init__()
         key_args = {}
         self.layer = layer
         self._establish_links(**key_args)
+        if scene is not None:
+            self.scene = scene
+
+    @property
+    def scene(self) -> bpy.types.Scene | None:
+        return self.node.scene
+
+    @scene.setter
+    def scene(self, value: bpy.types.Scene | None) -> None:
+        self.node.scene = value
 
     @property
     def layer(self) -> str:
@@ -855,6 +891,7 @@ class TrackPosition(BaseNode):
         ] = "Absolute",
         frame: InputInteger = 0,
         *,
+        clip: bpy.types.MovieClip | None = None,
         tracking_object: str = "",
         track_name: str = "",
     ):
@@ -863,6 +900,16 @@ class TrackPosition(BaseNode):
         self.tracking_object = tracking_object
         self.track_name = track_name
         self._establish_links(**key_args)
+        if clip is not None:
+            self.clip = clip
+
+    @property
+    def clip(self) -> bpy.types.MovieClip | None:
+        return self.node.clip
+
+    @clip.setter
+    def clip(self, value: bpy.types.MovieClip | None) -> None:
+        self.node.clip = value
 
     @property
     def tracking_object(self) -> str:
