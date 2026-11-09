@@ -133,6 +133,39 @@ register_customization(
 # Closure to List's outputs are dynamic list items; the mixin supplies the
 # items constructor and typed factories (Blender only syncs items from the
 # linked closure's signature on an editor update, so builds must declare them).
+# Comment text is markdown, often several lines long. The constructor stores it
+# as given; ``Comment.cleandoc`` opts into docstring-style cleanup so a block can
+# sit at the code's indentation (the form ``to_python`` writes). ``width``
+# sizes the node.
+register_customization(
+    NodeCustomization(
+        bl_idname="NodeComment",
+        imports=("import inspect",),
+        suppress=frozenset({"__init__"}),
+        extra_body='''    def __init__(self, text: str = "", width: float | None = None):
+        """
+        Parameters
+        ----------
+        text : str
+            Markdown shown in the node, stored as given.
+        width : float | None
+            Node width; Blender's default when ``None``.
+        """
+        super().__init__()
+        self.text = text
+        if width is not None:
+            self.node.width = width
+
+    @classmethod
+    def cleandoc(cls, text: str = "", width: float | None = None) -> "Comment":
+        """A comment whose text is cleaned like a docstring
+        (:func:`inspect.cleandoc`): leading and trailing blank lines and the
+        common indentation are removed, so markdown can be written as an
+        indented triple-quoted block."""
+        return cls(inspect.cleandoc(text), width=width)''',
+    )
+)
+
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeClosureToList",

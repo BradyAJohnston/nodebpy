@@ -209,7 +209,7 @@ css = [
 
 [[package]]
 name = "bpy"
-version = "5.3.0b0+202610240914"
+version = "5.3.0rc0+202611091142"
 source = { registry = "https://bradyajohnston.github.io/dailybpy" }
 dependencies = [
     { name = "cattrs" },
@@ -219,9 +219,9 @@ dependencies = [
     { name = "zstandard" },
 ]
 wheels = [
-    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202610240914/bpy-5.3.0b0%2B202610240914-cp313-cp313-macosx_13_0_arm64.whl" },
-    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202610240914/bpy-5.3.0b0%2B202610240914-cp313-cp313-manylinux_2_39_x86_64.whl" },
-    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202610240914/bpy-5.3.0b0%2B202610240914-cp313-cp313-win_amd64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202611091142/bpy-5.3.0rc0%2B202611091142-cp313-cp313-macosx_13_0_arm64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202611091142/bpy-5.3.0rc0%2B202611091142-cp313-cp313-manylinux_2_39_x86_64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-202611091142/bpy-5.3.0rc0%2B202611091142-cp313-cp313-win_amd64.whl" },
 ]
 
 [[package]]

@@ -3984,3 +3984,95 @@ def test_unlinked_reroute_exports_with_the_trees_alias():
     with c.tree("Alias Reroute") as tree:
         tree.tree.nodes.new("NodeReroute")
     assert "c.Reroute()" in to_python(tree, keep_reroutes=True)
+
+
+_MARKDOWN = (
+    "# Viridis\n"
+    "\n"
+    "Perceptually uniform **sequential**.\n"
+    "\n"
+    "- 13 stops\n"
+    '  - nested, with a \\ and """quotes"""'
+)
+
+
+def _rebuilt_comments(code: str) -> list[tuple[str, float]]:
+    ns: dict = {}
+    exec(code, ns)
+    return [
+        (n.text, n.width) for n in ns["tree"].tree.nodes if n.bl_idname == "NodeComment"
+    ]
+
+
+@pytest.mark.parametrize("format", [True, False])
+@pytest.mark.parametrize(
+    "text",
+    [
+        _MARKDOWN,
+        "short",
+        "",
+        "\nleading newline",
+        "trailing newline\n",
+        "  indented\n  block",  # a common indent would be dedented away
+        "a\n   \nb",  # whitespace-only line
+        "tab\tand\nnewline",
+    ],
+)
+def test_comment_round_trips(text, format):
+    with TreeBuilder("CommentRoundTrip") as tree:
+        with g.Frame("notes"):
+            g.Comment(text, width=350)
+        g.Comment(text)
+
+    code = to_python(tree, format=format)
+    assert _rebuilt_comments(code) == [(text, 350.0), (text, 200.0)], code
+
+
+def test_comment_markdown_renders_as_indented_block():
+    with TreeBuilder("CommentBlock") as tree:
+        with g.Frame("notes"):
+            g.Comment(_MARKDOWN, width=400)
+
+    code = to_python(tree)
+    assert (
+        '''
+        _comment = g.Comment.cleandoc(
+            """
+            # Viridis
+
+            Perceptually uniform **sequential**.
+
+            - 13 stops
+              - nested, with a \\\\ and \\"\\"\\"quotes\\"\\"\\"
+            """,
+            width=400.0,
+        )
+'''
+        in code
+    ), code
+
+
+def test_comment_default_width_omitted():
+    with TreeBuilder("CommentWidth") as tree:
+        g.Comment("note")
+    assert 'g.Comment("note")' in to_python(tree)
+
+
+def test_comment_stores_text_as_given():
+    with TreeBuilder("CommentRaw"):
+        comment = g.Comment("\n  indented\n")
+    assert comment.text == "\n  indented\n"
+
+
+def test_comment_cleandoc_cleans_like_a_docstring():
+    with TreeBuilder("CommentDedent"):
+        comment = g.Comment.cleandoc(
+            """
+            # Title
+
+              indented
+            """,
+            width=300,
+        )
+    assert comment.text == "# Title\n\n  indented"
+    assert comment.node.width == 300
