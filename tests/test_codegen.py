@@ -3995,6 +3995,33 @@ _MARKDOWN = (
     '  - nested, with a \\ and """quotes"""'
 )
 
+_MARKDOWN_SAMPLES = {
+    "fenced_code": (
+        "Build the ramp:\n"
+        "\n"
+        "```python\n"
+        "def ramp(value):\n"
+        '    """Map *value* to a colour."""\n'
+        "    if value > 0.5:\n"
+        '        return "\\n".join(stops)\n'
+        "    return None\n"
+        "```"
+    ),
+    "starts_with_fence": "```\nraw block\n    indented\n```\nafter",
+    "indented_code": "Example:\n\n    g.Comment(text)\n    g.Frame('x')",
+    "links": (
+        'See [the docs](https://example.com/docs?a=1&b=2 "Title") and\n'
+        "[a reference][ref], <https://example.com>, ![img](./a.png).\n"
+        "\n"
+        "[ref]: https://example.com/ref"
+    ),
+    "inline_code": 'Use `g.Comment("x")`\nor ``code with ` tick``.',
+    "blockquote": "> quoted **bold**\n> > nested _em_\n\ntext",
+    "table": "| a | b |\n|---|:-:|\n| `1` | [x](y) |",
+    "hard_break": "line with trailing spaces  \nnext line",
+    "ordered_list": "1. one\n   continued\n2. two\n   - mixed\n\n---\n\n***rule above***",
+}
+
 
 def _rebuilt_comments(code: str) -> list[tuple[str, float]]:
     ns: dict = {}
@@ -4008,14 +4035,18 @@ def _rebuilt_comments(code: str) -> list[tuple[str, float]]:
 @pytest.mark.parametrize(
     "text",
     [
-        _MARKDOWN,
-        "short",
-        "",
-        "\nleading newline",
-        "trailing newline\n",
-        "  indented\n  block",  # a common indent would be dedented away
-        "a\n   \nb",  # whitespace-only line
-        "tab\tand\nnewline",
+        pytest.param(text, id=name)
+        for name, text in {
+            "markdown": _MARKDOWN,
+            "short": "short",
+            "empty": "",
+            "leading_newline": "\nleading newline",
+            "trailing_newline": "trailing newline\n",
+            "common_indent": "  indented\n  block",  # cleandoc would strip it
+            "whitespace_line": "a\n   \nb",
+            "tab": "tab\tand\nnewline",
+            **_MARKDOWN_SAMPLES,
+        }.items()
     ],
 )
 def test_comment_round_trips(text, format):
@@ -4047,6 +4078,37 @@ def test_comment_markdown_renders_as_indented_block():
             """,
             width=400.0,
         )
+'''
+        in code
+    ), code
+
+
+@pytest.mark.parametrize("name", sorted(_MARKDOWN_SAMPLES))
+def test_comment_markdown_samples_use_cleandoc(name):
+    with TreeBuilder("CommentSamples") as tree:
+        g.Comment(_MARKDOWN_SAMPLES[name])
+    assert "g.Comment.cleandoc(" in to_python(tree)
+
+
+def test_comment_code_block_keeps_relative_indent():
+    with TreeBuilder("CommentCode") as tree:
+        with g.Frame("notes"):
+            g.Comment(_MARKDOWN_SAMPLES["fenced_code"])
+
+    code = to_python(tree)
+    assert (
+        '''
+        _comment = g.Comment.cleandoc("""
+            Build the ramp:
+
+            ```python
+            def ramp(value):
+                \\"\\"\\"Map *value* to a colour.\\"\\"\\"
+                if value > 0.5:
+                    return "\\\\n".join(stops)
+                return None
+            ```
+            """)
 '''
         in code
     ), code

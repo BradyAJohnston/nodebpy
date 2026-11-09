@@ -4163,9 +4163,11 @@ def _format_with_ruff(code: str) -> str:
 
 def _indent_text_blocks(code: str) -> str:
     """Indent each ``\"\"\"`` block that opens with a newline (a
-    :class:`TextBlock`) to its opening quotes' column. The block's closing
-    line sets the margin it is shifted from, so the relative indentation
-    inside is kept; blocks already in line are left as they are."""
+    :class:`TextBlock`) to its opening quotes' column, or one level past the
+    opening line when ruff hugs the quotes to the call (``f(\"\"\"``). The
+    block's closing line sets the margin it is shifted from, so the relative
+    indentation inside is kept; blocks already in line are left as they
+    are."""
     import io
     import tokenize
 
@@ -4178,6 +4180,10 @@ def _indent_text_blocks(code: str) -> str:
         if tok.type != tokenize.STRING or not tok.string.startswith('"""\n'):
             continue
         (first, col), (last, _) = tok.start, tok.end
+        opening = lines[first - 1]
+        indent = len(opening) - len(opening.lstrip(" "))
+        if col > indent:  # hugged: the quotes follow other code on the line
+            col = indent + 4
         margin = len(lines[last - 1]) - len(lines[last - 1].lstrip(" "))
         rows = [r for r in range(first, last) if lines[r].strip()]  # 0-based
         if any(not lines[r].startswith(" " * margin) for r in rows):
