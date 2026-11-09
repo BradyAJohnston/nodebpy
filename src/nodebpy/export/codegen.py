@@ -4281,7 +4281,9 @@ def to_python(
     if isinstance(tree, (Material, World)):
         owner = tree
         tree = tree.node_tree  # ty: ignore[invalid-assignment]
-    node_tree: NodeTree = tree.tree if hasattr(tree, "tree") else tree  # ty: ignore[invalid-assignment]
+    node_tree: NodeTree = (
+        tree.tree if hasattr(tree, "tree") else tree
+    )  # ty: ignore[invalid-assignment]
     if not isinstance(node_tree, NodeTree):
         raise TypeError(
             "to_python() takes a node tree, TreeBuilder, material or world, "
@@ -5951,9 +5953,11 @@ def _emit_float_curve(node, ctx: EmitContext) -> Expr | _Val | None:
     assert found is not None
     default = _signature(found[1].__init__).parameters["items"].default
     points = tuple(
-        tuple(point.location)
-        if point.handle_type == "AUTO"
-        else (*point.location, point.handle_type)
+        (
+            tuple(point.location)
+            if point.handle_type == "AUTO"
+            else (*point.location, point.handle_type)
+        )
         for point in node.mapping.curves[0].points
     )
     if _norm_floats(points) != _norm_floats(default):

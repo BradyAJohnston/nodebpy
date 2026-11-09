@@ -1,10 +1,10 @@
 """Node hide attribute preservation: ``node.hide`` is stored in
-``to_python(snapshot_positions=True)`` and restored by ``TreeBuilder.layout_snapshot``."""
+``to_python(snapshot_positions=True)`` and restored by ``TreeBuilder.layout_snapshot``.
+"""
 
 import bpy
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-
 
 # ---------------------------------------------------------------------------
 # Basic hide capture in layout_snapshot
@@ -71,17 +71,17 @@ def test_multiple_nodes_with_mixed_hide():
         hidden_in = g.GeometryInput()
         hidden_in.location = (0, 0)
         hidden_in.hide = True
-        
+
         # Visible node
         visible_math = g.Math(1.0 + 2.0)
         visible_math.location = (50, -30)
 
     snapshot = tree.layout_snapshot
     entries = {name: entry for name, entry in snapshot.items()}
-    
+
     hidden_entry = entries["Geometry Input"]
     assert hidden_entry[2] is True
-    
+
     visible_entry = entries["Math"]
     assert visible_entry[2] is False
 
@@ -93,7 +93,7 @@ def test_multiple_nodes_with_mixed_hide():
 
 def test_hide_in_generated_code():
     """Verify that hide state appears in to_python(snapshot_positions=True) output.
-    
+
     The layout_snapshot block uses 'hide': node.hide which evaluates to a boolean
     at runtime, producing either '"hide":true' or '"hide":false'.
     """
@@ -103,7 +103,7 @@ def test_hide_in_generated_code():
         geo.hide = True
 
     code = tree.to_python(snapshot_positions=True, format=False)
-    
+
     # Generated code should contain layout_snapshot block with hide field
     # The actual value depends on runtime evaluation but will be a boolean
     assert "layout_snapshot" in code
@@ -120,10 +120,10 @@ def test_hide_roundtrip_simple():
         geo_in = g.GeometryInput()
         geo_in.location = (0, 0)
         geo_in.hide = True
-    
+
     # Generate Python code and rebuild
     code = tree.to_python(snapshot_positions=True)
-    
+
     # The code generation should include layout_snapshot block with hide field
     assert "layout_snapshot" in code
 
@@ -138,18 +138,18 @@ def test_nested_frames_hide():
     with TreeBuilder("NestedFrames") as tree:
         outer = g.Frame("OuterFrame")
         inner = g.Frame("InnerFrame")
-        
+
         geo_in = g.GeometryInput()
         geo_in.location = (0, 0)
         geo_in.hide = True
 
     snapshot = tree.layout_snapshot
-    
+
     # Frame parent is stored for nodes inside frames
     # Blender uses 'Frame' and 'Frame.001' for multiple frames with same type
     frame_entries = [v for k, v in snapshot.items() if "Frame" in k]
     geo_entry = snapshot["Geometry Input"]
-    
+
     assert len(frame_entries) == 2
     assert geo_entry[3] is None  # Geo node has no parent link
 
@@ -163,32 +163,35 @@ def test_hide_propagation_nested_frames():
     """Test that hide flag is correctly propagated for nested frames."""
     with TreeBuilder("NestedFramesHide") as tree:
         frame1 = g.Frame("Frame1")
-        
+
         geo_in1 = g.GeometryInput()
         geo_in1.location = (0, 0)
         geo_in1.hide = True
-        
+
         frame2 = g.Frame("Frame2")
-        
+
         geo_in2 = g.GeometryInput()
         geo_in2.location = (50, -30)
         geo_in2.hide = False
 
     snapshot = tree.layout_snapshot
-    
+
     # Check that frame entries and their contents have correct hide states
     # Blender renames duplicate node names: "Frame", "Frame.001", etc.
     frame_entries = [v for k, v in snapshot.items() if "Frame" in k]
     geo_entries = [v for v in snapshot.values() if "GeometryNodeGroup" in str(v[0])]
-    
+
     assert len(frame_entries) == 2
     assert len(geo_entries) == 2
-    
+
     # Both frames themselves are visible (hide=False)
     assert all(entry[2] is False for entry in frame_entries)
-    
+
     # Verify that different hide states are captured
     geo_hide_states = [entry[2] for entry in geo_entries]
-    assert any(h is True for h in geo_hide_states), "Expected at least one hidden geometry node"
-    assert any(h is False for h in geo_hide_states), "Expected at least one visible geometry node"
-
+    assert any(
+        h is True for h in geo_hide_states
+    ), "Expected at least one hidden geometry node"
+    assert any(
+        h is False for h in geo_hide_states
+    ), "Expected at least one visible geometry node"

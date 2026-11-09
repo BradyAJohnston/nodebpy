@@ -489,10 +489,12 @@ class SocketContext:
     def vector(
         self,
         name: str = "Vector",
-        default_value: tuple[float, float]  # ty: ignore[invalid-type-form]
-        | tuple[float, float, float]  # ty: ignore[invalid-type-form]
-        | tuple[float, float, float, float]  # ty: ignore[invalid-type-form]
-        | None = None,
+        default_value: (
+            tuple[float, float]  # ty: ignore[invalid-type-form]
+            | tuple[float, float, float]  # ty: ignore[invalid-type-form]
+            | tuple[float, float, float, float]  # ty: ignore[invalid-type-form]
+            | None
+        ) = None,
         description: str = "",
         *,
         dimensions: Literal[2, 3, 4] = 3,
@@ -537,7 +539,12 @@ class SocketContext:
     def color(
         self,
         name: str = "Color",
-        default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),  # ty: ignore[invalid-type-form]
+        default_value: tuple[float, float, float, float] = (
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+        ),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
         optional_label: bool = False,
@@ -566,7 +573,11 @@ class SocketContext:
     def rotation(
         self,
         name: str = "Rotation",
-        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
+        default_value: tuple[float, float, float] = (
+            0.0,
+            0.0,
+            0.0,
+        ),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
         optional_label: bool = False,
@@ -987,7 +998,7 @@ class _MenuDefault:
 type _LayoutEntry = tuple[
     str,  # bl_idname
     tuple[float, float],  # location (x, y)
-    bool,  # hide status  
+    bool,  # hide status
     str | None,  # parent frame name (or None for root-level nodes)
     tuple[tuple[str, str, str], ...],  # incoming links
 ]
@@ -1225,7 +1236,9 @@ class TreeBuilder[TreeT: NodeTree]:
             if existing is not None and existing.bl_idname == tree_type:
                 self.tree = existing
             else:
-                self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
+                self.tree = bpy.data.node_groups.new(
+                    tree, tree_type
+                )  # ty: ignore[invalid-assignment]
         else:
             self.tree = tree  # type: ignore
         self._preserved_inputs: AbstractContextManager[None] | None = None
@@ -2049,13 +2062,13 @@ class TreeBuilder[TreeT: NodeTree]:
     def add(self, name: str) -> Node:
         node = self.tree.nodes.new(name)
         assert node is not None
-        
+
         # Propagate hide from parent frames (Blender's Frame.hide sets its children)
         for frame in reversed(self._frame_contexts):
-            if hasattr(frame, 'hide') and frame.hide:
+            if hasattr(frame, "hide") and frame.hide:
                 node.hide = True  # Child should be hidden if any parent frame is hidden
                 break
-        
+
         node.hide = self.collapse
         if self._frame_contexts:
             node.parent = self._frame_contexts[-1]
