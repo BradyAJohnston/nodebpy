@@ -245,7 +245,12 @@ def test_socket_methods_keep_the_nodes_defaults(build):
     code = to_python(tree, format=False)
     namespace: dict = {}
     exec(code, namespace)
-    assert unlinked(namespace["tree"].tree) == pytest.approx(unlinked(tree.tree)), code
+    rebuilt, original = unlinked(namespace["tree"].tree), unlinked(tree.tree)
+    # pytest.approx() rejects nested structures (pytest >= 9.2), so compare
+    # identifiers exactly and each value approximately.
+    assert [i for i, _ in rebuilt] == [i for i, _ in original], code
+    for (_, got), (_, want) in zip(rebuilt, original):
+        assert got == pytest.approx(want), code
 
 
 def test_fanout_assigns_variable():
