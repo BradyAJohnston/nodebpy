@@ -814,11 +814,13 @@ class Frame(BaseNode):
         label: str | None = None,
         shrink: bool = True,
         text: bpy.types.Text | None = None,
+        hide: bool = False,
     ):
         super().__init__()
         self.label = label
         self.shrink = shrink
         self.text = text
+        self.hide = hide
 
     @property
     def label(self) -> str | None:
@@ -845,6 +847,14 @@ class Frame(BaseNode):
     def text(self, value: bpy.types.Text | None) -> None:
         if value is not None:
             self.node.text = value
+
+    @property
+    def hide(self) -> bool:
+        return self.node.hide
+
+    @hide.setter
+    def hide(self, value: bool) -> None:
+        self.node.hide = value
 
     def __enter__(self) -> Self:
         TreeBuilder._frame_contexts.append(self.node)

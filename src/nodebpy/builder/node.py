@@ -140,6 +140,17 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         return self._tree
 
     @property
+    def hide(self) -> bool:
+        """Whether the node is hidden. Matches `Node.hide` from Blender."""
+        return getattr(self.node, "hide", False)
+
+    @hide.setter
+    def hide(self, value: bool) -> None:
+        """Set whether the node is hidden."""
+        if hasattr(self.node, "hide"):
+            self.node.hide = value
+
+    @property
     def name(self) -> str:
         """The name of the node being wrapped by this instance."""
         return str(self.node.name)

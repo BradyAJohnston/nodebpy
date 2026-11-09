@@ -4486,6 +4486,7 @@ def _group_input_split_lines(
         if node.label:
             lines.append(f'{indent}        "label": {_fmt(node.label)},')
         lines.append(f'{indent}        "location": {_fmt(loc)},')
+        lines.append(f'{indent}        "hide": node.hide,')
         lines.append(f'{indent}        "parent": {parent},')
         lines.append(f'{indent}        "links": [')
         for entry in entries:
@@ -4505,9 +4506,9 @@ def _layout_snapshot_lines(
     A rebuild names duplicate-type nodes by creation order (``Math``,
     ``Math.001``, ...), which rarely matches the authored order — restoring
     positions by bare name would place nodes at each other's authored spots.
-    Each entry therefore also records the node's type, frame parent and
-    incoming links, and :attr:`TreeBuilder.layout_snapshot` matches rebuilt
-    nodes to entries structurally before renaming and placing them.
+    Each entry therefore also records the node's type, hide status, frame
+    parent and incoming links, and :attr:`TreeBuilder.layout_snapshot` matches
+    rebuilt nodes to entries structurally before renaming and placing them.
     References the local ``tree`` (the top-level ``with`` target, or a
     group's ``_build_group`` parameter)."""
     from ..builder._utils import socket_key
@@ -4551,13 +4552,14 @@ def _layout_snapshot_lines(
         # Two decimals: auto-layout produces quarter-unit positions (6.75)
         # that one decimal would visibly nudge on rebuild.
         loc = tuple(round(v, 2) for v in node.location)
+        hide = node.hide
         parent = _fmt(node.parent.name) if node.parent is not None else "None"
         entry_links = "".join(
             f"{_fmt(entry)}, " for entry in sorted(incoming.get(node.name, ()))
         )
         lines.append(
             f"{indent}    {_fmt(node.name)}: ({_fmt(node.bl_idname)}, "
-            f"{_fmt(loc)}, {parent}, ({entry_links})),"
+            f"{_fmt(loc)}, {hide}, {parent or 'None'}, ({entry_links})),"
         )
     lines.append(f"{indent}}}")
     return lines

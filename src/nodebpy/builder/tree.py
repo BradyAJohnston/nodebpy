@@ -981,14 +981,15 @@ class _MenuDefault:
 
 
 # One node's layout-snapshot record: (bl_idname, (x, y), parent frame name,
-# incoming links as (own input socket key, source node name, source socket
-# key)) — socket keys per :func:`socket_key`, stable across a rebuild where
-# identifiers are not.
+# hide status, incoming links as (own input socket key, source node name, source
+# socket key)) — socket keys per :func:`socket_key`, stable across a rebuild where
+# identifiers are not. The tuple structure mirrors the restore code's expectations.
 type _LayoutEntry = tuple[
-    str,
-    tuple[float, float],
-    str | None,
-    tuple[tuple[str, str, str], ...],
+    str,  # bl_idname
+    tuple[float, float],  # location (x, y)
+    bool,  # hide status  
+    str | None,  # parent frame name (or None for root-level nodes)
+    tuple[tuple[str, str, str], ...],  # incoming links
 ]
 
 # One piece of matching evidence: a link as (own socket id, is_output, peer's
@@ -1029,7 +1030,7 @@ def _match_layout_snapshot(
         name: node.parent.name if node.parent is not None else None
         for name, node in nodes.items()
     }
-    entry_parent = {name: entry[2] for name, entry in entries.items()}
+    entry_parent = {name: entry[4] for name, entry in entries.items()}
 
     node_adj: dict[str, list[tuple[str, bool, str, str]]] = {name: [] for name in nodes}
     for link in tree.links:
@@ -1045,7 +1046,7 @@ def _match_layout_snapshot(
     entry_adj: dict[str, list[tuple[str, bool, str, str]]] = {
         name: [] for name in entries
     }
-    for name, (_type, _pos, _parent, incoming) in entries.items():
+    for name, (_type, _pos, hide, _parent, incoming) in entries.items():
         for own_sock, peer, peer_sock in incoming:
             entry_adj[name].append((own_sock, False, peer, peer_sock))
             if peer in entry_adj:
@@ -1682,8 +1683,8 @@ class TreeBuilder[TreeT: NodeTree]:
     @property
     def layout_snapshot(self) -> dict[str, _LayoutEntry]:
         """A structural layout snapshot: for every node its type, ``(x, y)``
-        location, frame parent and incoming links, keyed by node name —
-        the block ``to_python(snapshot_positions=True)`` emits. See the
+        location, hide status, frame parent and incoming links, keyed by node
+        name — the block ``to_python(snapshot_positions=True)`` emits. See the
         setter for how it is applied."""
         incoming: dict[str, list[tuple[str, str, str]]] = {}
         for link in self.tree.links:
@@ -1700,6 +1701,7 @@ class TreeBuilder[TreeT: NodeTree]:
             node.name: (
                 node.bl_idname,
                 (node.location.x, node.location.y),
+                node.hide,
                 node.parent.name if node.parent is not None else None,
                 tuple(sorted(incoming.get(node.name, ()))),
             )
@@ -1721,7 +1723,7 @@ class TreeBuilder[TreeT: NodeTree]:
         counterpart for (e.g. dropped reroutes) are skipped, so applying a
         snapshot to an edited tree degrades gracefully."""
         entries = {
-            name: (entry[0], tuple(entry[1]), entry[2], tuple(entry[3]))
+            name: (entry[0], tuple(entry[1]), entry[2], entry[3], tuple(entry[4]))
             for name, entry in snapshot.items()
         }
         matches = _match_layout_snapshot(self.tree, entries)
@@ -1742,14 +1744,16 @@ class TreeBuilder[TreeT: NodeTree]:
         matched_by_entry = {entry_name: node for node, entry_name in matches}
         for node, entry_name in matches:
             node.name = entry_name
-            _bl_idname, location, parent, _links = entries[entry_name]
-            # Restore frame membership before the location: locations are
-            # parent-relative, and a rebuild leaves some nodes unparented
-            # (split Group Input instances are created outside any frame).
+            _bl_idname, location, hide, parent, _links = entries[entry_name]
+            # Restore frame membership before the location and hide status:
+            # locations are parent-relative, and a rebuild leaves some nodes
+            # unparented (split Group Input instances are created outside any
+            # frame).
             parent_node = matched_by_entry.get(parent) if parent is not None else None
             if parent_node is not None or parent is None:
                 node.parent = cast("NodeFrame | None", parent_node)
             node.location = location
+            node.hide = hide
         for node, old_name in displaced:
             node.name = old_name  # re-suffixed by Blender on collision
 
@@ -1807,6 +1811,9 @@ class TreeBuilder[TreeT: NodeTree]:
             # Authored placement (parent before location — locations are
             # parent-relative); older snapshots without these keys leave the
             # instance where auto-layout or the caller puts it.
+            hide = split.get("hide")
+            if isinstance(hide, bool):
+                instance.hide = hide
             parent = self.tree.nodes.get(split.get("parent") or "")
             if isinstance(parent, NodeFrame):
                 instance.parent = parent
@@ -2042,6 +2049,13 @@ class TreeBuilder[TreeT: NodeTree]:
     def add(self, name: str) -> Node:
         node = self.tree.nodes.new(name)
         assert node is not None
+        
+        # Propagate hide from parent frames (Blender's Frame.hide sets its children)
+        for frame in reversed(self._frame_contexts):
+            if hasattr(frame, 'hide') and frame.hide:
+                node.hide = True  # Child should be hidden if any parent frame is hidden
+                break
+        
         node.hide = self.collapse
         if self._frame_contexts:
             node.parent = self._frame_contexts[-1]
