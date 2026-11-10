@@ -309,8 +309,7 @@ def _domain_factory_typed(
     """Build a nested ``<node>.<domain>.<dtype>()`` factory as class-body source.
 
     ``data_types`` are Blender ``data_type`` enum values; ``index`` names the
-    optional per-element index parameter (``None`` if the node has none); a
-    ``group_id`` one still accepts its old name ``group_index``. Each
+    optional per-element index parameter (``None`` if the node has none). Each
     method returns the parameterised node type (e.g. ``AccumulateField[FloatSocket]``)
     for precise typing — which is why they self-reference the class and are built
     here rather than in a shared mixin.
@@ -519,5 +518,124 @@ register_customization(
                 ("light", "Light", "LIGHT"),
             )
         ),
+    )
+)
+
+
+def legacy_menu_customization(
+    bl_idname: str,
+    class_name: str,
+    prop: str,
+    socket: str,
+    removed_in: int,
+    factories: dict[str, tuple[str, tuple[str, ...]]],
+) -> NodeCustomization:
+    """Keep the API of an enum property that Blender moved onto a Menu socket.
+
+    Blender keeps the old property, flagged deprecated, beside the new
+    ``socket``; its items are named as the menu's. From it this builds:
+
+    - ``_legacy_menu_values``: the old identifiers, which ``BaseNode`` still
+      accepts for the socket (``mode="MERGE_BY_NAME"``), with a warning;
+    - a deprecated ``prop`` property reading and setting the socket with the
+      old identifiers;
+    - deprecated ``factories``: method name -> (old enum identifier, the
+      parameters it took, as source), each calling the class by keyword.
+
+    Everything warns that it is removed in nodebpy ``removed_in``. Raises
+    once Blender drops the old property: the shim has then outlived it.
+    """
+    import bpy
+
+    rna = getattr(bpy.types, bl_idname).bl_rna.properties.get(prop)
+    if rna is None or not getattr(rna, "is_deprecated", False):
+        raise ValueError(f"{bl_idname}.{prop} is no longer a deprecated enum")
+    legacy = {item.identifier: item.name for item in rna.enum_items}
+    param = socket.lower().replace(" ", "_")
+    old = "Literal[" + ", ".join(map(repr, legacy)) + "]"
+    lines = [
+        "    _legacy_menu_values: ClassVar[dict[str, tuple[int, dict[str, str]]]] = {",
+        f"        {socket!r}: ({removed_in}, {legacy!r})",
+        "    }",
+        "",
+        "    @property",
+        f"    def {prop}(self) -> {old}:",
+        f'        """Deprecated: use ``i.{param}``."""',
+        f'        _deprecated("{class_name}.{prop}", "i.{param}", removed_in={removed_in})',
+        f"        value = self.i[{socket!r}].socket.default_value  # ty: ignore[unresolved-attribute]",
+        f"        names: dict[str, {old}] = { {v: k for k, v in legacy.items()}!r}",
+        "        return names[value]",
+        "",
+        f"    @{prop}.setter",
+        f"    def {prop}(self, value: {old}) -> None:",
+        "        _deprecated(",
+        f'            "{class_name}.{prop} = value", "the {param}= argument", removed_in={removed_in}',
+        "        )",
+        "        self._set_input_default_value(",
+        f"            self.i[{socket!r}].socket, {legacy!r}.get(value, value)",
+        "        )",
+    ]
+    for method, (item, params) in factories.items():
+        names = [p.split(":")[0].strip() for p in params]
+        call = ", ".join([f"{param}={legacy[item]!r}"] + [f"{n}={n}" for n in names])
+        lines += [
+            "",
+            "    @classmethod",
+            f'    def {method}(cls, {", ".join(params)}) -> "{class_name}":',
+            f'        """Deprecated: use ``{class_name}(..., {param}={legacy[item]!r})``."""',
+            "        _deprecated(",
+            f'            "{class_name}.{method}()", "{class_name}({param}={legacy[item]!r})", removed_in={removed_in}',
+            "        )",
+            f"        return cls({call})",
+        ]
+    return NodeCustomization(
+        bl_idname=bl_idname,
+        imports=("from ...builder._utils import _deprecated",),
+        extra_body="\n".join(lines),
+    )
+
+
+# Blender 5.3 moved these enum properties onto Menu sockets; the 520 spellings
+# keep working, with a warning, until 540.
+_GREASE_PENCIL = "grease_pencil: InputGeometry = None"
+_SELECTION = "selection: InputBoolean = None"
+_COLOR = ("color: InputColor = (1.0, 1.0, 1.0, 1.0)", "opacity: InputFloat = 1.0")
+register_customization(
+    legacy_menu_customization(
+        "GeometryNodeMergeLayers",
+        "MergeLayers",
+        prop="mode",
+        socket="Mode",
+        removed_in=540,
+        factories={
+            "by_name": ("MERGE_BY_NAME", (_GREASE_PENCIL, _SELECTION)),
+            "by_group_id": (
+                "MERGE_BY_ID",
+                (_GREASE_PENCIL, _SELECTION, "group_id: InputInteger = None"),
+            ),
+        },
+    )
+)
+register_customization(
+    legacy_menu_customization(
+        "GeometryNodeSetGreasePencilColor",
+        "SetGreasePencilColor",
+        prop="mode",
+        socket="Mode",
+        removed_in=540,
+        factories={
+            "stroke": ("STROKE", (_GREASE_PENCIL, _SELECTION, *_COLOR)),
+            "fill": ("FILL", (_GREASE_PENCIL, _SELECTION, *_COLOR)),
+        },
+    )
+)
+register_customization(
+    legacy_menu_customization(
+        "GeometryNodeSetGreasePencilDepth",
+        "SetGreasePencilDepth",
+        prop="depth_order",
+        socket="Depth Order",
+        removed_in=540,
+        factories={},
     )
 )

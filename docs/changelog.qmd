@@ -7,10 +7,27 @@ title: Changelog
 ### Enhancements
 
 - **Blender 5.3** — the node classes and bundled-essentials asset APIs are generated from Blender 5.3. Blender 5.2 keeps getting bug fixes as `520.x` releases from the `5.2` branch. New nodes: `Comment` (every tree), `CombineList`, `GetVectorComponent`, `GridSolvePoisson`, `GridTopologyBoolean`, `DeactivateVoxels`, `ImportSpz`, `RasterizePoints`, `SetPointCloudType`, `GeometryMaterials`, `NurbsOrder`, `NurbsWeight`, the Grease Pencil attribute inputs (`GreasePencilColor`, `GreasePencilOpacity`, `GreasePencilDrawTime`, `GreasePencilFillID`, `GreasePencilStrokeSoftness`, `GreasePencilStrokeVisibility`) and the EEVEE light shader nodes (`LightEvaluation`, `LightInfo`, `LightAccumulation`, `ShadowRaycast`). Shader trees gained `Switch` / `IndexSwitch`, compositor trees `Compare` / `GetBundleItem` / `StoreBundleItem`, and the shader `Attribute` node its new `light()` attribute type.
-- Merge Layers, Set Grease Pencil Color and Set Grease Pencil Depth take their mode as a Menu socket in 5.3; the generator now skips the deprecated enum properties Blender keeps alongside, which previously collided with the socket parameter.
+- Merge Layers, Set Grease Pencil Color and Set Grease Pencil Depth take their mode as a Menu socket in 5.3, so `mode` / `depth_order` are now inputs in Blender's socket order, taking the menu items: `g.MergeLayers(geo, selection, "By Group ID", group_id)`, `g.SetGreasePencilColor(geo, mode="Fill")`, `g.SetGreasePencilDepth(geo, "3D Location")`.
+- Shader nodes leave out the inputs Blender only makes available in the shader trees it builds for the GPU (`.available(is_gpu_internal)`): the BSDF, volume, emission and background nodes' `Weight`, and `LightIndex`. `gen.socket_order` records them from Blender's sources.
 - `allow_usage_in_scene_compositor_effect` joined the round-tripped tree-level properties.
 - A `Switch` whose values don't decide its type takes the type a new node has in that tree, as Blender 5.3 starts shader and compositor Switches as Color.
 - **Group inputs that share a name are told apart by their panel.** In typed group classes (bundled assets and `nodebpy dump --api-only`) and the code `to_python` writes for them, an input whose name another input also has now takes its panel's name as a prefix, instead of both falling back to socket identifiers that change as the asset is edited. Blender 5.3's Clump and Curl Hair Curves gained a second "Seed" in their Guide Map panel: `seed` keeps its name and the new one is `guide_map_seed` (not `input_14` / `socket_1`). `i.<name>` resolves these names too. **Breaking:** `g.CustomForce(socket_14=, socket_15=)` are now `geometry_space_object=` / `force_space_object=`.
+
+### Deprecations
+
+Removed in 540:
+
+- The 520 spellings of the three menu-socket nodes above still work with a `DeprecationWarning`: the enum identifiers (`mode="MERGE_BY_ID"`, `"STROKE"`, `depth_order="3D"`), the `MergeLayers.by_name()` / `.by_group_id()` and `SetGreasePencilColor.stroke()` / `.fill()` factories, and the `.mode` / `.depth_order` properties. Use the menu items as the `mode=` / `depth_order=` argument.
+
+### Breaking
+
+Positional arguments follow Blender's socket order, which 5.3 changed for some nodes. Calls that pass these by keyword are unaffected:
+
+- `g.MergeLayers`: `group_id` moved from the third to the fourth slot, after `mode`. `g.SetGreasePencilColor`: `color` and `opacity` moved after `mode`.
+- `s.GlassBSDF`: `anisotropy` and `rotation` come before `ior`. `s.PrincipledBSDF`: `transmission_dispersion_scale` and `transmission_dispersion_abbe_number` come before `coat_weight`. `g.CurveToTube`: `miter_scale` and `miter_scale_limit` come before `resample`.
+- `g.BraidHairCurves`, `g.ClumpHairCurves` and `g.CurlHairCurves`: the new seed inputs come before `existing_guide_map`.
+- The shader nodes' `weight=` parameter and `i.weight` attribute are gone (see above); `i.weight` still resolves at runtime.
+- `g.ImportPLY`'s output is typed `o.geometry`, as Blender now labels it; `o.mesh` still resolves.
 
 ### Removals
 

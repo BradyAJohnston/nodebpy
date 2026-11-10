@@ -131,6 +131,48 @@ def test_deprecated_warns_at_the_callers_line():
     assert record[0].filename == __file__
 
 
+def _socket(node, identifier):
+    return next(s for s in node.node.inputs if s.identifier == identifier)
+
+
+def test_menu_sockets_accept_their_old_enum_spellings():
+    from nodebpy.export import to_python
+
+    with g.tree() as tree:
+        with pytest.warns(DeprecationWarning, match="mode='By Group ID'") as record:
+            merged = g.MergeLayers(mode="MERGE_BY_ID")
+        assert record[0].filename == __file__
+        assert _socket(merged, "Mode").default_value == "By Group ID"
+
+        with pytest.warns(DeprecationWarning, match=r"MergeLayers\.by_group_id"):
+            by_id = g.MergeLayers.by_group_id(group_id=g.Index())
+        assert _socket(by_id, "Mode").default_value == "By Group ID"
+        assert _socket(by_id, "Group ID").is_linked
+
+        with pytest.warns(DeprecationWarning, match="i.mode"):
+            assert by_id.mode == "MERGE_BY_ID"
+        with pytest.warns(DeprecationWarning, match="mode= argument"):
+            by_id.mode = "MERGE_BY_NAME"
+        assert _socket(by_id, "Mode").default_value == "By Name"
+
+        with pytest.warns(DeprecationWarning):
+            fill = g.SetGreasePencilColor.fill(color=(1, 0, 0, 1))
+        assert _socket(fill, "Mode").default_value == "Fill"
+        with pytest.warns(DeprecationWarning):
+            depth = g.SetGreasePencilDepth(depth_order="3D")
+        assert _socket(depth, "Depth Order").default_value == "3D Location"
+    code = to_python(tree)
+    assert "MERGE_BY" not in code and 'mode="By Group ID"' in code
+
+
+def test_relabelled_output_still_resolves_its_identifier():
+    # Blender 5.3 relabelled Import PLY's Mesh output Geometry but kept its
+    # identifier, so 520's o.mesh keeps working
+    with g.tree():
+        ply = g.ImportPLY()
+    assert ply.o.mesh.socket == ply.o.geometry.socket
+
+
 def test_socket_selection():
     with g.tree("AnotherTree"):
         pos = g.SetPosition()

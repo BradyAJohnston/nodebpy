@@ -107,7 +107,10 @@ uv run python -m gen.api_diff v530.0.0
 
 It lists every public class, method, parameter, socket attribute and `Literal` value that is gone, and every positional slot that now takes a different argument. It exits 1 when it finds anything. Every line needs one of the following:
 
-- **A factory, method or property is gone** (typically because Blender replaced an enum property with a menu socket): add it back as a shim through `register_customization` in `gen/customizations.py`:
+Generated signatures follow Blender: parameters take Blender's socket order and the values Blender takes now, even when that breaks positional calls. Shims keep the old *spellings* working, with a warning:
+
+- **An enum property became a menu socket:** register `legacy_menu_customization(...)` in `gen/customizations.py` (Merge Layers is the example). It reads the old values from the deprecated property Blender keeps alongside the socket. With it, the old values still work as the socket's argument, and the old property and the factories you list come back as deprecated shims. It raises when Blender drops that property.
+- **Any other factory, method or property is gone:** add it back as a shim through `register_customization` in `gen/customizations.py`:
 
   ```python
   register_customization(
@@ -125,7 +128,8 @@ It lists every public class, method, parameter, socket attribute and `Literal` v
   ```
 
 - **A parameter is renamed:** a mixin can't intercept the old keyword, because the generated method is defined on the class itself. Release 530 removed the general mechanism for this. It was a `_renamed_params` table the generator wrote per class, plus `BaseNode.__init_subclass__` wrapping each listed method so the old keyword still works with a warning (#273, `67a99552`). Restore it from there rather than writing per-node overrides.
-- **An `i.` / `o.` socket attribute is renamed, or positional parameters change order:** there's no shim. List it as breaking in the changelog.
+- **An `i.` / `o.` socket attribute is renamed, or positional parameters change order:** there's no shim. List it as breaking in the changelog. If Blender only relabelled the socket and kept its identifier, the old attribute still resolves (Import PLY's `o.mesh`).
+- **An input is GPU-only:** Blender declares some inputs `.available(is_gpu_internal)` (the shaders' `Weight`). `gen.socket_order` records them in `INTERNAL_SOCKETS`, and the generator leaves them out.
 - **A name falls back to a socket identifier** (`input_14`, `socket_1`): two sockets share a display name. Fix the naming instead of shipping it.
 - **A node Blender deprecates:** it stays and warns on construction through `_DeprecatedNodeMixin` (see Rotate Euler in `gen/customizations.py`). Remove it when Blender removes the node.
 

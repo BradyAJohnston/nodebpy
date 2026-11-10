@@ -29,9 +29,11 @@ from ..types import SOCKET_COMPATIBILITY, Default, InputAny
 from ._combine import holds_sockets, link_combined
 from ._utils import (
     SocketError,
+    _deprecated,
     _NodeLike,
     _SocketLike,
     enum_value_error,
+    normalize_name,
 )
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
@@ -105,6 +107,10 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     # Constructor parameters named after their socket's display name rather
     # than its identifier (normalized identifier -> parameter), for export.
     _socket_params: ClassVar[dict[str, str]] = {}
+    # Menu inputs that replaced an enum property: socket identifier ->
+    # (removal version, old enum identifier -> menu item). An old value still
+    # works, with a DeprecationWarning (see ``legacy_menu_customization``).
+    _legacy_menu_values: ClassVar[dict[str, tuple[int, dict[str, str]]]] = {}
 
     def __init__(self, node: Node | None = None):
         tree = (
@@ -199,6 +205,15 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         elif stype == "INT" and isinstance(value, float):
             input.default_value = int(value)  # type: ignore
         elif stype == "MENU":
+            removed_in, legacy = self._legacy_menu_values.get(input.identifier, (0, {}))
+            if value in legacy:
+                param = normalize_name(input.identifier)
+                _deprecated(
+                    f"{type(self).__name__}({param}={value!r})",
+                    f"{param}={legacy[value]!r}",
+                    removed_in=removed_in,
+                )
+                value = legacy[value]
             try:
                 input.default_value = value  # type: ignore
             except TypeError:

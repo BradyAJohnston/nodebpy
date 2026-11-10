@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, ClassVar, Literal
 import bpy
 
 from ...builder import BaseNode, SocketAccessor
+from ...builder._utils import _deprecated
 from ...builder.socket import (
     BooleanSocket,
     BundleSocket,
@@ -3408,6 +3409,61 @@ class MergeLayers(BaseNode):
         }
 
         self._establish_links(**key_args)
+
+    _legacy_menu_values: ClassVar[dict[str, tuple[int, dict[str, str]]]] = {
+        "Mode": (540, {"MERGE_BY_NAME": "By Name", "MERGE_BY_ID": "By Group ID"})
+    }
+
+    @property
+    def mode(self) -> Literal["MERGE_BY_NAME", "MERGE_BY_ID"]:
+        """Deprecated: use ``i.mode``."""
+        _deprecated("MergeLayers.mode", "i.mode", removed_in=540)
+        value = self.i["Mode"].socket.default_value  # ty: ignore[unresolved-attribute]
+        names: dict[str, Literal["MERGE_BY_NAME", "MERGE_BY_ID"]] = {
+            "By Name": "MERGE_BY_NAME",
+            "By Group ID": "MERGE_BY_ID",
+        }
+        return names[value]
+
+    @mode.setter
+    def mode(self, value: Literal["MERGE_BY_NAME", "MERGE_BY_ID"]) -> None:
+        _deprecated("MergeLayers.mode = value", "the mode= argument", removed_in=540)
+        self._set_input_default_value(
+            self.i["Mode"].socket,
+            {"MERGE_BY_NAME": "By Name", "MERGE_BY_ID": "By Group ID"}.get(
+                value, value
+            ),
+        )
+
+    @classmethod
+    def by_name(
+        cls, grease_pencil: InputGeometry = None, selection: InputBoolean = None
+    ) -> "MergeLayers":
+        """Deprecated: use ``MergeLayers(..., mode='By Name')``."""
+        _deprecated(
+            "MergeLayers.by_name()", "MergeLayers(mode='By Name')", removed_in=540
+        )
+        return cls(mode="By Name", grease_pencil=grease_pencil, selection=selection)
+
+    @classmethod
+    def by_group_id(
+        cls,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+    ) -> "MergeLayers":
+        """Deprecated: use ``MergeLayers(..., mode='By Group ID')``."""
+        _deprecated(
+            "MergeLayers.by_group_id()",
+            "MergeLayers(mode='By Group ID')",
+            removed_in=540,
+        )
+        return cls(
+            mode="By Group ID",
+            grease_pencil=grease_pencil,
+            selection=selection,
+            group_id=group_id,
+        )
 
 
 class MergePoints(BaseNode):
@@ -6892,6 +6948,76 @@ class SetGreasePencilColor(BaseNode):
 
         self._establish_links(**key_args)
 
+    _legacy_menu_values: ClassVar[dict[str, tuple[int, dict[str, str]]]] = {
+        "Mode": (540, {"STROKE": "Stroke", "FILL": "Fill", "BOTH": "Both"})
+    }
+
+    @property
+    def mode(self) -> Literal["STROKE", "FILL", "BOTH"]:
+        """Deprecated: use ``i.mode``."""
+        _deprecated("SetGreasePencilColor.mode", "i.mode", removed_in=540)
+        value = self.i["Mode"].socket.default_value  # ty: ignore[unresolved-attribute]
+        names: dict[str, Literal["STROKE", "FILL", "BOTH"]] = {
+            "Stroke": "STROKE",
+            "Fill": "FILL",
+            "Both": "BOTH",
+        }
+        return names[value]
+
+    @mode.setter
+    def mode(self, value: Literal["STROKE", "FILL", "BOTH"]) -> None:
+        _deprecated(
+            "SetGreasePencilColor.mode = value", "the mode= argument", removed_in=540
+        )
+        self._set_input_default_value(
+            self.i["Mode"].socket,
+            {"STROKE": "Stroke", "FILL": "Fill", "BOTH": "Both"}.get(value, value),
+        )
+
+    @classmethod
+    def stroke(
+        cls,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
+        opacity: InputFloat = 1.0,
+    ) -> "SetGreasePencilColor":
+        """Deprecated: use ``SetGreasePencilColor(..., mode='Stroke')``."""
+        _deprecated(
+            "SetGreasePencilColor.stroke()",
+            "SetGreasePencilColor(mode='Stroke')",
+            removed_in=540,
+        )
+        return cls(
+            mode="Stroke",
+            grease_pencil=grease_pencil,
+            selection=selection,
+            color=color,
+            opacity=opacity,
+        )
+
+    @classmethod
+    def fill(
+        cls,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
+        opacity: InputFloat = 1.0,
+    ) -> "SetGreasePencilColor":
+        """Deprecated: use ``SetGreasePencilColor(..., mode='Fill')``."""
+        _deprecated(
+            "SetGreasePencilColor.fill()",
+            "SetGreasePencilColor(mode='Fill')",
+            removed_in=540,
+        )
+        return cls(
+            mode="Fill",
+            grease_pencil=grease_pencil,
+            selection=selection,
+            color=color,
+            opacity=opacity,
+        )
+
 
 class SetGreasePencilDepth(BaseNode):
     """
@@ -6946,6 +7072,30 @@ class SetGreasePencilDepth(BaseNode):
         key_args = {"Grease Pencil": grease_pencil, "Depth Order": depth_order}
 
         self._establish_links(**key_args)
+
+    _legacy_menu_values: ClassVar[dict[str, tuple[int, dict[str, str]]]] = {
+        "Depth Order": (540, {"2D": "2D Layers", "3D": "3D Location"})
+    }
+
+    @property
+    def depth_order(self) -> Literal["2D", "3D"]:
+        """Deprecated: use ``i.depth_order``."""
+        _deprecated("SetGreasePencilDepth.depth_order", "i.depth_order", removed_in=540)
+        value = self.i["Depth Order"].socket.default_value  # ty: ignore[unresolved-attribute]
+        names: dict[str, Literal["2D", "3D"]] = {"2D Layers": "2D", "3D Location": "3D"}
+        return names[value]
+
+    @depth_order.setter
+    def depth_order(self, value: Literal["2D", "3D"]) -> None:
+        _deprecated(
+            "SetGreasePencilDepth.depth_order = value",
+            "the depth_order= argument",
+            removed_in=540,
+        )
+        self._set_input_default_value(
+            self.i["Depth Order"].socket,
+            {"2D": "2D Layers", "3D": "3D Location"}.get(value, value),
+        )
 
 
 class SetGreasePencilSoftness(BaseNode):
