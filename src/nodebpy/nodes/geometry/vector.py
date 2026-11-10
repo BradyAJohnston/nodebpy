@@ -125,9 +125,7 @@ class VectorCurves(BaseNode):
 
     _bl_idname = "ShaderNodeVectorCurve"
     node: bpy.types.ShaderNodeVectorCurve
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket

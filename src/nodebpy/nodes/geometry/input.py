@@ -1396,9 +1396,7 @@ class FaceGroupBoundaries(BaseNode):
 
     _bl_idname = "GeometryNodeMeshFaceSetBoundaries"
     node: bpy.types.GeometryNodeMeshFaceSetBoundaries
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"face_set": "face_group_id"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"face_set": "face_group_id"}
 
     class _Inputs(SocketAccessor):
         face_group_id: IntegerSocket

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, ClassVar, Literal
 import bpy
 
 from ...builder import BaseNode, SocketAccessor
-from ...builder._utils import _renamed_params
 from ...builder.socket import (
     BooleanSocket,
     BooleanSocketList,
@@ -128,9 +127,7 @@ class AccumulateField[T](BaseNode):
 
     _bl_idname = "GeometryNodeAccumulateField"
     node: bpy.types.GeometryNodeAccumulateField
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"group_index": "group_id"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"group_index": "group_id"}
 
     class _Inputs[S](SocketAccessor):
         value: S
@@ -196,7 +193,6 @@ class AccumulateField[T](BaseNode):
         def __init__(self, domain: _AttributeDomains):
             self._domain = domain
 
-        @_renamed_params({"group_index": "group_id"}, "AccumulateField.<domain>.float")
         def float(
             self, value: InputFloat = None, group_id: InputInteger = 0
         ) -> "AccumulateField[FloatSocket]":
@@ -205,9 +201,6 @@ class AccumulateField[T](BaseNode):
                 value, group_id, domain=self._domain, data_type="FLOAT"
             )
 
-        @_renamed_params(
-            {"group_index": "group_id"}, "AccumulateField.<domain>.integer"
-        )
         def integer(
             self, value: InputInteger = None, group_id: InputInteger = 0
         ) -> "AccumulateField[IntegerSocket]":
@@ -216,7 +209,6 @@ class AccumulateField[T](BaseNode):
                 value, group_id, domain=self._domain, data_type="INT"
             )
 
-        @_renamed_params({"group_index": "group_id"}, "AccumulateField.<domain>.vector")
         def vector(
             self, value: InputVector = None, group_id: InputInteger = 0
         ) -> "AccumulateField[VectorSocket]":
@@ -225,9 +217,6 @@ class AccumulateField[T](BaseNode):
                 value, group_id, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-        @_renamed_params(
-            {"group_index": "group_id"}, "AccumulateField.<domain>.transform"
-        )
         def transform(
             self, value: InputMatrix = None, group_id: InputInteger = 0
         ) -> "AccumulateField[MatrixSocket]":
@@ -2075,9 +2064,7 @@ class FieldAverage[T](BaseNode):
 
     _bl_idname = "GeometryNodeFieldAverage"
     node: bpy.types.GeometryNodeFieldAverage
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"group_index": "group_id"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"group_index": "group_id"}
 
     class _Inputs[S](SocketAccessor):
         value: S
@@ -2139,14 +2126,12 @@ class FieldAverage[T](BaseNode):
         def __init__(self, domain: _AttributeDomains):
             self._domain = domain
 
-        @_renamed_params({"group_index": "group_id"}, "FieldAverage.<domain>.float")
         def float(
             self, value: InputFloat = None, group_id: InputInteger = 0
         ) -> "FieldAverage[FloatSocket]":
             """Create 'FieldAverage' on this domain with 'FLOAT' data type."""
             return FieldAverage(value, group_id, domain=self._domain, data_type="FLOAT")
 
-        @_renamed_params({"group_index": "group_id"}, "FieldAverage.<domain>.vector")
         def vector(
             self, value: InputVector = None, group_id: InputInteger = 0
         ) -> "FieldAverage[VectorSocket]":
@@ -2192,9 +2177,7 @@ class FieldMinAndMax[T](BaseNode):
 
     _bl_idname = "GeometryNodeFieldMinAndMax"
     node: bpy.types.GeometryNodeFieldMinAndMax
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"group_index": "group_id"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"group_index": "group_id"}
 
     class _Inputs[S](SocketAccessor):
         value: S
@@ -2256,7 +2239,6 @@ class FieldMinAndMax[T](BaseNode):
         def __init__(self, domain: _AttributeDomains):
             self._domain = domain
 
-        @_renamed_params({"group_index": "group_id"}, "FieldMinAndMax.<domain>.float")
         def float(
             self, value: InputFloat = None, group_id: InputInteger = 0
         ) -> "FieldMinAndMax[FloatSocket]":
@@ -2265,14 +2247,12 @@ class FieldMinAndMax[T](BaseNode):
                 value, group_id, domain=self._domain, data_type="FLOAT"
             )
 
-        @_renamed_params({"group_index": "group_id"}, "FieldMinAndMax.<domain>.integer")
         def integer(
             self, value: InputInteger = None, group_id: InputInteger = 0
         ) -> "FieldMinAndMax[IntegerSocket]":
             """Create 'FieldMinAndMax' on this domain with 'INT' data type."""
             return FieldMinAndMax(value, group_id, domain=self._domain, data_type="INT")
 
-        @_renamed_params({"group_index": "group_id"}, "FieldMinAndMax.<domain>.vector")
         def vector(
             self, value: InputVector = None, group_id: InputInteger = 0
         ) -> "FieldMinAndMax[VectorSocket]":
@@ -2318,9 +2298,7 @@ class FieldVariance[T](BaseNode):
 
     _bl_idname = "GeometryNodeFieldVariance"
     node: bpy.types.GeometryNodeFieldVariance
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"group_index": "group_id"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"group_index": "group_id"}
 
     class _Inputs[S](SocketAccessor):
         value: S
@@ -2382,7 +2360,6 @@ class FieldVariance[T](BaseNode):
         def __init__(self, domain: _AttributeDomains):
             self._domain = domain
 
-        @_renamed_params({"group_index": "group_id"}, "FieldVariance.<domain>.float")
         def float(
             self, value: InputFloat = None, group_id: InputInteger = 0
         ) -> "FieldVariance[FloatSocket]":
@@ -2391,7 +2368,6 @@ class FieldVariance[T](BaseNode):
                 value, group_id, domain=self._domain, data_type="FLOAT"
             )
 
-        @_renamed_params({"group_index": "group_id"}, "FieldVariance.<domain>.vector")
         def vector(
             self, value: InputVector = None, group_id: InputInteger = 0
         ) -> "FieldVariance[VectorSocket]":
@@ -2420,8 +2396,6 @@ class FieldToList(_FieldToListMixin, BaseNode):
     items : dict[str, InputLinkable | str] | None
         The fields to gather, by name: a value or a link, or a
         socket-type string for an input left open.
-    fields : dict[str, InputLinkable | str] | None
-        Deprecated name of ``items``.
 
     Inputs
     ------

@@ -15,7 +15,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, ClassVar, Literal, cast
 
 import bpy
-from mathutils import Euler
 
 from ..builder import (
     BooleanSocketList,
@@ -32,10 +31,8 @@ from ..builder import (
 from ..builder._infer import infer_node_type
 from ..builder.items import (
     _ALL_ITEM_TYPES,
-    _DEFAULT_NAMES,
     Item,
     ItemCollection,
-    _deprecated,
     _FieldItems,
     _socket_for_item,
     _SocketItems,
@@ -522,8 +519,6 @@ class _FieldToListMixin(ItemsMixin):
         self,
         count: InputInteger = 1,
         items: Mapping[str, InputAny] | Iterable[InputAny] | None = None,
-        *,
-        fields: dict[str, InputLinkable | str] | None = None,
     ):
         """
         Parameters
@@ -533,13 +528,8 @@ class _FieldToListMixin(ItemsMixin):
         items : dict[str, InputLinkable | str] | None
             The fields to gather, by name: a value or a link, or a
             socket-type string for an input left open.
-        fields : dict[str, InputLinkable | str] | None
-            Deprecated name of ``items``.
         """
         super().__init__()
-        if fields is not None:
-            _deprecated("FieldToList(fields=)", "FieldToList(items=)")
-            items = fields
         self.items._add_all(items)
         self._establish_links(Count=count)
 
@@ -547,62 +537,6 @@ class _FieldToListMixin(ItemsMixin):
     def items(self) -> _FieldToListItems:
         """The list items."""
         return _FieldToListItems(self)
-
-    # -- deprecated per-type methods, removed in 530 --
-
-    def _list_item(self, type: str, value: Any, name: str | None) -> Any:
-        _deprecated(
-            f"FieldToList.{_DEFAULT_NAMES[type].lower()}(value, name)",
-            "items.<type>(value, name).output",
-        )
-        return self.items._declare(value, name, type).output
-
-    def float(
-        self, input: InputFloat = 0.0, name: str | None = None
-    ) -> FloatSocketList:
-        return self._list_item("FLOAT", input, name)
-
-    def integer(
-        self, input: InputInteger = 0, name: str | None = None
-    ) -> IntegerSocketList:
-        return self._list_item("INT", input, name)
-
-    def boolean(
-        self, input: InputBoolean = False, name: str | None = None
-    ) -> BooleanSocketList:
-        return self._list_item("BOOLEAN", input, name)
-
-    def vector(
-        self, input: InputVector = (0, 0, 0), name: str | None = None
-    ) -> VectorSocketList:
-        return self._list_item("VECTOR", input, name)
-
-    def color(
-        self, input: InputColor = (0, 0, 0, 1), name: str | None = None
-    ) -> ColorSocketList:
-        return self._list_item("RGBA", input, name)
-
-    def rotation(
-        self, input: InputRotation = None, name: str | None = None
-    ) -> RotationSocketList:
-        return self._list_item(
-            "ROTATION", Euler((0, 0, 0)) if input is None else input, name
-        )
-
-    def matrix(
-        self, input: InputMatrix = None, name: str | None = None
-    ) -> MatrixSocketList:
-        return self._list_item("MATRIX", input, name)
-
-    def string(
-        self, input: InputString = "", name: str | None = None
-    ) -> StringSocketList:
-        return self._list_item("STRING", input, name)
-
-    def menu(
-        self, input: InputString = None, name: str | None = None
-    ) -> MenuSocketList:
-        return self._list_item("MENU", input, name)
 
 
 class _HandleModeMixin:

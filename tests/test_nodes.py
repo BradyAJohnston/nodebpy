@@ -120,24 +120,6 @@ def test_input_params_named_after_sockets():
     assert proximity.node.inputs["Target"].is_linked
 
 
-def test_renamed_input_params_still_accept_old_names():
-    with g.tree():
-        with pytest.warns(
-            DeprecationWarning, match=r"ColorRamp\(fac=\.\.\.\).*factor="
-        ):
-            ramp = g.ColorRamp(fac=0.25)  # ty: ignore[unknown-argument]
-        with pytest.warns(DeprecationWarning, match="group_id="):
-            acc = g.AccumulateField.point.float(1.0, group_index=g.Index())  # ty: ignore[unknown-argument]
-        with pytest.raises(TypeError, match="both fac= and factor="):
-            g.ColorRamp(fac=0.25, factor=0.5)  # ty: ignore[unknown-argument]
-    with c.tree():
-        with pytest.warns(DeprecationWarning, match=r"Filter\.kirsch\(fac=\.\.\.\)"):
-            flt = c.Filter.kirsch(fac=0.5)  # ty: ignore[unknown-argument]
-    assert ramp.node.inputs["Fac"].default_value == 0.25
-    assert acc.node.inputs["Group Index"].is_linked
-    assert flt.node.inputs["Fac"].default_value == 0.5
-
-
 def test_socket_selection():
     with g.tree("AnotherTree"):
         pos = g.SetPosition()
@@ -2411,14 +2393,6 @@ def test_field_to_list():
         assert isinstance(pos.get(idx), VectorSocket)
         # if we get using a single index, we should get a single value
         assert isinstance(pos.get(1), VectorSocket)
-
-
-def test_field_to_list_fields_deprecated():
-    with g.tree():
-        with pytest.warns(DeprecationWarning):
-            ftl = g.FieldToList(5, fields={"x": g.Value()})
-        assert len(ftl.node.list_items) == 1
-        assert ftl.node.list_items[0].name == "x"
 
 
 def test_grid_methods():

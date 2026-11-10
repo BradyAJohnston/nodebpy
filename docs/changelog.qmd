@@ -11,6 +11,16 @@ title: Changelog
 - `allow_usage_in_scene_compositor_effect` joined the round-tripped tree-level properties.
 - A `Switch` whose values don't decide its type takes the type a new node has in that tree, as Blender 5.3 starts shader and compositor Switches as Color.
 
+### Removals
+
+The APIs deprecated during 520 for removal in 530 are gone:
+
+- The old keyword names of inputs renamed after their socket (`g.ColorRamp(fac=)`, `g.GeometryProximity(target=, source_position=)`, `g.AccumulateField.<domain>.<type>(group_index=)`, `c.BrightnessContrast(bright=)`, ...) now raise `TypeError`; use the socket names (`factor=`, `group_id=`, `brightness=`).
+- `MatrixSocket.transform_direction(direction)` and `ObjectSocket.transform()`: use `VectorSocket.transform_direction(matrix)` and `ObjectSocket.matrix()`.
+- The name-first item order `items.float("Name", value)`: item factories take the value first, `items.float(value, "Name")`.
+- `add_item`, `add_items`, `capture`, `zone.item`, `zone.main_item`, `zone.generated_item`, `zone.generation`, `capture_generated`, `add_generated_item`, `input_item`, `output_item`, `MenuSwitch.item`, the for-each `inputs` / `main` / `generated` aliases, Field to List's per-type methods and `fields=` argument, and Field to Grid's `capture_*` methods: use the `items` / `main_items` / `generated_items` collections (`items.new(value, name)` or `items.<type>(value, name)`), and a closure zone's `inputs` / `outputs`.
+- `python -m nodebpy.assets`: use the `nodebpy` command.
+
 ## v520.40.0
 
 ### Enhancements

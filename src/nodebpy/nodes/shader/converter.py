@@ -315,22 +315,10 @@ class IndexSwitch[T](BaseNode):
 
     _bl_idname = "GeometryNodeIndexSwitch"
     node: bpy.types.GeometryNodeIndexSwitch
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {
-            "item_0": "input_0",
-            "item_1": "input_1",
-            "extend": "input_socket",
-        },
-        "float": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "integer": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "boolean": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "vector": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "color": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "string": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "menu": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "shader": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "bundle": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
-        "closure": {"item_0": "input_0", "item_1": "input_1", "extend": "input_socket"},
+    _socket_params: ClassVar[dict[str, str]] = {
+        "item_0": "input_0",
+        "item_1": "input_1",
+        "extend": "input_socket",
     }
 
     class _Inputs[S](SocketAccessor):

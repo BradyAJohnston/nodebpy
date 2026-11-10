@@ -170,8 +170,6 @@ nodebpy build my_assets_src/ my_assets.blend
 ```
 
 `nodebpy` is installed as a console script (`python -m nodebpy` works too).
-The older `python -m nodebpy.assets` entry point is deprecated and will be
-removed in nodebpy 530: it still forwards to `nodebpy`, with a warning.
 Inside a full Blender, run any subcommand as
 `blender -b --factory-startup -P <.../nodebpy/__main__.py> -- <subcommand ...>`.
 

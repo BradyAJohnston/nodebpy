@@ -328,10 +328,6 @@ def _domain_factory_typed(
         method, socket = _DATA_TYPE[dtype]
         input_type = "Input" + socket.replace("Socket", "")
         lines.append("")
-        if index == "group_id":
-            lines.append(
-                f'        @_renamed_params({{"group_index": "group_id"}}, "{node_name}.<domain>.{method}")'
-            )
         lines += [
             f'        def {method}(self, value: {input_type} = None{idx_param}) -> "{node_name}[{socket}]":',
             f'            """Create \'{node_name}\' on this domain with \'{dtype}\' data type."""',
@@ -344,10 +340,7 @@ def _domain_factory_typed(
     return "\n".join(lines)
 
 
-_GROUP_ID_FACTORY_IMPORTS = (
-    "from ...types import _AttributeDomains",
-    "from ...builder._utils import _renamed_params",
-)
+_GROUP_ID_FACTORY_IMPORTS = ("from ...types import _AttributeDomains",)
 
 
 register_customization(

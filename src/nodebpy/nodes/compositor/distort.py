@@ -691,8 +691,9 @@ class PlaneTrackDeform(BaseNode):
 
     _bl_idname = "CompositorNodePlaneTrackDeform"
     node: bpy.types.CompositorNodePlaneTrackDeform
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"motion_blur_samples": "samples", "motion_blur_shutter": "shutter"}
+    _socket_params: ClassVar[dict[str, str]] = {
+        "motion_blur_samples": "samples",
+        "motion_blur_shutter": "shutter",
     }
 
     class _Inputs(SocketAccessor):

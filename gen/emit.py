@@ -224,28 +224,23 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         for prop in node_info.properties
         if prop.format_name() not in suppress
     ]
-    # Parameters renamed after their socket's display name keep their old
-    # (identifier) name as a deprecated alias; BaseNode wraps the methods.
-    renamed: dict[str, dict[str, str]] = {}
+    # Constructor parameters named after their socket's display name rather
+    # than its identifier (Color Ramp's ``Fac`` is ``factor``), for export.
+    socket_params: dict[str, str] = {}
     if "__init__" not in suppress:
-        taken = {param.split(":")[0].strip() for param in init_params}
-        init_renames = {
+        socket_params = {
             normalize_name(socket.identifier): input_names[socket.identifier]
             for socket in [*node_info.inputs, *_extra_sockets]
             if input_names[socket.identifier] != normalize_name(socket.identifier)
-            and normalize_name(socket.identifier) not in taken
         }
-        if init_renames:
-            renamed["__init__"] = init_renames
     enum_methods = node_info.generate_enum_class_methods(
         config,
         suppress,
         custom.suppress_factories_for if custom else frozenset(),
-        renamed,
     )
-    renamed_block = (
-        f"    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {renamed!r}\n"
-        if renamed
+    socket_params_block = (
+        f"    _socket_params: ClassVar[dict[str, str]] = {socket_params!r}\n"
+        if socket_params
         else ""
     )
 
@@ -405,7 +400,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     _bl_idname = "{node_info.bl_idname}"
     node: {node_type_annotation}
-{renamed_block}
+{socket_params_block}
 {inputs_class}
 
 {outputs_class}

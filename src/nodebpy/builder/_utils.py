@@ -4,10 +4,8 @@ import difflib
 import keyword
 import re
 import unicodedata
-import warnings
-from collections.abc import Callable
-from functools import cache, wraps
-from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
+from functools import cache
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import bpy
 from bpy.types import NodeSocket
@@ -244,38 +242,3 @@ def _output_socket_type(value: Any) -> SOCKET_TYPES | None:
     if isinstance(value, (_SocketLike, _NodeLike)):
         return value._default_output_socket.type  # type: ignore[return-value]
     return None
-
-
-def _deprecated(old: str, new: str) -> None:
-    """Warn that ``old`` is removed in nodebpy 530 in favour of ``new``."""
-    warnings.warn(
-        f"{old} is deprecated and will be removed in nodebpy 530; use {new}",
-        DeprecationWarning,
-        stacklevel=3,
-    )
-
-
-def _accept_renamed[**P, R](
-    func: Callable[P, R], renames: dict[str, str], label: str
-) -> Callable[P, R]:
-    """Wrap ``func`` so each old keyword in ``renames`` (old -> new) still
-    works, with a deprecation warning, as its new name."""
-
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> R:
-        for old, new in renames.items():
-            if old in kwargs:
-                if new in kwargs:
-                    raise TypeError(f"{label}() got both {old}= and {new}=")
-                _deprecated(f"{label}({old}=...)", f"{new}=")
-                kwargs[new] = kwargs.pop(old)
-        return func(*args, **kwargs)
-
-    return cast("Callable[P, R]", wrapper)
-
-
-def _renamed_params[**P, R](
-    renames: dict[str, str], label: str
-) -> Callable[[Callable[P, R]], Callable[P, R]]:
-    """Decorator form of :func:`_accept_renamed`."""
-    return lambda func: _accept_renamed(func, renames, label)

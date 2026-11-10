@@ -1024,9 +1024,7 @@ class MixShader(BaseNode):
 
     _bl_idname = "ShaderNodeMixShader"
     node: bpy.types.ShaderNodeMixShader
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
@@ -1492,12 +1490,10 @@ class PrincipledHairBSDF(BaseNode):
 
     _bl_idname = "ShaderNodeBsdfHairPrincipled"
     node: bpy.types.ShaderNodeBsdfHairPrincipled
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {
-            "r_lobe": "reflection",
-            "tt_lobe": "transmission",
-            "trt_lobe": "secondary_reflection",
-        }
+    _socket_params: ClassVar[dict[str, str]] = {
+        "r_lobe": "reflection",
+        "tt_lobe": "transmission",
+        "trt_lobe": "secondary_reflection",
     }
 
     class _Inputs(SocketAccessor):

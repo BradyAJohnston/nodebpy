@@ -58,12 +58,7 @@ class AlphaOver(BaseNode):
 
     _bl_idname = "CompositorNodeAlphaOver"
     node: bpy.types.CompositorNodeAlphaOver
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"},
-        "over": {"fac": "factor"},
-        "disjoint_over": {"fac": "factor"},
-        "conjoint_over": {"fac": "factor"},
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         background: ColorSocket
@@ -189,9 +184,7 @@ class BrightnessContrast(BaseNode):
 
     _bl_idname = "CompositorNodeBrightContrast"
     node: bpy.types.CompositorNodeBrightContrast
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"bright": "brightness"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"bright": "brightness"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
@@ -318,12 +311,7 @@ class ColorBalance(BaseNode):
 
     _bl_idname = "CompositorNodeColorBalance"
     node: bpy.types.CompositorNodeColorBalance
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"},
-        "lift_gamma_gain": {"fac": "factor"},
-        "offset_power_slope_asc_cdl": {"fac": "factor"},
-        "white_point": {"fac": "factor"},
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
@@ -662,12 +650,10 @@ class ColorCorrection(BaseNode):
 
     _bl_idname = "CompositorNodeColorCorrection"
     node: bpy.types.CompositorNodeColorCorrection
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {
-            "apply_on_red": "red",
-            "apply_on_green": "green",
-            "apply_on_blue": "blue",
-        }
+    _socket_params: ClassVar[dict[str, str]] = {
+        "apply_on_red": "red",
+        "apply_on_green": "green",
+        "apply_on_blue": "blue",
     }
 
     class _Inputs(SocketAccessor):
@@ -976,9 +962,7 @@ class HueCorrect(BaseNode):
 
     _bl_idname = "CompositorNodeHueCorrect"
     node: bpy.types.CompositorNodeHueCorrect
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
@@ -1046,9 +1030,7 @@ class HueSaturationValue(BaseNode):
 
     _bl_idname = "CompositorNodeHueSat"
     node: bpy.types.CompositorNodeHueSat
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
@@ -1127,9 +1109,7 @@ class InvertColor(BaseNode):
 
     _bl_idname = "CompositorNodeInvert"
     node: bpy.types.CompositorNodeInvert
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
@@ -1259,9 +1239,7 @@ class RGBCurves(BaseNode):
 
     _bl_idname = "CompositorNodeCurveRGB"
     node: bpy.types.CompositorNodeCurveRGB
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket

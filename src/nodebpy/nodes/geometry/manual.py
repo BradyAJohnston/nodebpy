@@ -55,7 +55,6 @@ from ...builder.items import (
     Item,
     ItemCollection,
     MenuItem,
-    _deprecated,
     _FieldItems,
     _socket_for_item,
     _SocketItems,
@@ -192,9 +191,7 @@ class ColorRamp(BaseNode):
 
     _bl_idname = "ShaderNodeValToRGB"
     node: bpy.types.ShaderNodeValToRGB
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
@@ -1654,17 +1651,6 @@ class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
         # menu items are untyped; .new() takes only a name
         return self._items.new(name)
 
-    def item(
-        self,
-        name: str,
-        value: InputAny | tuple[InputAny, str] = None,
-        *,
-        description: str | None = None,
-    ) -> MenuItem[T]:
-        """Deprecated: use ``items.new(value, name, description=)``."""
-        _deprecated("item(name, value)", "items.new(value, name)")
-        return self.items.new(value, name, description=description)
-
     def is_selected(self, name: str) -> BooleanSocket:
         """Gets the boolean output socket that is True when the named menu item is selected.
 
@@ -2067,34 +2053,6 @@ class FieldToGrid[T: BaseSocket](ItemsMixin, BaseNode):
         value: _GridDataTypes,
     ) -> None:
         self._set_enum("data_type", value)
-
-    # -- deprecated per-type methods, removed in 530 --
-
-    def _grid_item(self, type: str, field: Any, name: str | None) -> Any:
-        _deprecated(
-            f"capture_{type.lower()}(field, name)", "items.<type>(field, name).output"
-        )
-        return self.items._declare(field, name, type).output
-
-    def capture_float(
-        self, field: InputFloat = None, name: str | None = None
-    ) -> FloatSocketGrid:
-        return self._grid_item("FLOAT", field, name)
-
-    def capture_boolean(
-        self, field: InputBoolean = None, name: str | None = None
-    ) -> BooleanSocketGrid:
-        return self._grid_item("BOOLEAN", field, name)
-
-    def capture_vector(
-        self, field: InputVector = None, name: str | None = None
-    ) -> VectorSocketGrid:
-        return self._grid_item("VECTOR", field, name)
-
-    def capture_integer(
-        self, field: InputInteger = None, name: str | None = None
-    ) -> IntegerSocketGrid:
-        return self._grid_item("INT", field, name)
 
 
 class SDFGridBoolean(BaseNode):

@@ -45,9 +45,7 @@ class BrightnessContrast(BaseNode):
 
     _bl_idname = "ShaderNodeBrightContrast"
     node: bpy.types.ShaderNodeBrightContrast
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"bright": "brightness"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"bright": "brightness"}
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
@@ -118,9 +116,7 @@ class HueSaturationValue(BaseNode):
 
     _bl_idname = "ShaderNodeHueSaturation"
     node: bpy.types.ShaderNodeHueSaturation
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         hue: FloatSocket
@@ -191,9 +187,7 @@ class InvertColor(BaseNode):
 
     _bl_idname = "ShaderNodeInvert"
     node: bpy.types.ShaderNodeInvert
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket

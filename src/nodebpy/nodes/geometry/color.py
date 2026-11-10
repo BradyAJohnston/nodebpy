@@ -96,9 +96,7 @@ class RGBCurves(BaseNode):
 
     _bl_idname = "ShaderNodeRGBCurve"
     node: bpy.types.ShaderNodeRGBCurve
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket

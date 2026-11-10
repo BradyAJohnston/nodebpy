@@ -486,8 +486,9 @@ class ColorSpill(BaseNode):
 
     _bl_idname = "CompositorNodeColorSpill"
     node: bpy.types.CompositorNodeColorSpill
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor", "spill_strength": "strength"}
+    _socket_params: ClassVar[dict[str, str]] = {
+        "fac": "factor",
+        "spill_strength": "strength",
     }
 
     class _Inputs(SocketAccessor):
@@ -959,14 +960,12 @@ class Keying(BaseNode):
 
     _bl_idname = "CompositorNodeKeying"
     node: bpy.types.CompositorNodeKeying
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {
-            "edge_search_size": "size",
-            "edge_tolerance": "tolerance",
-            "postprocess_dilate_size": "dilate_size",
-            "postprocess_feather_size": "feather_size",
-            "despill_strength": "strength",
-        }
+    _socket_params: ClassVar[dict[str, str]] = {
+        "edge_search_size": "size",
+        "edge_tolerance": "tolerance",
+        "postprocess_dilate_size": "dilate_size",
+        "postprocess_feather_size": "feather_size",
+        "despill_strength": "strength",
     }
 
     class _Inputs(SocketAccessor):

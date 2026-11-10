@@ -83,7 +83,7 @@ from ..types import (
     InputVectorGrid,
 )
 from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
-from ._utils import _deprecated, _NodeLike, _output_socket_type, _SocketLike
+from ._utils import _NodeLike, _output_socket_type, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
@@ -2395,18 +2395,6 @@ class _MatrixMixin[
         o = MatrixSVD(self.socket).o
         return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-argument-type]
 
-    def transform_direction(self, direction: InputVector) -> VectorResult:
-        """Deprecated: use ``direction.transform_direction(matrix)``, which
-        keeps the method on the vector that continues down the chain."""
-        _deprecated(
-            "MatrixSocket.transform_direction(direction)",
-            "VectorSocket.transform_direction(matrix)",
-        )
-        self._assert_output("transform_direction")
-        from ..nodes.geometry import TransformDirection
-
-        return TransformDirection(direction, self.socket).o.direction  # ty: ignore[invalid-return-type]
-
     @staticmethod
     def _cast_to_matrix(value) -> MatrixSocket:
         from ..nodes.geometry.converter import CombineMatrix
@@ -3324,14 +3312,6 @@ class ObjectSocket(_ObjectMixin, _DefaultValueMixin[bpy.types.Object]):
             The output 'Transform' `MatrixSocket`.
         """
         return self._info(self.socket, transform_space=transform_space).o.transform
-
-    def transform(
-        self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
-    ) -> MatrixSocket:
-        """Deprecated: use :meth:`matrix`, which does not read like
-        ``VectorSocket.transform(matrix)`` (applying a matrix)."""
-        _deprecated("ObjectSocket.transform()", "ObjectSocket.matrix()")
-        return self.matrix(transform_space)
 
     def location(
         self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"

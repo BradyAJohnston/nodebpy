@@ -825,9 +825,7 @@ class Despeckle(BaseNode):
 
     _bl_idname = "CompositorNodeDespeckle"
     node: bpy.types.CompositorNodeDespeckle
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
@@ -1033,11 +1031,9 @@ class DirectionalBlur(BaseNode):
 
     _bl_idname = "CompositorNodeDBlur"
     node: bpy.types.CompositorNodeDBlur
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {
-            "translation_amount": "amount",
-            "translation_direction": "direction",
-        }
+    _socket_params: ClassVar[dict[str, str]] = {
+        "translation_amount": "amount",
+        "translation_direction": "direction",
     }
 
     class _Inputs(SocketAccessor):
@@ -1121,17 +1117,7 @@ class Filter(BaseNode):
 
     _bl_idname = "CompositorNodeFilter"
     node: bpy.types.CompositorNodeFilter
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"},
-        "soften": {"fac": "factor"},
-        "box_sharpen": {"fac": "factor"},
-        "diamond_sharpen": {"fac": "factor"},
-        "laplace": {"fac": "factor"},
-        "sobel": {"fac": "factor"},
-        "prewitt": {"fac": "factor"},
-        "kirsch": {"fac": "factor"},
-        "shadow": {"fac": "factor"},
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
@@ -1328,57 +1314,12 @@ class Glare(BaseNode):
 
     _bl_idname = "CompositorNodeGlare"
     node: bpy.types.CompositorNodeGlare
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {
-            "highlights_threshold": "threshold",
-            "highlights_smoothness": "smoothness",
-            "clamp_highlights": "clamp",
-            "maximum_highlights": "maximum",
-            "diagonal_star": "diagonal",
-        },
-        "bloom": {
-            "highlights_threshold": "threshold",
-            "highlights_smoothness": "smoothness",
-            "clamp_highlights": "clamp",
-            "maximum_highlights": "maximum",
-        },
-        "ghosts": {
-            "highlights_threshold": "threshold",
-            "highlights_smoothness": "smoothness",
-            "clamp_highlights": "clamp",
-            "maximum_highlights": "maximum",
-        },
-        "streaks": {
-            "highlights_threshold": "threshold",
-            "highlights_smoothness": "smoothness",
-            "clamp_highlights": "clamp",
-            "maximum_highlights": "maximum",
-        },
-        "fog_glow": {
-            "highlights_threshold": "threshold",
-            "highlights_smoothness": "smoothness",
-            "clamp_highlights": "clamp",
-            "maximum_highlights": "maximum",
-        },
-        "simple_star": {
-            "highlights_threshold": "threshold",
-            "highlights_smoothness": "smoothness",
-            "clamp_highlights": "clamp",
-            "maximum_highlights": "maximum",
-            "diagonal_star": "diagonal",
-        },
-        "sun_beams": {
-            "highlights_threshold": "threshold",
-            "highlights_smoothness": "smoothness",
-            "clamp_highlights": "clamp",
-            "maximum_highlights": "maximum",
-        },
-        "kernel": {
-            "highlights_threshold": "threshold",
-            "highlights_smoothness": "smoothness",
-            "clamp_highlights": "clamp",
-            "maximum_highlights": "maximum",
-        },
+    _socket_params: ClassVar[dict[str, str]] = {
+        "highlights_threshold": "threshold",
+        "highlights_smoothness": "smoothness",
+        "clamp_highlights": "clamp",
+        "maximum_highlights": "maximum",
+        "diagonal_star": "diagonal",
     }
 
     class _Inputs(SocketAccessor):
@@ -2054,7 +1995,7 @@ class VectorBlur(BaseNode):
 
     _bl_idname = "CompositorNodeVecBlur"
     node: bpy.types.CompositorNodeVecBlur
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {"__init__": {"z": "depth"}}
+    _socket_params: ClassVar[dict[str, str]] = {"z": "depth"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket

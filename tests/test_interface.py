@@ -1610,21 +1610,6 @@ def test_vector_socket_transform_direction():
     assert result.builder_node.i.transform.links[0].from_node == mat.node
 
 
-def test_deprecated_matrix_transform_direction_and_object_transform():
-    with g.tree():
-        mat = g.CombineTransform().o.transform
-        direction = g.Vector().o.vector
-        obj = g.SelfObject().o.self_object
-        with pytest.warns(DeprecationWarning, match="VectorSocket.transform_direction"):
-            result = mat.transform_direction(direction)
-        assert result.node.bl_idname == g.TransformDirection._bl_idname
-        with pytest.warns(DeprecationWarning, match="ObjectSocket.matrix"):
-            legacy = obj.transform("RELATIVE")
-        assert isinstance(legacy, MatrixSocket)
-        assert legacy.node.transform_space == "RELATIVE"
-        assert isinstance(obj.matrix(), MatrixSocket)
-
-
 def test_accumulate_field_socket_methods():
     with g.tree():
         vec = g.Position().o.position

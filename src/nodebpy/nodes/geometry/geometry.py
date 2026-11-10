@@ -2577,8 +2577,9 @@ class GeometryProximity(BaseNode):
 
     _bl_idname = "GeometryNodeProximity"
     node: bpy.types.GeometryNodeProximity
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"target": "geometry", "source_position": "sample_position"}
+    _socket_params: ClassVar[dict[str, str]] = {
+        "target": "geometry",
+        "source_position": "sample_position",
     }
 
     class _Inputs(SocketAccessor):
@@ -5843,16 +5844,7 @@ class SampleUVSurface[T](BaseNode):
 
     _bl_idname = "GeometryNodeSampleUVSurface"
     node: bpy.types.GeometryNodeSampleUVSurface
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"source_uv_map": "uv_map"},
-        "float": {"source_uv_map": "uv_map"},
-        "integer": {"source_uv_map": "uv_map"},
-        "boolean": {"source_uv_map": "uv_map"},
-        "vector": {"source_uv_map": "uv_map"},
-        "color": {"source_uv_map": "uv_map"},
-        "quaternion": {"source_uv_map": "uv_map"},
-        "matrix": {"source_uv_map": "uv_map"},
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"source_uv_map": "uv_map"}
 
     class _Inputs[S](SocketAccessor):
         mesh: GeometrySocket
@@ -8220,11 +8212,7 @@ class SetShadeSmooth(BaseNode):
 
     _bl_idname = "GeometryNodeSetShadeSmooth"
     node: bpy.types.GeometryNodeSetShadeSmooth
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"geometry": "mesh"},
-        "edge": {"geometry": "mesh"},
-        "face": {"geometry": "mesh"},
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"geometry": "mesh"}
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
@@ -8325,9 +8313,7 @@ class SetSplineCyclic(BaseNode):
 
     _bl_idname = "GeometryNodeSetSplineCyclic"
     node: bpy.types.GeometryNodeSetSplineCyclic
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"geometry": "curve"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"geometry": "curve"}
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
@@ -8390,9 +8376,7 @@ class SetSplineResolution(BaseNode):
 
     _bl_idname = "GeometryNodeSetSplineResolution"
     node: bpy.types.GeometryNodeSetSplineResolution
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"geometry": "curve"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"geometry": "curve"}
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket

@@ -101,6 +101,6 @@ def test_combine_list_takes_one_input_per_item():
 
         empty = g.CombineList.integer()
         assert len(empty._items) == 0
-        item = empty.add_item("", g.Index())
+        item = empty.items.new(g.Index())
         assert len(empty._items) == 1
         assert len(item.input.socket.links) == 1

@@ -1922,11 +1922,10 @@ def _class_factories(cls: type) -> list[_Factory]:
 
 def _socket_param(cls: type, identifier: str) -> str:
     """The constructor parameter for input socket ``identifier``: its
-    normalized identifier, unless the class renamed it after the socket's
+    normalized identifier, unless the class names it after the socket's
     display name (Color Ramp's ``Fac`` is ``factor``)."""
     param = _normalize(identifier)
-    renames = getattr(cls, "_renamed_params", {}).get("__init__", {})
-    return renames.get(param, param)
+    return getattr(cls, "_socket_params", {}).get(param, param)
 
 
 def _input_socket_by_kwarg(node, cls: type, kwarg_name: str):

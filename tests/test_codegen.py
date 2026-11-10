@@ -1947,12 +1947,6 @@ def test_foreach_zone_starts_without_generation_items():
     with TreeBuilder("ForEachEmpty"):
         zone = g.ForEachGeometryElementZone()
         assert len(zone.generated_items) == 0
-        with pytest.warns(DeprecationWarning, match="zone.generation"):
-            gen = zone.generation
-        assert (gen.name, gen.socket_type) == ("Geometry", "GEOMETRY")
-        with pytest.warns(DeprecationWarning):
-            assert zone.generation.output.socket == gen.output.socket
-        assert len(zone.generated_items) == 1
 
 
 def test_zone_unreferenced_item_declared_without_variable():

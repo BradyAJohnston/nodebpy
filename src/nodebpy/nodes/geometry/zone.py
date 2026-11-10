@@ -44,7 +44,6 @@ from ...builder._utils import _SocketLike
 from ...builder.accessor import SocketAccessor
 from ...builder.items import (
     _chained,
-    _deprecated,
     _FieldItems,
     _socket_for_item,
     _SocketItems,
@@ -62,7 +61,6 @@ from ...types import (
     InputGeometry,
     InputImage,
     InputInteger,
-    InputLinkable,
     InputMaterial,
     InputMatrix,
     InputMenu,
@@ -215,21 +213,6 @@ class _StateZone(_ZonePair):
     ) -> None:
         self.output._items.clear()
         self.items._add_all(items)
-
-    def item(
-        self,
-        name: str,
-        initial: InputAny = None,
-        *,
-        type: str | None = None,
-    ) -> ZoneItem:
-        """Deprecated: use ``zone.items.new(initial, name, type=)``."""
-        _deprecated("zone.item(name, initial)", "zone.items.new(initial, name)")
-        if type is None:
-            declared = self.output._declared_item_type(initial)
-            if declared is not None:
-                type, initial = declared, None
-        return self.items.new(initial, name, type=type)
 
 
 class _StateZoneItems(_ValueItems[ZoneItem]):
@@ -667,60 +650,6 @@ class ForEachGeometryElementZone(_ZonePair):
         """The current element as geometry, read inside the zone body."""
         return self.input.o.element
 
-    # -- deprecated entry points, removed in 530 --
-
-    @property
-    def generation(self) -> "Item[GeometrySocket]":
-        """The ``Geometry`` generation item, added when the zone has none."""
-        _deprecated(
-            "zone.generation", 'zone.generated_items.geometry(value, "Geometry")'
-        )
-        for item in self.generated_items:
-            if item.name == "Geometry" and item.socket_type == "GEOMETRY":
-                return cast("Item[GeometrySocket]", item)
-        return self.generated_items.geometry(name="Geometry")
-
-    @property
-    def inputs(self) -> _ForEachItems:
-        _deprecated("zone.inputs", "zone.items")
-        return self.items
-
-    @property
-    def main(self) -> _ForEachMainItems:
-        _deprecated("zone.main", "zone.main_items")
-        return self.main_items
-
-    @property
-    def generated(self) -> _ForEachGeneratedItems:
-        _deprecated("zone.generated", "zone.generated_items")
-        return self.generated_items
-
-    def item(
-        self, name: str, value: InputLinkable = None, *, type: str | None = None
-    ) -> Item:
-        _deprecated("zone.item(name, value)", "zone.items.new(value, name)")
-        return self.items.new(value, name, type=type)
-
-    def main_item(
-        self, name: str, value: InputLinkable = None, *, type: str | None = None
-    ) -> Item:
-        _deprecated("zone.main_item(name, value)", "zone.main_items.new(value, name)")
-        return self.main_items.new(value, name, type=type)
-
-    def generated_item(
-        self,
-        name: str,
-        value: InputLinkable = None,
-        *,
-        type: str | None = None,
-        domain: _AttributeDomains = "POINT",
-    ) -> Item:
-        _deprecated(
-            "zone.generated_item(name, value)",
-            "zone.generated_items.<type>(value, name)",
-        )
-        return self.generated_items._declare(value, name, type, domain=domain)
-
 
 class ForEachGeometryElementInput(BaseZoneInput):
     """For Each Geometry Element Input node"""
@@ -819,39 +748,6 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     ) -> bpy.types.NodeGeometryForeachGeometryElementGenerationItems:
         return self.node.generation_items
 
-    def add_generated_item(
-        self,
-        name: str,
-        value: InputAny = None,
-        *,
-        type: str | None = None,
-        domain: _AttributeDomains = "POINT",
-    ) -> Item:
-        """Deprecated: use ``zone.generated_items.<type>(value, name)``."""
-        _deprecated(
-            "add_generated_item(name, value)",
-            "zone.generated_items.<type>(value, name)",
-        )
-        return _ForEachGeneratedItems(self)._declare(value, name, type, domain=domain)
-
-    def capture_generated(
-        self,
-        value: InputLinkable,
-        *,
-        name: str | None = None,
-        domain: _AttributeDomains = "POINT",
-    ) -> SocketLinker:
-        """Deprecated: use ``zone.generated_items.<type>(value, name).output``."""
-        _deprecated(
-            "capture_generated(value)",
-            "zone.generated_items.<type>(value, name).output",
-        )
-        return (
-            _ForEachGeneratedItems(self)
-            ._declare(value, name, None, domain=domain)
-            .output
-        )
-
     @property
     def domain(
         self,
@@ -929,16 +825,6 @@ class ClosureZone(_ZonePair):
     def outputs(self) -> _ClosureOutputItems:
         """The closure's output items."""
         return _ClosureOutputItems(self)
-
-    def input_item(self, name: str, type: str = "GEOMETRY") -> SocketLinker:
-        """Deprecated: use ``zone.inputs.new(name, type=type).output``."""
-        _deprecated("input_item(name, type)", "inputs.new(name, type=type).output")
-        return self.inputs.new(name, type=type).output
-
-    def output_item(self, name: str, type: str = "GEOMETRY") -> SocketLinker:
-        """Deprecated: use ``zone.outputs.new(name, type=type).input``."""
-        _deprecated("output_item(name, type)", "outputs.new(name, type=type).input")
-        return self.outputs.new(name, type=type).input
 
     @property
     def closure(self) -> ClosureSocket:

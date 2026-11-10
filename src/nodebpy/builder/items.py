@@ -10,7 +10,6 @@ declaration returns an :class:`Item` handle naming the item's socket roles.
 
 from __future__ import annotations
 
-import warnings
 from collections.abc import Iterable, Iterator, Mapping
 from typing import TYPE_CHECKING, Any, ClassVar, Generic, TypeVar, cast
 
@@ -21,7 +20,7 @@ from mathutils import Euler
 from ..types import _is_default_value
 from ._combine import holds_sockets, link_combined
 from ._registry import _wrap_socket
-from ._utils import _deprecated, _SocketLike
+from ._utils import _SocketLike
 from .node import DynamicInputsMixin, _match_compatible_data
 from .socket import BaseSocket, Socket
 
@@ -449,9 +448,7 @@ class ItemCollection(Generic[_HandleT]):
         return handle
 
     def _typed(self, value: Any, name: str | None, type: str, **props: Any) -> Any:
-        """A typed-method declaration, tolerating the old name-first order
-        for one release."""
-        value, name = _legacy_order(value, name, type)
+        """A typed-method declaration."""
         return self._declare(value, name, type, **props)
 
     def _add_all(self, items: Mapping[str, Any] | Iterable[Any] | None) -> None:
@@ -470,25 +467,6 @@ class ItemCollection(Generic[_HandleT]):
         else:
             for value in items:
                 self._declare(value, None, None)
-
-
-def _legacy_order(value: Any, name: Any, type: str) -> tuple[Any, Any]:
-    """Detect the pre-530 ``(name, value)`` argument order and swap it with a
-    warning. A string first argument can only be a name for item types
-    whose values are never strings."""
-    if (
-        isinstance(value, str)
-        and type not in ("STRING", "MENU")
-        and not isinstance(name, str)
-    ):
-        warnings.warn(
-            "item factories now take the value first: use "
-            f"items.<type>(value, {value!r}) instead of items.<type>({value!r}, value)",
-            DeprecationWarning,
-            stacklevel=4,
-        )
-        return name, value
-    return value, name
 
 
 class ItemsMixin(DynamicInputsMixin):
@@ -572,32 +550,6 @@ class ItemsMixin(DynamicInputsMixin):
     def items(self) -> ItemCollection[Any]:
         """The node's items; subclasses return their typed collection."""
         return ItemCollection(self)
-
-    # -- deprecated entry points, removed in 530 --
-
-    def capture(self, value: InputLinkable, *, name: str | None = None) -> Socket:
-        """Deprecated: use ``items.new(value, name).output``."""
-        _deprecated("capture(value, name=)", "items.new(value, name).output")
-        return self.items._declare(value, name, None).output
-
-    def add_item(
-        self, name: str, value: Any = None, *, type: str | None = None
-    ) -> Item:
-        """Deprecated: use ``items.new(value, name, type=)``."""
-        _deprecated("add_item(name, value)", "items.new(value, name)")
-        return self.items._declare(value, name, type)
-
-    def add_items(self, items: Mapping[str, InputLinkable | str]) -> dict[str, Item]:
-        """Deprecated: use ``items.new(value, name)`` per item."""
-        _deprecated("add_items(mapping)", "items.new(value, name) per item")
-        handles = {}
-        for name, value in items.items():
-            declared = self._declared_item_type(value)
-            if declared is not None:
-                handles[name] = self.items._declare(None, name, declared)
-            else:
-                handles[name] = self.items._declare(value, name, None)
-        return handles
 
 
 class _ValueItems(ItemCollection[_HandleT]):
