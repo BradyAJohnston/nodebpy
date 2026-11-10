@@ -9,11 +9,9 @@ import bpy
 from bpy.types import bpy_prop_array
 from mathutils import Euler, Vector
 
-from nodebpy.builder._socket_order import INTERNAL_SOCKETS
-
 from .config import TREE_TYPES
 from .model import EnumInfo, NodeInfo, PropertyInfo, SocketInfo
-from .util import fmt_float, normalize_name
+from .util import INTERNAL_SOCKETS, fmt_float, former_name, normalize_name
 
 
 def _collect_socket_menu_items(socket: bpy.types.NodeSocket) -> list[str]:
@@ -85,6 +83,7 @@ def collect_socket_info(
             name=socket.name,
             identifier=socket.identifier,
             description=socket.description,
+            former_name=former_name(socket.identifier, socket.name),
             label=getattr(socket, "label", ""),
             bl_socket_type=type(socket).__name__,
             socket_type=socket.type,

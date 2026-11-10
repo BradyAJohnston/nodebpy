@@ -128,7 +128,7 @@ Generated signatures follow Blender: parameters take Blender's socket order and 
   ```
 
 - **A parameter is renamed:** a mixin can't intercept the old keyword, because the generated method is defined on the class itself. Release 530 removed the general mechanism for this. It was a `_renamed_params` table the generator wrote per class, plus `BaseNode.__init_subclass__` wrapping each listed method so the old keyword still works with a warning (#273, `67a99552`). Restore it from there rather than writing per-node overrides.
-- **An `i.` / `o.` socket attribute is renamed, or positional parameters change order:** there's no shim. List it as breaking in the changelog. If Blender only relabelled the socket and kept its identifier, the old attribute still resolves (Import PLY's `o.mesh`).
+- **An `i.` / `o.` socket attribute is renamed, or positional parameters change order:** there's no shim. List it as breaking in the changelog. If Blender only relabelled the socket and kept its identifier, the old attribute still resolves (Import PLY's `o.mesh`), and the generator says so in the socket's docstring (`gen.util.former_name`).
 - **An input is GPU-only:** Blender declares some inputs `.available(is_gpu_internal)` (the shaders' `Weight`). `gen.socket_order` records them in `INTERNAL_SOCKETS`, and the generator leaves them out.
 - **A name falls back to a socket identifier** (`input_14`, `socket_1`): two sockets share a display name. Fix the naming instead of shipping it.
 - **A node Blender deprecates:** it stays and warns on construction through `_DeprecatedNodeMixin` (see Rotate Euler in `gen/customizations.py`). Remove it when Blender removes the node.

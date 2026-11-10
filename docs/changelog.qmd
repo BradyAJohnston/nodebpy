@@ -11,6 +11,7 @@ title: Changelog
 - Shader nodes leave out the inputs Blender only makes available in the shader trees it builds for the GPU (`.available(is_gpu_internal)`): the BSDF, volume, emission and background nodes' `Weight`, and `LightIndex`. `gen.socket_order` records them from Blender's sources.
 - `allow_usage_in_scene_compositor_effect` joined the round-tripped tree-level properties.
 - A `Switch` whose values don't decide its type takes the type a new node has in that tree, as Blender 5.3 starts shader and compositor Switches as Color.
+- Socket docstrings name the label a socket had before, when Blender kept it as the identifier and the old attribute still resolves: `o.geometry` on Import PLY reads "Renamed from `Mesh`; `o.mesh` still resolves to it", and likewise `fac` → `factor` and `group_index` → `group_id`.
 - **Group inputs that share a name are told apart by their panel.** In typed group classes (bundled assets and `nodebpy dump --api-only`) and the code `to_python` writes for them, an input whose name another input also has now takes its panel's name as a prefix, instead of both falling back to socket identifiers that change as the asset is edited. Blender 5.3's Clump and Curl Hair Curves gained a second "Seed" in their Guide Map panel: `seed` keeps its name and the new one is `guide_map_seed` (not `input_14` / `socket_1`). `i.<name>` resolves these names too. **Breaking:** `g.CustomForce(socket_14=, socket_15=)` are now `geometry_space_object=` / `force_space_object=`.
 
 ### Deprecations

@@ -77,7 +77,7 @@ class BrickTexture(BaseNode):
     o.color : ColorSocket
         Color
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeTexBrick"
@@ -109,7 +109,7 @@ class BrickTexture(BaseNode):
         color: ColorSocket
         """Color"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -219,7 +219,7 @@ class CheckerTexture(BaseNode):
     o.color : ColorSocket
         Color
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeTexChecker"
@@ -239,7 +239,7 @@ class CheckerTexture(BaseNode):
         color: ColorSocket
         """Color"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -431,7 +431,7 @@ class GradientTexture(BaseNode):
     o.color : ColorSocket
         Color
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeTexGradient"
@@ -445,7 +445,7 @@ class GradientTexture(BaseNode):
         color: ColorSocket
         """Color"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -651,7 +651,7 @@ class MagicTexture(BaseNode):
     o.color : ColorSocket
         Color
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeTexMagic"
@@ -669,7 +669,7 @@ class MagicTexture(BaseNode):
         color: ColorSocket
         """Color"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -749,7 +749,7 @@ class NoiseTexture(BaseNode):
     Outputs
     -------
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     o.color : ColorSocket
         Color
     """
@@ -779,7 +779,7 @@ class NoiseTexture(BaseNode):
 
     class _Outputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
         color: ColorSocket
         """Color"""
 
@@ -1229,7 +1229,7 @@ class WaveTexture(BaseNode):
     o.color : ColorSocket
         Color
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeTexWave"
@@ -1255,7 +1255,7 @@ class WaveTexture(BaseNode):
         color: ColorSocket
         """Color"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 

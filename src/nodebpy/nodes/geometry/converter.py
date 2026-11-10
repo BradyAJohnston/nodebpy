@@ -106,14 +106,14 @@ class AccumulateField[T](BaseNode):
     value : InputFloat
         Value
     group_id : InputInteger
-        Group ID
+        Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it.
 
     Inputs
     ------
     i.value : FloatSocket
         Value
     i.group_id : IntegerSocket
-        Group ID
+        Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it.
 
     Outputs
     -------
@@ -133,7 +133,7 @@ class AccumulateField[T](BaseNode):
         value: S
         """Value"""
         group_id: IntegerSocket
-        """Group ID"""
+        """Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it."""
 
     class _Outputs[S](SocketAccessor):
         leading: S
@@ -2045,14 +2045,14 @@ class FieldAverage[T](BaseNode):
     value : InputFloat
         Value
     group_id : InputInteger
-        Group ID
+        Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it.
 
     Inputs
     ------
     i.value : FloatSocket
         Value
     i.group_id : IntegerSocket
-        Group ID
+        Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it.
 
     Outputs
     -------
@@ -2070,7 +2070,7 @@ class FieldAverage[T](BaseNode):
         value: S
         """Value"""
         group_id: IntegerSocket
-        """Group ID"""
+        """Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it."""
 
     class _Outputs[S](SocketAccessor):
         mean: S
@@ -2158,14 +2158,14 @@ class FieldMinAndMax[T](BaseNode):
     value : InputFloat
         Value
     group_id : InputInteger
-        Group ID
+        Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it.
 
     Inputs
     ------
     i.value : FloatSocket
         Value
     i.group_id : IntegerSocket
-        Group ID
+        Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it.
 
     Outputs
     -------
@@ -2183,7 +2183,7 @@ class FieldMinAndMax[T](BaseNode):
         value: S
         """Value"""
         group_id: IntegerSocket
-        """Group ID"""
+        """Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it."""
 
     class _Outputs[S](SocketAccessor):
         min: S
@@ -2279,14 +2279,14 @@ class FieldVariance[T](BaseNode):
     value : InputFloat
         Value
     group_id : InputInteger
-        Group ID
+        Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it.
 
     Inputs
     ------
     i.value : FloatSocket
         Value
     i.group_id : IntegerSocket
-        Group ID
+        Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it.
 
     Outputs
     -------
@@ -2304,7 +2304,7 @@ class FieldVariance[T](BaseNode):
         value: S
         """Value"""
         group_id: IntegerSocket
-        """Group ID"""
+        """Group ID. Renamed from ``Group Index``; ``i.group_index`` still resolves to it."""
 
     class _Outputs[S](SocketAccessor):
         standard_deviation: S

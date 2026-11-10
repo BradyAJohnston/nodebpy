@@ -800,7 +800,7 @@ class Despeckle(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     color_threshold : InputFloat
         Color Threshold
     neighbor_threshold : InputFloat
@@ -811,7 +811,7 @@ class Despeckle(BaseNode):
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.color_threshold : FloatSocket
         Color Threshold
     i.neighbor_threshold : FloatSocket
@@ -831,7 +831,7 @@ class Despeckle(BaseNode):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         color_threshold: FloatSocket
         """Color Threshold"""
         neighbor_threshold: FloatSocket
@@ -1002,9 +1002,9 @@ class DirectionalBlur(BaseNode):
     scale : InputFloat
         Scale
     amount : InputFloat
-        Amount
+        Amount. Renamed from ``Translation Amount``; ``i.translation_amount`` still resolves to it.
     direction : InputFloat
-        Direction
+        Direction. Renamed from ``Translation Direction``; ``i.translation_direction`` still resolves to it.
 
     Inputs
     ------
@@ -1019,9 +1019,9 @@ class DirectionalBlur(BaseNode):
     i.scale : FloatSocket
         Scale
     i.amount : FloatSocket
-        Amount
+        Amount. Renamed from ``Translation Amount``; ``i.translation_amount`` still resolves to it.
     i.direction : FloatSocket
-        Direction
+        Direction. Renamed from ``Translation Direction``; ``i.translation_direction`` still resolves to it.
 
     Outputs
     -------
@@ -1048,9 +1048,9 @@ class DirectionalBlur(BaseNode):
         scale: FloatSocket
         """Scale"""
         amount: FloatSocket
-        """Amount"""
+        """Amount. Renamed from ``Translation Amount``; ``i.translation_amount`` still resolves to it."""
         direction: FloatSocket
-        """Direction"""
+        """Direction. Renamed from ``Translation Direction``; ``i.translation_direction`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -1096,7 +1096,7 @@ class Filter(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     type : InputMenu | Literal['Soften', 'Box Sharpen', 'Diamond Sharpen', 'Laplace', 'Sobel', 'Prewitt', 'Kirsch', 'Shadow']
         Type
 
@@ -1105,7 +1105,7 @@ class Filter(BaseNode):
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.type : MenuSocket
         Type
 
@@ -1123,7 +1123,7 @@ class Filter(BaseNode):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         type: MenuSocket
         """Type"""
 
@@ -1217,9 +1217,9 @@ class Glare(BaseNode):
     quality : InputMenu | Literal['High', 'Medium', 'Low']
         Quality
     threshold : InputFloat
-        Threshold
+        Threshold. Renamed from ``Highlights Threshold``; ``i.highlights_threshold`` still resolves to it.
     smoothness : InputFloat
-        Smoothness
+        Smoothness. Renamed from ``Highlights Smoothness``; ``i.highlights_smoothness`` still resolves to it.
     clamp : InputBoolean
         Clamp
     maximum : InputFloat
@@ -1264,9 +1264,9 @@ class Glare(BaseNode):
     i.quality : MenuSocket
         Quality
     i.threshold : FloatSocket
-        Threshold
+        Threshold. Renamed from ``Highlights Threshold``; ``i.highlights_threshold`` still resolves to it.
     i.smoothness : FloatSocket
-        Smoothness
+        Smoothness. Renamed from ``Highlights Smoothness``; ``i.highlights_smoothness`` still resolves to it.
     i.clamp : BooleanSocket
         Clamp
     i.maximum : FloatSocket
@@ -1330,9 +1330,9 @@ class Glare(BaseNode):
         quality: MenuSocket
         """Quality"""
         threshold: FloatSocket
-        """Threshold"""
+        """Threshold. Renamed from ``Highlights Threshold``; ``i.highlights_threshold`` still resolves to it."""
         smoothness: FloatSocket
-        """Smoothness"""
+        """Smoothness. Renamed from ``Highlights Smoothness``; ``i.highlights_smoothness`` still resolves to it."""
         clamp: BooleanSocket
         """Clamp"""
         maximum: FloatSocket
@@ -1968,7 +1968,7 @@ class VectorBlur(BaseNode):
     speed : InputVector
         Speed
     depth : InputFloat
-        Depth
+        Depth. Renamed from ``Z``; ``i.z`` still resolves to it.
     samples : InputInteger
         Samples
     shutter : InputFloat
@@ -1981,7 +1981,7 @@ class VectorBlur(BaseNode):
     i.speed : VectorSocket
         Speed
     i.depth : FloatSocket
-        Depth
+        Depth. Renamed from ``Z``; ``i.z`` still resolves to it.
     i.samples : IntegerSocket
         Samples
     i.shutter : FloatSocket
@@ -2003,7 +2003,7 @@ class VectorBlur(BaseNode):
         speed: VectorSocket
         """Speed"""
         depth: FloatSocket
-        """Depth"""
+        """Depth. Renamed from ``Z``; ``i.z`` still resolves to it."""
         samples: IntegerSocket
         """Samples"""
         shutter: FloatSocket

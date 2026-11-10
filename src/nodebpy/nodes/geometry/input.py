@@ -1381,12 +1381,12 @@ class FaceGroupBoundaries(BaseNode):
     Parameters
     ----------
     face_group_id : InputInteger
-        Face Group ID
+        Face Group ID. Renamed from ``Face Set``; ``i.face_set`` still resolves to it.
 
     Inputs
     ------
     i.face_group_id : IntegerSocket
-        Face Group ID
+        Face Group ID. Renamed from ``Face Set``; ``i.face_set`` still resolves to it.
 
     Outputs
     -------
@@ -1400,7 +1400,7 @@ class FaceGroupBoundaries(BaseNode):
 
     class _Inputs(SocketAccessor):
         face_group_id: IntegerSocket
-        """Face Group ID"""
+        """Face Group ID. Renamed from ``Face Set``; ``i.face_set`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         boundary_edges: BooleanSocket
@@ -2138,7 +2138,7 @@ class ImportPLY(BaseNode):
     Outputs
     -------
     o.geometry : GeometrySocket
-        Geometry
+        Geometry. Renamed from ``Mesh``; ``o.mesh`` still resolves to it.
     """
 
     _bl_idname = "GeometryNodeImportPLY"
@@ -2150,7 +2150,7 @@ class ImportPLY(BaseNode):
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
-        """Geometry"""
+        """Geometry. Renamed from ``Mesh``; ``o.mesh`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -3611,7 +3611,7 @@ class Selection(BaseNode):
     Outputs
     -------
     o.boolean : BooleanSocket
-        Boolean
+        Boolean. Renamed from ``Selection``; ``o.selection`` still resolves to it.
     o.float : FloatSocket
         Float
     """
@@ -3624,7 +3624,7 @@ class Selection(BaseNode):
 
     class _Outputs(SocketAccessor):
         boolean: BooleanSocket
-        """Boolean"""
+        """Boolean. Renamed from ``Selection``; ``o.selection`` still resolves to it."""
         float: FloatSocket
         """Float"""
 

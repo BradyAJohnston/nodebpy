@@ -100,6 +100,23 @@ class SocketInfo:
     menu_items: list[str] = field(default_factory=list)
     structure_type: str = ""
     hide_value: bool = False
+    former_name: str | None = None  # its earlier name, kept as its identifier
+
+    def doc(self, attr_name: str) -> str:
+        """The socket's docstring text: its description (or name), noting a
+        former label whose attribute still resolves, unless the socket's
+        attribute already is that name."""
+        doc = self.description or self.name
+        if self.former_name is None:
+            return doc
+        old = normalize_name(self.former_name)
+        if old == attr_name:
+            return doc
+        prefix = "o" if self.is_output else "i"
+        return (
+            f"{doc.rstrip('.')}. Renamed from ``{self.former_name}``; "
+            f"``{prefix}.{old}`` still resolves to it."
+        )
 
     @property
     def default_source(self) -> str:
@@ -191,7 +208,7 @@ class SocketInfo:
                     return_type = return_type.replace("Socket", "SocketGrid")
                 break
 
-        doc = self.description or self.name
+        doc = self.doc(attr_name)
         lines = [f"        {attr_name}: {return_type}"]
         if doc:
             lines.append(f'        """{doc}"""')

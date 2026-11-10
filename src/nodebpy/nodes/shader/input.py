@@ -126,7 +126,7 @@ class Attribute(BaseNode):
     o.vector : VectorSocket
         Vector
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     o.alpha : FloatSocket
         Alpha
     """
@@ -143,7 +143,7 @@ class Attribute(BaseNode):
         vector: VectorSocket
         """Vector"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
         alpha: FloatSocket
         """Alpha"""
 
@@ -477,7 +477,7 @@ class Fresnel(BaseNode):
         Outputs
         -------
         o.factor : FloatSocket
-            Factor
+            Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeFresnel"
@@ -491,7 +491,7 @@ class Fresnel(BaseNode):
 
     class _Outputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -1433,7 +1433,7 @@ class Wireframe(BaseNode):
         Outputs
         -------
         o.factor : FloatSocket
-            Factor
+            Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeWireframe"
@@ -1445,7 +1445,7 @@ class Wireframe(BaseNode):
 
     class _Outputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 

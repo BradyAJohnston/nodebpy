@@ -24,7 +24,7 @@ class BrightnessContrast(BaseNode):
     color : InputColor
         Color
     brightness : InputFloat
-        Brightness
+        Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it.
     contrast : InputFloat
         Contrast
 
@@ -33,7 +33,7 @@ class BrightnessContrast(BaseNode):
     i.color : ColorSocket
         Color
     i.brightness : FloatSocket
-        Brightness
+        Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it.
     i.contrast : FloatSocket
         Contrast
 
@@ -51,7 +51,7 @@ class BrightnessContrast(BaseNode):
         color: ColorSocket
         """Color"""
         brightness: FloatSocket
-        """Brightness"""
+        """Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it."""
         contrast: FloatSocket
         """Contrast"""
 
@@ -91,7 +91,7 @@ class HueSaturationValue(BaseNode):
     value : InputFloat
         Value
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     color : InputColor
         Color
 
@@ -104,7 +104,7 @@ class HueSaturationValue(BaseNode):
     i.value : FloatSocket
         Value
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.color : ColorSocket
         Color
 
@@ -126,7 +126,7 @@ class HueSaturationValue(BaseNode):
         value: FloatSocket
         """Value"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         color: ColorSocket
         """Color"""
 
@@ -168,14 +168,14 @@ class InvertColor(BaseNode):
     Parameters
     ----------
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     color : InputColor
         Color
 
     Inputs
     ------
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.color : ColorSocket
         Color
 
@@ -191,7 +191,7 @@ class InvertColor(BaseNode):
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         color: ColorSocket
         """Color"""
 

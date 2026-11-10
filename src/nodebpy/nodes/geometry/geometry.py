@@ -2547,22 +2547,22 @@ class GeometryProximity(BaseNode):
     Parameters
     ----------
     geometry : InputGeometry
-        Geometry
+        Geometry. Renamed from ``Target``; ``i.target`` still resolves to it.
     group_id : InputInteger
         Group ID
     sample_position : InputVector
-        Sample Position
+        Sample Position. Renamed from ``Source Position``; ``i.source_position`` still resolves to it.
     sample_group_id : InputInteger
         Sample Group ID
 
     Inputs
     ------
     i.geometry : GeometrySocket
-        Geometry
+        Geometry. Renamed from ``Target``; ``i.target`` still resolves to it.
     i.group_id : IntegerSocket
         Group ID
     i.sample_position : VectorSocket
-        Sample Position
+        Sample Position. Renamed from ``Source Position``; ``i.source_position`` still resolves to it.
     i.sample_group_id : IntegerSocket
         Sample Group ID
 
@@ -2585,11 +2585,11 @@ class GeometryProximity(BaseNode):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
-        """Geometry"""
+        """Geometry. Renamed from ``Target``; ``i.target`` still resolves to it."""
         group_id: IntegerSocket
         """Group ID"""
         sample_position: VectorSocket
-        """Sample Position"""
+        """Sample Position. Renamed from ``Source Position``; ``i.source_position`` still resolves to it."""
         sample_group_id: IntegerSocket
         """Sample Group ID"""
 
@@ -4230,7 +4230,7 @@ class Points(BaseNode):
     Outputs
     -------
     o.points : GeometrySocket
-        Points
+        Points. Renamed from ``Geometry``; ``o.geometry`` still resolves to it.
     """
 
     _bl_idname = "GeometryNodePoints"
@@ -4246,7 +4246,7 @@ class Points(BaseNode):
 
     class _Outputs(SocketAccessor):
         points: GeometrySocket
-        """Points"""
+        """Points. Renamed from ``Geometry``; ``o.geometry`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -5875,7 +5875,7 @@ class SampleUVSurface[T](BaseNode):
     value : InputFloat
         Value
     uv_map : InputVector
-        UV Map
+        UV Map. Renamed from ``Source UV Map``; ``i.source_uv_map`` still resolves to it.
     sample_uv : InputVector
         Sample UV
 
@@ -5886,7 +5886,7 @@ class SampleUVSurface[T](BaseNode):
     i.value : FloatSocket
         Value
     i.uv_map : VectorSocket
-        UV Map
+        UV Map. Renamed from ``Source UV Map``; ``i.source_uv_map`` still resolves to it.
     i.sample_uv : VectorSocket
         Sample UV
 
@@ -5908,7 +5908,7 @@ class SampleUVSurface[T](BaseNode):
         value: S
         """Value"""
         uv_map: VectorSocket
-        """UV Map"""
+        """UV Map. Renamed from ``Source UV Map``; ``i.source_uv_map`` still resolves to it."""
         sample_uv: VectorSocket
         """Sample UV"""
 
@@ -8339,7 +8339,7 @@ class SetShadeSmooth(BaseNode):
     Parameters
     ----------
     mesh : InputGeometry
-        Mesh
+        Mesh. Renamed from ``Geometry``; ``i.geometry`` still resolves to it.
     selection : InputBoolean
         Selection
     shade_smooth : InputBoolean
@@ -8348,7 +8348,7 @@ class SetShadeSmooth(BaseNode):
     Inputs
     ------
     i.mesh : GeometrySocket
-        Mesh
+        Mesh. Renamed from ``Geometry``; ``i.geometry`` still resolves to it.
     i.selection : BooleanSocket
         Selection
     i.shade_smooth : BooleanSocket
@@ -8357,7 +8357,7 @@ class SetShadeSmooth(BaseNode):
     Outputs
     -------
     o.mesh : GeometrySocket
-        Mesh
+        Mesh. Renamed from ``Geometry``; ``o.geometry`` still resolves to it.
     """
 
     _bl_idname = "GeometryNodeSetShadeSmooth"
@@ -8366,7 +8366,7 @@ class SetShadeSmooth(BaseNode):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
-        """Mesh"""
+        """Mesh. Renamed from ``Geometry``; ``i.geometry`` still resolves to it."""
         selection: BooleanSocket
         """Selection"""
         shade_smooth: BooleanSocket
@@ -8374,7 +8374,7 @@ class SetShadeSmooth(BaseNode):
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
-        """Mesh"""
+        """Mesh. Renamed from ``Geometry``; ``o.geometry`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -8440,7 +8440,7 @@ class SetSplineCyclic(BaseNode):
     Parameters
     ----------
     curve : InputGeometry
-        Curve
+        Curve. Renamed from ``Geometry``; ``i.geometry`` still resolves to it.
     selection : InputBoolean
         Selection
     cyclic : InputBoolean
@@ -8449,7 +8449,7 @@ class SetSplineCyclic(BaseNode):
     Inputs
     ------
     i.curve : GeometrySocket
-        Curve
+        Curve. Renamed from ``Geometry``; ``i.geometry`` still resolves to it.
     i.selection : BooleanSocket
         Selection
     i.cyclic : BooleanSocket
@@ -8458,7 +8458,7 @@ class SetSplineCyclic(BaseNode):
     Outputs
     -------
     o.curve : GeometrySocket
-        Curve
+        Curve. Renamed from ``Geometry``; ``o.geometry`` still resolves to it.
     """
 
     _bl_idname = "GeometryNodeSetSplineCyclic"
@@ -8467,7 +8467,7 @@ class SetSplineCyclic(BaseNode):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
-        """Curve"""
+        """Curve. Renamed from ``Geometry``; ``i.geometry`` still resolves to it."""
         selection: BooleanSocket
         """Selection"""
         cyclic: BooleanSocket
@@ -8475,7 +8475,7 @@ class SetSplineCyclic(BaseNode):
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
-        """Curve"""
+        """Curve. Renamed from ``Geometry``; ``o.geometry`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -8503,7 +8503,7 @@ class SetSplineResolution(BaseNode):
     Parameters
     ----------
     curve : InputGeometry
-        Curve
+        Curve. Renamed from ``Geometry``; ``i.geometry`` still resolves to it.
     selection : InputBoolean
         Selection
     resolution : InputInteger
@@ -8512,7 +8512,7 @@ class SetSplineResolution(BaseNode):
     Inputs
     ------
     i.curve : GeometrySocket
-        Curve
+        Curve. Renamed from ``Geometry``; ``i.geometry`` still resolves to it.
     i.selection : BooleanSocket
         Selection
     i.resolution : IntegerSocket
@@ -8521,7 +8521,7 @@ class SetSplineResolution(BaseNode):
     Outputs
     -------
     o.curve : GeometrySocket
-        Curve
+        Curve. Renamed from ``Geometry``; ``o.geometry`` still resolves to it.
     """
 
     _bl_idname = "GeometryNodeSetSplineResolution"
@@ -8530,7 +8530,7 @@ class SetSplineResolution(BaseNode):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
-        """Curve"""
+        """Curve. Renamed from ``Geometry``; ``i.geometry`` still resolves to it."""
         selection: BooleanSocket
         """Selection"""
         resolution: IntegerSocket
@@ -8538,7 +8538,7 @@ class SetSplineResolution(BaseNode):
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
-        """Curve"""
+        """Curve. Renamed from ``Geometry``; ``o.geometry`` still resolves to it."""
 
     if TYPE_CHECKING:
 

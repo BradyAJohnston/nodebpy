@@ -11,6 +11,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
+    BaseNode,
     BooleanSocketGrid,
     BooleanSocketList,
     ColorSocketList,
@@ -171,6 +172,39 @@ def test_relabelled_output_still_resolves_its_identifier():
     with g.tree():
         ply = g.ImportPLY()
     assert ply.o.mesh.socket == ply.o.geometry.socket
+
+
+def _renamed_socket_docs():
+    """(class, tree module, side, attribute, old attribute) for every socket
+    whose generated docstring says its old name still resolves."""
+    import inspect
+    import re
+
+    pattern = re.compile(
+        r"^\s*([io])\.(\w+) : .*\n\s+.*``\1\.(\w+)`` still resolves", re.MULTILINE
+    )
+    cases = []
+    for tree in (g, s, c):
+        for name, cls in sorted(vars(tree).items()):
+            if not inspect.isclass(cls) or not issubclass(cls, BaseNode):
+                continue
+            for side, attr, old in pattern.findall(cls.__doc__ or ""):
+                case = (cls, tree, side, attr, old)
+                if case not in cases:
+                    cases.append(case)
+    return cases
+
+
+@pytest.mark.parametrize(
+    "cls,tree,side,attr,old",
+    _renamed_socket_docs(),
+    ids=lambda v: v.__name__ if isinstance(v, type) else None,
+)
+def test_renamed_sockets_resolve_their_documented_old_name(cls, tree, side, attr, old):
+    with tree.tree():
+        node = cls()
+    accessor = node.i if side == "i" else node.o
+    assert accessor._get(old).socket == accessor._get(attr).socket
 
 
 def test_socket_selection():

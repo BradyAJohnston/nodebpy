@@ -262,7 +262,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         for socket in all_init_sockets:
             param_name = input_names[socket.identifier]
             doc_lines.append(f"{param_name} : {socket.type_hint}")
-            desc = socket.description if socket.description else socket.name
+            desc = socket.doc(param_name)
             doc_lines.append(f"    {desc}")
         doc_lines.append("")
 
@@ -280,7 +280,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
                     break
             names = output_names if prefix == "o" else input_names
             attr_name = names[socket.identifier]
-            desc = socket.description if socket.description else socket.name
+            desc = socket.doc(attr_name)
             lines.append(f"{prefix}.{attr_name} : {return_type}")
             lines.append(f"    {desc}")
         return lines
@@ -300,7 +300,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     def _input_annotation(socket: SocketInfo) -> str:
         if inputs_generic and socket.identifier in varying_inputs:
             attr_name = input_names[socket.identifier]
-            doc = socket.description or socket.name
+            doc = socket.doc(attr_name)
             if socket.identifier in varying_grid_inputs:
                 param = "SGrid"
             elif socket.identifier in varying_list_inputs:
@@ -335,7 +335,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     for socket in node_info.outputs:
         if outputs_generic and socket.identifier in varying_outputs:
             attr_name = output_names[socket.identifier]
-            doc = socket.description or socket.name
+            doc = socket.doc(attr_name)
             if socket.identifier in varying_grid_outputs:
                 param = "SGrid"
             elif socket.identifier in varying_list_outputs:

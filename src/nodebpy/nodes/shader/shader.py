@@ -914,7 +914,7 @@ class MixShader(BaseNode):
     Parameters
     ----------
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     shader : InputShader
         Shader
     shader_001 : InputShader
@@ -923,7 +923,7 @@ class MixShader(BaseNode):
     Inputs
     ------
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.shader : ShaderSocket
         Shader
     i.shader_001 : ShaderSocket
@@ -941,7 +941,7 @@ class MixShader(BaseNode):
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         shader: ShaderSocket
         """Shader"""
         shader_001: ShaderSocket
@@ -1340,11 +1340,11 @@ class PrincipledHairBSDF(BaseNode):
     random : InputFloat
         Random
     reflection : InputFloat
-        Reflection
+        Reflection. Renamed from ``R lobe``; ``i.r_lobe`` still resolves to it.
     transmission : InputFloat
-        Transmission
+        Transmission. Renamed from ``TT lobe``; ``i.tt_lobe`` still resolves to it.
     secondary_reflection : InputFloat
-        Secondary Reflection
+        Secondary Reflection. Renamed from ``TRT lobe``; ``i.trt_lobe`` still resolves to it.
 
     Inputs
     ------
@@ -1377,11 +1377,11 @@ class PrincipledHairBSDF(BaseNode):
     i.random : FloatSocket
         Random
     i.reflection : FloatSocket
-        Reflection
+        Reflection. Renamed from ``R lobe``; ``i.r_lobe`` still resolves to it.
     i.transmission : FloatSocket
-        Transmission
+        Transmission. Renamed from ``TT lobe``; ``i.tt_lobe`` still resolves to it.
     i.secondary_reflection : FloatSocket
-        Secondary Reflection
+        Secondary Reflection. Renamed from ``TRT lobe``; ``i.trt_lobe`` still resolves to it.
 
     Outputs
     -------
@@ -1427,11 +1427,11 @@ class PrincipledHairBSDF(BaseNode):
         random: FloatSocket
         """Random"""
         reflection: FloatSocket
-        """Reflection"""
+        """Reflection. Renamed from ``R lobe``; ``i.r_lobe`` still resolves to it."""
         transmission: FloatSocket
-        """Transmission"""
+        """Transmission. Renamed from ``TT lobe``; ``i.tt_lobe`` still resolves to it."""
         secondary_reflection: FloatSocket
-        """Secondary Reflection"""
+        """Secondary Reflection. Renamed from ``TRT lobe``; ``i.trt_lobe`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket

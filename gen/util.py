@@ -24,6 +24,30 @@ if TYPE_CHECKING:
     from .model import SocketInfo
 
 
+# Sockets Blender declares available only in its GPU shader trees, read from
+# the generated socket-order table the same way.
+INTERNAL_SOCKETS = _load_standalone(
+    "_nodebpy_socket_order", "src/nodebpy/builder/_socket_order.py"
+).INTERNAL_SOCKETS
+
+
+def former_name(identifier: str, name: str) -> str | None:
+    """The name a socket was labelled before, or ``None``.
+
+    Blender keeps a socket's identifier when it relabels it, so an identifier
+    that differs from the label is the old label (Import PLY's ``Mesh``
+    output is labelled "Geometry" since 5.3), unless it is numbered
+    (``Value_001``), generated (``Socket_3``) or a per-type variant of the
+    label (Mix's ``A_Color``).
+    """
+    old, new = normalize_name(identifier), normalize_name(name)
+    if old == new or old.startswith(f"{new}_") or "__" in identifier:
+        return None
+    if old.rsplit("_", 1)[-1].isdigit() or old[-3:].isdigit():
+        return None
+    return identifier
+
+
 def normalize_name(name: str) -> str:
     """Convert 'Geometry' or 'My Socket' to 'geometry' or 'my_socket'.
 

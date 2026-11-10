@@ -31,7 +31,7 @@ class AlphaOver(BaseNode):
     foreground : InputColor
         Foreground
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     type : InputMenu | Literal['Over', 'Disjoint Over', 'Conjoint Over']
         Type
     straight_alpha : InputBoolean
@@ -44,7 +44,7 @@ class AlphaOver(BaseNode):
     i.foreground : ColorSocket
         Foreground
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.type : MenuSocket
         Type
     i.straight_alpha : BooleanSocket
@@ -66,7 +66,7 @@ class AlphaOver(BaseNode):
         foreground: ColorSocket
         """Foreground"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         type: MenuSocket
         """Type"""
         straight_alpha: BooleanSocket
@@ -163,7 +163,7 @@ class BrightnessContrast(BaseNode):
     image : InputColor
         Image
     brightness : InputFloat
-        Brightness
+        Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it.
     contrast : InputFloat
         Contrast
 
@@ -172,7 +172,7 @@ class BrightnessContrast(BaseNode):
     i.image : ColorSocket
         Image
     i.brightness : FloatSocket
-        Brightness
+        Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it.
     i.contrast : FloatSocket
         Contrast
 
@@ -190,7 +190,7 @@ class BrightnessContrast(BaseNode):
         image: ColorSocket
         """Image"""
         brightness: FloatSocket
-        """Brightness"""
+        """Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it."""
         contrast: FloatSocket
         """Contrast"""
 
@@ -226,7 +226,7 @@ class ColorBalance(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     type : InputMenu | Literal['Lift/Gamma/Gain', 'Offset/Power/Slope (ASC-CDL)', 'White Point']
         Type
     base_lift : InputFloat
@@ -267,7 +267,7 @@ class ColorBalance(BaseNode):
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.type : MenuSocket
         Type
     i.base_lift : FloatSocket
@@ -317,7 +317,7 @@ class ColorBalance(BaseNode):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         type: MenuSocket
         """Type"""
         base_lift: FloatSocket
@@ -579,11 +579,11 @@ class ColorCorrection(BaseNode):
     midtones_end : InputFloat
         Midtones End
     red : InputBoolean
-        Red
+        Red. Renamed from ``Apply On Red``; ``i.apply_on_red`` still resolves to it.
     green : InputBoolean
-        Green
+        Green. Renamed from ``Apply On Green``; ``i.apply_on_green`` still resolves to it.
     blue : InputBoolean
-        Blue
+        Blue. Renamed from ``Apply On Blue``; ``i.apply_on_blue`` still resolves to it.
 
     Inputs
     ------
@@ -636,11 +636,11 @@ class ColorCorrection(BaseNode):
     i.midtones_end : FloatSocket
         Midtones End
     i.red : BooleanSocket
-        Red
+        Red. Renamed from ``Apply On Red``; ``i.apply_on_red`` still resolves to it.
     i.green : BooleanSocket
-        Green
+        Green. Renamed from ``Apply On Green``; ``i.apply_on_green`` still resolves to it.
     i.blue : BooleanSocket
-        Blue
+        Blue. Renamed from ``Apply On Blue``; ``i.apply_on_blue`` still resolves to it.
 
     Outputs
     -------
@@ -706,11 +706,11 @@ class ColorCorrection(BaseNode):
         midtones_end: FloatSocket
         """Midtones End"""
         red: BooleanSocket
-        """Red"""
+        """Red. Renamed from ``Apply On Red``; ``i.apply_on_red`` still resolves to it."""
         green: BooleanSocket
-        """Green"""
+        """Green. Renamed from ``Apply On Green``; ``i.apply_on_green`` still resolves to it."""
         blue: BooleanSocket
-        """Blue"""
+        """Blue. Renamed from ``Apply On Blue``; ``i.apply_on_blue`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -945,14 +945,14 @@ class HueCorrect(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
 
     Inputs
     ------
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
 
     Outputs
     -------
@@ -968,7 +968,7 @@ class HueCorrect(BaseNode):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -1007,7 +1007,7 @@ class HueSaturationValue(BaseNode):
     value : InputFloat
         Value
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
 
     Inputs
     ------
@@ -1020,7 +1020,7 @@ class HueSaturationValue(BaseNode):
     i.value : FloatSocket
         Value
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
 
     Outputs
     -------
@@ -1042,7 +1042,7 @@ class HueSaturationValue(BaseNode):
         value: FloatSocket
         """Value"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -1084,7 +1084,7 @@ class InvertColor(BaseNode):
     color : InputColor
         Color
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     invert_color : InputBoolean
         Invert Color
     invert_alpha : InputBoolean
@@ -1095,7 +1095,7 @@ class InvertColor(BaseNode):
     i.color : ColorSocket
         Color
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.invert_color : BooleanSocket
         Invert Color
     i.invert_alpha : BooleanSocket
@@ -1115,7 +1115,7 @@ class InvertColor(BaseNode):
         color: ColorSocket
         """Color"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         invert_color: BooleanSocket
         """Invert Color"""
         invert_alpha: BooleanSocket
@@ -1214,7 +1214,7 @@ class RGBCurves(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     black_level : InputColor
         Black Level
     white_level : InputColor
@@ -1225,7 +1225,7 @@ class RGBCurves(BaseNode):
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.black_level : ColorSocket
         Black Level
     i.white_level : ColorSocket
@@ -1245,7 +1245,7 @@ class RGBCurves(BaseNode):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         black_level: ColorSocket
         """Black Level"""
         white_level: ColorSocket
