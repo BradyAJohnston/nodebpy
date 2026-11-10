@@ -62,6 +62,76 @@ uv run python -m gen.socket_order --source ~/src/blender   # or parse a local ch
 
 Nodes that need special handling are hand-written in `src/nodebpy/nodes/*/manual.py` (and the zone nodes in `nodes/geometry/zone.py` / `nodes/shader/zone.py`); the generator skips these and re-exports them alongside the generated classes.
 
+## Changing the public API
+
+Other packages and many scripts build on nodebpy, so a script written against one release should keep running on the next, warning before anything it uses goes away.
+
+**What is public:** every name without a leading underscore that can be reached from `nodebpy`. That includes the generated node classes, their constructor and factory parameters (by name *and* position), their `i.<name>` / `o.<name>` socket attributes, socket methods, and the `nodebpy` command. The code `to_python` writes is public too: it ends up in users' files.
+
+**Versions:** `XYZ.minor.patch`, where `XYZ` is the Blender line (`530` is Blender 5.3).
+
+- Within a line, nothing public is removed or renamed without a deprecation that keeps the old spelling working. Additions are fine.
+- Deprecated names are removed in the first release of the next line (`540.0.0`), never in between.
+- The previous line's branch (`5.2` while `main` is 5.3) takes bug fixes only: no deprecations and no removals.
+- When Blender changes something and no shim is possible, the release notes list it under **breaking**, with the replacement.
+
+### Deprecating hand-written API
+
+Keep the old name working by forwarding to the new one, and warn with `_deprecated` from `nodebpy.builder._utils`:
+
+```python
+# -- deprecated entry points, removed in 540 --
+
+def add_item(self, name: str, value: Any = None) -> Item:
+    """Deprecated: use ``items.new(value, name)``."""
+    _deprecated("add_item(name, value)", "items.new(value, name)", removed_in=540)
+    return self.items.new(value, name)
+```
+
+- **Warning:** `removed_in` is the next Blender line. The warning points at the first frame outside nodebpy, so users see their own line.
+- **Renamed keyword:** keep the old one as a keyword-only parameter defaulting to `None`. Warn when it's given and pass it on under the new name.
+- **CLI entry points:** warn with `FutureWarning` instead. Python hides `DeprecationWarning` unless it's attributed to `__main__`, and a command has no user frame to attribute it to.
+- **Grouping:** put shims under a `# -- deprecated ..., removed in 540 --` comment and start their docstring with "Deprecated: use ...". Then `grep -rn "removed in 540\|removed_in=540" src gen` finds all of them at removal time.
+- **Test:** test that the old spelling warns *and* still does what it did.
+- **Changelog:** add a `### Deprecations` entry naming the replacement and the removal version.
+- **Replacement spelling everywhere:** `to_python` must never emit a deprecated spelling. Move the docs, examples and agent skill (`src/nodebpy/skills/`) to the new spelling in the same pull request. `test_skill.py` doesn't catch a deprecated example, because it still runs.
+
+### Generated API
+
+Regenerating can change public names without anyone editing them. For example, Blender renames a socket or an enum item, moves a property to a menu socket, adds an input ahead of existing ones, or gives two inputs the same name. After every `make generate` for a new Blender version, and before every release, compare against the last release tag:
+
+```sh
+uv run python -m gen.api_diff v530.0.0
+```
+
+It lists every public class, method, parameter, positional slot and socket attribute that is gone, and exits 1 when anything is. Every line needs one of the following:
+
+- **A factory, method or property is gone** (typically because Blender replaced an enum property with a menu socket): add it back as a shim through `register_customization` in `gen/customizations.py`:
+
+  ```python
+  register_customization(
+      NodeCustomization(
+          bl_idname="GeometryNodeExample",
+          imports=("from ...builder._utils import _deprecated",),
+          extra_body='''
+      @classmethod
+      def by_name(cls, *args, **kwargs):
+          """Deprecated: use ``Example(..., mode="Name")``."""
+          _deprecated("Example.by_name()", 'Example(mode="Name")', removed_in=540)
+          return cls(*args, mode="Name", **kwargs)''',
+      )
+  )
+  ```
+
+- **A parameter is renamed:** a mixin can't intercept the old keyword, because the generated method is defined on the class itself. Release 530 removed the general mechanism for this. It was a `_renamed_params` table the generator wrote per class, plus `BaseNode.__init_subclass__` wrapping each listed method so the old keyword still works with a warning (#273, `67a99552`). Restore it from there rather than writing per-node overrides.
+- **An `i.` / `o.` socket attribute is renamed, or positional parameters change order:** there's no shim. List it as breaking in the changelog.
+- **A name falls back to a socket identifier** (`input_14`, `socket_1`): two sockets share a display name. Fix the naming instead of shipping it.
+- **A node Blender deprecates:** it stays and warns on construction through `_DeprecatedNodeMixin` (see Rotate Euler in `gen/customizations.py`). Remove it when Blender removes the node.
+
+### Removing at the next Blender line
+
+On the new line's branch, delete everything marked `removed in <line>` / `removed_in=<line>`, along with its tests. List the removals under `### Removals` in the changelog with their replacements. Then run `gen.api_diff` against the previous line's last release and check that it lists only what you meant to remove.
+
 ## Building the docs
 
 The documentation is a [Quarto](https://quarto.org) site under `docs/`, with the API reference generated by `quartodoc`:

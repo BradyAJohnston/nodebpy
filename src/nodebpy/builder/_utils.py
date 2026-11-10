@@ -4,7 +4,9 @@ import difflib
 import keyword
 import re
 import unicodedata
+import warnings
 from functools import cache
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import bpy
@@ -242,3 +244,17 @@ def _output_socket_type(value: Any) -> SOCKET_TYPES | None:
     if isinstance(value, (_SocketLike, _NodeLike)):
         return value._default_output_socket.type  # type: ignore[return-value]
     return None
+
+
+_PACKAGE_DIR = str(Path(__file__).resolve().parents[1])
+
+
+def _deprecated(old: str, new: str, *, removed_in: int) -> None:
+    """Warn that ``old`` is deprecated in favour of ``new`` and is removed in
+    nodebpy ``removed_in`` (the Blender line, e.g. ``540``). The warning
+    points at the first frame outside nodebpy: the user's code."""
+    warnings.warn(
+        f"{old} is deprecated and will be removed in nodebpy {removed_in}; use {new}",
+        DeprecationWarning,
+        skip_file_prefixes=(_PACKAGE_DIR,),
+    )
