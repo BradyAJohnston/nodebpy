@@ -11,7 +11,8 @@ tree, statically, and lists every public name that is gone::
 
 Reported: public classes and module-level functions, their public methods and
 properties, parameters (a renamed parameter shows as removed), positional
-parameters that changed order, and the ``i.<name>`` / ``o.<name>`` socket
+parameters that moved to another slot or became keyword-only, ``Literal``
+values a parameter no longer takes, and the ``i.<name>`` / ``o.<name>`` socket
 attributes. Private classes are included, as the generated classes get public
 methods from ``_...Mixin`` bases. Classes are keyed by package (``nodes.geometry.Math``), so moving
 one between modules of a package is not a removal. Additions are not listed.
@@ -52,11 +53,32 @@ def _sources(ref: str | None) -> dict[str, str]:
     }
 
 
-def _params(func: ast.FunctionDef) -> tuple[list[str], list[str]]:
-    """(positional parameters in order, keyword-only parameters)."""
+def _literals(annotation: ast.expr | None) -> set[str]:
+    """The string values of every ``Literal[...]`` in an annotation."""
+    values: set[str] = set()
+    for node in ast.walk(annotation) if annotation is not None else ():
+        if (
+            isinstance(node, ast.Subscript)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "Literal"
+        ):
+            values |= {
+                c.value
+                for c in ast.walk(node.slice)
+                if isinstance(c, ast.Constant) and isinstance(c.value, str)
+            }
+    return values
+
+
+def _params(
+    func: ast.FunctionDef,
+) -> tuple[list[str], list[str], dict[str, set[str]]]:
+    """(positional parameters in order, keyword-only parameters, the
+    ``Literal`` values each parameter accepts)."""
     a = func.args
-    positional = [x.arg for x in a.posonlyargs + a.args if x.arg not in ("self", "cls")]
-    return positional, [x.arg for x in a.kwonlyargs]
+    args = [x for x in a.posonlyargs + a.args if x.arg not in ("self", "cls")]
+    literals = {x.arg: _literals(x.annotation) for x in args + a.kwonlyargs}
+    return [x.arg for x in args], [x.arg for x in a.kwonlyargs], literals
 
 
 def _is_public(name: str) -> bool:
@@ -110,16 +132,28 @@ def removals(old_ref: str, new_ref: str | None = None) -> list[str]:
                 continue
             if params is None:
                 continue
-            (old_pos, old_kw), (new_pos, new_kw) = params, new[name][member]
+            (old_pos, old_kw, old_lit), (new_pos, new_kw, new_lit) = (
+                params,
+                new[name][member],
+            )
             gone = [p for p in old_pos + old_kw if p not in new_pos + new_kw]
             if gone:
                 found.append(f"{label}: parameters removed {gone}")
+            # a positional call must still land every argument where it did
             kept = [p for p in old_pos if p in new_pos]
-            if kept != [p for p in new_pos if p in kept]:
-                found.append(f"{label}: positional order {old_pos} -> {new_pos}")
+            for slot, (was, now) in enumerate(zip(kept, new_pos)):
+                if was != now:
+                    found.append(
+                        f"{label}: positional slot {slot} was {was}, now {now}"
+                    )
+                    break
             moved = [p for p in old_pos if p in new_kw]
             if moved:
                 found.append(f"{label}: now keyword-only {moved}")
+            for param, values in old_lit.items():
+                lost = values - new_lit.get(param, values)
+                if lost and new_lit.get(param):
+                    found.append(f"{label}: {param}= no longer takes {sorted(lost)}")
     return found
 
 

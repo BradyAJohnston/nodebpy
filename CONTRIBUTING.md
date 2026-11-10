@@ -105,7 +105,7 @@ Regenerating can change public names without anyone editing them. For example, B
 uv run python -m gen.api_diff v530.0.0
 ```
 
-It lists every public class, method, parameter, positional slot and socket attribute that is gone, and exits 1 when anything is. Every line needs one of the following:
+It lists every public class, method, parameter, socket attribute and `Literal` value that is gone, and every positional slot that now takes a different argument. It exits 1 when it finds anything. Every line needs one of the following:
 
 - **A factory, method or property is gone** (typically because Blender replaced an enum property with a menu socket): add it back as a shim through `register_customization` in `gen/customizations.py`:
 
