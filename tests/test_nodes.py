@@ -120,7 +120,6 @@ def test_input_params_named_after_sockets():
     assert proximity.node.inputs["Target"].is_linked
 
 
-
 def test_deprecated_warns_at_the_callers_line():
     from nodebpy.builder._utils import _deprecated
 
@@ -130,6 +129,7 @@ def test_deprecated_warns_at_the_callers_line():
         "old() is deprecated and will be removed in nodebpy 540; use new()"
     )
     assert record[0].filename == __file__
+
 
 def test_socket_selection():
     with g.tree("AnotherTree"):

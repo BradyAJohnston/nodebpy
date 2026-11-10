@@ -1125,6 +1125,50 @@ def test_typed_param_names_collisions_and_reserved():
     }
 
 
+def test_typed_param_names_prefix_the_panel_of_a_colliding_input():
+    from nodebpy.builder import CustomGeometryGroup
+    from nodebpy.builder._utils import typed_param_names
+
+    class PanelSeeds(CustomGeometryGroup):
+        _name = "PanelSeeds"
+
+        def _build_group(self, tree):
+            tree.inputs.integer("Seed")
+            with tree.inputs.panel("Guide Map"):
+                tree.inputs.integer("Seed")
+                tree.inputs.float("Scale")
+            with tree.inputs.panel("Other"):
+                tree.inputs.integer("Count")
+                tree.inputs.integer("Count")
+            tree.outputs.geometry()
+
+    with g.tree():
+        node = PanelSeeds()
+    params = typed_param_names(node.node.inputs)
+    # the top-level Seed keeps its name and the one in a panel takes the
+    # panel's; the two Counts still collide after the prefix and fall back
+    # to identifiers; a unique name in a panel is not prefixed
+    assert list(params.values()) == [
+        "seed",
+        "guide_map_seed",
+        "scale",
+        *(s.identifier.lower() for s in node.node.inputs[3:5]),
+    ]
+    assert node.i.guide_map_seed.socket == node.node.inputs[1]
+
+
+def test_hair_assets_name_their_guide_map_seed():
+    with g.tree():
+        clump = g.ClumpHairCurves(seed=3, guide_map_seed=5)
+    by_name = {
+        (s.name, s.identifier): s.default_value
+        for s in clump.node.inputs
+        if s.name == "Seed"
+    }
+    assert sorted(by_name.values()) == [3, 5]
+    assert clump.i.guide_map_seed.socket.default_value == 5
+
+
 def test_typed_api_dump_merges_interface(nested_library_blend, tmp_path):
     """typed_api merges the asset API into the dumped class: Asset*Group base
     with _library, numpydoc docstring, accessors, typed __init__ keyed by

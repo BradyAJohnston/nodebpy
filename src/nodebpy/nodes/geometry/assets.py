@@ -1231,7 +1231,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         Falloff distance for the clumping effect (0 means no falloff)
     distance_threshold : InputFloat
         Distance threshold for the falloff around the guide
-    input_14 : InputInteger
+    seed : InputInteger
         Random seed for the operation
     preserve_length : InputBoolean
         Preserve each curve's length during deformation
@@ -1241,7 +1241,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     guide_mask : InputFloat
         Mask for which curves are eligible to be selected as guides
-    socket_1 : InputInteger
+    guide_map_seed : InputInteger
         Random seed for the guide map
     existing_guide_map : InputBoolean
         Use the existing guide map attribute if available
@@ -1262,7 +1262,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         Falloff distance for the clumping effect (0 means no falloff)
     i.distance_threshold : FloatSocket
         Distance threshold for the falloff around the guide
-    i.input_14 : IntegerSocket
+    i.seed : IntegerSocket
         Random seed for the operation
     i.preserve_length : BooleanSocket
         Preserve each curve's length during deformation
@@ -1272,7 +1272,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     i.guide_mask : FloatSocket
         Mask for which curves are eligible to be selected as guides
-    i.socket_1 : IntegerSocket
+    i.guide_map_seed : IntegerSocket
         Random seed for the guide map
     i.existing_guide_map : BooleanSocket
         Use the existing guide map attribute if available
@@ -1304,7 +1304,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         """Falloff distance for the clumping effect (0 means no falloff)"""
         distance_threshold: FloatSocket
         """Distance threshold for the falloff around the guide"""
-        input_14: IntegerSocket
+        seed: IntegerSocket
         """Random seed for the operation"""
         preserve_length: BooleanSocket
         """Preserve each curve's length during deformation"""
@@ -1314,7 +1314,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         """Minimum distance between two guides for new guide map"""
         guide_mask: FloatSocket
         """Mask for which curves are eligible to be selected as guides"""
-        socket_1: IntegerSocket
+        guide_map_seed: IntegerSocket
         """Random seed for the guide map"""
         existing_guide_map: BooleanSocket
         """Use the existing guide map attribute if available"""
@@ -1341,12 +1341,12 @@ class ClumpHairCurves(AssetGeometryGroup):
         clump_offset: InputFloat = 0.0,
         distance_falloff: InputFloat = 0.0,
         distance_threshold: InputFloat = 0.0,
-        input_14: InputInteger = 0,
+        seed: InputInteger = 0,
         preserve_length: InputBoolean = False,
         guide_index: InputInteger = -987654,
         guide_distance: InputFloat = 0.1,
         guide_mask: InputFloat = 1.0,
-        socket_1: InputInteger = 0,
+        guide_map_seed: InputInteger = 0,
         existing_guide_map: InputBoolean = True,
     ):
         super().__init__(
@@ -1357,12 +1357,12 @@ class ClumpHairCurves(AssetGeometryGroup):
             Input_13=clump_offset,
             Input_12=distance_falloff,
             Input_11=distance_threshold,
-            Input_14=input_14,
+            Input_14=seed,
             Input_15=preserve_length,
             Input_16=guide_index,
             Input_9=guide_distance,
             Input_19=guide_mask,
-            Socket_1=socket_1,
+            Socket_1=guide_map_seed,
             Input_8=existing_guide_map,
         )
 
@@ -1727,7 +1727,7 @@ class CurlHairCurves(AssetGeometryGroup):
         Frequency factor of the curls
     random_offset : InputFloat
         Amount of random offset per curve
-    input_15 : InputInteger
+    seed : InputInteger
         Random seed for the operation
     guide_index : InputInteger
         Guide index map to use. This input has priority.
@@ -1735,7 +1735,7 @@ class CurlHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     guide_mask : InputFloat
         Mask for which curves are eligible to be selected as guides
-    socket_1 : InputInteger
+    guide_map_seed : InputInteger
         Random seed for the guide map
     existing_guide_map : InputBoolean
         Use the existing guide map attribute if available
@@ -1760,7 +1760,7 @@ class CurlHairCurves(AssetGeometryGroup):
         Frequency factor of the curls
     i.random_offset : FloatSocket
         Amount of random offset per curve
-    i.input_15 : IntegerSocket
+    i.seed : IntegerSocket
         Random seed for the operation
     i.guide_index : IntegerSocket
         Guide index map to use. This input has priority.
@@ -1768,7 +1768,7 @@ class CurlHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     i.guide_mask : FloatSocket
         Mask for which curves are eligible to be selected as guides
-    i.socket_1 : IntegerSocket
+    i.guide_map_seed : IntegerSocket
         Random seed for the guide map
     i.existing_guide_map : BooleanSocket
         Use the existing guide map attribute if available
@@ -1804,7 +1804,7 @@ class CurlHairCurves(AssetGeometryGroup):
         """Frequency factor of the curls"""
         random_offset: FloatSocket
         """Amount of random offset per curve"""
-        input_15: IntegerSocket
+        seed: IntegerSocket
         """Random seed for the operation"""
         guide_index: IntegerSocket
         """Guide index map to use. This input has priority."""
@@ -1812,7 +1812,7 @@ class CurlHairCurves(AssetGeometryGroup):
         """Minimum distance between two guides for new guide map"""
         guide_mask: FloatSocket
         """Mask for which curves are eligible to be selected as guides"""
-        socket_1: IntegerSocket
+        guide_map_seed: IntegerSocket
         """Random seed for the guide map"""
         existing_guide_map: BooleanSocket
         """Use the existing guide map attribute if available"""
@@ -1841,11 +1841,11 @@ class CurlHairCurves(AssetGeometryGroup):
         factor_end: InputFloat = 1.0,
         frequency: InputFloat = 1.0,
         random_offset: InputFloat = 0.25,
-        input_15: InputInteger = 0,
+        seed: InputInteger = 0,
         guide_index: InputInteger = -987654,
         guide_distance: InputFloat = 0.1,
         guide_mask: InputFloat = 1.0,
-        socket_1: InputInteger = 0,
+        guide_map_seed: InputInteger = 0,
         existing_guide_map: InputBoolean = True,
     ):
         super().__init__(
@@ -1858,11 +1858,11 @@ class CurlHairCurves(AssetGeometryGroup):
             Input_10=factor_end,
             Input_11=frequency,
             Input_16=random_offset,
-            Input_15=input_15,
+            Input_15=seed,
             Input_19=guide_index,
             Input_4=guide_distance,
             Input_18=guide_mask,
-            Socket_1=socket_1,
+            Socket_1=guide_map_seed,
             Input_3=existing_guide_map,
         )
 
@@ -2453,13 +2453,13 @@ class CustomForce(AssetGeometryGroup):
         The space the geometry is transformed to before the field is evaluated.
     socket_8 : InputMatrix
         Custom geometry space.
-    socket_14 : InputObject
+    geometry_space_object : InputObject
         Object to take the geometry space from. When unconnected: The object the modifier is on.
     socket_7 : InputMenu | Literal["Custom Space", "World Space", "Object Space"]
         The space the provided force vector is in.
     socket_11 : InputMatrix
         Custom force space.
-    socket_15 : InputObject
+    force_space_object : InputObject
         Object to take the force space from. When unconnected: The object the modifier is on.
     filter : InputString
         Comma-separated list of tags this effector should be applied to.
@@ -2478,13 +2478,13 @@ class CustomForce(AssetGeometryGroup):
         The space the geometry is transformed to before the field is evaluated.
     i.socket_8 : MatrixSocket
         Custom geometry space.
-    i.socket_14 : ObjectSocket
+    i.geometry_space_object : ObjectSocket
         Object to take the geometry space from.
     i.socket_7 : MenuSocket
         The space the provided force vector is in.
     i.socket_11 : MatrixSocket
         Custom force space.
-    i.socket_15 : ObjectSocket
+    i.force_space_object : ObjectSocket
         Object to take the force space from.
     i.filter : StringSocket
         Comma-separated list of tags this effector should be applied to.
@@ -2512,13 +2512,13 @@ class CustomForce(AssetGeometryGroup):
         """The space the geometry is transformed to before the field is evaluated."""
         socket_8: MatrixSocket
         """Custom geometry space."""
-        socket_14: ObjectSocket
+        geometry_space_object: ObjectSocket
         """Object to take the geometry space from."""
         socket_7: MenuSocket
         """The space the provided force vector is in."""
         socket_11: MatrixSocket
         """Custom force space."""
-        socket_15: ObjectSocket
+        force_space_object: ObjectSocket
         """Object to take the force space from."""
         filter: StringSocket
         """Comma-separated list of tags this effector should be applied to."""
@@ -2543,11 +2543,11 @@ class CustomForce(AssetGeometryGroup):
         socket_6: InputMenu
         | Literal["Custom Space", "World Space", "Object Space"] = "World Space",
         socket_8: InputMatrix = None,
-        socket_14: InputObject = Default.SELF_OBJECT,
+        geometry_space_object: InputObject = Default.SELF_OBJECT,
         socket_7: InputMenu
         | Literal["Custom Space", "World Space", "Object Space"] = "World Space",
         socket_11: InputMatrix = None,
-        socket_15: InputObject = Default.SELF_OBJECT,
+        force_space_object: InputObject = Default.SELF_OBJECT,
         filter: InputString = "",
     ):
         super().__init__(
@@ -2557,10 +2557,10 @@ class CustomForce(AssetGeometryGroup):
             Socket_10=force,
             Socket_6=socket_6,
             Socket_8=socket_8,
-            Socket_14=socket_14,
+            Socket_14=geometry_space_object,
             Socket_7=socket_7,
             Socket_11=socket_11,
-            Socket_15=socket_15,
+            Socket_15=force_space_object,
             Socket_1=filter,
         )
 

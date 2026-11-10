@@ -104,15 +104,34 @@ def denormalize_name(attr_name: str) -> str:
     return attr_name.replace("_", " ").title()
 
 
+def _socket_panels(sockets) -> dict[str, str]:
+    """Socket identifier → name of the interface panel the group socket sits
+    in (none at the top level). ``sockets`` are a group node's inputs or
+    outputs; other socket-like objects have no panels."""
+    node = getattr(sockets[0], "node", None) if sockets else None
+    tree = getattr(node, "node_tree", None)
+    if not isinstance(tree, bpy.types.NodeTree):
+        return {}
+    in_out = "OUTPUT" if sockets[0].is_output else "INPUT"
+    return {
+        item.identifier: item.parent.name
+        for item in tree.interface.items_tree
+        if item.item_type == "SOCKET" and item.in_out == in_out and item.parent
+    }
+
+
 def typed_param_names(sockets) -> dict[str, str]:
     """Socket identifier → ``__init__`` parameter name for a typed group class.
 
     The one place this mapping is defined: both the generated class's typed
     ``__init__`` (``nodebpy.assets``) and the call sites codegen emits for it
     (``nodebpy.export``) must agree, and they both derive it from the same
-    live tree during a dump. A socket's parameter is its normalized name; when
-    several sockets normalize to the same name, each falls back to its
-    normalized identifier; residual collisions (or reserved names like
+    live tree during a dump, and a group's ``i.<name>`` / ``o.<name>`` resolve
+    through it. A socket's parameter is its normalized name. When several
+    sockets normalize to the same name, one inside an interface panel
+    is prefixed with the panel's name (Clump Hair Curves' two ``Seed`` inputs
+    are ``seed`` and ``guide_map_seed``); those still colliding fall back to
+    their normalized identifier. Residual collisions (or reserved names like
     ``self``) get a numeric suffix.
 
     ``sockets`` is any iterable of objects with ``name``/``identifier``
@@ -123,12 +142,20 @@ def typed_param_names(sockets) -> dict[str, str]:
     from collections import Counter
 
     counts = Counter(normalize_name(s.name) for s in real)
+    panels = _socket_panels(real)
+    candidates = {}
+    for s in real:
+        name = normalize_name(s.name)
+        if counts[name] > 1 and panels.get(s.identifier):
+            name = normalize_name(f"{panels[s.identifier]} {s.name}")
+        candidates[s.identifier] = name
+    candidate_counts = Counter(candidates.values())
     reserved = {"self", "_named_links"}
     params: dict[str, str] = {}
     used: set[str] = set()
     for s in real:
-        base = normalize_name(s.name)
-        if counts[base] > 1:
+        base = candidates[s.identifier]
+        if candidate_counts[base] > 1:
             base = normalize_name(s.identifier)
         name, n = base, 1
         while name in used or name in reserved:

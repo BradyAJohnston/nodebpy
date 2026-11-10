@@ -82,6 +82,7 @@ Keep the old name working by forwarding to the new one, and warn with `_deprecat
 ```python
 # -- deprecated entry points, removed in 540 --
 
+
 def add_item(self, name: str, value: Any = None) -> Item:
     """Deprecated: use ``items.new(value, name)``."""
     _deprecated("add_item(name, value)", "items.new(value, name)", removed_in=540)
