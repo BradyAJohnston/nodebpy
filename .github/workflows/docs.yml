@@ -3,8 +3,7 @@ name: docs-build-deploy
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
-    tags: ["v*"]
+    branches: ["5.2"]
   pull_request:
     branches: ["*"]
 
@@ -39,11 +38,5 @@ jobs:
         run: |
           uv run quarto render docs
 
-      # Only publish to GitHub Pages when a new version tag is pushed
-      - name: Publish to GitHub Pages
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cd docs
-          uv run quarto publish gh-pages --no-render --no-prompt --no-browser
+      # The 5.2 branch only builds the docs as a check: gh-pages is published
+      # from main's tags, so a 5.2 bug-fix release doesn't replace the current docs.
