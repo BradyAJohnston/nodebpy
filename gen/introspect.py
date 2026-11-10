@@ -9,6 +9,8 @@ import bpy
 from bpy.types import bpy_prop_array
 from mathutils import Euler, Vector
 
+from nodebpy.builder._socket_order import INTERNAL_SOCKETS
+
 from .config import TREE_TYPES
 from .model import EnumInfo, NodeInfo, PropertyInfo, SocketInfo
 from .util import fmt_float, normalize_name
@@ -58,6 +60,11 @@ def collect_socket_info(
     inputs = []
     for socket in sockets:
         assert socket.node is not None
+        # inputs Blender only shows in the shader trees it builds for the GPU
+        if not is_output and socket.identifier in INTERNAL_SOCKETS.get(
+            socket.node.bl_idname, ()
+        ):
+            continue
         is_inactive = (
             socket.identifier in inactive
             if inactive is not None

@@ -8,13 +8,11 @@ from ...builder import BaseNode, SocketAccessor
 from ...builder.socket import (
     ColorSocket,
     FloatSocket,
-    IntegerSocket,
     VectorSocket,
 )
 from ...types import (
     InputColor,
     InputFloat,
-    InputInteger,
     InputVector,
 )
 from .._mixins import _RaycastMixin
@@ -121,16 +119,6 @@ class Attribute(BaseNode):
     """
     Retrieve attributes attached to objects or geometry
 
-    Parameters
-    ----------
-    lightindex : InputInteger
-        LightIndex
-
-    Inputs
-    ------
-    i.lightindex : IntegerSocket
-        LightIndex
-
     Outputs
     -------
     o.color : ColorSocket
@@ -147,8 +135,7 @@ class Attribute(BaseNode):
     node: bpy.types.ShaderNodeAttribute
 
     class _Inputs(SocketAccessor):
-        lightindex: IntegerSocket
-        """LightIndex"""
+        pass
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
@@ -169,15 +156,13 @@ class Attribute(BaseNode):
 
     def __init__(
         self,
-        lightindex: InputInteger = 0,
-        *,
         attribute_type: Literal[
             "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"
         ] = "GEOMETRY",
         attribute_name: str = "",
     ):
         super().__init__()
-        key_args = {"LightIndex": lightindex}
+        key_args = {}
         self.attribute_type = attribute_type
         self.attribute_name = attribute_name
         self._establish_links(**key_args)
@@ -658,8 +643,6 @@ class LightEvaluation(BaseNode):
 
     Parameters
     ----------
-    lightindex : InputInteger
-        LightIndex
     position : InputVector
         Position
     normal : InputVector
@@ -669,8 +652,6 @@ class LightEvaluation(BaseNode):
 
     Inputs
     ------
-    i.lightindex : IntegerSocket
-        LightIndex
     i.position : VectorSocket
         Position
     i.normal : VectorSocket
@@ -694,8 +675,6 @@ class LightEvaluation(BaseNode):
     node: bpy.types.ShaderNodeLightEvaluation
 
     class _Inputs(SocketAccessor):
-        lightindex: IntegerSocket
-        """LightIndex"""
         position: VectorSocket
         """Position"""
         normal: VectorSocket
@@ -722,7 +701,6 @@ class LightEvaluation(BaseNode):
 
     def __init__(
         self,
-        lightindex: InputInteger = 0,
         position: InputVector = None,
         normal: InputVector = None,
         roughness: InputFloat = 0.5,
@@ -730,12 +708,7 @@ class LightEvaluation(BaseNode):
         mode: Literal["DIFFUSE", "GLOSSY"] = "DIFFUSE",
     ):
         super().__init__()
-        key_args = {
-            "LightIndex": lightindex,
-            "Position": position,
-            "Normal": normal,
-            "Roughness": roughness,
-        }
+        key_args = {"Position": position, "Normal": normal, "Roughness": roughness}
         self.mode = mode
         self._establish_links(**key_args)
 
@@ -769,16 +742,6 @@ class LightInfo(BaseNode):
     """
     Exposes physical properties of the light being evaluated and computes basic information relative to the evaluation position
 
-    Parameters
-    ----------
-    lightindex : InputInteger
-        LightIndex
-
-    Inputs
-    ------
-    i.lightindex : IntegerSocket
-        LightIndex
-
     Outputs
     -------
     o.color : ColorSocket
@@ -793,8 +756,7 @@ class LightInfo(BaseNode):
     node: bpy.types.ShaderNodeLightInfo
 
     class _Inputs(SocketAccessor):
-        lightindex: IntegerSocket
-        """LightIndex"""
+        pass
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
@@ -811,9 +773,9 @@ class LightInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, lightindex: InputInteger = 0):
+    def __init__(self) -> None:
         super().__init__()
-        key_args = {"LightIndex": lightindex}
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1161,8 +1123,6 @@ class ShadowRaycast(BaseNode):
 
     Parameters
     ----------
-    lightindex : InputInteger
-        LightIndex
     position : InputVector
         Position
     softness : InputFloat
@@ -1170,8 +1130,6 @@ class ShadowRaycast(BaseNode):
 
     Inputs
     ------
-    i.lightindex : IntegerSocket
-        LightIndex
     i.position : VectorSocket
         Position
     i.softness : FloatSocket
@@ -1187,8 +1145,6 @@ class ShadowRaycast(BaseNode):
     node: bpy.types.ShaderNodeShadowRaycast
 
     class _Inputs(SocketAccessor):
-        lightindex: IntegerSocket
-        """LightIndex"""
         position: VectorSocket
         """Position"""
         softness: FloatSocket
@@ -1207,16 +1163,11 @@ class ShadowRaycast(BaseNode):
 
     def __init__(
         self,
-        lightindex: InputInteger = 0,
         position: InputVector = None,
         softness: InputFloat = 1.0,
     ):
         super().__init__()
-        key_args = {
-            "LightIndex": lightindex,
-            "Position": position,
-            "Softness": softness,
-        }
+        key_args = {"Position": position, "Softness": softness}
 
         self._establish_links(**key_args)
 

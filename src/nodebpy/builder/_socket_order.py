@@ -11,6 +11,10 @@ Each entry is one drawn item, top to bottom:
   item sockets (zone / switch / bundle items), paired by identifier.
 - ``("layout",)`` — where the node's buttons are drawn.
 - ``("panel", name, default_closed)`` … ``("end",)`` — a collapsible panel.
+
+``INTERNAL_SOCKETS`` lists, per node, the inputs Blender only makes
+available in the shader trees it builds for the GPU
+(``.available(is_gpu_internal)``); the node classes leave them out.
 """
 
 from __future__ import annotations
@@ -1710,4 +1714,35 @@ SOCKET_ORDER: dict[str, tuple[tuple, ...]] = {
         ("in", "Emission Coefficients", False),
         ("end",),
     ),
+}
+
+INTERNAL_SOCKETS: dict[str, tuple[str, ...]] = {
+    "ShaderNodeAttribute": ("LightIndex",),
+    "ShaderNodeBackground": ("Weight",),
+    "ShaderNodeBsdfAnisotropic": ("Weight",),
+    "ShaderNodeBsdfDiffuse": ("Weight",),
+    "ShaderNodeBsdfGlass": ("Weight",),
+    "ShaderNodeBsdfHair": ("Weight",),
+    "ShaderNodeBsdfHairPrincipled": ("Weight",),
+    "ShaderNodeBsdfMetallic": ("Weight",),
+    "ShaderNodeBsdfPrincipled": ("Weight",),
+    "ShaderNodeBsdfRayPortal": ("Weight",),
+    "ShaderNodeBsdfRefraction": ("Weight",),
+    "ShaderNodeBsdfSheen": ("Weight",),
+    "ShaderNodeBsdfToon": ("Weight",),
+    "ShaderNodeBsdfTranslucent": ("Weight",),
+    "ShaderNodeBsdfTransparent": ("Weight",),
+    "ShaderNodeEeveeSpecular": ("Weight",),
+    "ShaderNodeEmission": ("Weight",),
+    "ShaderNodeHoldout": ("Weight",),
+    "ShaderNodeLightAccumulation": ("LightIndex", "Weight"),
+    "ShaderNodeLightEvaluation": ("LightIndex",),
+    "ShaderNodeLightInfo": ("LightIndex",),
+    "ShaderNodeShadowRaycast": ("LightIndex",),
+    "ShaderNodeSubsurfaceScattering": ("Weight",),
+    "ShaderNodeVectorTransform": ("LightIndex",),
+    "ShaderNodeVolumeAbsorption": ("Weight",),
+    "ShaderNodeVolumeCoefficients": ("Weight",),
+    "ShaderNodeVolumePrincipled": ("Weight",),
+    "ShaderNodeVolumeScatter": ("Weight",),
 }

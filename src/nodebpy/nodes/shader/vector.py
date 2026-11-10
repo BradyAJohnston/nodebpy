@@ -8,13 +8,11 @@ from ...builder import BaseNode, SocketAccessor
 from ...builder.socket import (
     ColorSocket,
     FloatSocket,
-    IntegerSocket,
     VectorSocket,
 )
 from ...types import (
     InputColor,
     InputFloat,
-    InputInteger,
     InputVector,
 )
 
@@ -564,15 +562,11 @@ class VectorTransform(BaseNode):
 
     Parameters
     ----------
-    lightindex : InputInteger
-        LightIndex
     vector : InputVector
         Vector
 
     Inputs
     ------
-    i.lightindex : IntegerSocket
-        LightIndex
     i.vector : VectorSocket
         Vector
 
@@ -586,8 +580,6 @@ class VectorTransform(BaseNode):
     node: bpy.types.ShaderNodeVectorTransform
 
     class _Inputs(SocketAccessor):
-        lightindex: IntegerSocket
-        """LightIndex"""
         vector: VectorSocket
         """Vector"""
 
@@ -604,7 +596,6 @@ class VectorTransform(BaseNode):
 
     def __init__(
         self,
-        lightindex: InputInteger = 0,
         vector: InputVector = (0.5, 0.5, 0.5),
         *,
         vector_type: Literal["POINT", "VECTOR", "NORMAL"] = "VECTOR",
@@ -612,7 +603,7 @@ class VectorTransform(BaseNode):
         convert_to: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "OBJECT",
     ):
         super().__init__()
-        key_args = {"LightIndex": lightindex, "Vector": vector}
+        key_args = {"Vector": vector}
         self.vector_type = vector_type
         self.convert_from = convert_from
         self.convert_to = convert_to

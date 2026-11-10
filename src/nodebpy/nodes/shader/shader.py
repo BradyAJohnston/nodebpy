@@ -9,7 +9,6 @@ from ...builder.socket import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
-    IntegerSocket,
     ShaderSocket,
     VectorSocket,
 )
@@ -17,7 +16,6 @@ from ...types import (
     InputBoolean,
     InputColor,
     InputFloat,
-    InputInteger,
     InputShader,
     InputVector,
 )
@@ -89,8 +87,6 @@ class Background(BaseNode):
             Color
         strength : InputFloat
             Strength
-        weight : InputFloat
-            Weight
 
         Inputs
         ------
@@ -98,8 +94,6 @@ class Background(BaseNode):
             Color
         i.strength : FloatSocket
             Strength
-        i.weight : FloatSocket
-            Weight
 
         Outputs
         -------
@@ -115,8 +109,6 @@ class Background(BaseNode):
         """Color"""
         strength: FloatSocket
         """Strength"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         background: ShaderSocket
@@ -133,10 +125,9 @@ class Background(BaseNode):
         self,
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
         strength: InputFloat = 1.0,
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
-        key_args = {"Color": color, "Strength": strength, "Weight": weight}
+        key_args = {"Color": color, "Strength": strength}
 
         self._establish_links(**key_args)
 
@@ -153,8 +144,6 @@ class DiffuseBSDF(BaseNode):
         Roughness
     normal : InputVector
         Normal
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -164,8 +153,6 @@ class DiffuseBSDF(BaseNode):
         Roughness
     i.normal : VectorSocket
         Normal
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -183,8 +170,6 @@ class DiffuseBSDF(BaseNode):
         """Roughness"""
         normal: VectorSocket
         """Normal"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -202,15 +187,9 @@ class DiffuseBSDF(BaseNode):
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
         roughness: InputFloat = 0.0,
         normal: InputVector = None,
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
-        key_args = {
-            "Color": color,
-            "Roughness": roughness,
-            "Normal": normal,
-            "Weight": weight,
-        }
+        key_args = {"Color": color, "Roughness": roughness, "Normal": normal}
 
         self._establish_links(**key_args)
 
@@ -225,8 +204,6 @@ class Emission(BaseNode):
         Color
     strength : InputFloat
         Strength
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -234,8 +211,6 @@ class Emission(BaseNode):
         Color
     i.strength : FloatSocket
         Strength
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -251,8 +226,6 @@ class Emission(BaseNode):
         """Color"""
         strength: FloatSocket
         """Strength"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         emission: ShaderSocket
@@ -269,10 +242,9 @@ class Emission(BaseNode):
         self,
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         strength: InputFloat = 1.0,
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
-        key_args = {"Color": color, "Strength": strength, "Weight": weight}
+        key_args = {"Color": color, "Strength": strength}
 
         self._establish_links(**key_args)
 
@@ -297,8 +269,6 @@ class GlassBSDF(BaseNode):
         Normal
     tangent : InputVector
         Tangent
-    weight : InputFloat
-        Weight
     thin_film_thickness : InputFloat
         Thin Film Thickness
     thin_film_ior : InputFloat
@@ -320,8 +290,6 @@ class GlassBSDF(BaseNode):
         Normal
     i.tangent : VectorSocket
         Tangent
-    i.weight : FloatSocket
-        Weight
     i.thin_film_thickness : FloatSocket
         Thin Film Thickness
     i.thin_film_ior : FloatSocket
@@ -351,8 +319,6 @@ class GlassBSDF(BaseNode):
         """Normal"""
         tangent: VectorSocket
         """Tangent"""
-        weight: FloatSocket
-        """Weight"""
         thin_film_thickness: FloatSocket
         """Thin Film Thickness"""
         thin_film_ior: FloatSocket
@@ -378,7 +344,6 @@ class GlassBSDF(BaseNode):
         ior: InputFloat = 1.5,
         normal: InputVector = None,
         tangent: InputVector = None,
-        weight: InputFloat = 0.0,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
         *,
@@ -393,7 +358,6 @@ class GlassBSDF(BaseNode):
             "IOR": ior,
             "Normal": normal,
             "Tangent": tangent,
-            "Weight": weight,
             "Thin Film Thickness": thin_film_thickness,
             "Thin Film IOR": thin_film_ior,
         }
@@ -427,8 +391,6 @@ class GlossyBSDF(BaseNode):
         Normal
     tangent : InputVector
         Tangent
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -444,8 +406,6 @@ class GlossyBSDF(BaseNode):
         Normal
     i.tangent : VectorSocket
         Tangent
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -469,8 +429,6 @@ class GlossyBSDF(BaseNode):
         """Normal"""
         tangent: VectorSocket
         """Tangent"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -491,7 +449,6 @@ class GlossyBSDF(BaseNode):
         rotation: InputFloat = 0.0,
         normal: InputVector = None,
         tangent: InputVector = None,
-        weight: InputFloat = 0.0,
         *,
         distribution: Literal[
             "BECKMANN", "GGX", "ASHIKHMIN_SHIRLEY", "MULTI_GGX"
@@ -505,7 +462,6 @@ class GlossyBSDF(BaseNode):
             "Rotation": rotation,
             "Normal": normal,
             "Tangent": tangent,
-            "Weight": weight,
         }
         self.distribution = distribution
         self._establish_links(**key_args)
@@ -539,8 +495,6 @@ class HairBSDF(BaseNode):
         RoughnessV
     tangent : InputVector
         Tangent
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -554,8 +508,6 @@ class HairBSDF(BaseNode):
         RoughnessV
     i.tangent : VectorSocket
         Tangent
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -577,8 +529,6 @@ class HairBSDF(BaseNode):
         """RoughnessV"""
         tangent: VectorSocket
         """Tangent"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -598,7 +548,6 @@ class HairBSDF(BaseNode):
         roughnessu: InputFloat = 0.1,
         roughnessv: InputFloat = 1.0,
         tangent: InputVector = None,
-        weight: InputFloat = 0.0,
         *,
         component: Literal["Reflection", "Transmission"] = "Reflection",
     ):
@@ -609,7 +558,6 @@ class HairBSDF(BaseNode):
             "RoughnessU": roughnessu,
             "RoughnessV": roughnessv,
             "Tangent": tangent,
-            "Weight": weight,
         }
         self.component = component
         self._establish_links(**key_args)
@@ -628,16 +576,6 @@ class Holdout(BaseNode):
         Create a "hole" in the image with zero alpha transparency, which is useful for compositing.
     Note: the holdout shader can only create alpha when transparency is enabled in the film settings
 
-        Parameters
-        ----------
-        weight : InputFloat
-            Weight
-
-        Inputs
-        ------
-        i.weight : FloatSocket
-            Weight
-
         Outputs
         -------
         o.holdout : ShaderSocket
@@ -648,8 +586,7 @@ class Holdout(BaseNode):
     node: bpy.types.ShaderNodeHoldout
 
     class _Inputs(SocketAccessor):
-        weight: FloatSocket
-        """Weight"""
+        pass
 
     class _Outputs(SocketAccessor):
         holdout: ShaderSocket
@@ -662,9 +599,9 @@ class Holdout(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, weight: InputFloat = 0.0):
+    def __init__(self) -> None:
         super().__init__()
-        key_args = {"Weight": weight}
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -676,8 +613,6 @@ class LightAccumulation(BaseNode):
 
         Parameters
         ----------
-        lightindex : InputInteger
-            LightIndex
         diffuse_light : InputColor
             Diffuse Light
         diffuse_color : InputColor
@@ -690,13 +625,9 @@ class LightAccumulation(BaseNode):
             Transmission Light
         transmission_color : InputColor
             Transmission Color
-        weight : InputFloat
-            Weight
 
         Inputs
         ------
-        i.lightindex : IntegerSocket
-            LightIndex
         i.diffuse_light : ColorSocket
             Diffuse Light
         i.diffuse_color : ColorSocket
@@ -709,8 +640,6 @@ class LightAccumulation(BaseNode):
             Transmission Light
         i.transmission_color : ColorSocket
             Transmission Color
-        i.weight : FloatSocket
-            Weight
 
         Outputs
         -------
@@ -722,8 +651,6 @@ class LightAccumulation(BaseNode):
     node: bpy.types.ShaderNodeLightAccumulation
 
     class _Inputs(SocketAccessor):
-        lightindex: IntegerSocket
-        """LightIndex"""
         diffuse_light: ColorSocket
         """Diffuse Light"""
         diffuse_color: ColorSocket
@@ -736,8 +663,6 @@ class LightAccumulation(BaseNode):
         """Transmission Light"""
         transmission_color: ColorSocket
         """Transmission Color"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         shader: ShaderSocket
@@ -752,25 +677,21 @@ class LightAccumulation(BaseNode):
 
     def __init__(
         self,
-        lightindex: InputInteger = 0,
         diffuse_light: InputColor = None,
         diffuse_color: InputColor = None,
         glossy_light: InputColor = None,
         glossy_color: InputColor = None,
         transmission_light: InputColor = None,
         transmission_color: InputColor = None,
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
-            "LightIndex": lightindex,
             "Diffuse Light": diffuse_light,
             "Diffuse Color": diffuse_color,
             "Glossy Light": glossy_light,
             "Glossy Color": glossy_color,
             "Transmission Light": transmission_light,
             "Transmission Color": transmission_color,
-            "Weight": weight,
         }
 
         self._establish_links(**key_args)
@@ -800,8 +721,6 @@ class MetallicBSDF(BaseNode):
         Normal
     tangent : InputVector
         Tangent
-    weight : InputFloat
-        Weight
     thin_film_thickness : InputFloat
         Thin Film Thickness
     thin_film_ior : InputFloat
@@ -827,8 +746,6 @@ class MetallicBSDF(BaseNode):
         Normal
     i.tangent : VectorSocket
         Tangent
-    i.weight : FloatSocket
-        Weight
     i.thin_film_thickness : FloatSocket
         Thin Film Thickness
     i.thin_film_ior : FloatSocket
@@ -862,8 +779,6 @@ class MetallicBSDF(BaseNode):
         """Normal"""
         tangent: VectorSocket
         """Tangent"""
-        weight: FloatSocket
-        """Weight"""
         thin_film_thickness: FloatSocket
         """Thin Film Thickness"""
         thin_film_ior: FloatSocket
@@ -891,7 +806,6 @@ class MetallicBSDF(BaseNode):
         rotation: InputFloat = 0.0,
         normal: InputVector = None,
         tangent: InputVector = None,
-        weight: InputFloat = 0.0,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
         *,
@@ -909,7 +823,6 @@ class MetallicBSDF(BaseNode):
             "Rotation": rotation,
             "Normal": normal,
             "Tangent": tangent,
-            "Weight": weight,
             "Thin Film Thickness": thin_film_thickness,
             "Thin Film IOR": thin_film_ior,
         }
@@ -1077,8 +990,6 @@ class PrincipledBSDF(BaseNode):
         Thin Wall
     normal : InputVector
         Normal
-    weight : InputFloat
-        Weight
     diffuse_roughness : InputFloat
         Diffuse Roughness
     subsurface_weight : InputFloat
@@ -1148,8 +1059,6 @@ class PrincipledBSDF(BaseNode):
         Thin Wall
     i.normal : VectorSocket
         Normal
-    i.weight : FloatSocket
-        Weight
     i.diffuse_roughness : FloatSocket
         Diffuse Roughness
     i.subsurface_weight : FloatSocket
@@ -1227,8 +1136,6 @@ class PrincipledBSDF(BaseNode):
         """Thin Wall"""
         normal: VectorSocket
         """Normal"""
-        weight: FloatSocket
-        """Weight"""
         diffuse_roughness: FloatSocket
         """Diffuse Roughness"""
         subsurface_weight: FloatSocket
@@ -1302,7 +1209,6 @@ class PrincipledBSDF(BaseNode):
         alpha: InputFloat = 1.0,
         thin_wall: InputBoolean = False,
         normal: InputVector = None,
-        weight: InputFloat = 0.0,
         diffuse_roughness: InputFloat = 0.0,
         subsurface_weight: InputFloat = 0.0,
         subsurface_radius: InputVector = (1.0, 0.2, 0.1),
@@ -1344,7 +1250,6 @@ class PrincipledBSDF(BaseNode):
             "Alpha": alpha,
             "Thin Wall": thin_wall,
             "Normal": normal,
-            "Weight": weight,
             "Diffuse Roughness": diffuse_roughness,
             "Subsurface Weight": subsurface_weight,
             "Subsurface Radius": subsurface_radius,
@@ -1434,8 +1339,6 @@ class PrincipledHairBSDF(BaseNode):
         Random Roughness
     random : InputFloat
         Random
-    weight : InputFloat
-        Weight
     reflection : InputFloat
         Reflection
     transmission : InputFloat
@@ -1473,8 +1376,6 @@ class PrincipledHairBSDF(BaseNode):
         Random Roughness
     i.random : FloatSocket
         Random
-    i.weight : FloatSocket
-        Weight
     i.reflection : FloatSocket
         Reflection
     i.transmission : FloatSocket
@@ -1525,8 +1426,6 @@ class PrincipledHairBSDF(BaseNode):
         """Random Roughness"""
         random: FloatSocket
         """Random"""
-        weight: FloatSocket
-        """Weight"""
         reflection: FloatSocket
         """Reflection"""
         transmission: FloatSocket
@@ -1561,7 +1460,6 @@ class PrincipledHairBSDF(BaseNode):
         random_color: InputFloat = 0.0,
         random_roughness: InputFloat = 0.0,
         random: InputFloat = None,
-        weight: InputFloat = 0.0,
         reflection: InputFloat = 1.0,
         transmission: InputFloat = 1.0,
         secondary_reflection: InputFloat = 1.0,
@@ -1585,7 +1483,6 @@ class PrincipledHairBSDF(BaseNode):
             "Random Color": random_color,
             "Random Roughness": random_roughness,
             "Random": random,
-            "Weight": weight,
             "R lobe": reflection,
             "TT lobe": transmission,
             "TRT lobe": secondary_reflection,
@@ -1623,8 +1520,6 @@ class RayPortalBSDF(BaseNode):
         Position
     direction : InputVector
         Direction
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -1634,8 +1529,6 @@ class RayPortalBSDF(BaseNode):
         Position
     i.direction : VectorSocket
         Direction
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -1653,8 +1546,6 @@ class RayPortalBSDF(BaseNode):
         """Position"""
         direction: VectorSocket
         """Direction"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -1672,15 +1563,9 @@ class RayPortalBSDF(BaseNode):
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         position: InputVector = None,
         direction: InputVector = None,
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
-        key_args = {
-            "Color": color,
-            "Position": position,
-            "Direction": direction,
-            "Weight": weight,
-        }
+        key_args = {"Color": color, "Position": position, "Direction": direction}
 
         self._establish_links(**key_args)
 
@@ -1699,8 +1584,6 @@ class RefractionBSDF(BaseNode):
         IOR
     normal : InputVector
         Normal
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -1712,8 +1595,6 @@ class RefractionBSDF(BaseNode):
         IOR
     i.normal : VectorSocket
         Normal
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -1733,8 +1614,6 @@ class RefractionBSDF(BaseNode):
         """IOR"""
         normal: VectorSocket
         """Normal"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -1753,7 +1632,6 @@ class RefractionBSDF(BaseNode):
         roughness: InputFloat = 0.0,
         ior: InputFloat = 1.45,
         normal: InputVector = None,
-        weight: InputFloat = 0.0,
         *,
         distribution: Literal["BECKMANN", "GGX"] = "BECKMANN",
     ):
@@ -1763,7 +1641,6 @@ class RefractionBSDF(BaseNode):
             "Roughness": roughness,
             "IOR": ior,
             "Normal": normal,
-            "Weight": weight,
         }
         self.distribution = distribution
         self._establish_links(**key_args)
@@ -1790,8 +1667,6 @@ class SheenBSDF(BaseNode):
             Roughness
         normal : InputVector
             Normal
-        weight : InputFloat
-            Weight
 
         Inputs
         ------
@@ -1801,8 +1676,6 @@ class SheenBSDF(BaseNode):
             Roughness
         i.normal : VectorSocket
             Normal
-        i.weight : FloatSocket
-            Weight
 
         Outputs
         -------
@@ -1820,8 +1693,6 @@ class SheenBSDF(BaseNode):
         """Roughness"""
         normal: VectorSocket
         """Normal"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -1839,17 +1710,11 @@ class SheenBSDF(BaseNode):
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
         roughness: InputFloat = 0.5,
         normal: InputVector = None,
-        weight: InputFloat = 0.0,
         *,
         distribution: Literal["ASHIKHMIN", "MICROFIBER"] = "MICROFIBER",
     ):
         super().__init__()
-        key_args = {
-            "Color": color,
-            "Roughness": roughness,
-            "Normal": normal,
-            "Weight": weight,
-        }
+        key_args = {"Color": color, "Roughness": roughness, "Normal": normal}
         self.distribution = distribution
         self._establish_links(**key_args)
 
@@ -1886,8 +1751,6 @@ class SpecularBSDF(BaseNode):
         Clear Coat Roughness
     clear_coat_normal : InputVector
         Clear Coat Normal
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -1909,8 +1772,6 @@ class SpecularBSDF(BaseNode):
         Clear Coat Roughness
     i.clear_coat_normal : VectorSocket
         Clear Coat Normal
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -1940,8 +1801,6 @@ class SpecularBSDF(BaseNode):
         """Clear Coat Roughness"""
         clear_coat_normal: VectorSocket
         """Clear Coat Normal"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -1965,7 +1824,6 @@ class SpecularBSDF(BaseNode):
         clear_coat: InputFloat = 0.0,
         clear_coat_roughness: InputFloat = 0.0,
         clear_coat_normal: InputVector = None,
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -1978,7 +1836,6 @@ class SpecularBSDF(BaseNode):
             "Clear Coat": clear_coat,
             "Clear Coat Roughness": clear_coat_roughness,
             "Clear Coat Normal": clear_coat_normal,
-            "Weight": weight,
         }
 
         self._establish_links(**key_args)
@@ -2005,8 +1862,6 @@ class SubsurfaceScattering(BaseNode):
             Anisotropy
         normal : InputVector
             Normal
-        weight : InputFloat
-            Weight
 
         Inputs
         ------
@@ -2024,8 +1879,6 @@ class SubsurfaceScattering(BaseNode):
             Anisotropy
         i.normal : VectorSocket
             Normal
-        i.weight : FloatSocket
-            Weight
 
         Outputs
         -------
@@ -2051,8 +1904,6 @@ class SubsurfaceScattering(BaseNode):
         """Anisotropy"""
         normal: VectorSocket
         """Normal"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bssrdf: ShaderSocket
@@ -2074,7 +1925,6 @@ class SubsurfaceScattering(BaseNode):
         roughness: InputFloat = 1.0,
         anisotropy: InputFloat = 0.0,
         normal: InputVector = None,
-        weight: InputFloat = 0.0,
         *,
         falloff: Literal[
             "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
@@ -2089,7 +1939,6 @@ class SubsurfaceScattering(BaseNode):
             "Roughness": roughness,
             "Anisotropy": anisotropy,
             "Normal": normal,
-            "Weight": weight,
         }
         self.falloff = falloff
         self._establish_links(**key_args)
@@ -2124,8 +1973,6 @@ class ToonBSDF(BaseNode):
         Smooth
     normal : InputVector
         Normal
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -2137,8 +1984,6 @@ class ToonBSDF(BaseNode):
         Smooth
     i.normal : VectorSocket
         Normal
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -2158,8 +2003,6 @@ class ToonBSDF(BaseNode):
         """Smooth"""
         normal: VectorSocket
         """Normal"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -2178,18 +2021,11 @@ class ToonBSDF(BaseNode):
         size: InputFloat = 0.5,
         smooth: InputFloat = 0.0,
         normal: InputVector = None,
-        weight: InputFloat = 0.0,
         *,
         component: Literal["DIFFUSE", "GLOSSY"] = "DIFFUSE",
     ):
         super().__init__()
-        key_args = {
-            "Color": color,
-            "Size": size,
-            "Smooth": smooth,
-            "Normal": normal,
-            "Weight": weight,
-        }
+        key_args = {"Color": color, "Size": size, "Smooth": smooth, "Normal": normal}
         self.component = component
         self._establish_links(**key_args)
 
@@ -2212,8 +2048,6 @@ class TranslucentBSDF(BaseNode):
         Color
     normal : InputVector
         Normal
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -2221,8 +2055,6 @@ class TranslucentBSDF(BaseNode):
         Color
     i.normal : VectorSocket
         Normal
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -2238,8 +2070,6 @@ class TranslucentBSDF(BaseNode):
         """Color"""
         normal: VectorSocket
         """Normal"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -2256,10 +2086,9 @@ class TranslucentBSDF(BaseNode):
         self,
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
         normal: InputVector = None,
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
-        key_args = {"Color": color, "Normal": normal, "Weight": weight}
+        key_args = {"Color": color, "Normal": normal}
 
         self._establish_links(**key_args)
 
@@ -2272,15 +2101,11 @@ class TransparentBSDF(BaseNode):
     ----------
     color : InputColor
         Color
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
     i.color : ColorSocket
         Color
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -2294,8 +2119,6 @@ class TransparentBSDF(BaseNode):
     class _Inputs(SocketAccessor):
         color: ColorSocket
         """Color"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
@@ -2308,12 +2131,8 @@ class TransparentBSDF(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(
-        self,
-        color: InputColor = (1.0, 1.0, 1.0, 1.0),
-        weight: InputFloat = 0.0,
-    ):
+    def __init__(self, color: InputColor = (1.0, 1.0, 1.0, 1.0)):
         super().__init__()
-        key_args = {"Color": color, "Weight": weight}
+        key_args = {"Color": color}
 
         self._establish_links(**key_args)
