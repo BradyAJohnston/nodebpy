@@ -1,9 +1,12 @@
 # nodebpy
 
-[![Run
-Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml)
 [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy)
 [![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://app.codspeed.io/BradyAJohnston/nodebpy?utm_source=badge)
+
+| nodebpy | Blender 5.2 | Blender 5.3 |
+|----|----|----|
+| 530 (`main`) | [![Blender 5.2](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests-5.2.yml/badge.svg?branch=main)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests-5.2.yml?query=branch%3Amain) | [![Blender 5.3](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests-5.3.yml/badge.svg?branch=main)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests-5.3.yml?query=branch%3Amain) |
+| 520 (`5.2`) | [![Blender 5.2](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests-5.2.yml/badge.svg?branch=5.2)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests-5.2.yml?query=branch%3A5.2) | [![Blender 5.3](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests-5.3.yml/badge.svg?branch=5.2)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests-5.3.yml?query=branch%3A5.2) |
 
 Build node trees in Blender more elegantly with Python code. Geometry Nodes, Shader Nodes and Compositor nodes are all fully supported, with type hints and IDE auto-completion throughout.
 
