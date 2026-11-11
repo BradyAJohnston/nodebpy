@@ -44,6 +44,11 @@ On the builder: `tree.tree` (the bpy NodeTree), `len(tree)` (nodes), `tree.input
   (`img.node.image = bpy.data.images["x.png"]`).
 - `g.Compare(operation, data_type, **sockets)` takes its enums positionally; prefer
   `g.Compare.float.less_than(a, b)` or `<`.
+- `muted(source, value=None)` (`from nodebpy import muted`) wraps a node or socket
+  passed as an input, so its link is muted and the input uses its own value (`value`,
+  or the socket's default). It works in arguments, lists, `>>` and items; not as an
+  operand (`muted(a) + b` raises), so use the constructor there:
+  `g.Math.add(muted(a), b)`. The mute lands when the `with` block exits.
 
 ## 3. Sockets and socket methods
 
@@ -146,3 +151,37 @@ Check the bundled Essentials groups (`nodebpy lookup search` lists them as
 - `SugiyamaOptions(...)` from `nodebpy` for fine control, passed as `arrange=`.
 - `nodebpy.arrange(bpy_tree, method)` re-arranges any tree, including hand-made ones.
 - `collapse=True` collapses the nodes.
+- `.props(...)` sets the properties every node has and returns what it was called on
+  (a node, or a socket for the node it belongs to); `None` leaves a property alone:
+
+  | Argument | Sets |
+  |---|---|
+  | `label="Lift"` | the header label |
+  | `color="#FFAA00"` or `(r, g, b)` | a custom header colour |
+  | `width=200`, `height=` | the size (`height` only matters on frames) |
+  | `hide=True` | collapse the node |
+  | `show_options=False` | fold the node's dropdowns and toggles |
+  | `hide_inputs=["Selection"]`, `hide_outputs=[...]` | hide sockets by name; `"Value#1"` is the second visible "Value". Blender won't hide a linked socket |
+  | `mute=True` | mute (bypass) the node |
+  | `warning_propagation="ERRORS"` | which warnings reach the group node |
+  | `pin_gizmo=True` | keep a value or gizmo node's gizmo shown when it isn't selected |
+  | `pin_gizmo_inputs=["Offset"]` | the same, for a group node's inputs |
+
+- Frames take `g.Frame(label, shrink=True, text=None, label_size=20)`; colour and size
+  go through `.props(...)`. Built on its own (not as a `with`), a frame is empty.
+
+```python
+from nodebpy import geometry as g
+from nodebpy import muted
+
+with g.tree("Props Example", clear=True) as tree:
+    geo = tree.inputs.geometry("Geometry")
+    with g.Frame("Lift", label_size=28).props(color="#336699"):
+        offset = g.Value(0.5).props(label="Height", pin_gizmo=True)
+        lifted = g.SetPosition(geometry=geo, offset=g.CombineXYZ(z=offset)).props(
+            hide_inputs=["Selection"], width=180
+        )
+    g.Frame("Notes", shrink=False).props(width=300, height=150)
+    joined = g.JoinGeometry([lifted, muted(geo)])
+    joined >> tree.outputs.geometry("Geometry")
+```

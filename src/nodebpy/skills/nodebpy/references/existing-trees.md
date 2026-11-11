@@ -56,6 +56,10 @@ It works on hand-made trees too, and `tree.to_python()` on a builder. Options:
 - `in_place=True`: the header uses `clear=True`, so the code rebuilds the same datablock.
 - `top_level="class"`: emits a `CustomGeometryGroup` subclass (`Cls.create_group()`).
 - `snapshot_positions=True`: keeps hand-made positions (`arrange=None` plus positions).
+- Labels, colours, widths, collapsed nodes, hidden sockets, mutes, warning propagation
+  and gizmo pins come back as `.props(...)` on each node (a tree whose nodes are all
+  collapsed as `collapse=True`), frame settings as `g.Frame(...)` arguments, and muted
+  links as `muted(...)`.
 - `groups="reference"`: calls the classes that build a tree's groups (`g.Array(...)`,
   `SliceToIndices(...)`, a live script's or your modules' classes) instead of writing
   them out. Use it for live work; groups no loaded class builds, or edited by hand, are

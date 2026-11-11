@@ -137,6 +137,12 @@ with g.tree("Scatter Cubes", clear=True, is_modifier=True) as tree:
 - **Factor repeated sub-graphs** into plain Python functions that take and return
   sockets; write a `CustomGeometryGroup` when it should be one group node. Frames:
   `with g.Frame("Label"):`. Layout runs when the `with` block exits.
+- **`.props(...)` sets what every node has** and returns the node (or socket), so it
+  ends a chain: `label=`, `color="#FFAA00"`, `width=`, `hide=True` (collapse),
+  `hide_inputs=["Selection"]`, `mute=True`, `warning_propagation="ERRORS"`,
+  `pin_gizmo=True`. **`muted(x)`** (`from nodebpy import muted`) links `x` through a
+  muted link, the input then using its own value
+  ([references/writing-trees.md](references/writing-trees.md), section 7).
 
 ## 4. Errors and what they mean
 
