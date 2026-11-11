@@ -4959,7 +4959,7 @@ def _node_props_kwargs(node, collapse: bool = False) -> dict[str, Expr]:
     that differ from a newly built node's: label, colour, width, collapsed
     state (unless ``collapse`` builds every node collapsed), options, hidden
     sockets, mute and warning propagation."""
-    from ..builder._utils import visible_socket_key
+    from ..builder._utils import gizmo_socket, visible_socket_key
 
     kwargs: dict[str, Expr] = {}
     if node.label:
@@ -4985,6 +4985,18 @@ def _node_props_kwargs(node, collapse: bool = False) -> dict[str, Expr]:
         kwargs["mute"] = Lit(True)
     if node.warning_propagation != "ALL":
         kwargs["warning_propagation"] = Lit(node.warning_propagation)
+    own = None
+    if node.outputs or node.bl_idname.startswith("GeometryNodeGizmo"):
+        own = gizmo_socket(node)
+        if own.pin_gizmo:
+            kwargs["pin_gizmo"] = Lit(True)
+    pinned = [
+        visible_socket_key(s)
+        for s in node.inputs
+        if s.enabled and s.pin_gizmo and s != own
+    ]
+    if pinned:
+        kwargs["pin_gizmo_inputs"] = Raw("[" + ", ".join(_fmt(k) for k in pinned) + "]")
     return kwargs
 
 

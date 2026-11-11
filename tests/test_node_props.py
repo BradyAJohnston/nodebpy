@@ -264,3 +264,60 @@ def test_shrinking_frame_size_is_not_written():
             x + 1.0 >> tree.outputs.float("Out")
     frame.node.width = 400
     assert 'with g.Frame("Fit"):' in to_python(tree, format=False)
+
+
+# ---------------------------------------------------------------------------
+# Gizmo pins
+# ---------------------------------------------------------------------------
+
+
+def test_pin_gizmo_pins_the_socket_blender_reads():
+    """A value node's pin is on its output; a gizmo node's on its first
+    input."""
+    with TreeBuilder("PropsPin", arrange=None) as tree:
+        value = g.Value(1.0).props(pin_gizmo=True)
+        gizmo = g.LinearGizmo(value).props(pin_gizmo=True)
+        g.SetPosition(offset=g.CombineXYZ(z=value)) >> tree.outputs.geometry("Out")
+    assert value.node.outputs[0].pin_gizmo
+    assert gizmo.node.inputs[0].pin_gizmo
+
+
+def test_pin_gizmo_round_trips():
+    from nodebpy.builder import CustomGeometryGroup
+
+    class Lift(CustomGeometryGroup):
+        _name = "PropsPinLift"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            amount = tree.inputs.float("Amount")
+            tilt = tree.inputs.float("Tilt")
+            g.LinearGizmo(amount)
+            g.LinearGizmo(tilt)
+            (
+                geo
+                >> g.SetPosition(offset=g.CombineXYZ(z=amount))
+                >> tree.outputs.geometry("Geometry")
+            )
+
+    with TreeBuilder("PropsPinRoundTrip", arrange=None) as tree:
+        value = g.Value(2.0).props(pin_gizmo=True)
+        g.LinearGizmo(value).props(pin_gizmo=True)
+        lift = Lift(Amount=value).props(pin_gizmo_inputs=["Tilt"])
+        lift >> tree.outputs.geometry("Out")
+    assert lift.node.inputs["Tilt"].pin_gizmo
+
+    code = to_python(tree, format=False)
+    assert code.count(".props(pin_gizmo=True)") == 2
+    assert '.props(pin_gizmo_inputs=["Tilt"])' in code
+
+    bpy.data.node_groups.remove(tree.tree)
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    nodes = {n.bl_idname: n for n in rebuilt.nodes}
+    assert nodes["ShaderNodeValue"].outputs[0].pin_gizmo
+    assert nodes["GeometryNodeGizmoLinear"].inputs[0].pin_gizmo
+    group = nodes["GeometryNodeGroup"]
+    assert group.inputs["Tilt"].pin_gizmo
+    assert not group.inputs["Amount"].pin_gizmo

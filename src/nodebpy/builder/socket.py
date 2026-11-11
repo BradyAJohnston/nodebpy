@@ -238,6 +238,8 @@ class BaseSocket:
         hide_outputs: Iterable[str] = (),
         mute: bool | None = None,
         warning_propagation: WarningPropagation | None = None,
+        pin_gizmo: bool | None = None,
+        pin_gizmo_inputs: Iterable[str] = (),
     ) -> Self:
         """Set the properties of the node this socket belongs to and return
         the socket, so it can go at the end of a chain::
@@ -260,6 +262,11 @@ class BaseSocket:
             mute: Mute (bypass) the node.
             warning_propagation: Which of the node's warnings show on the
                 group node it sits in.
+            pin_gizmo: Keep the node's gizmo visible when it isn't selected:
+                a gizmo node's, or a value node's (Value, Vector, ...).
+            pin_gizmo_inputs: Inputs whose gizmos stay visible when the node
+                isn't selected, by name; for group nodes passing a gizmo
+                through.
         """
         apply_node_props(
             self.node,
@@ -273,6 +280,8 @@ class BaseSocket:
             hide_outputs=hide_outputs,
             mute=mute,
             warning_propagation=warning_propagation,
+            pin_gizmo=pin_gizmo,
+            pin_gizmo_inputs=pin_gizmo_inputs,
         )
         return self
 

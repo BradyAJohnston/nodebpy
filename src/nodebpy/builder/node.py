@@ -159,6 +159,8 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         hide_outputs: Iterable[str] = (),
         mute: bool | None = None,
         warning_propagation: WarningPropagation | None = None,
+        pin_gizmo: bool | None = None,
+        pin_gizmo_inputs: Iterable[str] = (),
     ) -> Self:
         """Set the properties every node has and return the node, so it can
         go at the end of a chain::
@@ -183,6 +185,11 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             mute: Mute (bypass) the node.
             warning_propagation: Which of the node's warnings show on the
                 group node it sits in.
+            pin_gizmo: Keep the node's gizmo visible when it isn't selected:
+                a gizmo node's, or a value node's (Value, Vector, ...).
+            pin_gizmo_inputs: Inputs whose gizmos stay visible when the node
+                isn't selected, by name; for group nodes passing a gizmo
+                through.
         """
         apply_node_props(
             self.node,
@@ -196,6 +203,8 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             hide_outputs=hide_outputs,
             mute=mute,
             warning_propagation=warning_propagation,
+            pin_gizmo=pin_gizmo,
+            pin_gizmo_inputs=pin_gizmo_inputs,
         )
         return self
 

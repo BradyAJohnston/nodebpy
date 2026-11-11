@@ -218,6 +218,8 @@ def apply_node_props(
     hide_outputs: Iterable[str] = (),
     mute: bool | None = None,
     warning_propagation: WarningPropagation | None = None,
+    pin_gizmo: bool | None = None,
+    pin_gizmo_inputs: Iterable[str] = (),
 ) -> None:
     """Set the properties every node has; ``None`` leaves one unchanged."""
     if label is not None:
@@ -241,6 +243,21 @@ def apply_node_props(
         node.mute = mute
     if warning_propagation is not None:
         node.warning_propagation = warning_propagation
+    if pin_gizmo is not None:
+        gizmo_socket(node).pin_gizmo = pin_gizmo
+    for key in pin_gizmo_inputs:
+        _resolve_visible_socket(node.inputs, key, "input", node).pin_gizmo = True
+
+
+def gizmo_socket(node: Node) -> NodeSocket:
+    """The socket whose ``pin_gizmo`` Blender reads for the node's own gizmo:
+    a gizmo node's first input, or a value node's (Value, Vector, ...)
+    output."""
+    if node.bl_idname.startswith("GeometryNodeGizmo"):
+        return node.inputs[0]
+    if not node.outputs:
+        raise ValueError(f"{node.bl_idname} has no gizmo to pin")
+    return node.outputs[0]
 
 
 def resolve_socket_key(sockets, key: str) -> NodeSocket | None:
