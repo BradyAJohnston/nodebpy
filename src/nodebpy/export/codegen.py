@@ -1203,6 +1203,9 @@ class EmitContext:
     pending_lines: list[str] = field(default_factory=list)
     zones: dict[str, _ZoneState] = field(default_factory=dict)
     collector: _GroupCollector | None = None
+    # Every node the body builds is collapsed: the tree is built with
+    # ``collapse=True`` and no node needs ``.props(hide=True)``.
+    collapse: bool = False
 
     def input_link(self, node: Node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
@@ -4403,6 +4406,8 @@ def to_python(
             ctor_args.append("arrange=None")
         if in_place:
             ctor_args.append("clear=True")
+        if emission.collapse:
+            ctor_args.append("collapse=True")
         # The modifier/tool flags are constructor options; the other tree
         # properties only the class form carries.
         tree_props = _tree_prop_overrides(node_tree)
@@ -4557,14 +4562,21 @@ def _layout_snapshot_lines(
         entry_links = "".join(
             f"{_fmt(entry)}, " for entry in sorted(incoming.get(node.name, ()))
         )
-        # Display state differing from a new node's, left out when empty so
-        # trees without it dump as before.
-        extras = ', {"hide": True}' if node.hide else ""
         lines.append(
             f"{indent}    {_fmt(node.name)}: ({_fmt(node.bl_idname)}, "
-            f"{_fmt(loc)}, {parent}, ({entry_links}){extras}),"
+            f"{_fmt(loc)}, {parent}, ({entry_links})),"
         )
     lines.append(f"{indent}}}")
+    # The builder makes the group input/output nodes itself, so no
+    # ``.props(...)`` call reaches them: collapse them by their authored names,
+    # which the snapshot has just restored. Extra Group Input instances carry
+    # their own ``"hide"`` in the splits block.
+    for node in sorted(node_tree.nodes, key=lambda n: n.name):
+        if not node.hide or node.bl_idname not in ("NodeGroupInput", "NodeGroupOutput"):
+            continue
+        if node.bl_idname == "NodeGroupInput" and node.name != primary_input:
+            continue
+        lines.append(f"{indent}tree.tree.nodes[{_fmt(node.name)}].hide = True")
     return lines
 
 
@@ -4599,6 +4611,7 @@ class _TreeEmission:
     body_lines: list[str]
     out_lines: list[str]
     used_aliases: set[str]
+    collapse: bool = False
 
 
 @dataclass
@@ -4839,16 +4852,65 @@ def _tree_prop_overrides(node_tree) -> dict[str, Any]:
     }
 
 
-def _node_prop_lines(node) -> list[str]:
-    """Assignments for node-instance properties no constructor expresses (a
-    muted/bypassed node, non-default warning propagation), rendered as
-    ``<attr> = <value>`` to append after ``<var>.node.``."""
-    lines: list[str] = []
-    if getattr(node, "mute", False):
-        lines.append("mute = True")
-    if getattr(node, "warning_propagation", "ALL") != "ALL":
-        lines.append(f"warning_propagation = {_fmt(node.warning_propagation)}")
-    return lines
+def _color_expr(color) -> Expr:
+    """A node colour as a hex string when 8-bit channels hold it exactly (to
+    the precision parity compares), else as an ``(r, g, b)`` tuple."""
+    channels = tuple(color)
+    if all(abs(round(c * 255) / 255 - c) < 5e-5 for c in channels):
+        return Lit("#" + "".join(f"{round(c * 255):02X}" for c in channels))
+    return Lit(tuple(round(c, 4) for c in channels))
+
+
+# Nodes the builder's ``collapse`` option doesn't reach: it makes the group
+# input/output nodes itself, frames are ``with`` blocks, and reroutes are
+# dissolved or carry no header to collapse.
+_NOT_COLLAPSIBLE = frozenset(
+    {"NodeGroupInput", "NodeGroupOutput", "NodeFrame", "NodeReroute"}
+)
+
+
+def _all_collapsed(node_tree) -> bool:
+    """Whether every node the body builds is collapsed, so the tree can be
+    built with ``collapse=True`` instead of a ``.props(hide=True)`` per node.
+    Any expanded node rules it out: ``collapse`` would collapse every node
+    the body builds, including ones it doesn't write out (a dissolved
+    Separate XYZ)."""
+    nodes = [n for n in node_tree.nodes if n.bl_idname not in _NOT_COLLAPSIBLE]
+    return bool(nodes) and all(n.hide for n in nodes)
+
+
+def _node_props_kwargs(node, collapse: bool = False) -> dict[str, Expr]:
+    """``.props(...)`` keyword arguments for the properties every node has
+    that differ from a newly built node's: label, colour, width, collapsed
+    state (unless ``collapse`` builds every node collapsed), options, hidden
+    sockets, mute and warning propagation."""
+    from ..builder._utils import visible_socket_key
+
+    kwargs: dict[str, Expr] = {}
+    if node.label:
+        kwargs["label"] = Lit(node.label)
+    if node.use_custom_color:
+        kwargs["color"] = _color_expr(node.color)
+    group_tree = getattr(node, "node_tree", None)
+    # A built node takes the type's default width; a group node too, since
+    # its tree's default_group_node_width only applies when added in the UI.
+    if abs(node.width - node.bl_width_default) > 0.01:
+        kwargs["width"] = Lit(round(node.width, 2))
+    if node.hide and not collapse:
+        kwargs["hide"] = Lit(True)
+    # Group nodes are left alone: nodebpy builds them with their options (the
+    # node-group selector) folded away, where the editor shows them.
+    if group_tree is None and not node.show_options:
+        kwargs["show_options"] = Lit(False)
+    for side, sockets in (("hide_inputs", node.inputs), ("hide_outputs", node.outputs)):
+        hidden = [visible_socket_key(s) for s in sockets if s.enabled and s.hide]
+        if hidden:
+            kwargs[side] = Raw("[" + ", ".join(_fmt(k) for k in hidden) + "]")
+    if node.mute:
+        kwargs["mute"] = Lit(True)
+    if node.warning_propagation != "ALL":
+        kwargs["warning_propagation"] = Lit(node.warning_propagation)
+    return kwargs
 
 
 # -- Curve mappings (Float Curve, RGB/Vector Curves, Hue Correct) -----------
@@ -5044,6 +5106,8 @@ def _render_group_class(
     # Either option needs auto-layout off (it dissolves reroutes and overwrites
     # locations); the disable line goes at the body's "in-block" 4-space indent,
     # which the re-indent below lifts to the method-body depth.
+    if emission.collapse:
+        inner = ["    tree.collapse = True", ""] + inner
     if snapshot_positions or keep_reroutes:
         inner = ["    tree.disable_arrange()", ""] + inner
     if snapshot_positions:
@@ -5091,7 +5155,14 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         incoming.setdefault(link.to_node.name, []).append(link)
         outgoing.setdefault(link.from_node.name, []).append(link)
 
-    ctx = EmitContext(node_tree, links, incoming, outgoing, collector=collector)
+    ctx = EmitContext(
+        node_tree,
+        links,
+        incoming,
+        outgoing,
+        collector=collector,
+        collapse=_all_collapsed(node_tree),
+    )
     skip = _SKIP_BL_IDNAMES
     if collector.keep_reroutes:
         skip = skip - {"NodeReroute"}  # reroutes emit as ordinary nodes
@@ -5182,16 +5253,21 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
             link for link in out_links if link.to_node.bl_idname == "NodeGroupOutput"
         ]
 
-        # Node-instance properties no constructor expresses (a muted/bypassed
-        # node, non-default warning propagation, an edited curve mapping)
-        # force a variable binding so they can be applied to the built node
-        # afterwards.
-        node_prop_lines = _node_prop_lines(node)
+        # Properties every node has (label, colour, mute, ...) go on the
+        # value as ``.props(...)``, which returns the node or socket it is
+        # called on. An edited curve mapping forces a variable binding so it
+        # can be applied to the built node afterwards.
+        props = _node_props_kwargs(node, ctx.collapse)
+        if props:
+            val = _Val(
+                MethodCall(val.require_expr(), "props", kwargs=props),
+                is_socket=val.is_socket,
+                socket_id=val.socket_id,
+            )
         custom_mapping = _has_custom_mapping(node, node_tree.bl_idname)
 
         if (
-            not node_prop_lines
-            and not custom_mapping
+            not custom_mapping
             and len(out_links) == 1
             and not group_outs
             # Inlining would create this node at the consumer's statement —
@@ -5211,8 +5287,7 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # Gated nodes render no >> syntax; everything else with a single link
         # to a group output finishes its chain right here.
         if (
-            not node_prop_lines
-            and not custom_mapping
+            not custom_mapping
             and len(out_links) == 1
             and group_outs
             and name not in gated_nodes
@@ -5237,17 +5312,13 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # A node created purely for its side effect (a gizmo, a dangling
         # node) is never referenced again — prefix its variable so the
         # generated module passes lint (F841).
-        if not out_links and not node_prop_lines and not custom_mapping:
+        if not out_links and not custom_mapping:
             var = "_" + var
         width = _MAX_LINE_WIDTH - 4 * len(frame)
         tagged_body.extend(
             (frame, line)
             for line in _stmt_lines(val.require_expr(), assign=var, width=width)
         )
-        for prop_line in node_prop_lines:
-            # ``.node`` reaches the bpy node from a node wrapper and a socket
-            # wrapper alike, so this works for constructor and method values.
-            tagged_body.append((frame, f"    {var}.node.{prop_line}"))
         if custom_mapping:
             tagged_body.extend(
                 (frame, f"    {line}")
@@ -5297,7 +5368,7 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         source = ctx.upstream_expr(link, pipeline=True)
         out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
-    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases)
+    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases, ctx.collapse)
 
 
 # ---------------------------------------------------------------------------
@@ -5862,16 +5933,18 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
 
     ctx.used_aliases.add(alias)
     var_name = _make_var(spec.label, ctx.counter)
-    prop_lines = _node_prop_lines(node)
+    props = _node_props_kwargs(node, ctx.collapse)
     # No items, props or consumers → nothing ever references the variable;
     # prefix it so the generated module passes lint (F841).
-    if not items and not prop_lines and not ctx.outgoing.get(node.name):
+    if not items and not props and not ctx.outgoing.get(node.name):
         var_name = "_" + var_name
     ref = Ref(var_name)
     ctor = _items_node_ctor(alias, cls, spec, node, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
-    for prop_line in prop_lines:
-        ctx.pending_lines.append(f"    {ref.name}.node.{prop_line}")
+    if props:
+        ctx.pending_lines.append(
+            f"    {MethodCall(ref, 'props', kwargs=props).render()}"
+        )
 
     outputs: dict[str, Expr] = {
         ident: Attr(ref, attr) for ident, attr in spec.fixed_outputs
