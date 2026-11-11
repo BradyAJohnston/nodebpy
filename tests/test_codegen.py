@@ -604,9 +604,9 @@ def test_type_factories_emitted_at_defaults():
 
 def test_node_instance_properties_roundtrip():
     """Muted (bypassed) nodes, non-default warning propagation, and clamped
-    math ops round-trip: the first two force a variable binding plus
-    ``<var>.node.<prop>`` lines, and ``use_clamp`` blocks the operator-sugar
-    lift so the constructor can carry it."""
+    math ops round-trip: the first two go in a ``.props(...)`` call, and
+    ``use_clamp`` blocks the operator-sugar lift so the constructor can carry
+    it."""
     with TreeBuilder("NodeProps") as tree:
         a = tree.inputs.float("A")
         geo = tree.inputs.geometry("G")
@@ -619,8 +619,7 @@ def test_node_instance_properties_roundtrip():
 
     code = _assert_roundtrip(tree)
     assert "use_clamp=True" in code
-    assert ".node.mute = True" in code
-    assert '.node.warning_propagation = "ERRORS"' in code
+    assert '.props(mute=True, warning_propagation="ERRORS")' in code
 
     ns: dict = {}
     exec(code, ns)

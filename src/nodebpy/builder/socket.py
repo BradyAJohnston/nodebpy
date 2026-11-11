@@ -83,7 +83,14 @@ from ..types import (
     InputVectorGrid,
 )
 from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
-from ._utils import _deprecated, _NodeLike, _output_socket_type, _SocketLike
+from ._utils import (
+    WarningPropagation,
+    _deprecated,
+    _NodeLike,
+    _output_socket_type,
+    _SocketLike,
+    apply_node_props,
+)
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
@@ -217,6 +224,66 @@ class BaseSocket:
     def links(self) -> list[NodeLink]:
         assert self.socket.links is not None
         return [link for link in self.socket.links]
+
+    def props(
+        self,
+        *,
+        label: str | None = None,
+        color: str | tuple[float, float, float] | None = None,
+        width: float | None = None,
+        height: float | None = None,
+        hide: bool | None = None,
+        show_options: bool | None = None,
+        hide_inputs: Iterable[str] = (),
+        hide_outputs: Iterable[str] = (),
+        mute: bool | None = None,
+        warning_propagation: WarningPropagation | None = None,
+        pin_gizmo: bool | None = None,
+        pin_gizmo_inputs: Iterable[str] = (),
+    ) -> Self:
+        """Set the properties of the node this socket belongs to and return
+        the socket, so it can go at the end of a chain::
+
+            (x + 1.0).props(label="Offset")
+
+        See :meth:`BaseNode.props`.
+
+        Args:
+            label: The node's header label.
+            color: A custom header colour, as a hex string (``"#FFAA00"``) or an
+                ``(r, g, b)`` tuple; turns on ``use_custom_color``.
+            width: The node's width.
+            height: The node's height; only frames use it.
+            hide: Collapse the node.
+            show_options: Show the node's options (dropdowns and toggles).
+            hide_inputs: Input sockets to hide, by name; ``"Value#1"`` names
+                the second visible ``Value``.
+            hide_outputs: Output sockets to hide, by name.
+            mute: Mute (bypass) the node.
+            warning_propagation: Which of the node's warnings show on the
+                group node it sits in.
+            pin_gizmo: Keep the node's gizmo visible when it isn't selected:
+                a gizmo node's, or a value node's (Value, Vector, ...).
+            pin_gizmo_inputs: Inputs whose gizmos stay visible when the node
+                isn't selected, by name; for group nodes passing a gizmo
+                through.
+        """
+        apply_node_props(
+            self.node,
+            label=label,
+            color=color,
+            width=width,
+            height=height,
+            hide=hide,
+            show_options=show_options,
+            hide_inputs=hide_inputs,
+            hide_outputs=hide_outputs,
+            mute=mute,
+            warning_propagation=warning_propagation,
+            pin_gizmo=pin_gizmo,
+            pin_gizmo_inputs=pin_gizmo_inputs,
+        )
+        return self
 
     @property
     def _default_output_socket(self) -> NodeSocket:

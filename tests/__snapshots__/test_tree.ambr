@@ -3,7 +3,7 @@
   '''
   from nodebpy import geometry as g, TreeBuilder
   
-  with TreeBuilder("Principal Components") as tree:
+  with TreeBuilder("Principal Components", collapse=True) as tree:
       position = tree.inputs.vector("Position", (0.0, 0.0, 0.0), default_input="POSITION")
       group_id = tree.inputs.integer("Group ID", 0, description="An index used to group values together for multiple separate operations", hide_value=True)
       group_center = tree.outputs.vector("Group Center")

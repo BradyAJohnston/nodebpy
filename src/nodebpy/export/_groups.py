@@ -91,6 +91,14 @@ def _subclasses[T](cls: type[T]) -> Iterator[type[T]]:
         yield from _subclasses(sub)
 
 
+def _loaded(cls: type) -> bool:
+    """Whether *cls* can still be referenced: its module is loaded, or it is
+    a script's. A class from a module since unloaded (the throwaway package
+    asset sources are imported under) lingers among the subclasses until it
+    is garbage collected, and importing it would fail."""
+    return cls.__module__ in SCRIPT_MODULES or cls.__module__ in sys.modules
+
+
 def _group_classes() -> list[type[NodeGroupBuilder]]:
     import_modules(_BUILTIN_MODULES)
     return [
@@ -98,6 +106,7 @@ def _group_classes() -> list[type[NodeGroupBuilder]]:
         for cls in dict.fromkeys(_subclasses(NodeGroupBuilder))
         if not inspect.isabstract(cls)
         and (getattr(cls, "_asset_name", None) or getattr(cls, "_name", None))
+        and _loaded(cls)
     ]
 
 
