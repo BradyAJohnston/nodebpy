@@ -178,3 +178,89 @@ def test_to_python_leaves_group_node_options_alone():
         group = Passthrough()
     group.node.show_options = True
     assert ".props(" not in to_python(tree, format=False)
+
+
+# ---------------------------------------------------------------------------
+# Frames
+# ---------------------------------------------------------------------------
+
+
+def _framed_tree(name: str) -> TreeBuilder:
+    with TreeBuilder(name, arrange=None) as tree:
+        x = tree.inputs.float("X")
+        with g.Frame("Outer") as outer:
+            a = x + 1.0
+            with g.Frame("Inner", shrink=False, label_size=32).props(
+                color="#336699", width=333, height=222
+            ):
+                a * 2.0 >> tree.outputs.float("Out")
+            g.Frame("Empty in outer").props(width=300, height=150)
+        g.Frame("Top empty").props(color="#FF0000")
+        with g.Frame("Holder"):
+            g.Frame("Held")
+    assert outer.node.label == "Outer"
+    return tree
+
+
+def _frames(tree) -> dict:
+    return {n.label: n for n in tree.nodes if n.bl_idname == "NodeFrame"}
+
+
+def test_frame_settings_and_empty_frames_round_trip():
+    tree = _framed_tree("FramesRoundTrip")
+    text = bpy.data.texts.new("FramesRoundTripNote")
+    _frames(tree.tree)["Inner"].text = text
+
+    code = to_python(tree, snapshot_positions=True, format=False)
+    assert (
+        'with g.Frame("Inner", shrink=False, text=bpy.data.texts.get('
+        '"FramesRoundTripNote"), label_size=32).props(color="#336699", '
+        "width=333.0, height=222.0):" in code
+    )
+    assert 'g.Frame("Empty in outer").props(width=300.0, height=150.0)' in code
+
+    bpy.data.node_groups.remove(tree.tree)
+    ns: dict = {}
+    exec(code, ns)
+    frames = _frames(ns["tree"].tree)
+    assert sorted(frames) == [
+        "Empty in outer",
+        "Held",
+        "Holder",
+        "Inner",
+        "Outer",
+        "Top empty",
+    ]
+    inner = frames["Inner"]
+    assert not inner.shrink
+    assert inner.label_size == 32
+    assert inner.text == text
+    assert tuple(inner.color) == pytest.approx((0.2, 0.4, 0.6))
+    assert (inner.width, inner.height) == (333, 222)
+    assert (frames["Empty in outer"].width, frames["Empty in outer"].height) == (
+        300,
+        150,
+    )
+    assert frames["Top empty"].use_custom_color
+    parents = {
+        label: frame.parent.label if frame.parent else None
+        for label, frame in frames.items()
+    }
+    assert parents == {
+        "Outer": None,
+        "Inner": "Outer",
+        "Empty in outer": "Outer",
+        "Top empty": None,
+        "Holder": None,
+        "Held": "Holder",
+    }
+
+
+def test_shrinking_frame_size_is_not_written():
+    """A frame fitting itself around its nodes gets its size from them."""
+    with TreeBuilder("FramesShrink", arrange=None) as tree:
+        x = tree.inputs.float("X")
+        with g.Frame("Fit") as frame:
+            x + 1.0 >> tree.outputs.float("Out")
+    frame.node.width = 400
+    assert 'with g.Frame("Fit"):' in to_python(tree, format=False)

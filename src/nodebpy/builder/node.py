@@ -152,6 +152,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         label: str | None = None,
         color: str | tuple[float, float, float] | None = None,
         width: float | None = None,
+        height: float | None = None,
         hide: bool | None = None,
         show_options: bool | None = None,
         hide_inputs: Iterable[str] = (),
@@ -173,6 +174,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             color: A custom header colour, as a hex string (``"#FFAA00"``) or an
                 ``(r, g, b)`` tuple; turns on ``use_custom_color``.
             width: The node's width.
+            height: The node's height; only frames use it.
             hide: Collapse the node.
             show_options: Show the node's options (dropdowns and toggles).
             hide_inputs: Input sockets to hide, by name; ``"Value#1"`` names
@@ -187,6 +189,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             label=label,
             color=color,
             width=width,
+            height=height,
             hide=hide,
             show_options=show_options,
             hide_inputs=hide_inputs,

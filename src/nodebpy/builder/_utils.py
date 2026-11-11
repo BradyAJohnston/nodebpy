@@ -211,6 +211,7 @@ def apply_node_props(
     label: str | None = None,
     color: str | tuple[float, float, float] | None = None,
     width: float | None = None,
+    height: float | None = None,
     hide: bool | None = None,
     show_options: bool | None = None,
     hide_inputs: Iterable[str] = (),
@@ -226,6 +227,8 @@ def apply_node_props(
         node.color = _parse_color(color)
     if width is not None:
         node.width = width
+    if height is not None:
+        node.height = height
     if hide is not None:
         node.hide = hide
     if show_options is not None:
