@@ -140,6 +140,79 @@ def test_snapshot_skips_missing_entries():
     assert "Ghost Node" not in tree.tree.nodes
 
 
+def test_snapshot_restores_collapsed_nodes():
+    """Collapsed nodes come back collapsed, on the node the matcher binds
+    rather than the one that happens to carry the name."""
+    with TreeBuilder("HideSnap", arrange=None) as tree:
+        x = tree.inputs.float("X")
+        a = x + 1.0
+        b = a * 2.0
+        b >> tree.outputs.float("Out")
+    a.node.hide = True
+
+    code = to_python(tree, snapshot_positions=True, format=False)
+    assert code.count('{"hide": True}') == 1
+    bpy.data.node_groups.remove(tree.tree)
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+
+    math = {n.operation: n for n in rebuilt.nodes if n.bl_idname == "ShaderNodeMath"}
+    assert math["ADD"].hide
+    assert not math["MULTIPLY"].hide
+
+
+def test_snapshot_without_display_state_expands():
+    """A four-element entry (the format before display state) still applies,
+    and leaves its node expanded."""
+    with TreeBuilder("HideOld", arrange=None) as tree:
+        x = tree.inputs.float("X")
+        (x + 1.0) >> tree.outputs.float("Out")
+    math = tree.tree.nodes["Math"]
+    math.hide = True
+    snapshot = tree.layout_snapshot
+    assert snapshot["Math"][4] == {"hide": True}
+    bl_idname, _location, parent, links, _display = snapshot["Math"]
+    snapshot["Math"] = (bl_idname, (7.0, 8.0), parent, links)
+    tree.layout_snapshot = snapshot
+    assert tuple(math.location) == (7.0, 8.0)
+    assert not math.hide
+
+
+def test_snapshot_dump_unchanged_without_collapsed_nodes():
+    """Trees with no collapsed nodes dump without display state."""
+    with TreeBuilder("HidePlain", arrange=None) as tree:
+        x = tree.inputs.float("X")
+        (x + 1.0) >> tree.outputs.float("Out")
+    assert "hide" not in to_python(tree, snapshot_positions=True, format=False)
+    assert all(len(entry) == 4 for entry in tree.layout_snapshot.values())
+
+
+def test_snapshot_restores_collapsed_group_input_split():
+    """A collapsed extra Group Input instance comes back collapsed."""
+    with TreeBuilder("HideSplit", split_inputs=True) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        math = g.Math.add(a, 1.0)
+        g.CombineXYZ(x=math, y=b).o.vector.length() >> tree.outputs.float("Out")
+    (split,) = [
+        n
+        for n in tree.tree.nodes
+        if n.bl_idname == "NodeGroupInput" and n.name != "Group Input"
+    ]
+    split.hide = True
+    split_name = split.name
+    assert tree.group_input_splits[0]["hide"] is True
+
+    code = to_python(tree, snapshot_positions=True, format=False)
+    bpy.data.node_groups.remove(tree.tree)
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    assert rebuilt.nodes[split_name].hide
+    assert not rebuilt.nodes["Group Input"].hide
+
+
 def _twin_tree(name: str) -> TreeBuilder:
     """Two structurally identical dangling Math twins fed by the same input."""
     with TreeBuilder(name, arrange=None) as tree:
