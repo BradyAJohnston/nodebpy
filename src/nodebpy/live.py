@@ -39,7 +39,7 @@ import ast
 import re
 import warnings
 from collections import Counter
-from collections.abc import Iterable, Iterator
+from collections.abc import Generator, Iterable, Iterator
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass, field
 from typing import Any, cast
@@ -413,7 +413,7 @@ class GroupLinks:
                 value = state.values.get(key, defaults.get(socket.identifier))
                 if value is not None:
                     with suppress(TypeError, ValueError, AttributeError):
-                        socket.default_value = value  # ty: ignore[unresolved-attribute]
+                        socket.default_value = value  # ty: ignore[missing-attribute]
                 for end in state.inputs.get(key, ()):
                     source = self._socket(state.tree, end, output=True)
                     if source is not None and not _linked(source, socket):
@@ -592,7 +592,7 @@ class _InputState:
 
 
 @contextmanager
-def preserve_modifier_inputs(trees: Iterable[bpy.types.NodeTree]) -> Iterator[None]:
+def preserve_modifier_inputs(trees: Iterable[bpy.types.NodeTree]) -> Generator[None]:
     """Keep Geometry Nodes modifier input values across an interface rebuild.
 
     Snapshots the input state of every Geometry Nodes modifier (on any

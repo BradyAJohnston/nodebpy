@@ -24,7 +24,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from collections.abc import Iterator
+from collections.abc import Generator
 from pathlib import Path
 from typing import TextIO
 
@@ -39,7 +39,7 @@ def is_lfs_pointer(path: str | Path) -> bool:
 
 
 @contextlib.contextmanager
-def _stdout_to_stderr() -> Iterator[None]:
+def _stdout_to_stderr() -> Generator[None]:
     """Send everything written to file descriptor 1 — Python's ``print`` and
     Blender's own C-level messages alike — to stderr, keeping stdout clean
     for the textconv output. C stdio buffers are flushed before fd 1 is

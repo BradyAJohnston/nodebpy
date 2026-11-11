@@ -4,7 +4,7 @@ nothing, so the input uses its own value, as a link muted in the editor
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Any
 
@@ -81,7 +81,7 @@ _pending: dict[int, list[NodeLink]] = {}
 
 
 @contextmanager
-def muting(value: Any = None) -> Iterator[None]:
+def muting(value: Any = None) -> Generator[None]:
     """Mute the links made inside the block (when their tree's builder
     exits), and give their inputs ``value``."""
     links: list[NodeLink] = []

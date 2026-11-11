@@ -156,7 +156,7 @@ def _set_item_default(owner, socket: NodeSocket, value: Any) -> None:
     elif holds_sockets(value):
         link_combined(owner.tree, socket, value)
     else:
-        socket.default_value = value  # ty: ignore[unresolved-attribute]
+        socket.default_value = value  # ty: ignore[missing-attribute]
 
 
 def _infer_value_type(value: Any) -> str | None:
@@ -295,7 +295,7 @@ def _chained(socket: NodeSocket, continues: bool, follow) -> Socket:
     socket ``follow`` returns (the item's other side)."""
     wrapped = _wrap_socket(socket)
     if continues:
-        wrapped._chain_to = follow  # ty: ignore[unresolved-attribute]
+        wrapped._chain_to = follow  # ty: ignore[missing-attribute]
     return wrapped
 
 
@@ -343,7 +343,7 @@ class ItemCollection(Generic[_HandleT]):
     - ``_has_input`` / ``_has_output``: which roles the items carry
     """
 
-    _handle_type: ClassVar[type[Item]] = Item
+    _handle_type: ClassVar[type[Item[Any, Any]]] = Item
     _collection: ClassVar[str | None] = None
     _prefix: ClassVar[str | None] = None
     _value_types: ClassVar[tuple[str, ...] | None] = None
@@ -517,8 +517,11 @@ class ItemsMixin(DynamicInputsMixin):
     _items_collection: str
 
     if TYPE_CHECKING:
-        node: Node
-        tree: TreeBuilder[Any]
+
+        @property
+        def node(self) -> Node: ...
+        @property
+        def tree(self) -> TreeBuilder[Any]: ...
 
         def _establish_links(self, **kwargs: Any) -> None: ...
 

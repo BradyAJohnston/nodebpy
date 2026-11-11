@@ -26,7 +26,7 @@ import keyword
 import re
 import textwrap
 from collections import Counter
-from collections.abc import Callable, Collection, Iterator, Mapping
+from collections.abc import Callable, Collection, Generator, Mapping
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
@@ -89,7 +89,10 @@ _RIGHT_ASSOC = frozenset({"**"})
 class Expr:
     """Base class for renderable expressions."""
 
-    prec: int = _ATOM_PREC
+    # Read-only here, so subclasses can make it a field or a computed property.
+    @property
+    def prec(self) -> int:
+        return _ATOM_PREC
 
     def render(self) -> str:
         raise NotImplementedError
@@ -120,7 +123,7 @@ class Lit(Expr):
         return _fmt(self.value)
 
     @property
-    def prec(self) -> int:  # type: ignore[override]
+    def prec(self) -> int:
         # A float can format as a compound math-constant expression
         # (``2 * math.pi``, ``math.tau / 3``), which must parenthesise like
         # the operators in it; a bare ``math.e`` stays an atom.
@@ -686,7 +689,7 @@ _KEEP_PROBE_TREES = False
 
 
 @contextmanager
-def probe_trees() -> Iterator[None]:
+def probe_trees() -> Generator[None]:
     """Within the block, :func:`_with_probe_tree` keeps one throwaway tree
     per tree type, emptied between probes, instead of making and removing
     one per probe. The trees are removed on leaving the block."""
