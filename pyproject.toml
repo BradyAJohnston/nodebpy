@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "530.0.0"
+version = "530.0.1"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
@@ -37,7 +37,8 @@ plot = [
     "matplotlib>=3.8",
 ]
 bpy = [
-    "bpy==5.3.*",
+    # generated from 5.3; runs on 5.2 for everything 5.3 did not add
+    "bpy>=5.2,<5.4",
 ]
 # Used by `to_python(format=True)` to tidy generated source via `ruff format`.
 format = [

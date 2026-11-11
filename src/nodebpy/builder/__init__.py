@@ -6,7 +6,14 @@ from ..layout import (
     default_sugiyama_options,
 )
 from ._muted import muted
-from ._utils import InvalidLinkWarning, SocketError, denormalize_name, normalize_name
+from ._utils import (
+    InvalidLinkWarning,
+    NodeUnavailableError,
+    OptionUnavailableError,
+    SocketError,
+    denormalize_name,
+    normalize_name,
+)
 from .accessor import SocketAccessor
 from .asset import (
     AssetCompositorGroup,
@@ -138,9 +145,11 @@ __all__ = [
     "MenuSocket",
     "MenuSocketList",
     "NodeGroupBuilder",
+    "NodeUnavailableError",
     "ObjectSocket",
     "ObjectSocketList",
     "OperatorMixin",
+    "OptionUnavailableError",
     "OutputInterfaceContext",
     "PackageLibrary",
     "PanelContext",

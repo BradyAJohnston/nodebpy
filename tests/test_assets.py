@@ -403,6 +403,7 @@ def test_socket_types_fallback():
 # -- Essentials entry point ----------------------------------------------------
 
 
+@pytest.mark.generated_blender
 @_needs_essentials
 def test_generate_essentials_writes_modules(tmp_path):
     from gen.essentials import generate_essentials

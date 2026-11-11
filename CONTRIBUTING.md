@@ -17,6 +17,15 @@ Tests run using `bpy` installed from pip (no need for Blender on `PATH`)
 uv run pytest -n 4
 ```
 
+### On the previous Blender
+
+The node classes are generated from one Blender (`nodes/_blender.py` records which), and also run on the one before it. There, constructing a node that Blender lacks, setting one of its options or an input it lacks to anything but the constructor's default, or linking a bundled asset it lacks raises `NodeUnavailableError`, naming the Blender needed; an input the node lacks, left at its default, is skipped. CI runs the suite against that Blender too (`tests-5.2.yml`): a test that hits `NodeUnavailableError` is skipped there, and a test of the newer Blender's behaviour on a node both have is marked `@pytest.mark.generated_blender`. To run it locally:
+
+```sh
+uv pip install --python .venv "bpy==5.2.*" && uv run --no-sync pytest -n 4
+uv sync --all-extras    # back to the locked bpy
+```
+
 ## The agent skill
 
 `src/nodebpy/skills/nodebpy/` is the source of the agent skill and ships in the wheel;
@@ -167,7 +176,7 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python my_script.py
 
 ## CI
 
-Two GitHub Actions workflows run on every push and pull request:
+These GitHub Actions workflows run on every push and pull request:
 
 - **lint.yml** — ruff format check, ruff check, ty check (Ubuntu only, platform-independent)
-- **tests.yml** — pytest on macOS, Windows, and Ubuntu
+- **tests-5.2.yml** / **tests-5.3.yml** — pytest on macOS, Windows, and Ubuntu against each supported Blender, through the reusable `_tests.yml`; each has a badge in the README's table, per branch (`main` is 530, `5.2` is 520)

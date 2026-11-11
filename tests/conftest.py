@@ -13,6 +13,50 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from nodebpy import TreeBuilder, shader
 from nodebpy import compositor as c
 from nodebpy import geometry as g
+from nodebpy.builder._utils import NodeUnavailableError, _older_blender
+from nodebpy.nodes._blender import GENERATED_FOR
+
+# The node classes are generated from one Blender; the suite also runs on the
+# one before it. There a test using a node that Blender lacks is skipped, and
+# one marked ``generated_blender`` (it tests that Blender's behaviour) too.
+OLDER_BLENDER = _older_blender()
+_GENERATED = ".".join(map(str, GENERATED_FOR))
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers",
+        "generated_blender: tests behaviour of the Blender the node classes are "
+        "generated from; skipped on an older one",
+    )
+
+
+def pytest_collection_modifyitems(config, items):
+    if not OLDER_BLENDER:
+        return
+    skip = pytest.mark.skip(reason=f"tests Blender {_GENERATED} behaviour")
+    for item in items:
+        if item.get_closest_marker("generated_blender"):
+            item.add_marker(skip)
+
+
+def _unavailable(error: BaseException | None) -> NodeUnavailableError | None:
+    while error is not None:
+        if isinstance(error, NodeUnavailableError):
+            return error
+        error = error.__cause__ or error.__context__
+    return None
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    report = (yield).get_result()
+    if OLDER_BLENDER and call.excinfo is not None and report.failed:
+        error = _unavailable(call.excinfo.value)
+        if error is not None:
+            report.outcome = "skipped"
+            report.longrepr = (str(item.path), item.location[1] or 0, str(error))
+
 
 CURRENT = Path(__file__).parent
 BLEND_DIR = CURRENT / "blend_files"

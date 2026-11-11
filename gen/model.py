@@ -310,11 +310,11 @@ class PropertyInfo:
         if self.prop_type != "FLOAT" or isinstance(self.default, (int, float)):
             return None
         if self.subtype == "EULER":
-            return "Euler"
+            return "mathutils.Euler"
         if self.subtype in ("XYZ", "DIRECTION"):
-            return "Vector"
+            return "mathutils.Vector"
         if self.subtype == "COLOR" and len(self.default) == 3:
-            return "Color"
+            return "mathutils.Color"
         return None
 
     def format_property_accessors(self) -> str:

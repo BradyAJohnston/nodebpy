@@ -1638,7 +1638,7 @@ wheels = [
 
 [[package]]
 name = "nodebpy"
-version = "530.0.0"
+version = "530.0.1"
 source = { editable = "." }
 
 [package.optional-dependencies]
@@ -1675,7 +1675,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bpy", marker = "extra == 'bpy'", specifier = "==5.3.*" },
+    { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.2,<5.4" },
     { name = "matplotlib", marker = "extra == 'plot'", specifier = ">=3.8" },
     { name = "ruff", marker = "extra == 'format'", specifier = ">=0.14.11" },
 ]
