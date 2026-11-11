@@ -5961,14 +5961,11 @@ def _emit_set_handle_type(node, ctx: EmitContext) -> Expr | _Val | None:
 @register_emitter("NodeComment")
 def _emit_comment(node, ctx: EmitContext) -> Expr | _Val | None:
     """Multi-line comment text renders as ``Comment.cleandoc`` over an indented
-    ``\"\"\"`` block when that cleans back to the same text, and a
-    non-default node width as ``width=``."""
+    ``\"\"\"`` block when that cleans back to the same text."""
     call = ctx.constructor(node)
     text = node.text
     if call.args and "\n" in text and _text_block_round_trips(text):
         call = Call(f"{call.func}.cleandoc", [TextBlock(text)], call.kwargs)
-    if not _eq(node.width, node.bl_width_default):
-        call.kwargs["width"] = Lit(node.width)
     return call
 
 
