@@ -2,7 +2,7 @@
 title: Changelog
 ---
 
-## v530.0.0
+## v530.0.0 - UNRELEASED
 
 ### Enhancements
 
@@ -13,16 +13,6 @@ title: Changelog
 - A `Switch` whose values don't decide its type takes the type a new node has in that tree, as Blender 5.3 starts shader and compositor Switches as Color.
 - Socket docstrings name the label a socket had before, when Blender kept it as the identifier and the old attribute still resolves: `o.geometry` on Import PLY reads "Renamed from `Mesh`; `o.mesh` still resolves to it", and likewise `fac` → `factor` and `group_index` → `group_id`.
 - **Group inputs that share a name are told apart by their panel.** In typed group classes (bundled assets and `nodebpy dump --api-only`) and the code `to_python` writes for them, an input whose name another input also has now takes its panel's name as a prefix, instead of both falling back to socket identifiers that change as the asset is edited. Blender 5.3's Clump and Curl Hair Curves gained a second "Seed" in their Guide Map panel: `seed` keeps its name and the new one is `guide_map_seed` (not `input_14` / `socket_1`). `i.<name>` resolves these names too. **Breaking:** `g.CustomForce(socket_14=, socket_15=)` are now `geometry_space_object=` / `force_space_object=`.
-
-- **`.props()` sets the properties every node has while writing a tree.** It is on every node and socket, and returns what it was called on, so it ends a chain: `g.SetPosition(...).props(label="Lift", color="#FFAA00", width=200, hide=True, hide_inputs=["Selection"], mute=True, warning_propagation="ERRORS")`. On a socket it sets the properties of the node the socket belongs to. `to_python` writes them back the same way, so labels, colours, widths, collapsed nodes, folded options and sockets hidden on any node now survive a dump and rebuild; muted nodes and warning propagation, which were written as `.node.mute = True` lines, are now `.props(...)` arguments too. A tree whose nodes are all collapsed is built with `collapse=True` instead. With `snapshot_positions=True`, collapsed Group Input and Group Output nodes are collapsed by name after the snapshot (collapsed nodes were first kept in the snapshot itself, after a proposal by @RomainGuimbal).
-- **`to_python` keeps frame settings and empty frames.** `g.Frame` takes `label_size`, and `.props()` takes `height`. A frame's `shrink`, text, label size and colour come back as `g.Frame(...)` arguments and `.props(...)`, and its size when it doesn't shrink to fit its nodes. A frame holding no nodes was dropped; it is now built on its own, inside its parent frame.
-- **Gizmos can be pinned.** `.props(pin_gizmo=True)` keeps a value node's or gizmo node's gizmo visible when the node isn't selected, and `pin_gizmo_inputs=["Offset"]` does the same for a group node's inputs. `to_python` writes both.
-- **`muted()` mutes a link.** `from nodebpy import muted`, then wrap the node or socket passed as an input: `g.JoinGeometry([muted(set_position), geo])`, `g.SetPosition(offset=muted(offset, value=(0, 0, 1)))` or `muted(geo) >> g.SetPosition()`. The input then uses its own value, which `value=` sets. It works in constructor arguments, lists into multi-input sockets, tuples combined into vectors, `>>` and items; the links are muted when the tree's `with` block exits.
-
-### Fixes
-
-- **Muted links stay muted through `to_python`.** They came back as live links. They are now written as `muted(...)`, with the value the input uses while its link is muted, including links through collapsed reroute chains and on split Group Input nodes. `compare_libraries` compares muted links, which it skipped.
-- **`to_python(groups="reference")` no longer calls a class whose module was unloaded.** Such a class (from the throwaway package asset sources are imported under) lingers until it is garbage collected, and could be picked over the loaded one, writing an import that fails.
 
 ### Deprecations
 
@@ -49,6 +39,21 @@ The APIs deprecated during 520 for removal in 530 are gone:
 - The name-first item order `items.float("Name", value)`: item factories take the value first, `items.float(value, "Name")`.
 - `add_item`, `add_items`, `capture`, `zone.item`, `zone.main_item`, `zone.generated_item`, `zone.generation`, `capture_generated`, `add_generated_item`, `input_item`, `output_item`, `MenuSwitch.item`, the for-each `inputs` / `main` / `generated` aliases, Field to List's per-type methods and `fields=` argument, and Field to Grid's `capture_*` methods: use the `items` / `main_items` / `generated_items` collections (`items.new(value, name)` or `items.<type>(value, name)`), and a closure zone's `inputs` / `outputs`.
 - `python -m nodebpy.assets`: use the `nodebpy` command.
+
+## v520.42.0
+
+## Enhancements
+
+- **`.props()` sets the properties every node has while writing a tree.** It is on every node and socket, and returns what it was called on, so it ends a chain: `g.SetPosition(...).props(label="Lift", color="#FFAA00", width=200, hide=True, hide_inputs=["Selection"], mute=True, warning_propagation="ERRORS")`. On a socket it sets the properties of the node the socket belongs to. `to_python` writes them back the same way, so labels, colours, widths, collapsed nodes, folded options and sockets hidden on any node now survive a dump and rebuild; muted nodes and warning propagation, which were written as `.node.mute = True` lines, are now `.props(...)` arguments too. A tree whose nodes are all collapsed is built with `collapse=True` instead. With `snapshot_positions=True`, collapsed Group Input and Group Output nodes are collapsed by name after the snapshot (collapsed nodes were first kept in the snapshot itself, after a proposal by @RomainGuimbal).
+- **`to_python` keeps frame settings and empty frames.** `g.Frame` takes `label_size`, and `.props()` takes `height`. A frame's `shrink`, text, label size and colour come back as `g.Frame(...)` arguments and `.props(...)`, and its size when it doesn't shrink to fit its nodes. A frame holding no nodes was dropped; it is now built on its own, inside its parent frame.
+- **Gizmos can be pinned.** `.props(pin_gizmo=True)` keeps a value node's or gizmo node's gizmo visible when the node isn't selected, and `pin_gizmo_inputs=["Offset"]` does the same for a group node's inputs. `to_python` writes both.
+- **`muted()` mutes a link.** `from nodebpy import muted`, then wrap the node or socket passed as an input: `g.JoinGeometry([muted(set_position), geo])`, `g.SetPosition(offset=muted(offset, value=(0, 0, 1)))` or `muted(geo) >> g.SetPosition()`. The input then uses its own value, which `value=` sets. It works in constructor arguments, lists into multi-input sockets, tuples combined into vectors, `>>` and items; the links are muted when the tree's `with` block exits.
+
+### Fixes
+
+- **Muted links stay muted through `to_python`.** They came back as live links. They are now written as `muted(...)`, with the value the input uses while its link is muted, including links through collapsed reroute chains and on split Group Input nodes. `compare_libraries` compares muted links, which it skipped.
+- **`to_python(groups="reference")` no longer calls a class whose module was unloaded.** Such a class (from the throwaway package asset sources are imported under) lingers until it is garbage collected, and could be picked over the loaded one, writing an import that fails.
+
 
 ## v520.41.0
 
