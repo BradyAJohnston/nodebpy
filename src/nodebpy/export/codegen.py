@@ -4531,6 +4531,8 @@ def _group_input_split_lines(
             lines.append(f'{indent}        "label": {_fmt(node.label)},')
         lines.append(f'{indent}        "location": {_fmt(loc)},')
         lines.append(f'{indent}        "parent": {parent},')
+        if node.hide:
+            lines.append(f'{indent}        "hide": True,')
         lines.append(f'{indent}        "links": [')
         for entry in entries:
             lines.append(f"{indent}            {_fmt(entry)},")
@@ -4599,9 +4601,12 @@ def _layout_snapshot_lines(
         entry_links = "".join(
             f"{_fmt(entry)}, " for entry in sorted(incoming.get(node.name, ()))
         )
+        # Display state differing from a new node's, left out when empty so
+        # trees without it dump as before.
+        extras = ', {"hide": True}' if node.hide else ""
         lines.append(
             f"{indent}    {_fmt(node.name)}: ({_fmt(node.bl_idname)}, "
-            f"{_fmt(loc)}, {parent}, ({entry_links})),"
+            f"{_fmt(loc)}, {parent}, ({entry_links}){extras}),"
         )
     lines.append(f"{indent}}}")
     return lines
