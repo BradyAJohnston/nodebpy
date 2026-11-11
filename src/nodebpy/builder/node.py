@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import inspect
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
+from functools import cache
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -32,7 +34,9 @@ from ._utils import (
     SocketError,
     WarningPropagation,
     _deprecated,
+    _needs_newer_blender,
     _NodeLike,
+    _older_blender,
     _SocketLike,
     apply_node_props,
     enum_value_error,
@@ -54,6 +58,19 @@ if TYPE_CHECKING:
 
         @property
         def i(self) -> SocketAccessor: ...
+
+
+_NO_DEFAULT = object()
+
+
+@cache
+def _constructor_defaults(cls: type) -> dict[str, Any]:
+    """Parameter → default of ``cls``'s constructor."""
+    return {
+        name: param.default
+        for name, param in inspect.signature(cls.__init__).parameters.items()
+        if param.default is not param.empty
+    }
 
 
 def _find_socket_from_name(
@@ -353,9 +370,24 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             # https://github.com/BradyAJohnston/nodebpy/issues/90
             if "BooleanMath" in self._bl_idname and value is False:
                 return
-            socket = (
-                _find_socket_from_name(self.node.inputs, target) if named else target
-            )
+            if named:
+                try:
+                    socket = _find_socket_from_name(self.node.inputs, target)
+                except ValueError:
+                    # An input added in a newer Blender than the running one:
+                    # left at its default it's skipped, any other value needs it.
+                    if not _older_blender():
+                        raise
+                    if target in self._legacy_menu_values:
+                        self._set_legacy_menu_property(target, value)
+                        return
+                    if self._is_constructor_default(target, value):
+                        return
+                    raise _needs_newer_blender(
+                        f"{type(self).__name__}'s {target!r} input"
+                    ) from None
+            else:
+                socket = target
             # A multi-input socket (JoinGeometry, JoinBundle, …) fed an iterable
             # links each source; reversed so the tuple order reproduces creation
             # order, as JoinGeometry's own constructor does. A vector/colour
@@ -367,6 +399,25 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                     self._apply_input(socket, cast("InputAny", source))
                 return
             self._set_input_default_value(socket, value)
+
+    def _set_legacy_menu_property(self, identifier: str, value: Any) -> None:
+        """On a Blender from before an enum property became the menu input
+        ``identifier``, set the property: ``value`` is a menu item, or the
+        property's own value."""
+        to_item = self._legacy_menu_values[identifier][1]
+        to_enum = {item: enum for enum, item in to_item.items()}
+        try:
+            setattr(self.node, normalize_name(identifier), to_enum.get(value, value))
+        except TypeError as error:
+            raise enum_value_error(error, f"{type(self).__name__}'s {identifier}")
+
+    def _is_constructor_default(self, identifier: str, value: Any) -> bool:
+        """Whether ``value`` is what the constructor passes for the input
+        ``identifier`` when its parameter is left out."""
+        param = normalize_name(identifier)
+        param = self._socket_params.get(param, param)
+        default = _constructor_defaults(type(self)).get(param, _NO_DEFAULT)
+        return default is not _NO_DEFAULT and value == default
 
     def _establish_named_links(self, pairs: list[tuple[str, InputAny]]):
         """Link inputs that share a socket name (so the name alone is

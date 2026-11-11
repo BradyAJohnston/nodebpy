@@ -34,6 +34,7 @@ from nodebpy.builder import (
     VectorSocketGrid,
     VectorSocketList,
 )
+from nodebpy.builder._utils import _older_blender
 from nodebpy.nodes.geometry import SplitString
 
 
@@ -136,6 +137,7 @@ def _socket(node, identifier):
     return next(s for s in node.node.inputs if s.identifier == identifier)
 
 
+@pytest.mark.generated_blender
 def test_menu_sockets_accept_their_old_enum_spellings():
     from nodebpy.export import to_python
 
@@ -166,6 +168,7 @@ def test_menu_sockets_accept_their_old_enum_spellings():
     assert "MERGE_BY" not in code and 'mode="By Group ID"' in code
 
 
+@pytest.mark.generated_blender
 def test_relabelled_output_still_resolves_its_identifier():
     # Blender 5.3 relabelled Import PLY's Mesh output Geometry but kept its
     # identifier, so 520's o.mesh keeps working
@@ -204,7 +207,13 @@ def test_renamed_sockets_resolve_their_documented_old_name(cls, tree, side, attr
     with tree.tree():
         node = cls()
     accessor = node.i if side == "i" else node.o
-    assert accessor._get(old).socket == accessor._get(attr).socket
+    try:
+        new = accessor._get(attr)
+    except RuntimeError:
+        if _older_blender():
+            pytest.skip(f"{cls.__name__}'s {attr!r} label is newer than this Blender")
+        raise
+    assert accessor._get(old).socket == new.socket
 
 
 def test_socket_selection():

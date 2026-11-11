@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## Unreleased
+
+### Enhancements
+
+- **nodebpy 530 runs on Blender 5.2.** Everything Blender 5.3 didn't add works there: the node classes import, and an input 5.3 added is left out when it keeps its default. A node, input, menu option or bundled asset only 5.3 has raises `NodeUnavailableError`, naming the Blender it needs. Merge Layers and the Set Grease Pencil Color / Depth nodes take their 530 `mode=` / `depth_order=` values on 5.2 too. The `bpy` extra accepts 5.2.
+
 ## v530.0.0 - UNRELEASED
 
 ### Enhancements

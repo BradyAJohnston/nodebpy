@@ -39,6 +39,8 @@ from ._utils import (
     InvalidLinkWarning,
     SocketError,
     _allow_innactive_sockets,
+    _needs_newer_blender,
+    _older_blender,
     enum_value_error,
     resolve_socket_key,
     socket_key,
@@ -2080,7 +2082,18 @@ class TreeBuilder[TreeT: NodeTree]:
         return link
 
     def add(self, name: str) -> Node:
-        node = self.tree.nodes.new(name)
+        try:
+            node = self.tree.nodes.new(name)
+        except RuntimeError as error:
+            # Blender says "Node type X undefined" for a node it doesn't
+            # have, and "Cannot add node of type X" for one this tree type
+            # doesn't take (yet)
+            if _older_blender() and (
+                "undefined" in str(error) or "Cannot add node" in str(error)
+            ):
+                where = f"{name} in a {self.tree.bl_idname}"
+                raise _needs_newer_blender(where) from error
+            raise
         assert node is not None
         node.hide = self.collapse
         if self._frame_contexts:

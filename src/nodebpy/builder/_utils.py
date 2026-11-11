@@ -21,6 +21,32 @@ class SocketError(Exception):
     """Raised when a socket operation fails."""
 
 
+class NodeUnavailableError(RuntimeError):
+    """Raised for a node, or a node's input, that the running Blender lacks:
+    the node classes are generated from a newer Blender than the one running."""
+
+
+def _older_blender() -> bool:
+    """Whether the running Blender is older than the node classes."""
+    from ..nodes._blender import GENERATED_FOR
+
+    return tuple(bpy.app.version[:2]) < GENERATED_FOR
+
+
+def _needs_newer_blender(what: str) -> NodeUnavailableError:
+    from ..nodes._blender import GENERATED_FOR
+
+    return NodeUnavailableError(
+        f"{what} is not in Blender {bpy.app.version_string}; this nodebpy is "
+        f"generated from Blender {'.'.join(map(str, GENERATED_FOR))}."
+    )
+
+
+class OptionUnavailableError(NodeUnavailableError, TypeError):
+    """Raised, on a Blender older than the node classes, for an enum option
+    the running Blender lacks: a typo, or an option added since."""
+
+
 class InvalidLinkWarning(UserWarning):
     """Emitted when a built tree holds links Blender can't evaluate."""
 
@@ -52,9 +78,16 @@ def enum_value_error(error: TypeError, what: str) -> TypeError:
             f"with a {value!r} item."
         )
     hint = f" Did you mean {' or '.join(map(repr, close))}?" if close else ""
-    return TypeError(
-        f"{what} has no option {value!r}.{hint} Options: {', '.join(options)}."
-    )
+    message = f"{what} has no option {value!r}.{hint} Options: {', '.join(options)}."
+    if _older_blender():
+        from ..nodes._blender import GENERATED_FOR
+
+        return OptionUnavailableError(
+            f"{message} In Blender {bpy.app.version_string}, that is: it may be "
+            f"new in Blender {'.'.join(map(str, GENERATED_FOR))}, which this "
+            "nodebpy is generated from."
+        )
+    return TypeError(message)
 
 
 # Type precedence for mixed-type operator dispatch (higher = dominant).

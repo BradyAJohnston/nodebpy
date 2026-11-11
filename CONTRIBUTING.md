@@ -17,6 +17,15 @@ Tests run using `bpy` installed from pip (no need for Blender on `PATH`)
 uv run pytest -n 4
 ```
 
+### On the previous Blender
+
+The node classes are generated from one Blender (`nodes/_blender.py` records which), and also run on the one before it. There, constructing a node that Blender lacks, setting one of its options or an input it lacks to anything but the constructor's default, or linking a bundled asset it lacks raises `NodeUnavailableError`, naming the Blender needed; an input the node lacks, left at its default, is skipped. CI runs the suite against that Blender too (`test-blender-5-2` in `tests.yml`): a test that hits `NodeUnavailableError` is skipped there, and a test of the newer Blender's behaviour on a node both have is marked `@pytest.mark.generated_blender`. To run it locally:
+
+```sh
+uv pip install "bpy==5.2.*" && uv run --no-sync pytest -n 4
+uv sync --all-extras    # back to the locked bpy
+```
+
 ## The agent skill
 
 `src/nodebpy/skills/nodebpy/` is the source of the agent skill and ships in the wheel;

@@ -17,6 +17,7 @@ from typing import Any
 
 import bpy
 
+from ._utils import _needs_newer_blender, _older_blender
 from .node import (
     CustomCompositorGroup,
     CustomGeometryGroup,
@@ -181,6 +182,13 @@ def link_assets(*groups: type[_AssetGroupMixin]) -> dict[type, Any]:
         ):
             for name in names:
                 if name not in src.node_groups:
+                    bundled = any(
+                        isinstance(cls._library, BundledLibrary)
+                        for cls in classes
+                        if cls._asset_name == name
+                    )
+                    if bundled and _older_blender():
+                        raise _needs_newer_blender(f"The bundled asset {name!r}")
                     raise KeyError(f"Node group {name!r} not found in {path}")
             # a copy: Blender swaps the names in this list for the linked trees
             dst.node_groups = list(names)
