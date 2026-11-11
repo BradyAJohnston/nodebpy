@@ -40,3 +40,24 @@ jobs:
       - name: Upload coverage reports to Codecov
         if: matrix.os == 'macos-latest'
         uses: codecov/codecov-action@v3
+
+  # The node classes are generated from Blender 5.2; they must keep working on
+  # 5.3. Tests of 5.2's own nodes, assets and files skip themselves.
+  test-blender-5-3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Install, with bpy 5.3
+        run: |
+          uv sync --all-extras
+          uv pip install --python .venv "bpy==5.3.*"
+
+      - name: Run tests
+        run: |
+          uv run --no-sync pytest -n auto

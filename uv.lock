@@ -1628,7 +1628,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bpy", marker = "extra == 'bpy'", specifier = "==5.2.*" },
+    { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.2,<5.4" },
     { name = "matplotlib", marker = "extra == 'plot'", specifier = ">=3.8" },
     { name = "ruff", marker = "extra == 'format'", specifier = ">=0.14.11" },
 ]

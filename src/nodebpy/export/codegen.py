@@ -1441,6 +1441,14 @@ class EmitContext:
             default: object = inspect.Parameter.empty
             if sig and kwarg_name in sig.parameters:
                 default = sig.parameters[kwarg_name].default
+            elif sig and not any(
+                p.kind is inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
+            ):
+                # An input the class has no parameter for (one a newer
+                # Blender added): left at a fresh node's value it needs
+                # nothing; the positional fallback would compare it with
+                # another socket's default.
+                pass
             elif i < len(positional):
                 default = positional[i][1].default
 

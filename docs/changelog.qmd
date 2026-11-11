@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## Unreleased
+
+### Fixes
+
+- **nodebpy 520 runs on Blender 5.3.** `to_python` no longer writes an argument for an input 5.3 added (Realize Instances' `preserve_normals=`, Principled BSDF's `transmission_dispersion_abbe_number=`) when it keeps a new node's value; the 520 classes have no such parameter. The `bpy` extra accepts 5.3.
+
 ## v520.42.0
 
 ### Enhancements

@@ -289,6 +289,7 @@ def _assert_library_roundtrip(blend, tmp_path):
     assert not findings, format_report(findings)
 
 
+@pytest.mark.generated_blender
 @pytest.mark.parametrize(
     "filename",
     [

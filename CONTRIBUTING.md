@@ -17,6 +17,15 @@ Tests run using `bpy` installed from pip (no need for Blender on `PATH`)
 uv run pytest -n 4
 ```
 
+### On the next Blender
+
+The node classes are generated from Blender 5.2 (`nodes/_blender.py`), and also run on 5.3: CI runs the suite against it too (`test-blender-5-3` in `tests.yml`). A test of 5.2's own nodes, bundled assets or saved files is marked `@pytest.mark.generated_blender` and skipped there. To run it locally:
+
+```sh
+uv pip install --python .venv "bpy==5.3.*" && uv run --no-sync pytest -n 4
+uv sync --all-extras    # back to the locked bpy
+```
+
 ## The agent skill
 
 `src/nodebpy/skills/nodebpy/` is the source of the agent skill and ships in the wheel;
