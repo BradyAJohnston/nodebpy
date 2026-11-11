@@ -4022,12 +4022,10 @@ _MARKDOWN_SAMPLES = {
 }
 
 
-def _rebuilt_comments(code: str) -> list[tuple[str, float]]:
+def _rebuilt_comments(code: str) -> list[str]:
     ns: dict = {}
     exec(code, ns)
-    return [
-        (n.text, n.width) for n in ns["tree"].tree.nodes if n.bl_idname == "NodeComment"
-    ]
+    return [n.text for n in ns["tree"].tree.nodes if n.bl_idname == "NodeComment"]
 
 
 @pytest.mark.parametrize("format", [True, False])
@@ -4051,32 +4049,29 @@ def _rebuilt_comments(code: str) -> list[tuple[str, float]]:
 def test_comment_round_trips(text, format):
     with TreeBuilder("CommentRoundTrip") as tree:
         with g.Frame("notes"):
-            g.Comment(text, width=350)
+            g.Comment(text)
         g.Comment(text)
 
     code = to_python(tree, format=format)
-    assert _rebuilt_comments(code) == [(text, 350.0), (text, 200.0)], code
+    assert _rebuilt_comments(code) == [text, text], code
 
 
 def test_comment_markdown_renders_as_indented_block():
     with TreeBuilder("CommentBlock") as tree:
         with g.Frame("notes"):
-            g.Comment(_MARKDOWN, width=400)
+            g.Comment(_MARKDOWN)
 
     code = to_python(tree)
     assert (
         '''
-        _comment = g.Comment.cleandoc(
-            """
+        _comment = g.Comment.cleandoc("""
             # Viridis
 
             Perceptually uniform **sequential**.
 
             - 13 stops
               - nested, with a \\\\ and \\"\\"\\"quotes\\"\\"\\"
-            """,
-            width=400.0,
-        )
+            """)
 '''
         in code
     ), code
@@ -4113,12 +4108,6 @@ def test_comment_code_block_keeps_relative_indent():
     ), code
 
 
-def test_comment_default_width_omitted():
-    with TreeBuilder("CommentWidth") as tree:
-        g.Comment("note")
-    assert 'g.Comment("note")' in to_python(tree)
-
-
 def test_comment_stores_text_as_given():
     with TreeBuilder("CommentRaw"):
         comment = g.Comment("\n  indented\n")
@@ -4132,8 +4121,6 @@ def test_comment_cleandoc_cleans_like_a_docstring():
             # Title
 
               indented
-            """,
-            width=300,
+            """
         )
     assert comment.text == "# Title\n\n  indented"
-    assert comment.node.width == 300

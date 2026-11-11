@@ -78,27 +78,23 @@ class Comment(BaseNode):
     def text(self, value: str) -> None:
         self.node.text = value
 
-    def __init__(self, text: str = "", width: float | None = None):
+    def __init__(self, text: str = ""):
         """
         Parameters
         ----------
         text : str
             Markdown shown in the node, stored as given.
-        width : float | None
-            Node width; Blender's default when ``None``.
         """
         super().__init__()
         self.text = text
-        if width is not None:
-            self.node.width = width
 
     @classmethod
-    def cleandoc(cls, text: str = "", width: float | None = None) -> "Comment":
+    def cleandoc(cls, text: str = "") -> "Comment":
         """A comment whose text is cleaned like a docstring
         (:func:`inspect.cleandoc`): leading and trailing blank lines and the
         common indentation are removed, so markdown can be written as an
         indented triple-quoted block."""
-        return cls(inspect.cleandoc(text), width=width)
+        return cls(inspect.cleandoc(text))
 
 
 class DialGizmo(BaseNode):
