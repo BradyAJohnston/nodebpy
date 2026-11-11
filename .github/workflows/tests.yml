@@ -56,7 +56,7 @@ jobs:
       - name: Install, with bpy 5.2
         run: |
           uv sync --all-extras
-          uv pip install "bpy==5.2.*"
+          uv pip install --python .venv "bpy==5.2.*"
 
       - name: Run tests
         run: |
