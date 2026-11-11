@@ -10,6 +10,9 @@ from nodebpy.layout.sugiyama import sugiyama_layout
 from . import cases, corpus
 from .metrics import measure
 
+# the corpus trees are serialised by the Blender the classes are generated from
+pytestmark = pytest.mark.generated_blender
+
 pytest.importorskip("tree_clipper")
 
 CASES = dict(corpus.cases())

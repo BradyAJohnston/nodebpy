@@ -39,6 +39,7 @@ def _as_f32(value):
         return np.float32(value)
 
 
+@pytest.mark.generated_blender
 @pytest.mark.parametrize(
     ("module", "tree_type"),
     [
@@ -87,6 +88,7 @@ def test_fresh_nodes_export_without_default_kwargs():
     assert "_set_position = g.SetPosition()" in lines
 
 
+@pytest.mark.generated_blender
 @pytest.mark.filterwarnings("ignore:Blender deprecates:DeprecationWarning")
 @pytest.mark.parametrize(
     ("module", "tree_type"),

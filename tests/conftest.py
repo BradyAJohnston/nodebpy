@@ -13,6 +13,30 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from nodebpy import TreeBuilder, shader
 from nodebpy import compositor as c
 from nodebpy import geometry as g
+from nodebpy.nodes._blender import GENERATED_FOR
+
+# The node classes are generated from one Blender; the suite also runs on the
+# one after it. There a test marked ``generated_blender`` (it tests the
+# generating Blender's own nodes, assets or files) is skipped.
+_GENERATED = ".".join(map(str, GENERATED_FOR))
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers",
+        "generated_blender: tests behaviour of the Blender the node classes are "
+        "generated from; skipped on another one",
+    )
+
+
+def pytest_collection_modifyitems(config, items):
+    if tuple(bpy.app.version[:2]) == GENERATED_FOR:
+        return
+    skip = pytest.mark.skip(reason=f"tests Blender {_GENERATED} behaviour")
+    for item in items:
+        if item.get_closest_marker("generated_blender"):
+            item.add_marker(skip)
+
 
 CURRENT = Path(__file__).parent
 BLEND_DIR = CURRENT / "blend_files"

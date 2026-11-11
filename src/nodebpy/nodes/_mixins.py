@@ -153,7 +153,9 @@ class _CombineBundleMixin(ItemsMixin):
     _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     if TYPE_CHECKING:
-        node: bpy.types.NodeCombineBundle
+
+        @property
+        def node(self) -> bpy.types.NodeCombineBundle: ...
 
     def __init__(
         self,
@@ -189,7 +191,9 @@ class _SeparateBundleMixin(ItemsMixin):
     _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     if TYPE_CHECKING:
-        node: bpy.types.NodeSeparateBundle
+
+        @property
+        def node(self) -> bpy.types.NodeSeparateBundle: ...
 
     def __init__(
         self,
@@ -231,7 +235,9 @@ class _ClosureToListMixin(ItemsMixin):
     _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     if TYPE_CHECKING:
-        node: bpy.types.GeometryNodeClosureToList
+
+        @property
+        def node(self) -> bpy.types.GeometryNodeClosureToList: ...
 
     def __init__(
         self,
@@ -450,10 +456,14 @@ class _HandleModeMixin:
     ergonomic per-side toggles; ``mode`` exposes the raw set."""
 
     if TYPE_CHECKING:
-        node: (
+
+        @property
+        def node(
+            self,
+        ) -> (
             bpy.types.GeometryNodeCurveSetHandles
             | bpy.types.GeometryNodeCurveHandleTypeSelection
-        )
+        ): ...
 
     @property
     def left(self) -> bool:
@@ -513,7 +523,9 @@ class _SwitchMixin:
     that type (``g.Switch(cond, g.Cube(), g.UVSphere())`` switches meshes)."""
 
     if TYPE_CHECKING:
-        node: bpy.types.GeometryNodeSwitch
+
+        @property
+        def node(self) -> bpy.types.GeometryNodeSwitch: ...
 
         def _establish_links(self, **kwargs: InputAny) -> None: ...
 
@@ -689,7 +701,7 @@ class _RaycastItems(_ValueItems[Item]):
         """Sample the color attribute named ``attribute`` at the hit point."""
         return self._attribute(attribute, name, "RGBA")
 
-    def new(  # ty: ignore[invalid-method-override]
+    def new(  # ty: ignore[incompatible-method-override]
         self, attribute: InputString = None, name: str | None = None, *, type: str
     ) -> Item:
         """Sample ``attribute`` as a runtime-chosen ``type`` (``"FLOAT"``,

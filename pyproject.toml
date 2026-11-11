@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "520.42.0"
+version = "520.42.1"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
@@ -37,7 +37,8 @@ plot = [
     "matplotlib>=3.8",
 ]
 bpy = [
-    "bpy==5.2.*",
+    # generated from 5.2; also runs on 5.3
+    "bpy>=5.2,<5.4",
 ]
 # Used by `to_python(format=True)` to tidy generated source via `ruff format`.
 format = [
@@ -59,13 +60,13 @@ dev = [
     "quarto-cli>=1.9",
     "quartodoc>=0.11.1",
     "tree-clipper>=0.1.6",
-    "ruff>=0.14.11",
+    "ruff>=0.17",
     "syrupy>=5.0.0",
     "pytest-xdist>=3.8.0",
     "griffe<2.0.0",
-    "ty==0.0.74",
+    "ty==0.0.101",
     "matplotlib>=3.11.2",
-    "databpy>=0.9.0",
+    "databpy>=0.12.0",
     "pytest-codspeed>=5.0.3",
 ]
 
@@ -77,7 +78,7 @@ dev = [
 include = ["tests/**"]
 
 [tool.ty.overrides.rules]
-unresolved-attribute = "ignore"
+missing-attribute = "ignore"
 not-subscriptable = "ignore"
 invalid-assignment = "ignore"
 invalid-argument-type = "ignore"

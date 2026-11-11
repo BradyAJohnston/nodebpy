@@ -3113,6 +3113,7 @@ def _bundled_assets():
     return params
 
 
+@pytest.mark.generated_blender
 @pytest.mark.parametrize("path,name", _bundled_assets())
 def test_roundtrip_bundled_asset(path, name):
     import bpy

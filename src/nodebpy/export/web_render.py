@@ -65,7 +65,7 @@ def to_tree_clipper_payload(builder: TreeBuilder[Any], *, compress: bool = True)
     export.set_external(
         # get_pointee() is typed as bare bpy_struct upstream; external items are
         # always ID datablocks, which do carry a `.name`.
-        (external_id, item.pointed_to_by.get_pointee().name)  # ty: ignore[unresolved-attribute]
+        (external_id, item.pointed_to_by.get_pointee().name)  # ty: ignore[missing-attribute]
         for external_id, item in export.get_external().items()
     )
     return export.export_to_str(compress=compress, json_indent=4)

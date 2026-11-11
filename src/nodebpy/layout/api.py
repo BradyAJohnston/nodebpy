@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import Literal
@@ -25,7 +25,7 @@ _DEFAULT_SUGIYAMA: ContextVar[SugiyamaOptions | None] = ContextVar(
 
 
 @contextmanager
-def default_sugiyama_options(options: SugiyamaOptions) -> Iterator[None]:
+def default_sugiyama_options(options: SugiyamaOptions) -> Generator[None]:
     """Scope in which ``arrange(tree, "sugiyama")``, and so every
     ``TreeBuilder`` left at its default arrangement, uses *options*.
 

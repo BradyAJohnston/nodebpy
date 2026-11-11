@@ -17,6 +17,15 @@ Tests run using `bpy` installed from pip (no need for Blender on `PATH`)
 uv run pytest -n 4
 ```
 
+### On the next Blender
+
+The node classes are generated from Blender 5.2 (`nodes/_blender.py`), and also run on 5.3: CI runs the suite against it too (`tests-5.3.yml`). A test of 5.2's own nodes, bundled assets or saved files is marked `@pytest.mark.generated_blender` and skipped there. To run it locally:
+
+```sh
+uv pip install --python .venv "bpy==5.3.*" && uv run --no-sync pytest -n 4
+uv sync --all-extras    # back to the locked bpy
+```
+
 ## The agent skill
 
 `src/nodebpy/skills/nodebpy/` is the source of the agent skill and ships in the wheel;
@@ -92,7 +101,7 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python my_script.py
 
 ## CI
 
-Two GitHub Actions workflows run on every push and pull request:
+These GitHub Actions workflows run on every push and pull request:
 
 - **lint.yml** — ruff format check, ruff check, ty check (Ubuntu only, platform-independent)
-- **tests.yml** — pytest on macOS, Windows, and Ubuntu
+- **tests-5.2.yml** / **tests-5.3.yml** — pytest on macOS, Windows, and Ubuntu against each supported Blender, through the reusable `_tests.yml`; each has a badge in the README's table, per branch (`main` is 530, `5.2` is 520)

@@ -6,7 +6,7 @@ positions are always estimated (:func:`calculate_socket_offset_y`)."""
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from dataclasses import replace as dataclass_replace
@@ -57,7 +57,7 @@ _cache: _SizeCache | None = None
 
 
 @contextmanager
-def size_cache() -> Iterator[None]:
+def size_cache() -> Generator[None]:
     """Within the block, each node's rows and box are worked out once, and
     the properties a node type draws once per type. For reading a whole
     tree that does not change meanwhile: the row model walks a node's RNA

@@ -2,6 +2,14 @@
 title: Changelog
 ---
 
+## v520.42.1
+
+### Fixes
+
+- **nodebpy 520 runs on Blender 5.3.** `to_python` no longer writes an argument for an input 5.3 added (Realize Instances' `preserve_normals=`, Principled BSDF's `transmission_dispersion_abbe_number=`) when it keeps a new node's value; the 520 classes have no such parameter. The `bpy` extra accepts 5.3.
+- `GeometryPrincipalComponents.i.geometry` is typed as a `GeometrySocket`, like every other group input; it was typed as an input value.
+- A node's `.node` and a socket's `.socket` are read-only properties, so subclasses can narrow their types for type checkers (ty 0.0.101 requires it); assigning to them raises `AttributeError`.
+
 ## v520.42.0
 
 ### Enhancements
