@@ -991,6 +991,21 @@ type _LayoutEntry = tuple[
     tuple[tuple[str, str, str], ...],
 ]
 
+# A layout-snapshot entry as stored: the record above, optionally followed by
+# the node's display state where it differs from a new node's
+# (``{"hide": True}`` for a collapsed node). The display state plays no part
+# in matching.
+type _SnapshotEntry = (
+    _LayoutEntry
+    | tuple[
+        str,
+        tuple[float, float],
+        str | None,
+        tuple[tuple[str, str, str], ...],
+        dict[str, Any],
+    ]
+)
+
 # One piece of matching evidence: a link as (own socket id, is_output, peer's
 # authored name, peer socket id), or ("parent", frame's authored name) /
 # ("child", child's authored name) for frame membership.
@@ -1680,9 +1695,10 @@ class TreeBuilder[TreeT: NodeTree]:
                 node.location = location
 
     @property
-    def layout_snapshot(self) -> dict[str, _LayoutEntry]:
+    def layout_snapshot(self) -> dict[str, _SnapshotEntry]:
         """A structural layout snapshot: for every node its type, ``(x, y)``
-        location, frame parent and incoming links, keyed by node name —
+        location, frame parent, incoming links and, when collapsed,
+        ``{"hide": True}``, keyed by node name —
         the block ``to_python(snapshot_positions=True)`` emits. See the
         setter for how it is applied."""
         incoming: dict[str, list[tuple[str, str, str]]] = {}
@@ -1696,18 +1712,19 @@ class TreeBuilder[TreeT: NodeTree]:
                     socket_key(link.from_socket),
                 )
             )
-        return {
-            node.name: (
+        snapshot: dict[str, _SnapshotEntry] = {}
+        for node in self.tree.nodes:
+            base = (
                 node.bl_idname,
                 (node.location.x, node.location.y),
                 node.parent.name if node.parent is not None else None,
                 tuple(sorted(incoming.get(node.name, ()))),
             )
-            for node in self.tree.nodes
-        }
+            snapshot[node.name] = (*base, {"hide": True}) if node.hide else base
+        return snapshot
 
     @layout_snapshot.setter
-    def layout_snapshot(self, snapshot: dict[str, _LayoutEntry]) -> None:
+    def layout_snapshot(self, snapshot: dict[str, _SnapshotEntry]) -> None:
         """Restore authored node names and locations from a snapshot.
 
         A rebuild names duplicate-type nodes by creation order (``Math``,
@@ -1717,11 +1734,16 @@ class TreeBuilder[TreeT: NodeTree]:
         structurally: exact name+type matches seed the correspondence, then
         it grows through link/frame evidence against already-matched
         neighbours; matched nodes are renamed to their authored names and
-        moved to their authored locations. Entries a rebuild has no
+        moved to their authored locations and collapsed state (an entry
+        without display state leaves the node expanded). Entries a rebuild has no
         counterpart for (e.g. dropped reroutes) are skipped, so applying a
         snapshot to an edited tree degrades gracefully."""
-        entries = {
+        entries: dict[str, _LayoutEntry] = {
             name: (entry[0], tuple(entry[1]), entry[2], tuple(entry[3]))
+            for name, entry in snapshot.items()
+        }
+        display = {
+            name: entry[4] if len(entry) > 4 else {}  # ty: ignore[index-out-of-bounds]
             for name, entry in snapshot.items()
         }
         matches = _match_layout_snapshot(self.tree, entries)
@@ -1750,6 +1772,7 @@ class TreeBuilder[TreeT: NodeTree]:
             if parent_node is not None or parent is None:
                 node.parent = cast("NodeFrame | None", parent_node)
             node.location = location
+            node.hide = bool(display[entry_name].get("hide", False))
         for node, old_name in displaced:
             node.name = old_name  # re-suffixed by Blender on collision
 
@@ -1758,7 +1781,7 @@ class TreeBuilder[TreeT: NodeTree]:
         """The extra Group Input instances beyond the primary one, each as
         ``{"name": ..., "label": ..., "links": [(interface input name,
         consumer node name, consumer socket key), ...], "location": ...,
-        "parent": ...}`` — the editor convention of several input nodes near
+        "parent": ...}`` (plus ``"hide": True`` when collapsed) — the editor convention of several input nodes near
         their consumers instead of one node trailing long noodles. See the
         setter."""
         splits: list[dict[str, Any]] = []
@@ -1780,6 +1803,8 @@ class TreeBuilder[TreeT: NodeTree]:
                     "parent": node.parent.name if node.parent is not None else None,
                 }
             )
+            if node.hide:
+                splits[-1]["hide"] = True
         return splits
 
     @group_input_splits.setter
@@ -1812,6 +1837,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 instance.parent = parent
             if (location := split.get("location")) is not None:
                 instance.location = location
+            instance.hide = bool(split.get("hide", False))
             for from_name, to_node_name, to_socket_key in split["links"]:
                 to_node = self.tree.nodes.get(to_node_name)
                 if to_node is None:
