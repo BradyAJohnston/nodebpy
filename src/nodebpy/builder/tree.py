@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import warnings
 from collections import Counter
-from collections.abc import Collection, Iterator
+from collections.abc import Collection, Generator
 from contextlib import AbstractContextManager, contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
@@ -80,7 +80,7 @@ _DEFAULT_SPLIT_INPUTS: ContextVar[bool] = ContextVar(
 
 
 @contextmanager
-def default_split_inputs(split: bool = True) -> Iterator[None]:
+def default_split_inputs(split: bool = True) -> Generator[None]:
     """Scope in which every ``TreeBuilder`` left at its default
     ``split_inputs`` splits the Group Input node into one instance per
     consumer node (with unused sockets hidden) on context exit.
@@ -102,7 +102,7 @@ _DEFAULT_KEEP_EDITS: ContextVar[bool] = ContextVar(
 
 
 @contextmanager
-def default_keep_edits(keep: bool = True) -> Iterator[None]:
+def default_keep_edits(keep: bool = True) -> Generator[None]:
     """Scope in which every ``TreeBuilder`` left at its default
     ``keep_edits`` keeps the layout edits made to the tree it rebuilds with
     ``clear=True`` (see :class:`TreeBuilder`). :func:`nodebpy.live.run_source`
@@ -122,7 +122,7 @@ _RECORD_BUILDS: ContextVar[bool] = ContextVar("nodebpy_record_builds", default=F
 
 
 @contextmanager
-def _record_builds() -> Iterator[None]:
+def _record_builds() -> Generator[None]:
     token = _RECORD_BUILDS.set(True)
     try:
         yield
@@ -140,7 +140,7 @@ _EDITED_COPIES: ContextVar[list[tuple[NodeTree, NodeTree]] | None] = ContextVar(
 
 
 @contextmanager
-def _defer_edited() -> Iterator[list[tuple[NodeTree, NodeTree]]]:
+def _defer_edited() -> Generator[list[tuple[NodeTree, NodeTree]]]:
     copies: list[tuple[NodeTree, NodeTree]] = []
     token = _EDITED_COPIES.set(copies)
     try:
@@ -1410,7 +1410,7 @@ class TreeBuilder[TreeT: NodeTree]:
 
     @is_modifier.setter
     def is_modifier(self, value: bool) -> None:
-        self.tree.is_modifier = value  # ty: ignore[unresolved-attribute]
+        self.tree.is_modifier = value  # ty: ignore[missing-attribute]
 
     @property
     def is_tool(self) -> bool:
@@ -1419,7 +1419,7 @@ class TreeBuilder[TreeT: NodeTree]:
 
     @is_tool.setter
     def is_tool(self, value: bool) -> None:
-        self.tree.is_tool = value  # ty: ignore[unresolved-attribute]
+        self.tree.is_tool = value  # ty: ignore[missing-attribute]
 
     def to_python(
         self,
@@ -1751,8 +1751,7 @@ class TreeBuilder[TreeT: NodeTree]:
             for name, entry in snapshot.items()
         }
         display = {
-            name: entry[4] if len(entry) > 4 else {}  # ty: ignore[index-out-of-bounds]
-            for name, entry in snapshot.items()
+            name: entry[4] if len(entry) > 4 else {} for name, entry in snapshot.items()
         }
         matches = _match_layout_snapshot(self.tree, entries)
 

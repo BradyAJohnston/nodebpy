@@ -3420,7 +3420,7 @@ class MergeLayers(BaseNode):
     def mode(self) -> Literal["MERGE_BY_NAME", "MERGE_BY_ID"]:
         """Deprecated: use ``i.mode``."""
         _deprecated("MergeLayers.mode", "i.mode", removed_in=540)
-        value = self.i["Mode"].socket.default_value  # ty: ignore[unresolved-attribute]
+        value = self.i["Mode"].socket.default_value  # ty: ignore[missing-attribute]
         names: dict[str, Literal["MERGE_BY_NAME", "MERGE_BY_ID"]] = {
             "By Name": "MERGE_BY_NAME",
             "By Group ID": "MERGE_BY_ID",
@@ -6954,7 +6954,7 @@ class SetGreasePencilColor(BaseNode):
     def mode(self) -> Literal["STROKE", "FILL", "BOTH"]:
         """Deprecated: use ``i.mode``."""
         _deprecated("SetGreasePencilColor.mode", "i.mode", removed_in=540)
-        value = self.i["Mode"].socket.default_value  # ty: ignore[unresolved-attribute]
+        value = self.i["Mode"].socket.default_value  # ty: ignore[missing-attribute]
         names: dict[str, Literal["STROKE", "FILL", "BOTH"]] = {
             "Stroke": "STROKE",
             "Fill": "FILL",
@@ -7079,7 +7079,7 @@ class SetGreasePencilDepth(BaseNode):
     def depth_order(self) -> Literal["2D", "3D"]:
         """Deprecated: use ``i.depth_order``."""
         _deprecated("SetGreasePencilDepth.depth_order", "i.depth_order", removed_in=540)
-        value = self.i["Depth Order"].socket.default_value  # ty: ignore[unresolved-attribute]
+        value = self.i["Depth Order"].socket.default_value  # ty: ignore[missing-attribute]
         names: dict[str, Literal["2D", "3D"]] = {"2D Layers": "2D", "3D Location": "3D"}
         return names[value]
 

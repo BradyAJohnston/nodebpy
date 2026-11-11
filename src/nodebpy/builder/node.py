@@ -122,7 +122,6 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
     _bl_idname: str
     _tree: TreeBuilder[Any]
-    node: Node
     _default_input_id: str | None = None
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
@@ -148,7 +147,13 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
         self._tree = tree
         self._placeholder_inputs = []
-        self.node = node if node else self._tree.add(self.__class__._bl_idname)
+        self._wrapped_node = node if node else self._tree.add(self.__class__._bl_idname)
+
+    # Read-only, so subclasses can narrow its type (``node: GeometryNodeGroup``).
+    @property
+    def node(self) -> Node:
+        """The Blender node this instance wraps."""
+        return self._wrapped_node
 
     @property
     def tree(self) -> TreeBuilder[Any]:
@@ -245,7 +250,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         builder = cls.__new__(cls)
         builder._tree = TreeBuilder(cast(NodeTree, node.id_data))
         builder._placeholder_inputs = []
-        builder.node = node
+        builder._wrapped_node = node
         return builder
 
     @classmethod
@@ -345,7 +350,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             return
         if isinstance(value, Node):
             node = BaseNode.__new__(BaseNode)
-            node.node = value
+            node._wrapped_node = value
             value = node
 
         if value is ...:
@@ -499,7 +504,11 @@ def _match_compatible_data(
 
 
 class DynamicInputsMixin(ABC):
-    _socket_data_types: tuple[str, ...]
+    if TYPE_CHECKING:
+        # a class attribute, or a property when it depends on the node
+        @property
+        def _socket_data_types(self) -> tuple[str, ...]: ...
+
     _type_map: ClassVar[dict[str, str]] = {}
 
     def _match_compatible_data(

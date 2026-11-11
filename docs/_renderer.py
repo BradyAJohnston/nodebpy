@@ -110,7 +110,7 @@ class Renderer(MdRenderer):
     # plum's @dispatch registers this as an extra overload rather than a true
     # override — quartodoc's documented extension idiom, invisible to ty.
     @dispatch
-    def summarize(  # ty: ignore[invalid-method-override]
+    def summarize(  # ty: ignore[incompatible-method-override]
         self, el: layout.DocAttribute, path: str | None = None, shorten: bool = False
     ):
         name = el.name

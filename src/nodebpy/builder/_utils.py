@@ -389,7 +389,8 @@ class _NodeLike(Protocol):
 class _SocketLike(Protocol):
     """Protocol for objects that wrap a single Blender NodeSocket and expose ``.socket``."""
 
-    socket: NodeSocket
+    @property
+    def socket(self) -> NodeSocket: ...
 
 
 def _output_socket_type(value: Any) -> SOCKET_TYPES | None:

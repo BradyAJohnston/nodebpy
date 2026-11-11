@@ -13,7 +13,7 @@ import os
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import bpy
 
@@ -68,7 +68,7 @@ class BundledLibrary(AssetLibrary):
 
     def path(self) -> str:
         nodes_dir = os.path.join(
-            bpy.utils.system_resource("DATAFILES"),  # ty: ignore[unresolved-attribute]
+            bpy.utils.system_resource("DATAFILES"),  # ty: ignore[missing-attribute]
             "assets",
             "nodes",
         )
@@ -98,7 +98,8 @@ class _AssetGroupMixin:
 
     _library: AssetLibrary
     _asset_name: str
-    _tree_idname: str  # provided by the Custom*Group this is mixed into
+    # provided by the Custom*Group this is mixed into
+    _tree_idname: Literal["GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"]
 
     def _build_group(self, tree) -> None:  # pragma: no cover - never called
         raise NotImplementedError(
@@ -127,10 +128,10 @@ class _AssetGroupMixin:
         """
         cls = type(self)
         if _build_from_source_depth and cls._has_build_source():
-            return super()._create_group()  # ty: ignore[unresolved-attribute]
+            return super()._create_group()  # ty: ignore[missing-attribute]
         group = link_assets(cls).get(cls)
         if group is None:  # no library on disk, build from the recipe instead
-            return super()._create_group()  # ty: ignore[unresolved-attribute]
+            return super()._create_group()  # ty: ignore[missing-attribute]
         return group
 
 

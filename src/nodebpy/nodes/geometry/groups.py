@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any
 
 from ...builder import (
     CustomGeometryGroup,
+    GeometrySocket,
     IntegerSocket,
     IntegerSocketList,
     RotationSocket,
@@ -255,8 +256,8 @@ class GeometryPrincipalComponents(CustomGeometryGroup):
     _name = "Geometry Principal Components"
     _color_tag = "GEOMETRY"
 
-    class _Inputs:
-        geometry: InputGeometry
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
 
     class _Outputs(SocketAccessor):
         group_center: VectorSocket
