@@ -4898,10 +4898,10 @@ def _node_props_kwargs(node, collapse: bool = False) -> dict[str, Expr]:
         kwargs["width"] = Lit(round(node.width, 2))
     if node.hide and not collapse:
         kwargs["hide"] = Lit(True)
-    # Group nodes are built with their options folded away
-    # (NodeGroupBuilder); every other node starts with them shown.
-    if node.show_options != (group_tree is None):
-        kwargs["show_options"] = Lit(node.show_options)
+    # Group nodes are left alone: nodebpy builds them with their options (the
+    # node-group selector) folded away, where the editor shows them.
+    if group_tree is None and not node.show_options:
+        kwargs["show_options"] = Lit(False)
     for side, sockets in (("hide_inputs", node.inputs), ("hide_outputs", node.outputs)):
         hidden = [visible_socket_key(s) for s in sockets if s.enabled and s.hide]
         if hidden:

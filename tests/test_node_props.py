@@ -161,3 +161,20 @@ def test_to_python_group_class_sets_collapse():
     code = to_python(tree, format=False, top_level="class")
     assert "tree.collapse = True" in code
     assert ".props(hide=True)" not in code
+
+
+def test_to_python_leaves_group_node_options_alone():
+    """A group node added in the editor shows its options; nodebpy builds
+    them hidden, and that isn't written as a difference."""
+    from nodebpy.builder import CustomGeometryGroup
+
+    class Passthrough(CustomGeometryGroup):
+        _name = "PropsPassthrough"
+
+        def _build_group(self, tree):
+            tree.inputs.geometry("G") >> tree.outputs.geometry("G")
+
+    with TreeBuilder("PropsGroupOptions", arrange=None) as tree:
+        group = Passthrough()
+    group.node.show_options = True
+    assert ".props(" not in to_python(tree, format=False)
