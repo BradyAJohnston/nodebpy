@@ -1203,6 +1203,9 @@ class EmitContext:
     pending_lines: list[str] = field(default_factory=list)
     zones: dict[str, _ZoneState] = field(default_factory=dict)
     collector: _GroupCollector | None = None
+    # Every node the body builds is collapsed: the tree is built with
+    # ``collapse=True`` and no node needs ``.props(hide=True)``.
+    collapse: bool = False
 
     def input_link(self, node: Node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
@@ -4403,6 +4406,8 @@ def to_python(
             ctor_args.append("arrange=None")
         if in_place:
             ctor_args.append("clear=True")
+        if emission.collapse:
+            ctor_args.append("collapse=True")
         # The modifier/tool flags are constructor options; the other tree
         # properties only the class form carries.
         tree_props = _tree_prop_overrides(node_tree)
@@ -4606,6 +4611,7 @@ class _TreeEmission:
     body_lines: list[str]
     out_lines: list[str]
     used_aliases: set[str]
+    collapse: bool = False
 
 
 @dataclass
@@ -4855,10 +4861,29 @@ def _color_expr(color) -> Expr:
     return Lit(tuple(round(c, 4) for c in channels))
 
 
-def _node_props_kwargs(node) -> dict[str, Expr]:
+# Nodes the builder's ``collapse`` option doesn't reach: it makes the group
+# input/output nodes itself, frames are ``with`` blocks, and reroutes are
+# dissolved or carry no header to collapse.
+_NOT_COLLAPSIBLE = frozenset(
+    {"NodeGroupInput", "NodeGroupOutput", "NodeFrame", "NodeReroute"}
+)
+
+
+def _all_collapsed(node_tree) -> bool:
+    """Whether every node the body builds is collapsed, so the tree can be
+    built with ``collapse=True`` instead of a ``.props(hide=True)`` per node.
+    Any expanded node rules it out: ``collapse`` would collapse every node
+    the body builds, including ones it doesn't write out (a dissolved
+    Separate XYZ)."""
+    nodes = [n for n in node_tree.nodes if n.bl_idname not in _NOT_COLLAPSIBLE]
+    return bool(nodes) and all(n.hide for n in nodes)
+
+
+def _node_props_kwargs(node, collapse: bool = False) -> dict[str, Expr]:
     """``.props(...)`` keyword arguments for the properties every node has
     that differ from a newly built node's: label, colour, width, collapsed
-    state, options, hidden sockets, mute and warning propagation."""
+    state (unless ``collapse`` builds every node collapsed), options, hidden
+    sockets, mute and warning propagation."""
     from ..builder._utils import visible_socket_key
 
     kwargs: dict[str, Expr] = {}
@@ -4871,7 +4896,7 @@ def _node_props_kwargs(node) -> dict[str, Expr]:
     # its tree's default_group_node_width only applies when added in the UI.
     if abs(node.width - node.bl_width_default) > 0.01:
         kwargs["width"] = Lit(round(node.width, 2))
-    if node.hide:
+    if node.hide and not collapse:
         kwargs["hide"] = Lit(True)
     # Group nodes are built with their options folded away
     # (NodeGroupBuilder); every other node starts with them shown.
@@ -5081,6 +5106,8 @@ def _render_group_class(
     # Either option needs auto-layout off (it dissolves reroutes and overwrites
     # locations); the disable line goes at the body's "in-block" 4-space indent,
     # which the re-indent below lifts to the method-body depth.
+    if emission.collapse:
+        inner = ["    tree.collapse = True", ""] + inner
     if snapshot_positions or keep_reroutes:
         inner = ["    tree.disable_arrange()", ""] + inner
     if snapshot_positions:
@@ -5128,7 +5155,14 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         incoming.setdefault(link.to_node.name, []).append(link)
         outgoing.setdefault(link.from_node.name, []).append(link)
 
-    ctx = EmitContext(node_tree, links, incoming, outgoing, collector=collector)
+    ctx = EmitContext(
+        node_tree,
+        links,
+        incoming,
+        outgoing,
+        collector=collector,
+        collapse=_all_collapsed(node_tree),
+    )
     skip = _SKIP_BL_IDNAMES
     if collector.keep_reroutes:
         skip = skip - {"NodeReroute"}  # reroutes emit as ordinary nodes
@@ -5223,7 +5257,7 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # value as ``.props(...)``, which returns the node or socket it is
         # called on. An edited curve mapping forces a variable binding so it
         # can be applied to the built node afterwards.
-        props = _node_props_kwargs(node)
+        props = _node_props_kwargs(node, ctx.collapse)
         if props:
             val = _Val(
                 MethodCall(val.require_expr(), "props", kwargs=props),
@@ -5334,7 +5368,7 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         source = ctx.upstream_expr(link, pipeline=True)
         out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
-    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases)
+    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases, ctx.collapse)
 
 
 # ---------------------------------------------------------------------------
@@ -5899,7 +5933,7 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
 
     ctx.used_aliases.add(alias)
     var_name = _make_var(spec.label, ctx.counter)
-    props = _node_props_kwargs(node)
+    props = _node_props_kwargs(node, ctx.collapse)
     # No items, props or consumers → nothing ever references the variable;
     # prefix it so the generated module passes lint (F841).
     if not items and not props and not ctx.outgoing.get(node.name):

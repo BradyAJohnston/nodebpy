@@ -3,7 +3,7 @@
   '''
   from nodebpy import geometry as g, TreeBuilder
   
-  with TreeBuilder("Principal Components") as tree:
+  with TreeBuilder("Principal Components", collapse=True) as tree:
       position = tree.inputs.vector("Position", (0.0, 0.0, 0.0), default_input="POSITION")
       group_id = tree.inputs.integer("Group ID", 0, description="An index used to group values together for multiple separate operations", hide_value=True)
       group_center = tree.outputs.vector("Group Center")
@@ -15,24 +15,21 @@
           shortest_axis = tree.outputs.vector("Shortest Axis")
   
       with g.Frame("Centroid"):
-          field_average = position.point.mean(group_id).props(hide=True)
+          field_average = position.point.mean(group_id)
       with g.Frame("Covariance Matrix"):
-          vector_math = (position - field_average).props(hide=True)
-          mean = (vector_math * vector_math.x).props(hide=True).point.mean(group_id).props(hide=True)
-          mean_1 = (vector_math * vector_math.y).props(hide=True).point.mean(group_id).props(hide=True)
-          mean_2 = (vector_math * vector_math.z).props(hide=True).point.mean(group_id).props(hide=True)
-          combine_matrix = g.CombineMatrix(column_1_row_1=mean.x, column_1_row_2=mean.y, column_1_row_3=mean.z, column_2_row_1=mean_1.x, column_2_row_2=mean_1.y, column_2_row_3=mean_1.z, column_3_row_1=mean_2.x, column_3_row_2=mean_2.y, column_3_row_3=mean_2.z).props(hide=True)
+          vector_math = position - field_average
+          mean = (vector_math * vector_math.x).point.mean(group_id)
+          mean_1 = (vector_math * vector_math.y).point.mean(group_id)
+          mean_2 = (vector_math * vector_math.z).point.mean(group_id)
+          combine_matrix = g.CombineMatrix(column_1_row_1=mean.x, column_1_row_2=mean.y, column_1_row_3=mean.z, column_2_row_1=mean_1.x, column_2_row_2=mean_1.y, column_2_row_3=mean_1.z, column_3_row_1=mean_2.x, column_3_row_2=mean_2.y, column_3_row_3=mean_2.z)
       with g.Frame("SVD"):
           matrix_svd = combine_matrix.o.matrix.svd()
-          separate_matrix = g.SeparateMatrix(matrix_svd.u).props(hide=True)
-          combine_xyz = g.CombineXYZ(x=separate_matrix.o.column_1_row_1, y=separate_matrix.o.column_1_row_2, z=separate_matrix.o.column_1_row_3).props(hide=True)
-          combine_xyz_1 = g.CombineXYZ(x=separate_matrix.o.column_2_row_1, y=separate_matrix.o.column_2_row_2, z=separate_matrix.o.column_2_row_3).props(hide=True)
-          combine_xyz_2 = g.CombineXYZ(x=separate_matrix.o.column_3_row_1, y=separate_matrix.o.column_3_row_2, z=separate_matrix.o.column_3_row_3).props(hide=True)
-          axes_to_rotation = g.AxesToRotation(primary_axis=combine_xyz, secondary_axis=combine_xyz_2).props(hide=True)
-          (
-              (combine_xyz_1.o.vector * matrix_svd.u.determinant().props(hide=True).sign().props(hide=True)).props(hide=True)
-              >> intermediate_axis
-          )
+          separate_matrix = g.SeparateMatrix(matrix_svd.u)
+          combine_xyz = g.CombineXYZ(x=separate_matrix.o.column_1_row_1, y=separate_matrix.o.column_1_row_2, z=separate_matrix.o.column_1_row_3)
+          combine_xyz_1 = g.CombineXYZ(x=separate_matrix.o.column_2_row_1, y=separate_matrix.o.column_2_row_2, z=separate_matrix.o.column_2_row_3)
+          combine_xyz_2 = g.CombineXYZ(x=separate_matrix.o.column_3_row_1, y=separate_matrix.o.column_3_row_2, z=separate_matrix.o.column_3_row_3)
+          axes_to_rotation = g.AxesToRotation(primary_axis=combine_xyz, secondary_axis=combine_xyz_2)
+          combine_xyz_1.o.vector * matrix_svd.u.determinant().sign() >> intermediate_axis
   
       field_average >> group_center
       matrix_svd.s >> principal_components

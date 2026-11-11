@@ -117,3 +117,47 @@ def test_to_python_writes_nothing_for_default_props():
         x = tree.inputs.float("X")
         g.Math.add(x, 1.0) >> tree.outputs.float("Out")
     assert ".props(" not in to_python(tree, format=False)
+
+
+def _collapsed_tree(name: str, expand_one: bool = False) -> TreeBuilder:
+    with TreeBuilder(name, arrange=None) as tree:
+        x = tree.inputs.float("X")
+        a = x + 1.0
+        (a * 2.0) >> tree.outputs.float("Out")
+    for node in tree.tree.nodes:
+        if node.bl_idname not in ("NodeGroupInput", "NodeGroupOutput"):
+            node.hide = True
+    if expand_one:
+        a.node.hide = False
+    return tree
+
+
+def test_to_python_collapses_the_tree_when_every_node_is_collapsed():
+    """Group Input/Output stay expanded: the builder makes them itself, so
+    ``collapse`` doesn't reach them."""
+    tree = _collapsed_tree("PropsAllCollapsed")
+    code = to_python(tree, format=False)
+    assert 'TreeBuilder("PropsAllCollapsed", collapse=True)' in code
+    assert "hide" not in code
+
+    bpy.data.node_groups.remove(tree.tree)
+    ns: dict = {}
+    exec(code, ns)
+    for node in ns["tree"].tree.nodes:
+        assert node.hide == (
+            node.bl_idname not in ("NodeGroupInput", "NodeGroupOutput")
+        )
+
+
+def test_to_python_collapses_nodes_one_by_one_when_any_is_expanded():
+    tree = _collapsed_tree("PropsMostlyCollapsed", expand_one=True)
+    code = to_python(tree, format=False)
+    assert "collapse=True" not in code
+    assert code.count(".props(hide=True)") == 1
+
+
+def test_to_python_group_class_sets_collapse():
+    tree = _collapsed_tree("PropsCollapsedClass")
+    code = to_python(tree, format=False, top_level="class")
+    assert "tree.collapse = True" in code
+    assert ".props(hide=True)" not in code
