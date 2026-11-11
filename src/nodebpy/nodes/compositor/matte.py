@@ -445,7 +445,7 @@ class ColorSpill(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     spill_channel : InputMenu | Literal['R', 'G', 'B']
         Spill Channel
     limit_method : InputMenu | Literal['Single', 'Average']
@@ -457,14 +457,14 @@ class ColorSpill(BaseNode):
     use_spill_strength : InputBoolean
         Use Spill Strength
     strength : InputColor
-        Strength
+        Strength. Renamed from ``Spill Strength``; ``i.spill_strength`` still resolves to it.
 
     Inputs
     ------
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.spill_channel : MenuSocket
         Spill Channel
     i.limit_method : MenuSocket
@@ -476,7 +476,7 @@ class ColorSpill(BaseNode):
     i.use_spill_strength : BooleanSocket
         Use Spill Strength
     i.strength : ColorSocket
-        Strength
+        Strength. Renamed from ``Spill Strength``; ``i.spill_strength`` still resolves to it.
 
     Outputs
     -------
@@ -486,15 +486,16 @@ class ColorSpill(BaseNode):
 
     _bl_idname = "CompositorNodeColorSpill"
     node: bpy.types.CompositorNodeColorSpill
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor", "spill_strength": "strength"}
+    _socket_params: ClassVar[dict[str, str]] = {
+        "fac": "factor",
+        "spill_strength": "strength",
     }
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         spill_channel: MenuSocket
         """Spill Channel"""
         limit_method: MenuSocket
@@ -506,7 +507,7 @@ class ColorSpill(BaseNode):
         use_spill_strength: BooleanSocket
         """Use Spill Strength"""
         strength: ColorSocket
-        """Strength"""
+        """Strength. Renamed from ``Spill Strength``; ``i.spill_strength`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -892,9 +893,9 @@ class Keying(BaseNode):
     white_level : InputFloat
         White Level
     size : InputInteger
-        Size
+        Size. Renamed from ``Edge Search Size``; ``i.edge_search_size`` still resolves to it.
     tolerance : InputFloat
-        Tolerance
+        Tolerance. Renamed from ``Edge Tolerance``; ``i.edge_tolerance`` still resolves to it.
     garbage_matte : InputFloat
         Garbage Matte
     core_matte : InputFloat
@@ -902,13 +903,13 @@ class Keying(BaseNode):
     postprocess_blur_size : InputInteger
         Blur Size
     dilate_size : InputInteger
-        Dilate Size
+        Dilate Size. Renamed from ``Postprocess Dilate Size``; ``i.postprocess_dilate_size`` still resolves to it.
     feather_size : InputInteger
-        Feather Size
+        Feather Size. Renamed from ``Postprocess Feather Size``; ``i.postprocess_feather_size`` still resolves to it.
     feather_falloff : InputMenu | Literal['Smooth', 'Sphere', 'Root', 'Inverse Square', 'Sharp', 'Linear']
         Feather Falloff
     strength : InputFloat
-        Strength
+        Strength. Renamed from ``Despill Strength``; ``i.despill_strength`` still resolves to it.
     despill_balance : InputFloat
         Balance
 
@@ -927,9 +928,9 @@ class Keying(BaseNode):
     i.white_level : FloatSocket
         White Level
     i.size : IntegerSocket
-        Size
+        Size. Renamed from ``Edge Search Size``; ``i.edge_search_size`` still resolves to it.
     i.tolerance : FloatSocket
-        Tolerance
+        Tolerance. Renamed from ``Edge Tolerance``; ``i.edge_tolerance`` still resolves to it.
     i.garbage_matte : FloatSocket
         Garbage Matte
     i.core_matte : FloatSocket
@@ -937,13 +938,13 @@ class Keying(BaseNode):
     i.postprocess_blur_size : IntegerSocket
         Blur Size
     i.dilate_size : IntegerSocket
-        Dilate Size
+        Dilate Size. Renamed from ``Postprocess Dilate Size``; ``i.postprocess_dilate_size`` still resolves to it.
     i.feather_size : IntegerSocket
-        Feather Size
+        Feather Size. Renamed from ``Postprocess Feather Size``; ``i.postprocess_feather_size`` still resolves to it.
     i.feather_falloff : MenuSocket
         Feather Falloff
     i.strength : FloatSocket
-        Strength
+        Strength. Renamed from ``Despill Strength``; ``i.despill_strength`` still resolves to it.
     i.despill_balance : FloatSocket
         Balance
 
@@ -959,14 +960,12 @@ class Keying(BaseNode):
 
     _bl_idname = "CompositorNodeKeying"
     node: bpy.types.CompositorNodeKeying
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {
-            "edge_search_size": "size",
-            "edge_tolerance": "tolerance",
-            "postprocess_dilate_size": "dilate_size",
-            "postprocess_feather_size": "feather_size",
-            "despill_strength": "strength",
-        }
+    _socket_params: ClassVar[dict[str, str]] = {
+        "edge_search_size": "size",
+        "edge_tolerance": "tolerance",
+        "postprocess_dilate_size": "dilate_size",
+        "postprocess_feather_size": "feather_size",
+        "despill_strength": "strength",
     }
 
     class _Inputs(SocketAccessor):
@@ -983,9 +982,9 @@ class Keying(BaseNode):
         white_level: FloatSocket
         """White Level"""
         size: IntegerSocket
-        """Size"""
+        """Size. Renamed from ``Edge Search Size``; ``i.edge_search_size`` still resolves to it."""
         tolerance: FloatSocket
-        """Tolerance"""
+        """Tolerance. Renamed from ``Edge Tolerance``; ``i.edge_tolerance`` still resolves to it."""
         garbage_matte: FloatSocket
         """Garbage Matte"""
         core_matte: FloatSocket
@@ -993,13 +992,13 @@ class Keying(BaseNode):
         postprocess_blur_size: IntegerSocket
         """Blur Size"""
         dilate_size: IntegerSocket
-        """Dilate Size"""
+        """Dilate Size. Renamed from ``Postprocess Dilate Size``; ``i.postprocess_dilate_size`` still resolves to it."""
         feather_size: IntegerSocket
-        """Feather Size"""
+        """Feather Size. Renamed from ``Postprocess Feather Size``; ``i.postprocess_feather_size`` still resolves to it."""
         feather_falloff: MenuSocket
         """Feather Falloff"""
         strength: FloatSocket
-        """Strength"""
+        """Strength. Renamed from ``Despill Strength``; ``i.despill_strength`` still resolves to it."""
         despill_balance: FloatSocket
         """Balance"""
 

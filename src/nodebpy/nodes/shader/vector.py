@@ -599,8 +599,8 @@ class VectorTransform(BaseNode):
         vector: InputVector = (0.5, 0.5, 0.5),
         *,
         vector_type: Literal["POINT", "VECTOR", "NORMAL"] = "VECTOR",
-        convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",
-        convert_to: Literal["WORLD", "OBJECT", "CAMERA"] = "OBJECT",
+        convert_from: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "WORLD",
+        convert_to: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "OBJECT",
     ):
         super().__init__()
         key_args = {"Vector": vector}
@@ -614,8 +614,8 @@ class VectorTransform(BaseNode):
         cls,
         vector: InputVector = (0.5, 0.5, 0.5),
         *,
-        convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",
-        convert_to: Literal["WORLD", "OBJECT", "CAMERA"] = "OBJECT",
+        convert_from: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "WORLD",
+        convert_to: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "OBJECT",
     ) -> "VectorTransform":
         """Create Vector Transform with operation 'Point'. Transform a point"""
         return cls(
@@ -630,8 +630,8 @@ class VectorTransform(BaseNode):
         cls,
         vector: InputVector = (0.5, 0.5, 0.5),
         *,
-        convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",
-        convert_to: Literal["WORLD", "OBJECT", "CAMERA"] = "OBJECT",
+        convert_from: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "WORLD",
+        convert_to: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "OBJECT",
     ) -> "VectorTransform":
         """Create Vector Transform with operation 'Vector'. Transform a direction vector"""
         return cls(
@@ -646,8 +646,8 @@ class VectorTransform(BaseNode):
         cls,
         vector: InputVector = (0.5, 0.5, 0.5),
         *,
-        convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",
-        convert_to: Literal["WORLD", "OBJECT", "CAMERA"] = "OBJECT",
+        convert_from: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "WORLD",
+        convert_to: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"] = "OBJECT",
     ) -> "VectorTransform":
         """Create Vector Transform with operation 'Normal'. Transform a normal vector with unit length"""
         return cls(
@@ -666,17 +666,19 @@ class VectorTransform(BaseNode):
         self._set_enum("vector_type", value)
 
     @property
-    def convert_from(self) -> Literal["WORLD", "OBJECT", "CAMERA"]:
+    def convert_from(self) -> Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"]:
         return self.node.convert_from
 
     @convert_from.setter
-    def convert_from(self, value: Literal["WORLD", "OBJECT", "CAMERA"]) -> None:
+    def convert_from(
+        self, value: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"]
+    ) -> None:
         self._set_enum("convert_from", value)
 
     @property
-    def convert_to(self) -> Literal["WORLD", "OBJECT", "CAMERA"]:
+    def convert_to(self) -> Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"]:
         return self.node.convert_to
 
     @convert_to.setter
-    def convert_to(self, value: Literal["WORLD", "OBJECT", "CAMERA"]) -> None:
+    def convert_to(self, value: Literal["WORLD", "OBJECT", "CAMERA", "LIGHT"]) -> None:
         self._set_enum("convert_to", value)

@@ -10,9 +10,43 @@ from .config import (
     TreeTypeConfig,
     nodebpy_types,
 )
-from .customizations import _CUSTOMIZATIONS
+from .customizations import _CUSTOMIZATIONS, NodeCustomization
 from .model import NodeInfo, PropertyInfo, SocketInfo
 from .util import normalize_name
+
+
+def _mixin_parameter_lines(custom: NodeCustomization) -> list[str] | None:
+    """The ``Parameters`` section of the constructor a customization's mixin
+    supplies: the one its ``__init__`` docstring carries, else a line per
+    parameter of its signature. None when no mixin defines the constructor
+    (an ``extra_body`` does, taking the generated parameters)."""
+    import inspect
+
+    from nodebpy.nodes import _mixins
+
+    for name in custom.bases:
+        mixin = getattr(_mixins, name, None)
+        if mixin is None or "__init__" not in vars(mixin):
+            continue
+        doc = inspect.cleandoc(mixin.__init__.__doc__ or "")
+        if "Parameters\n----------" in doc:
+            section = doc[doc.index("Parameters\n----------") :]
+            lines = []
+            for line in section.split("\n"):
+                # The section ends at the next header's underline.
+                if lines and set(line) == {"-"} and lines[-1] not in ("Parameters",):
+                    lines.pop()
+                    break
+                lines.append(line)
+            return [line for line in lines if line.strip()]
+        lines = ["Parameters", "----------"]
+        for param in list(inspect.signature(mixin.__init__).parameters.values())[1:]:
+            annotation = (
+                param.annotation if isinstance(param.annotation, str) else "Any"
+            )
+            lines += [f"{param.name} : {annotation}", f"    {param.name}"]
+        return lines
+    return None
 
 
 def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
@@ -190,43 +224,45 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         for prop in node_info.properties
         if prop.format_name() not in suppress
     ]
-    # Parameters renamed after their socket's display name keep their old
-    # (identifier) name as a deprecated alias; BaseNode wraps the methods.
-    renamed: dict[str, dict[str, str]] = {}
+    # Constructor parameters named after their socket's display name rather
+    # than its identifier (Color Ramp's ``Fac`` is ``factor``), for export.
+    socket_params: dict[str, str] = {}
     if "__init__" not in suppress:
-        taken = {param.split(":")[0].strip() for param in init_params}
-        init_renames = {
+        socket_params = {
             normalize_name(socket.identifier): input_names[socket.identifier]
             for socket in [*node_info.inputs, *_extra_sockets]
             if input_names[socket.identifier] != normalize_name(socket.identifier)
-            and normalize_name(socket.identifier) not in taken
         }
-        if init_renames:
-            renamed["__init__"] = init_renames
     enum_methods = node_info.generate_enum_class_methods(
         config,
         suppress,
         custom.suppress_factories_for if custom else frozenset(),
-        renamed,
     )
-    renamed_block = (
-        f"    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {renamed!r}\n"
-        if renamed
+    socket_params_block = (
+        f"    _socket_params: ClassVar[dict[str, str]] = {socket_params!r}\n"
+        if socket_params
         else ""
     )
 
     # Add node type annotation — always use specific type so property access is typed
     node_type_annotation = f"bpy.types.{node_info.bl_idname}"
 
-    # Build numpy-style class docstring
+    # Build numpy-style class docstring. When a mixin replaces the
+    # constructor, its parameters are documented instead of the generated
+    # constructor's.
     doc_lines = [node_info.description, ""]
     all_init_sockets = [s for s in node_info.inputs] + _extra_sockets
-    if all_init_sockets:
+    mixin_parameters = (
+        _mixin_parameter_lines(custom) if custom and "__init__" in suppress else None
+    )
+    if mixin_parameters is not None:
+        doc_lines += [*mixin_parameters, ""]
+    elif all_init_sockets:
         doc_lines += ["Parameters", "----------"]
         for socket in all_init_sockets:
             param_name = input_names[socket.identifier]
             doc_lines.append(f"{param_name} : {socket.type_hint}")
-            desc = socket.description if socket.description else socket.name
+            desc = socket.doc(param_name)
             doc_lines.append(f"    {desc}")
         doc_lines.append("")
 
@@ -244,7 +280,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
                     break
             names = output_names if prefix == "o" else input_names
             attr_name = names[socket.identifier]
-            desc = socket.description if socket.description else socket.name
+            desc = socket.doc(attr_name)
             lines.append(f"{prefix}.{attr_name} : {return_type}")
             lines.append(f"    {desc}")
         return lines
@@ -264,7 +300,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     def _input_annotation(socket: SocketInfo) -> str:
         if inputs_generic and socket.identifier in varying_inputs:
             attr_name = input_names[socket.identifier]
-            doc = socket.description or socket.name
+            doc = socket.doc(attr_name)
             if socket.identifier in varying_grid_inputs:
                 param = "SGrid"
             elif socket.identifier in varying_list_inputs:
@@ -299,7 +335,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     for socket in node_info.outputs:
         if outputs_generic and socket.identifier in varying_outputs:
             attr_name = output_names[socket.identifier]
-            doc = socket.description or socket.name
+            doc = socket.doc(attr_name)
             if socket.identifier in varying_grid_outputs:
                 param = "SGrid"
             elif socket.identifier in varying_list_outputs:
@@ -364,7 +400,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     _bl_idname = "{node_info.bl_idname}"
     node: {node_type_annotation}
-{renamed_block}
+{socket_params_block}
 {inputs_class}
 
 {outputs_class}

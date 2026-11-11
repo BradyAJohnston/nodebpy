@@ -7,5 +7,7 @@ output or live re-runs. `nodebpy lookup search|show|socket` answers "which class
 which socket, which option" from the installed package.
 
 Development setup, running the tests and regenerating the node classes are covered in
-[CONTRIBUTING.md](CONTRIBUTING.md). Open work and design notes are tracked as GitHub
+[CONTRIBUTING.md](CONTRIBUTING.md). nodebpy is a dependency for other projects: before
+removing or renaming anything public, generated names included, follow "Changing the
+public API" there (deprecate with `_deprecated`, check `python -m gen.api_diff`). Open work and design notes are tracked as GitHub
 issues (label `design`).

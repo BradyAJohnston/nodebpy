@@ -100,6 +100,23 @@ class SocketInfo:
     menu_items: list[str] = field(default_factory=list)
     structure_type: str = ""
     hide_value: bool = False
+    former_name: str | None = None  # its earlier name, kept as its identifier
+
+    def doc(self, attr_name: str) -> str:
+        """The socket's docstring text: its description (or name), noting a
+        former label whose attribute still resolves, unless the socket's
+        attribute already is that name."""
+        doc = self.description or self.name
+        if self.former_name is None:
+            return doc
+        old = normalize_name(self.former_name)
+        if old == attr_name:
+            return doc
+        prefix = "o" if self.is_output else "i"
+        return (
+            f"{doc.rstrip('.')}. Renamed from ``{self.former_name}``; "
+            f"``{prefix}.{old}`` still resolves to it."
+        )
 
     @property
     def default_source(self) -> str:
@@ -191,7 +208,7 @@ class SocketInfo:
                     return_type = return_type.replace("Socket", "SocketGrid")
                 break
 
-        doc = self.description or self.name
+        doc = self.doc(attr_name)
         lines = [f"        {attr_name}: {return_type}"]
         if doc:
             lines.append(f'        """{doc}"""')
@@ -715,27 +732,15 @@ class NodeInfo:
         config: TreeTypeConfig | None = None,
         suppress: frozenset[str] = frozenset(),
         suppress_props: frozenset[str] = frozenset(),
-        renamed: dict[str, dict[str, str]] | None = None,
     ) -> str:
         """Generate @classmethod convenience methods for enum operations.
 
         ``suppress`` names factory methods to omit and ``suppress_props`` enum
         properties whose factories are all omitted (a registered customization
-        replaces them). ``renamed`` collects, per factory, the parameters
-        renamed after their socket's display name (old name -> new name).
+        replaces them).
         """
         methods = []
         input_params_by_id = self.input_param_names
-
-        def record(method_name: str, renames: dict[str, str], params: list[str]):
-            taken = {param.split(":")[0].strip() for param in params}
-            renames = {
-                old: new
-                for old, new in renames.items()
-                if old != new and old not in taken
-            }
-            if renamed is not None and renames:
-                renamed[method_name] = renames
 
         cls_name = self.class_name_for_config(config) if config else self.class_name
 
@@ -763,12 +768,10 @@ class NodeInfo:
                 call_params = []
 
                 param_names = variant_param_names(enum.sockets)
-                renames: dict[str, str] = {}
                 for socket in enum.sockets:
                     socket_name = input_params_by_id[socket.identifier]
                     param_name = param_names[socket.identifier]
                     if socket_name != normalize_name(socket.identifier):
-                        renames[param_name] = socket_name
                         param_name = socket_name
 
                     if (
@@ -836,7 +839,6 @@ class NodeInfo:
 
                 if method_name in suppress:
                     continue
-                record(method_name, renames, input_params)
 
                 method = f'''
     @classmethod
@@ -864,12 +866,10 @@ class NodeInfo:
             call_params = []
 
             param_names = variant_param_names(enum.sockets)
-            renames = {}
             for socket in enum.sockets:
                 socket_name = input_params_by_id[socket.identifier]
                 param_name = param_names[socket.identifier]
                 if socket_name != normalize_name(socket.identifier):
-                    renames[param_name] = socket_name
                     param_name = socket_name
 
                 if param_name and param_name != "" and param_name != type_param_name:
@@ -898,7 +898,6 @@ class NodeInfo:
 
             if method_name in suppress:
                 continue
-            record(method_name, renames, input_params)
 
             method = f'''
     @classmethod

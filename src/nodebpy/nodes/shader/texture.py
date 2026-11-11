@@ -120,7 +120,7 @@ class IESTexture(BaseNode):
     Outputs
     -------
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeTexIES"
@@ -134,7 +134,7 @@ class IESTexture(BaseNode):
 
     class _Outputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 

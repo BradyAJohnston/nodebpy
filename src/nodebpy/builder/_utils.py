@@ -5,9 +5,10 @@ import keyword
 import re
 import unicodedata
 import warnings
-from collections.abc import Callable, Iterable
-from functools import cache, wraps
-from typing import TYPE_CHECKING, Any, Literal, Protocol, cast, runtime_checkable
+from collections.abc import Iterable
+from functools import cache
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
 
 import bpy
 from bpy.types import Node, NodeSocket
@@ -104,15 +105,34 @@ def denormalize_name(attr_name: str) -> str:
     return attr_name.replace("_", " ").title()
 
 
+def _socket_panels(sockets) -> dict[str, str]:
+    """Socket identifier → name of the interface panel the group socket sits
+    in (none at the top level). ``sockets`` are a group node's inputs or
+    outputs; other socket-like objects have no panels."""
+    node = getattr(sockets[0], "node", None) if sockets else None
+    tree = getattr(node, "node_tree", None)
+    if not isinstance(tree, bpy.types.NodeTree):
+        return {}
+    in_out = "OUTPUT" if sockets[0].is_output else "INPUT"
+    return {
+        item.identifier: item.parent.name
+        for item in tree.interface.items_tree
+        if item.item_type == "SOCKET" and item.in_out == in_out and item.parent
+    }
+
+
 def typed_param_names(sockets) -> dict[str, str]:
     """Socket identifier → ``__init__`` parameter name for a typed group class.
 
     The one place this mapping is defined: both the generated class's typed
     ``__init__`` (``nodebpy.assets``) and the call sites codegen emits for it
     (``nodebpy.export``) must agree, and they both derive it from the same
-    live tree during a dump. A socket's parameter is its normalized name; when
-    several sockets normalize to the same name, each falls back to its
-    normalized identifier; residual collisions (or reserved names like
+    live tree during a dump, and a group's ``i.<name>`` / ``o.<name>`` resolve
+    through it. A socket's parameter is its normalized name. When several
+    sockets normalize to the same name, one inside an interface panel
+    is prefixed with the panel's name (Clump Hair Curves' two ``Seed`` inputs
+    are ``seed`` and ``guide_map_seed``); those still colliding fall back to
+    their normalized identifier. Residual collisions (or reserved names like
     ``self``) get a numeric suffix.
 
     ``sockets`` is any iterable of objects with ``name``/``identifier``
@@ -123,12 +143,20 @@ def typed_param_names(sockets) -> dict[str, str]:
     from collections import Counter
 
     counts = Counter(normalize_name(s.name) for s in real)
+    panels = _socket_panels(real)
+    candidates = {}
+    for s in real:
+        name = normalize_name(s.name)
+        if counts[name] > 1 and panels.get(s.identifier):
+            name = normalize_name(f"{panels[s.identifier]} {s.name}")
+        candidates[s.identifier] = name
+    candidate_counts = Counter(candidates.values())
     reserved = {"self", "_named_links"}
     params: dict[str, str] = {}
     used: set[str] = set()
     for s in real:
-        base = normalize_name(s.name)
-        if counts[base] > 1:
+        base = candidates[s.identifier]
+        if candidate_counts[base] > 1:
             base = normalize_name(s.identifier)
         name, n = base, 1
         while name in used or name in reserved:
@@ -345,36 +373,15 @@ def _output_socket_type(value: Any) -> SOCKET_TYPES | None:
     return None
 
 
-def _deprecated(old: str, new: str) -> None:
-    """Warn that ``old`` is removed in nodebpy 530 in favour of ``new``."""
+_PACKAGE_DIR = str(Path(__file__).resolve().parents[1])
+
+
+def _deprecated(old: str, new: str, *, removed_in: int) -> None:
+    """Warn that ``old`` is deprecated in favour of ``new`` and is removed in
+    nodebpy ``removed_in`` (the Blender line, e.g. ``540``). The warning
+    points at the first frame outside nodebpy: the user's code."""
     warnings.warn(
-        f"{old} is deprecated and will be removed in nodebpy 530; use {new}",
+        f"{old} is deprecated and will be removed in nodebpy {removed_in}; use {new}",
         DeprecationWarning,
-        stacklevel=3,
+        skip_file_prefixes=(_PACKAGE_DIR,),
     )
-
-
-def _accept_renamed[**P, R](
-    func: Callable[P, R], renames: dict[str, str], label: str
-) -> Callable[P, R]:
-    """Wrap ``func`` so each old keyword in ``renames`` (old -> new) still
-    works, with a deprecation warning, as its new name."""
-
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> R:
-        for old, new in renames.items():
-            if old in kwargs:
-                if new in kwargs:
-                    raise TypeError(f"{label}() got both {old}= and {new}=")
-                _deprecated(f"{label}({old}=...)", f"{new}=")
-                kwargs[new] = kwargs.pop(old)
-        return func(*args, **kwargs)
-
-    return cast("Callable[P, R]", wrapper)
-
-
-def _renamed_params[**P, R](
-    renames: dict[str, str], label: str
-) -> Callable[[Callable[P, R]], Callable[P, R]]:
-    """Decorator form of :func:`_accept_renamed`."""
-    return lambda func: _accept_renamed(func, renames, label)

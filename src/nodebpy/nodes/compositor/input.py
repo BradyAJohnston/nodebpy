@@ -329,9 +329,9 @@ class Mask(BaseNode):
     motion_blur : InputBoolean
         Motion Blur
     samples : InputInteger
-        Samples
+        Samples. Renamed from ``Motion Blur Samples``; ``i.motion_blur_samples`` still resolves to it.
     shutter : InputFloat
-        Shutter
+        Shutter. Renamed from ``Motion Blur Shutter``; ``i.motion_blur_shutter`` still resolves to it.
 
     Inputs
     ------
@@ -346,9 +346,9 @@ class Mask(BaseNode):
     i.motion_blur : BooleanSocket
         Motion Blur
     i.samples : IntegerSocket
-        Samples
+        Samples. Renamed from ``Motion Blur Samples``; ``i.motion_blur_samples`` still resolves to it.
     i.shutter : FloatSocket
-        Shutter
+        Shutter. Renamed from ``Motion Blur Shutter``; ``i.motion_blur_shutter`` still resolves to it.
 
     Outputs
     -------
@@ -358,8 +358,9 @@ class Mask(BaseNode):
 
     _bl_idname = "CompositorNodeMask"
     node: bpy.types.CompositorNodeMask
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"motion_blur_samples": "samples", "motion_blur_shutter": "shutter"}
+    _socket_params: ClassVar[dict[str, str]] = {
+        "motion_blur_samples": "samples",
+        "motion_blur_shutter": "shutter",
     }
 
     class _Inputs(SocketAccessor):
@@ -374,9 +375,9 @@ class Mask(BaseNode):
         motion_blur: BooleanSocket
         """Motion Blur"""
         samples: IntegerSocket
-        """Samples"""
+        """Samples. Renamed from ``Motion Blur Samples``; ``i.motion_blur_samples`` still resolves to it."""
         shutter: FloatSocket
-        """Shutter"""
+        """Shutter. Renamed from ``Motion Blur Shutter``; ``i.motion_blur_shutter`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         mask: FloatSocket
@@ -691,7 +692,7 @@ class StringToImage(BaseNode):
     wrap : InputBoolean
         Wrap
     width : InputInteger
-        Width
+        Width. Renamed from ``Wrap Width``; ``i.wrap_width`` still resolves to it.
 
     Inputs
     ------
@@ -708,7 +709,7 @@ class StringToImage(BaseNode):
     i.wrap : BooleanSocket
         Wrap
     i.width : IntegerSocket
-        Width
+        Width. Renamed from ``Wrap Width``; ``i.wrap_width`` still resolves to it.
 
     Outputs
     -------
@@ -718,9 +719,7 @@ class StringToImage(BaseNode):
 
     _bl_idname = "CompositorNodeStringToImage"
     node: bpy.types.CompositorNodeStringToImage
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"wrap_width": "width"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"wrap_width": "width"}
 
     class _Inputs(SocketAccessor):
         string: StringSocket
@@ -736,7 +735,7 @@ class StringToImage(BaseNode):
         wrap: BooleanSocket
         """Wrap"""
         width: IntegerSocket
-        """Width"""
+        """Width. Renamed from ``Wrap Width``; ``i.wrap_width`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: FloatSocket
@@ -797,7 +796,7 @@ class TimeCurve(BaseNode):
     Outputs
     -------
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "CompositorNodeTime"
@@ -811,7 +810,7 @@ class TimeCurve(BaseNode):
 
     class _Outputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 

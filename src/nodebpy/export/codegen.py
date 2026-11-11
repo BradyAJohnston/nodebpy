@@ -132,6 +132,19 @@ class Lit(Expr):
 
 
 @dataclass
+class TextBlock(Expr):
+    """Multi-line text as a ``\"\"\"`` block opening with a newline, for
+    ``Comment.cleandoc``. Lines render at column 0; :func:`_indent_text_blocks`
+    moves them to the opening quotes' column once the code is laid out."""
+
+    text: str
+
+    def render(self) -> str:
+        body = self.text.replace("\\", "\\\\").replace('"""', '\\"\\"\\"')
+        return f'"""\n{body}\n"""'
+
+
+@dataclass
 class Ref(Expr):
     """A variable reference."""
 
@@ -1961,11 +1974,10 @@ def _class_factories(cls: type) -> list[_Factory]:
 
 def _socket_param(cls: type, identifier: str) -> str:
     """The constructor parameter for input socket ``identifier``: its
-    normalized identifier, unless the class renamed it after the socket's
+    normalized identifier, unless the class names it after the socket's
     display name (Color Ramp's ``Fac`` is ``factor``)."""
     param = _normalize(identifier)
-    renames = getattr(cls, "_renamed_params", {}).get("__init__", {})
-    return renames.get(param, param)
+    return getattr(cls, "_socket_params", {}).get(param, param)
 
 
 def _input_socket_by_kwarg(node, cls: type, kwarg_name: str):
@@ -4188,7 +4200,7 @@ def _format_with_ruff(code: str) -> str:
     try:
         from ruff import find_ruff_bin
     except ImportError:
-        return code
+        return _indent_text_blocks(code)
     import subprocess
 
     ruff = find_ruff_bin()
@@ -4206,9 +4218,41 @@ def _format_with_ruff(code: str) -> str:
                 check=True,
             )
         except (OSError, subprocess.SubprocessError):  # pragma: no cover
-            return code
+            return _indent_text_blocks(code)
         code = result.stdout or code
-    return code
+    return _indent_text_blocks(code)
+
+
+def _indent_text_blocks(code: str) -> str:
+    """Indent each ``\"\"\"`` block that opens with a newline (a
+    :class:`TextBlock`) to its opening quotes' column, or one level past the
+    opening line when ruff hugs the quotes to the call (``f(\"\"\"``). The
+    block's closing line sets the margin it is shifted from, so the relative
+    indentation inside is kept; blocks already in line are left as they
+    are."""
+    import io
+    import tokenize
+
+    try:
+        tokens = list(tokenize.generate_tokens(io.StringIO(code).readline))
+    except (tokenize.TokenError, SyntaxError):  # pragma: no cover
+        return code
+    lines = code.split("\n")
+    for tok in tokens:
+        if tok.type != tokenize.STRING or not tok.string.startswith('"""\n'):
+            continue
+        (first, col), (last, _) = tok.start, tok.end
+        opening = lines[first - 1]
+        indent = len(opening) - len(opening.lstrip(" "))
+        if col > indent:  # hugged: the quotes follow other code on the line
+            col = indent + 4
+        margin = len(lines[last - 1]) - len(lines[last - 1].lstrip(" "))
+        rows = [r for r in range(first, last) if lines[r].strip()]  # 0-based
+        if any(not lines[r].startswith(" " * margin) for r in rows):
+            continue
+        for row in rows:
+            lines[row] = " " * col + lines[row][margin:]
+    return "\n".join(lines)
 
 
 def to_python(
@@ -6151,6 +6195,27 @@ def _emit_set_handle_type(node, ctx: EmitContext) -> Expr | _Val | None:
     if "RIGHT" not in node.mode:
         call.kwargs["right"] = Lit(False)
     return call
+
+
+@register_emitter("NodeComment")
+def _emit_comment(node, ctx: EmitContext) -> Expr | _Val | None:
+    """Multi-line comment text renders as ``Comment.cleandoc`` over an indented
+    ``\"\"\"`` block when that cleans back to the same text."""
+    call = ctx.constructor(node)
+    text = node.text
+    if call.args and "\n" in text and _text_block_round_trips(text):
+        call = Call(f"{call.func}.cleandoc", [TextBlock(text)], call.kwargs)
+    return call
+
+
+def _text_block_round_trips(text: str) -> bool:
+    """Whether :func:`inspect.cleandoc` turns ``text`` written as an indented
+    :class:`TextBlock` back into ``text`` (blank edge lines, whitespace-only
+    lines, a common indent or control characters would not survive)."""
+    if not all(c.isprintable() or c == "\n" for c in text):
+        return False
+    block = "\n" + textwrap.indent(text, "    ") + "\n    "
+    return inspect.cleandoc(block) == text
 
 
 # ColorRamp constructor param → attribute on ``node.color_ramp``.

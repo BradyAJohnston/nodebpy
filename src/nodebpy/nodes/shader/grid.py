@@ -50,8 +50,6 @@ class PrincipledVolume(BaseNode):
         Temperature
     temperature_attribute : InputString
         Temperature Attribute
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -79,8 +77,6 @@ class PrincipledVolume(BaseNode):
         Temperature
     i.temperature_attribute : StringSocket
         Temperature Attribute
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -116,8 +112,6 @@ class PrincipledVolume(BaseNode):
         """Temperature"""
         temperature_attribute: StringSocket
         """Temperature Attribute"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         volume: ShaderSocket
@@ -144,7 +138,6 @@ class PrincipledVolume(BaseNode):
         blackbody_tint: InputColor = (1.0, 1.0, 1.0, 1.0),
         temperature: InputFloat = 1000.0,
         temperature_attribute: InputString = "temperature",
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -160,7 +153,6 @@ class PrincipledVolume(BaseNode):
             "Blackbody Tint": blackbody_tint,
             "Temperature": temperature,
             "Temperature Attribute": temperature_attribute,
-            "Weight": weight,
         }
 
         self._establish_links(**key_args)
@@ -176,8 +168,6 @@ class VolumeAbsorption(BaseNode):
         Color
     density : InputFloat
         Density
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -185,8 +175,6 @@ class VolumeAbsorption(BaseNode):
         Color
     i.density : FloatSocket
         Density
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -202,8 +190,6 @@ class VolumeAbsorption(BaseNode):
         """Color"""
         density: FloatSocket
         """Density"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         volume: ShaderSocket
@@ -220,10 +206,9 @@ class VolumeAbsorption(BaseNode):
         self,
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
         density: InputFloat = 1.0,
-        weight: InputFloat = 0.0,
     ):
         super().__init__()
-        key_args = {"Color": color, "Density": density, "Weight": weight}
+        key_args = {"Color": color, "Density": density}
 
         self._establish_links(**key_args)
 
@@ -234,8 +219,6 @@ class VolumeCoefficients(BaseNode):
 
     Parameters
     ----------
-    weight : InputFloat
-        Weight
     absorption_coefficients : InputVector
         Absorption Coefficients
     scatter_coefficients : InputVector
@@ -255,8 +238,6 @@ class VolumeCoefficients(BaseNode):
 
     Inputs
     ------
-    i.weight : FloatSocket
-        Weight
     i.absorption_coefficients : VectorSocket
         Absorption Coefficients
     i.scatter_coefficients : VectorSocket
@@ -284,8 +265,6 @@ class VolumeCoefficients(BaseNode):
     node: bpy.types.ShaderNodeVolumeCoefficients
 
     class _Inputs(SocketAccessor):
-        weight: FloatSocket
-        """Weight"""
         absorption_coefficients: VectorSocket
         """Absorption Coefficients"""
         scatter_coefficients: VectorSocket
@@ -316,7 +295,6 @@ class VolumeCoefficients(BaseNode):
 
     def __init__(
         self,
-        weight: InputFloat = 0.0,
         absorption_coefficients: InputVector = (1.0, 1.0, 1.0),
         scatter_coefficients: InputVector = (1.0, 1.0, 1.0),
         anisotropy: InputFloat = 0.0,
@@ -332,7 +310,6 @@ class VolumeCoefficients(BaseNode):
     ):
         super().__init__()
         key_args = {
-            "Weight": weight,
             "Absorption Coefficients": absorption_coefficients,
             "Scatter Coefficients": scatter_coefficients,
             "Anisotropy": anisotropy,
@@ -427,8 +404,6 @@ class VolumeScatter(BaseNode):
         Alpha
     diameter : InputFloat
         Diameter
-    weight : InputFloat
-        Weight
 
     Inputs
     ------
@@ -446,8 +421,6 @@ class VolumeScatter(BaseNode):
         Alpha
     i.diameter : FloatSocket
         Diameter
-    i.weight : FloatSocket
-        Weight
 
     Outputs
     -------
@@ -473,8 +446,6 @@ class VolumeScatter(BaseNode):
         """Alpha"""
         diameter: FloatSocket
         """Diameter"""
-        weight: FloatSocket
-        """Weight"""
 
     class _Outputs(SocketAccessor):
         volume: ShaderSocket
@@ -496,7 +467,6 @@ class VolumeScatter(BaseNode):
         backscatter: InputFloat = 0.1,
         alpha: InputFloat = 0.5,
         diameter: InputFloat = 20.0,
-        weight: InputFloat = 0.0,
         *,
         phase: Literal[
             "HENYEY_GREENSTEIN", "FOURNIER_FORAND", "DRAINE", "RAYLEIGH", "MIE"
@@ -511,7 +481,6 @@ class VolumeScatter(BaseNode):
             "Backscatter": backscatter,
             "Alpha": alpha,
             "Diameter": diameter,
-            "Weight": weight,
         }
         self.phase = phase
         self._establish_links(**key_args)

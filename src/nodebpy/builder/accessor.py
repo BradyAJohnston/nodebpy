@@ -12,6 +12,7 @@ from ._utils import (
     _allow_innactive_sockets,
     denormalize_name,
     normalize_name,
+    typed_param_names,
 )
 
 if TYPE_CHECKING:
@@ -79,6 +80,12 @@ class SocketAccessor:
                     f"times). Use the socket identifier instead."
                 )
             return normalized_names.index(key)
+        # A group socket's typed name: a colliding name prefixed with its
+        # panel ('guide_map_seed'), as typed group classes name it.
+        typed = typed_param_names(self._collection)
+        for i, s in enumerate(self._collection):
+            if typed.get(s.identifier) == key:
+                return i
         raise RuntimeError(
             f"{self._direction.title()} '{key}' not found on "
             f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"

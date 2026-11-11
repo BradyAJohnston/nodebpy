@@ -133,6 +133,34 @@ register_customization(
 # Closure to List's outputs are dynamic list items; the mixin supplies the
 # items constructor and typed factories (Blender only syncs items from the
 # linked closure's signature on an editor update, so builds must declare them).
+# Comment text is markdown, often several lines long. The constructor stores it
+# as given; ``Comment.cleandoc`` opts into docstring-style cleanup so a block can
+# sit at the code's indentation (the form ``to_python`` writes).
+register_customization(
+    NodeCustomization(
+        bl_idname="NodeComment",
+        imports=("import inspect",),
+        suppress=frozenset({"__init__"}),
+        extra_body='''    def __init__(self, text: str = ""):
+        """
+        Parameters
+        ----------
+        text : str
+            Markdown shown in the node, stored as given.
+        """
+        super().__init__()
+        self.text = text
+
+    @classmethod
+    def cleandoc(cls, text: str = "") -> "Comment":
+        """A comment whose text is cleaned like a docstring
+        (:func:`inspect.cleandoc`): leading and trailing blank lines and the
+        common indentation are removed, so markdown can be written as an
+        indented triple-quoted block."""
+        return cls(inspect.cleandoc(text))''',
+    )
+)
+
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeClosureToList",
@@ -161,6 +189,63 @@ register_customization(
         bases=("_FieldToListMixin",),
         imports=("from .._mixins import _FieldToListMixin",),
         suppress=frozenset({"__init__"}),
+    )
+)
+
+# Combine List's items are unnamed inputs, all of the node's data_type; the
+# mixin supplies the items constructor, and the per-type factories below
+# take the items so the generated ones, which take only the first, are
+# suppressed.
+_LIST_ITEM_TYPES: list[tuple[str, str, str, str]] = [
+    ("FLOAT", "float", "FloatSocket", "InputFloat"),
+    ("INT", "integer", "IntegerSocket", "InputInteger"),
+    ("BOOLEAN", "boolean", "BooleanSocket", "InputBoolean"),
+    ("VECTOR", "vector", "VectorSocket", "InputVector"),
+    ("RGBA", "color", "ColorSocket", "InputColor"),
+    ("ROTATION", "rotation", "RotationSocket", "InputRotation"),
+    ("MATRIX", "matrix", "MatrixSocket", "InputMatrix"),
+    ("STRING", "string", "StringSocket", "InputString"),
+    ("MENU", "menu", "MenuSocket", "InputMenu"),
+    ("OBJECT", "object", "ObjectSocket", "InputObject"),
+    ("IMAGE", "image", "ImageSocket", "InputImage"),
+    ("GEOMETRY", "geometry", "GeometrySocket", "InputGeometry"),
+    ("COLLECTION", "collection", "CollectionSocket", "InputCollection"),
+    ("MATERIAL", "material", "MaterialSocket", "InputMaterial"),
+    ("BUNDLE", "bundle", "BundleSocket", "InputBundle"),
+    ("CLOSURE", "closure", "ClosureSocket", "InputClosure"),
+    ("FONT", "font", "FontSocket", "InputFont"),
+    ("SOUND", "sound", "SoundSocket", "InputSound"),
+]
+
+
+def _combine_list_factories() -> str:
+    """Per-type ``CombineList.<type>(items)`` factories as class-body source,
+    each returning the node parameterised by its item and list sockets."""
+    lines = []
+    for value, method, socket, input_type in _LIST_ITEM_TYPES:
+        lines += [
+            "    @classmethod",
+            f"    def {method}(",
+            f"        cls, items: Iterable[{input_type}] = ()",
+            f'    ) -> "CombineList[{socket}, {socket}List]":',
+            f'        """Create Combine List with data type \'{value}\' from *items*."""',
+            f'        return CombineList(items, data_type="{value}")',
+            "",
+        ]
+    return "\n".join(lines).rstrip("\n")
+
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeCombineList",
+        bases=("_CombineListMixin",),
+        imports=(
+            "from collections.abc import Iterable",
+            "from .._mixins import _CombineListMixin",
+        ),
+        suppress=frozenset({"__init__"}),
+        suppress_factories_for=frozenset({"data_type"}),
+        extra_body=_combine_list_factories(),
     )
 )
 
@@ -219,8 +304,7 @@ def _domain_factory_typed(
     """Build a nested ``<node>.<domain>.<dtype>()`` factory as class-body source.
 
     ``data_types`` are Blender ``data_type`` enum values; ``index`` names the
-    optional per-element index parameter (``None`` if the node has none); a
-    ``group_id`` one still accepts its old name ``group_index``. Each
+    optional per-element index parameter (``None`` if the node has none). Each
     method returns the parameterised node type (e.g. ``AccumulateField[FloatSocket]``)
     for precise typing — which is why they self-reference the class and are built
     here rather than in a shared mixin.
@@ -238,10 +322,6 @@ def _domain_factory_typed(
         method, socket = _DATA_TYPE[dtype]
         input_type = "Input" + socket.replace("Socket", "")
         lines.append("")
-        if index == "group_id":
-            lines.append(
-                f'        @_renamed_params({{"group_index": "group_id"}}, "{node_name}.<domain>.{method}")'
-            )
         lines += [
             f'        def {method}(self, value: {input_type} = None{idx_param}) -> "{node_name}[{socket}]":',
             f'            """Create \'{node_name}\' on this domain with \'{dtype}\' data type."""',
@@ -254,10 +334,7 @@ def _domain_factory_typed(
     return "\n".join(lines)
 
 
-_GROUP_ID_FACTORY_IMPORTS = (
-    "from ...types import _AttributeDomains",
-    "from ...builder._utils import _renamed_params",
-)
+_GROUP_ID_FACTORY_IMPORTS = ("from ...types import _AttributeDomains",)
 
 
 register_customization(
@@ -433,7 +510,127 @@ register_customization(
                 ("object", "Object", "OBJECT"),
                 ("instancer", "Instancer", "INSTANCER"),
                 ("view_layer", "View Layer", "VIEW_LAYER"),
+                ("light", "Light", "LIGHT"),
             )
         ),
+    )
+)
+
+
+def legacy_menu_customization(
+    bl_idname: str,
+    class_name: str,
+    prop: str,
+    socket: str,
+    removed_in: int,
+    factories: dict[str, tuple[str, tuple[str, ...]]],
+) -> NodeCustomization:
+    """Keep the API of an enum property that Blender moved onto a Menu socket.
+
+    Blender keeps the old property, flagged deprecated, beside the new
+    ``socket``; its items are named as the menu's. From it this builds:
+
+    - ``_legacy_menu_values``: the old identifiers, which ``BaseNode`` still
+      accepts for the socket (``mode="MERGE_BY_NAME"``), with a warning;
+    - a deprecated ``prop`` property reading and setting the socket with the
+      old identifiers;
+    - deprecated ``factories``: method name -> (old enum identifier, the
+      parameters it took, as source), each calling the class by keyword.
+
+    Everything warns that it is removed in nodebpy ``removed_in``. Raises
+    once Blender drops the old property: the shim has then outlived it.
+    """
+    import bpy
+
+    rna = getattr(bpy.types, bl_idname).bl_rna.properties.get(prop)
+    if rna is None or not getattr(rna, "is_deprecated", False):
+        raise ValueError(f"{bl_idname}.{prop} is no longer a deprecated enum")
+    legacy = {item.identifier: item.name for item in rna.enum_items}
+    param = socket.lower().replace(" ", "_")
+    old = "Literal[" + ", ".join(map(repr, legacy)) + "]"
+    lines = [
+        "    _legacy_menu_values: ClassVar[dict[str, tuple[int, dict[str, str]]]] = {",
+        f"        {socket!r}: ({removed_in}, {legacy!r})",
+        "    }",
+        "",
+        "    @property",
+        f"    def {prop}(self) -> {old}:",
+        f'        """Deprecated: use ``i.{param}``."""',
+        f'        _deprecated("{class_name}.{prop}", "i.{param}", removed_in={removed_in})',
+        f"        value = self.i[{socket!r}].socket.default_value  # ty: ignore[unresolved-attribute]",
+        f"        names: dict[str, {old}] = { {v: k for k, v in legacy.items()}!r}",
+        "        return names[value]",
+        "",
+        f"    @{prop}.setter",
+        f"    def {prop}(self, value: {old}) -> None:",
+        "        _deprecated(",
+        f'            "{class_name}.{prop} = value", "the {param}= argument", removed_in={removed_in}',
+        "        )",
+        "        self._set_input_default_value(",
+        f"            self.i[{socket!r}].socket, {legacy!r}.get(value, value)",
+        "        )",
+    ]
+    for method, (item, params) in factories.items():
+        names = [p.split(":")[0].strip() for p in params]
+        call = ", ".join([f"{param}={legacy[item]!r}"] + [f"{n}={n}" for n in names])
+        lines += [
+            "",
+            "    @classmethod",
+            f'    def {method}(cls, {", ".join(params)}) -> "{class_name}":',
+            f'        """Deprecated: use ``{class_name}(..., {param}={legacy[item]!r})``."""',
+            "        _deprecated(",
+            f'            "{class_name}.{method}()", "{class_name}({param}={legacy[item]!r})", removed_in={removed_in}',
+            "        )",
+            f"        return cls({call})",
+        ]
+    return NodeCustomization(
+        bl_idname=bl_idname,
+        imports=("from ...builder._utils import _deprecated",),
+        extra_body="\n".join(lines),
+    )
+
+
+# Blender 5.3 moved these enum properties onto Menu sockets; the 520 spellings
+# keep working, with a warning, until 540.
+_GREASE_PENCIL = "grease_pencil: InputGeometry = None"
+_SELECTION = "selection: InputBoolean = None"
+_COLOR = ("color: InputColor = (1.0, 1.0, 1.0, 1.0)", "opacity: InputFloat = 1.0")
+register_customization(
+    legacy_menu_customization(
+        "GeometryNodeMergeLayers",
+        "MergeLayers",
+        prop="mode",
+        socket="Mode",
+        removed_in=540,
+        factories={
+            "by_name": ("MERGE_BY_NAME", (_GREASE_PENCIL, _SELECTION)),
+            "by_group_id": (
+                "MERGE_BY_ID",
+                (_GREASE_PENCIL, _SELECTION, "group_id: InputInteger = None"),
+            ),
+        },
+    )
+)
+register_customization(
+    legacy_menu_customization(
+        "GeometryNodeSetGreasePencilColor",
+        "SetGreasePencilColor",
+        prop="mode",
+        socket="Mode",
+        removed_in=540,
+        factories={
+            "stroke": ("STROKE", (_GREASE_PENCIL, _SELECTION, *_COLOR)),
+            "fill": ("FILL", (_GREASE_PENCIL, _SELECTION, *_COLOR)),
+        },
+    )
+)
+register_customization(
+    legacy_menu_customization(
+        "GeometryNodeSetGreasePencilDepth",
+        "SetGreasePencilDepth",
+        prop="depth_order",
+        socket="Depth Order",
+        removed_in=540,
+        factories={},
     )
 )

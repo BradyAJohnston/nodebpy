@@ -55,7 +55,6 @@ from ...builder.items import (
     Item,
     ItemCollection,
     MenuItem,
-    _deprecated,
     _FieldItems,
     _socket_for_item,
     _SocketItems,
@@ -95,6 +94,7 @@ from ...types import (
     _AttributeDomains,
     _GridDataTypes,
 )
+from .._mixins import _UnnamedItems, _UnnamedItemsMixin
 from .zone import (
     ClosureInput,
     ClosureOutput,
@@ -191,9 +191,7 @@ class ColorRamp(BaseNode):
 
     _bl_idname = "ShaderNodeValToRGB"
     node: bpy.types.ShaderNodeValToRGB
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
@@ -1350,22 +1348,7 @@ class JoinGeometry(BaseNode):
             self._link(*self._find_best_socket_pair(source, self))
 
 
-class _IndexSwitchItems[T: BaseSocket](ItemCollection["Item[T]"]):
-    """The Index Switch's items: unnamed, all of the switch's data type,
-    each with an input socket."""
-
-    _has_output = False
-
-    def new(self, value: InputAny = None) -> "Item[T]":
-        """Add an item, linked from or defaulting to ``value``."""
-        return self._declare(value, "", self._owner.data_type)
-
-    def _add_all(self, items: Mapping[str, Any] | Iterable[Any] | None) -> None:
-        for value in items or ():
-            self.new(value)
-
-
-class _IndexSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
+class _IndexSwitchBase[T: BaseSocket](_UnnamedItemsMixin, BaseNode):
     """Base class for Index Switch nodes across tree types: the items, and the
     type inferred from them. Each tree's subclass adds its typed variants."""
 
@@ -1395,31 +1378,9 @@ class _IndexSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
         self._establish_links(Index=index)
 
     @property
-    def items(self) -> "_IndexSwitchItems[T]":
+    def items(self) -> "_UnnamedItems[T]":
         """The switch's items, one input socket each."""
-        return _IndexSwitchItems(self)
-
-    @property
-    def _socket_data_types(self) -> tuple[str, ...]:
-        # items are untyped; the node-level data_type fixes the type for all
-        # of them ("FLOAT" is the data_type spelling of socket.type "VALUE")
-        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
-
-    def _new_item(self, name: str, type: str) -> bpy.types.IndexSwitchItem:
-        # index switch items are unnamed and untyped
-        return self._items.new()
-
-    def _item_socket(
-        self, item: bpy.types.IndexSwitchItem, *, output: bool = False
-    ) -> NodeSocket:
-        if output:
-            raise ValueError("Index switch items do not have output sockets")
-        identifier = f"Item_{item.identifier}"
-        assert self.node.inputs is not None
-        for socket in self.node.inputs:
-            if socket.identifier == identifier:
-                return socket
-        raise KeyError(f"No input socket for index switch item {item.identifier}")
+        return _UnnamedItems(self)
 
     @property
     def data_type(self) -> SOCKET_TYPES:
@@ -1702,17 +1663,6 @@ class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
     def _new_item(self, name: str, type: str) -> bpy.types.NodeEnumItem:
         # menu items are untyped; .new() takes only a name
         return self._items.new(name)
-
-    def item(
-        self,
-        name: str,
-        value: InputAny | tuple[InputAny, str] = None,
-        *,
-        description: str | None = None,
-    ) -> MenuItem[T]:
-        """Deprecated: use ``items.new(value, name, description=)``."""
-        _deprecated("item(name, value)", "items.new(value, name)")
-        return self.items.new(value, name, description=description)
 
     def is_selected(self, name: str) -> BooleanSocket:
         """Gets the boolean output socket that is True when the named menu item is selected.
@@ -2116,34 +2066,6 @@ class FieldToGrid[T: BaseSocket](ItemsMixin, BaseNode):
         value: _GridDataTypes,
     ) -> None:
         self._set_enum("data_type", value)
-
-    # -- deprecated per-type methods, removed in 530 --
-
-    def _grid_item(self, type: str, field: Any, name: str | None) -> Any:
-        _deprecated(
-            f"capture_{type.lower()}(field, name)", "items.<type>(field, name).output"
-        )
-        return self.items._declare(field, name, type).output
-
-    def capture_float(
-        self, field: InputFloat = None, name: str | None = None
-    ) -> FloatSocketGrid:
-        return self._grid_item("FLOAT", field, name)
-
-    def capture_boolean(
-        self, field: InputBoolean = None, name: str | None = None
-    ) -> BooleanSocketGrid:
-        return self._grid_item("BOOLEAN", field, name)
-
-    def capture_vector(
-        self, field: InputVector = None, name: str | None = None
-    ) -> VectorSocketGrid:
-        return self._grid_item("VECTOR", field, name)
-
-    def capture_integer(
-        self, field: InputInteger = None, name: str | None = None
-    ) -> IntegerSocketGrid:
-        return self._grid_item("INT", field, name)
 
 
 class SDFGridBoolean(BaseNode):

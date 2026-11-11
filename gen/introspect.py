@@ -11,7 +11,7 @@ from mathutils import Euler, Vector
 
 from .config import TREE_TYPES
 from .model import EnumInfo, NodeInfo, PropertyInfo, SocketInfo
-from .util import fmt_float, normalize_name
+from .util import INTERNAL_SOCKETS, fmt_float, former_name, normalize_name
 
 
 def _collect_socket_menu_items(socket: bpy.types.NodeSocket) -> list[str]:
@@ -58,6 +58,11 @@ def collect_socket_info(
     inputs = []
     for socket in sockets:
         assert socket.node is not None
+        # inputs Blender only shows in the shader trees it builds for the GPU
+        if not is_output and socket.identifier in INTERNAL_SOCKETS.get(
+            socket.node.bl_idname, ()
+        ):
+            continue
         is_inactive = (
             socket.identifier in inactive
             if inactive is not None
@@ -78,6 +83,7 @@ def collect_socket_info(
             name=socket.name,
             identifier=socket.identifier,
             description=socket.description,
+            former_name=former_name(socket.identifier, socket.name),
             label=getattr(socket, "label", ""),
             bl_socket_type=type(socket).__name__,
             socket_type=socket.type,

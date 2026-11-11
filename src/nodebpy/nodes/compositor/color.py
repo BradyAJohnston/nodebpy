@@ -31,7 +31,7 @@ class AlphaOver(BaseNode):
     foreground : InputColor
         Foreground
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     type : InputMenu | Literal['Over', 'Disjoint Over', 'Conjoint Over']
         Type
     straight_alpha : InputBoolean
@@ -44,7 +44,7 @@ class AlphaOver(BaseNode):
     i.foreground : ColorSocket
         Foreground
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.type : MenuSocket
         Type
     i.straight_alpha : BooleanSocket
@@ -58,12 +58,7 @@ class AlphaOver(BaseNode):
 
     _bl_idname = "CompositorNodeAlphaOver"
     node: bpy.types.CompositorNodeAlphaOver
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"},
-        "over": {"fac": "factor"},
-        "disjoint_over": {"fac": "factor"},
-        "conjoint_over": {"fac": "factor"},
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         background: ColorSocket
@@ -71,7 +66,7 @@ class AlphaOver(BaseNode):
         foreground: ColorSocket
         """Foreground"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         type: MenuSocket
         """Type"""
         straight_alpha: BooleanSocket
@@ -168,7 +163,7 @@ class BrightnessContrast(BaseNode):
     image : InputColor
         Image
     brightness : InputFloat
-        Brightness
+        Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it.
     contrast : InputFloat
         Contrast
 
@@ -177,7 +172,7 @@ class BrightnessContrast(BaseNode):
     i.image : ColorSocket
         Image
     i.brightness : FloatSocket
-        Brightness
+        Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it.
     i.contrast : FloatSocket
         Contrast
 
@@ -189,15 +184,13 @@ class BrightnessContrast(BaseNode):
 
     _bl_idname = "CompositorNodeBrightContrast"
     node: bpy.types.CompositorNodeBrightContrast
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"bright": "brightness"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"bright": "brightness"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
         """Image"""
         brightness: FloatSocket
-        """Brightness"""
+        """Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it."""
         contrast: FloatSocket
         """Contrast"""
 
@@ -233,7 +226,7 @@ class ColorBalance(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     type : InputMenu | Literal['Lift/Gamma/Gain', 'Offset/Power/Slope (ASC-CDL)', 'White Point']
         Type
     base_lift : InputFloat
@@ -274,7 +267,7 @@ class ColorBalance(BaseNode):
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.type : MenuSocket
         Type
     i.base_lift : FloatSocket
@@ -318,18 +311,13 @@ class ColorBalance(BaseNode):
 
     _bl_idname = "CompositorNodeColorBalance"
     node: bpy.types.CompositorNodeColorBalance
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"},
-        "lift_gamma_gain": {"fac": "factor"},
-        "offset_power_slope_asc_cdl": {"fac": "factor"},
-        "white_point": {"fac": "factor"},
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         type: MenuSocket
         """Type"""
         base_lift: FloatSocket
@@ -591,11 +579,11 @@ class ColorCorrection(BaseNode):
     midtones_end : InputFloat
         Midtones End
     red : InputBoolean
-        Red
+        Red. Renamed from ``Apply On Red``; ``i.apply_on_red`` still resolves to it.
     green : InputBoolean
-        Green
+        Green. Renamed from ``Apply On Green``; ``i.apply_on_green`` still resolves to it.
     blue : InputBoolean
-        Blue
+        Blue. Renamed from ``Apply On Blue``; ``i.apply_on_blue`` still resolves to it.
 
     Inputs
     ------
@@ -648,11 +636,11 @@ class ColorCorrection(BaseNode):
     i.midtones_end : FloatSocket
         Midtones End
     i.red : BooleanSocket
-        Red
+        Red. Renamed from ``Apply On Red``; ``i.apply_on_red`` still resolves to it.
     i.green : BooleanSocket
-        Green
+        Green. Renamed from ``Apply On Green``; ``i.apply_on_green`` still resolves to it.
     i.blue : BooleanSocket
-        Blue
+        Blue. Renamed from ``Apply On Blue``; ``i.apply_on_blue`` still resolves to it.
 
     Outputs
     -------
@@ -662,12 +650,10 @@ class ColorCorrection(BaseNode):
 
     _bl_idname = "CompositorNodeColorCorrection"
     node: bpy.types.CompositorNodeColorCorrection
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {
-            "apply_on_red": "red",
-            "apply_on_green": "green",
-            "apply_on_blue": "blue",
-        }
+    _socket_params: ClassVar[dict[str, str]] = {
+        "apply_on_red": "red",
+        "apply_on_green": "green",
+        "apply_on_blue": "blue",
     }
 
     class _Inputs(SocketAccessor):
@@ -720,11 +706,11 @@ class ColorCorrection(BaseNode):
         midtones_end: FloatSocket
         """Midtones End"""
         red: BooleanSocket
-        """Red"""
+        """Red. Renamed from ``Apply On Red``; ``i.apply_on_red`` still resolves to it."""
         green: BooleanSocket
-        """Green"""
+        """Green. Renamed from ``Apply On Green``; ``i.apply_on_green`` still resolves to it."""
         blue: BooleanSocket
-        """Blue"""
+        """Blue. Renamed from ``Apply On Blue``; ``i.apply_on_blue`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -959,14 +945,14 @@ class HueCorrect(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
 
     Inputs
     ------
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
 
     Outputs
     -------
@@ -976,15 +962,13 @@ class HueCorrect(BaseNode):
 
     _bl_idname = "CompositorNodeHueCorrect"
     node: bpy.types.CompositorNodeHueCorrect
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -1023,7 +1007,7 @@ class HueSaturationValue(BaseNode):
     value : InputFloat
         Value
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
 
     Inputs
     ------
@@ -1036,7 +1020,7 @@ class HueSaturationValue(BaseNode):
     i.value : FloatSocket
         Value
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
 
     Outputs
     -------
@@ -1046,9 +1030,7 @@ class HueSaturationValue(BaseNode):
 
     _bl_idname = "CompositorNodeHueSat"
     node: bpy.types.CompositorNodeHueSat
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
@@ -1060,7 +1042,7 @@ class HueSaturationValue(BaseNode):
         value: FloatSocket
         """Value"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -1102,7 +1084,7 @@ class InvertColor(BaseNode):
     color : InputColor
         Color
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     invert_color : InputBoolean
         Invert Color
     invert_alpha : InputBoolean
@@ -1113,7 +1095,7 @@ class InvertColor(BaseNode):
     i.color : ColorSocket
         Color
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.invert_color : BooleanSocket
         Invert Color
     i.invert_alpha : BooleanSocket
@@ -1127,15 +1109,13 @@ class InvertColor(BaseNode):
 
     _bl_idname = "CompositorNodeInvert"
     node: bpy.types.CompositorNodeInvert
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
         """Color"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         invert_color: BooleanSocket
         """Invert Color"""
         invert_alpha: BooleanSocket
@@ -1234,7 +1214,7 @@ class RGBCurves(BaseNode):
     image : InputColor
         Image
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     black_level : InputColor
         Black Level
     white_level : InputColor
@@ -1245,7 +1225,7 @@ class RGBCurves(BaseNode):
     i.image : ColorSocket
         Image
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.black_level : ColorSocket
         Black Level
     i.white_level : ColorSocket
@@ -1259,15 +1239,13 @@ class RGBCurves(BaseNode):
 
     _bl_idname = "CompositorNodeCurveRGB"
     node: bpy.types.CompositorNodeCurveRGB
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
         """Image"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         black_level: ColorSocket
         """Black Level"""
         white_level: ColorSocket

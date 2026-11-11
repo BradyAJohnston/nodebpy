@@ -106,14 +106,14 @@ class VectorCurves(BaseNode):
     Parameters
     ----------
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     vector : InputVector
         Vector
 
     Inputs
     ------
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.vector : VectorSocket
         Vector
 
@@ -125,13 +125,11 @@ class VectorCurves(BaseNode):
 
     _bl_idname = "ShaderNodeVectorCurve"
     node: bpy.types.ShaderNodeVectorCurve
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         vector: VectorSocket
         """Vector"""
 

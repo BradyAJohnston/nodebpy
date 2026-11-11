@@ -11,6 +11,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
+    BaseNode,
     BooleanSocketGrid,
     BooleanSocketList,
     ColorSocketList,
@@ -120,22 +121,90 @@ def test_input_params_named_after_sockets():
     assert proximity.node.inputs["Target"].is_linked
 
 
-def test_renamed_input_params_still_accept_old_names():
+def test_deprecated_warns_at_the_callers_line():
+    from nodebpy.builder._utils import _deprecated
+
+    with pytest.warns(DeprecationWarning) as record:
+        _deprecated("old()", "new()", removed_in=540)
+    assert str(record[0].message) == (
+        "old() is deprecated and will be removed in nodebpy 540; use new()"
+    )
+    assert record[0].filename == __file__
+
+
+def _socket(node, identifier):
+    return next(s for s in node.node.inputs if s.identifier == identifier)
+
+
+def test_menu_sockets_accept_their_old_enum_spellings():
+    from nodebpy.export import to_python
+
+    with g.tree() as tree:
+        with pytest.warns(DeprecationWarning, match="mode='By Group ID'") as record:
+            merged = g.MergeLayers(mode="MERGE_BY_ID")
+        assert record[0].filename == __file__
+        assert _socket(merged, "Mode").default_value == "By Group ID"
+
+        with pytest.warns(DeprecationWarning, match=r"MergeLayers\.by_group_id"):
+            by_id = g.MergeLayers.by_group_id(group_id=g.Index())
+        assert _socket(by_id, "Mode").default_value == "By Group ID"
+        assert _socket(by_id, "Group ID").is_linked
+
+        with pytest.warns(DeprecationWarning, match="i.mode"):
+            assert by_id.mode == "MERGE_BY_ID"
+        with pytest.warns(DeprecationWarning, match="mode= argument"):
+            by_id.mode = "MERGE_BY_NAME"
+        assert _socket(by_id, "Mode").default_value == "By Name"
+
+        with pytest.warns(DeprecationWarning):
+            fill = g.SetGreasePencilColor.fill(color=(1, 0, 0, 1))
+        assert _socket(fill, "Mode").default_value == "Fill"
+        with pytest.warns(DeprecationWarning):
+            depth = g.SetGreasePencilDepth(depth_order="3D")
+        assert _socket(depth, "Depth Order").default_value == "3D Location"
+    code = to_python(tree)
+    assert "MERGE_BY" not in code and 'mode="By Group ID"' in code
+
+
+def test_relabelled_output_still_resolves_its_identifier():
+    # Blender 5.3 relabelled Import PLY's Mesh output Geometry but kept its
+    # identifier, so 520's o.mesh keeps working
     with g.tree():
-        with pytest.warns(
-            DeprecationWarning, match=r"ColorRamp\(fac=\.\.\.\).*factor="
-        ):
-            ramp = g.ColorRamp(fac=0.25)  # ty: ignore[unknown-argument]
-        with pytest.warns(DeprecationWarning, match="group_id="):
-            acc = g.AccumulateField.point.float(1.0, group_index=g.Index())  # ty: ignore[unknown-argument]
-        with pytest.raises(TypeError, match="both fac= and factor="):
-            g.ColorRamp(fac=0.25, factor=0.5)  # ty: ignore[unknown-argument]
-    with c.tree():
-        with pytest.warns(DeprecationWarning, match=r"Filter\.kirsch\(fac=\.\.\.\)"):
-            flt = c.Filter.kirsch(fac=0.5)  # ty: ignore[unknown-argument]
-    assert ramp.node.inputs["Fac"].default_value == 0.25
-    assert acc.node.inputs["Group Index"].is_linked
-    assert flt.node.inputs["Fac"].default_value == 0.5
+        ply = g.ImportPLY()
+    assert ply.o.mesh.socket == ply.o.geometry.socket
+
+
+def _renamed_socket_docs():
+    """(class, tree module, side, attribute, old attribute) for every socket
+    whose generated docstring says its old name still resolves."""
+    import inspect
+    import re
+
+    pattern = re.compile(
+        r"^\s*([io])\.(\w+) : .*\n\s+.*``\1\.(\w+)`` still resolves", re.MULTILINE
+    )
+    cases = []
+    for tree in (g, s, c):
+        for name, cls in sorted(vars(tree).items()):
+            if not inspect.isclass(cls) or not issubclass(cls, BaseNode):
+                continue
+            for side, attr, old in pattern.findall(cls.__doc__ or ""):
+                case = (cls, tree, side, attr, old)
+                if case not in cases:
+                    cases.append(case)
+    return cases
+
+
+@pytest.mark.parametrize(
+    "cls,tree,side,attr,old",
+    _renamed_socket_docs(),
+    ids=lambda v: v.__name__ if isinstance(v, type) else None,
+)
+def test_renamed_sockets_resolve_their_documented_old_name(cls, tree, side, attr, old):
+    with tree.tree():
+        node = cls()
+    accessor = node.i if side == "i" else node.o
+    assert accessor._get(old).socket == accessor._get(attr).socket
 
 
 def test_socket_selection():
@@ -2411,14 +2480,6 @@ def test_field_to_list():
         assert isinstance(pos.get(idx), VectorSocket)
         # if we get using a single index, we should get a single value
         assert isinstance(pos.get(1), VectorSocket)
-
-
-def test_field_to_list_fields_deprecated():
-    with g.tree():
-        with pytest.warns(DeprecationWarning):
-            ftl = g.FieldToList(5, fields={"x": g.Value()})
-        assert len(ftl.node.list_items) == 1
-        assert ftl.node.list_items[0].name == "x"
 
 
 def test_grid_methods():

@@ -31,11 +31,12 @@ from ._muted import Muted, muting
 from ._utils import (
     SocketError,
     WarningPropagation,
-    _accept_renamed,
+    _deprecated,
     _NodeLike,
     _SocketLike,
     apply_node_props,
     enum_value_error,
+    normalize_name,
 )
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
@@ -108,20 +109,13 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     _default_input_id: str | None = None
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
-    # Parameters renamed after their socket's display name, per method (old
-    # name -> new name); the old name keeps working with a DeprecationWarning.
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {}
-
-    def __init_subclass__(cls, **kwargs: Any) -> None:
-        super().__init_subclass__(**kwargs)
-        for method, renames in cls.__dict__.get("_renamed_params", {}).items():
-            label = cls.__name__ if method == "__init__" else f"{cls.__name__}.{method}"
-            attr = cls.__dict__[method]
-            if isinstance(attr, classmethod):
-                func = _accept_renamed(attr.__func__, renames, label)
-                setattr(cls, method, classmethod(func))
-            else:
-                setattr(cls, method, _accept_renamed(attr, renames, label))
+    # Constructor parameters named after their socket's display name rather
+    # than its identifier (normalized identifier -> parameter), for export.
+    _socket_params: ClassVar[dict[str, str]] = {}
+    # Menu inputs that replaced an enum property: socket identifier ->
+    # (removal version, old enum identifier -> menu item). An old value still
+    # works, with a DeprecationWarning (see ``legacy_menu_customization``).
+    _legacy_menu_values: ClassVar[dict[str, tuple[int, dict[str, str]]]] = {}
 
     def __init__(self, node: Node | None = None):
         tree = (
@@ -278,6 +272,15 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         elif stype == "INT" and isinstance(value, float):
             input.default_value = int(value)  # type: ignore
         elif stype == "MENU":
+            removed_in, legacy = self._legacy_menu_values.get(input.identifier, (0, {}))
+            if value in legacy:
+                param = normalize_name(input.identifier)
+                _deprecated(
+                    f"{type(self).__name__}({param}={value!r})",
+                    f"{param}={legacy[value]!r}",
+                    removed_in=removed_in,
+                )
+                value = legacy[value]
             try:
                 input.default_value = value  # type: ignore
             except TypeError:

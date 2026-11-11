@@ -666,9 +666,9 @@ class PlaneTrackDeform(BaseNode):
     motion_blur : InputBoolean
         Motion Blur
     samples : InputInteger
-        Samples
+        Samples. Renamed from ``Motion Blur Samples``; ``i.motion_blur_samples`` still resolves to it.
     shutter : InputFloat
-        Shutter
+        Shutter. Renamed from ``Motion Blur Shutter``; ``i.motion_blur_shutter`` still resolves to it.
 
     Inputs
     ------
@@ -677,9 +677,9 @@ class PlaneTrackDeform(BaseNode):
     i.motion_blur : BooleanSocket
         Motion Blur
     i.samples : IntegerSocket
-        Samples
+        Samples. Renamed from ``Motion Blur Samples``; ``i.motion_blur_samples`` still resolves to it.
     i.shutter : FloatSocket
-        Shutter
+        Shutter. Renamed from ``Motion Blur Shutter``; ``i.motion_blur_shutter`` still resolves to it.
 
     Outputs
     -------
@@ -691,8 +691,9 @@ class PlaneTrackDeform(BaseNode):
 
     _bl_idname = "CompositorNodePlaneTrackDeform"
     node: bpy.types.CompositorNodePlaneTrackDeform
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"motion_blur_samples": "samples", "motion_blur_shutter": "shutter"}
+    _socket_params: ClassVar[dict[str, str]] = {
+        "motion_blur_samples": "samples",
+        "motion_blur_shutter": "shutter",
     }
 
     class _Inputs(SocketAccessor):
@@ -701,9 +702,9 @@ class PlaneTrackDeform(BaseNode):
         motion_blur: BooleanSocket
         """Motion Blur"""
         samples: IntegerSocket
-        """Samples"""
+        """Samples. Renamed from ``Motion Blur Samples``; ``i.motion_blur_samples`` still resolves to it."""
         shutter: FloatSocket
-        """Shutter"""
+        """Shutter. Renamed from ``Motion Blur Shutter``; ``i.motion_blur_shutter`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket

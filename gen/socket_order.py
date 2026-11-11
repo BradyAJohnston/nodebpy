@@ -15,9 +15,14 @@ records, per node ``bl_idname``, the sequence of drawn items.
 Run with either a Blender source checkout or let it sparse-clone the
 matching tag::
 
-    uv run python -m gen.socket_order                # clones v<bpy version>, or main before its tag exists
+    uv run python -m gen.socket_order                # clones v<bpy version>, or its build branch before the tag exists
     uv run python -m gen.socket_order --source ~/blender-src
     uv run python -m gen.socket_order --tag v5.2.0
+
+The same pass records the inputs a node declares
+``.available(is_gpu_internal)``: Blender only shows them in the shader trees
+it builds internally for the GPU (the BSDFs' ``Weight``), so the node classes
+leave them out (``INTERNAL_SOCKETS``).
 
 The parser is deliberately small: it walks each declaration linearly, so a
 socket declared under a condition or inside an item loop is recorded as
@@ -111,9 +116,11 @@ def _literals(args: str) -> list[str]:
     return [m.group(1) for m in _STRING_RE.finditer(args)]
 
 
-def parse_declaration(body: str) -> tuple[bool, list[Entry]]:
-    """Parse one ``node_declare`` body into ``(custom_order, entries)``."""
+def parse_declaration(body: str) -> tuple[bool, list[Entry], list[str]]:
+    """Parse one ``node_declare`` body into ``(custom_order, entries,
+    internal_inputs)``."""
     root: list[Any] = []
+    internal: list[str] = []
     panels: dict[str, _Panel] = {}
     custom = False
     pos = 0
@@ -158,12 +165,14 @@ def parse_declaration(body: str) -> tuple[bool, list[Entry]]:
                 continue
             name = names[0]
             identifier = names[1] if len(names) > 1 else name
+            if side == "in" and ".available(is_gpu_internal)" in chain:
+                internal.append(identifier)
             if ".panel_toggle(" in chain and side == "in":
                 target.append(("toggle", identifier))
             else:
                 target.append((side, identifier, aligned))
 
-    return custom, _flatten(root)
+    return custom, _flatten(root), internal
 
 
 def _flatten(items: list[Any]) -> list[Entry]:
@@ -196,7 +205,7 @@ def _flatten(items: list[Any]) -> list[Entry]:
     return out
 
 
-def parse_file(path: Path) -> dict[str, tuple[bool, list[Entry]]]:
+def parse_file(path: Path) -> dict[str, tuple[bool, list[Entry], list[str]]]:
     """Map every registered node idname in *path* to its parsed declaration."""
     text = path.read_text(encoding="utf-8", errors="replace")
     declares: list[tuple[int, str, str]] = []  # (pos, fn name, body)
@@ -208,7 +217,7 @@ def parse_file(path: Path) -> dict[str, tuple[bool, list[Entry]]]:
             continue
         declares.append((m.start(), m.group(1), text[brace + 1 : end - 1]))
 
-    result: dict[str, tuple[bool, list[Entry]]] = {}
+    result: dict[str, tuple[bool, list[Entry], list[str]]] = {}
     for reg in _REGISTER_RE.finditer(text):
         fn = reg.group(1)
         idname_match = None
@@ -237,8 +246,11 @@ def _bpy_version() -> tuple[int, int, int]:
 
 
 def _bpy_tag() -> str:
-    """The tag of the installed ``bpy``'s version, or ``main`` while that
-    version is unreleased and has no tag yet (a daily build)."""
+    """The tag of the installed ``bpy``'s version, or the branch it was built
+    from while that version is unreleased and has no tag yet (a daily build:
+    ``main``, or ``blender-vX.Y-release`` once the version is in beta)."""
+    import bpy
+
     tag = "v{}.{}.{}".format(*_bpy_version())
     listed = subprocess.run(
         ["git", "ls-remote", "--tags", REPO, tag],
@@ -247,8 +259,9 @@ def _bpy_tag() -> str:
         check=False,
     )
     if listed.returncode == 0 and not listed.stdout.strip():
-        print(f"No tag {tag} upstream yet: using main")
-        return "main"
+        branch = bpy.app.build_branch.decode() or "main"
+        print(f"No tag {tag} upstream yet: using {branch}")
+        return branch
     return tag
 
 
@@ -277,10 +290,11 @@ def _sparse_clone(tag: str, into: Path) -> Path:
     return into
 
 
-def collect(source: Path) -> dict[str, list[Entry]]:
-    """Parse every node source under *source* and keep the nodes drawn with
+def collect(source: Path) -> tuple[dict[str, list[Entry]], dict[str, list[str]]]:
+    """Parse every node source under *source*. Returns the nodes drawn with
     a custom socket order (the only ones Blender draws from their
-    declaration; conventional nodes are drawn outputs-buttons-inputs)."""
+    declaration; conventional nodes are drawn outputs-buttons-inputs) and
+    each node's GPU-internal inputs."""
     nodes_root = source / "source" / "blender" / "nodes"
     files: list[Path] = []
     if nodes_root.is_dir():
@@ -289,15 +303,21 @@ def collect(source: Path) -> dict[str, list[Entry]]:
     else:
         files = sorted(source.rglob("node_*.cc"))
     table: dict[str, list[Entry]] = {}
+    internal: dict[str, list[str]] = {}
     for path in files:
-        for idname, (custom, entries) in parse_file(path).items():
+        for idname, (custom, entries, hidden) in parse_file(path).items():
             if custom:
                 table[idname] = entries
-    return table
+            if hidden:
+                internal[idname] = hidden
+    return table, internal
 
 
 def render(
-    table: dict[str, list[Entry]], tag: str, version: tuple[int, int, int]
+    table: dict[str, list[Entry]],
+    internal: dict[str, list[str]],
+    tag: str,
+    version: tuple[int, int, int],
 ) -> str:
     lines = [
         '"""Socket draw order of Blender nodes declared with a custom socket',
@@ -313,6 +333,10 @@ def render(
         "  item sockets (zone / switch / bundle items), paired by identifier.",
         '- ``("layout",)`` — where the node\'s buttons are drawn.',
         '- ``("panel", name, default_closed)`` … ``("end",)`` — a collapsible panel.',
+        "",
+        "``INTERNAL_SOCKETS`` lists, per node, the inputs Blender only makes",
+        "available in the shader trees it builds for the GPU",
+        "(``.available(is_gpu_internal)``); the node classes leave them out.",
         '"""',
         "",
         "from __future__ import annotations",
@@ -326,6 +350,10 @@ def render(
         for entry in table[idname]:
             lines.append(f"        {entry!r},")
         lines.append("    ),")
+    lines.append("}")
+    lines += ["", "INTERNAL_SOCKETS: dict[str, tuple[str, ...]] = {"]
+    for idname in sorted(internal):
+        lines.append(f"    {idname!r}: {tuple(internal[idname])!r},")
     lines.append("}")
     return "\n".join(lines) + "\n"
 
@@ -341,13 +369,15 @@ def main(argv: list[str] | None = None) -> None:
 
     tag = args.tag or _bpy_tag()
     if args.source is not None:
-        table = collect(args.source)
+        table, internal = collect(args.source)
     else:
         with tempfile.TemporaryDirectory() as tmp:
-            table = collect(_sparse_clone(tag, Path(tmp) / "blender"))
+            table, internal = collect(_sparse_clone(tag, Path(tmp) / "blender"))
     if not table:
         sys.exit("No custom-ordered node declarations found")
-    args.output.write_text(render(table, tag, _bpy_version()), encoding="utf-8")
+    args.output.write_text(
+        render(table, internal, tag, _bpy_version()), encoding="utf-8"
+    )
     print(f"Wrote {len(table)} node socket orders to {args.output}")
 
 

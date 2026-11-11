@@ -24,7 +24,7 @@ class BrightnessContrast(BaseNode):
     color : InputColor
         Color
     brightness : InputFloat
-        Brightness
+        Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it.
     contrast : InputFloat
         Contrast
 
@@ -33,7 +33,7 @@ class BrightnessContrast(BaseNode):
     i.color : ColorSocket
         Color
     i.brightness : FloatSocket
-        Brightness
+        Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it.
     i.contrast : FloatSocket
         Contrast
 
@@ -45,15 +45,13 @@ class BrightnessContrast(BaseNode):
 
     _bl_idname = "ShaderNodeBrightContrast"
     node: bpy.types.ShaderNodeBrightContrast
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"bright": "brightness"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"bright": "brightness"}
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
         """Color"""
         brightness: FloatSocket
-        """Brightness"""
+        """Brightness. Renamed from ``Bright``; ``i.bright`` still resolves to it."""
         contrast: FloatSocket
         """Contrast"""
 
@@ -93,7 +91,7 @@ class HueSaturationValue(BaseNode):
     value : InputFloat
         Value
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     color : InputColor
         Color
 
@@ -106,7 +104,7 @@ class HueSaturationValue(BaseNode):
     i.value : FloatSocket
         Value
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.color : ColorSocket
         Color
 
@@ -118,9 +116,7 @@ class HueSaturationValue(BaseNode):
 
     _bl_idname = "ShaderNodeHueSaturation"
     node: bpy.types.ShaderNodeHueSaturation
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         hue: FloatSocket
@@ -130,7 +126,7 @@ class HueSaturationValue(BaseNode):
         value: FloatSocket
         """Value"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         color: ColorSocket
         """Color"""
 
@@ -172,14 +168,14 @@ class InvertColor(BaseNode):
     Parameters
     ----------
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     color : InputColor
         Color
 
     Inputs
     ------
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.color : ColorSocket
         Color
 
@@ -191,13 +187,11 @@ class InvertColor(BaseNode):
 
     _bl_idname = "ShaderNodeInvert"
     node: bpy.types.ShaderNodeInvert
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         color: ColorSocket
         """Color"""
 

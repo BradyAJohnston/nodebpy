@@ -1,7 +1,5 @@
 """The item collections shared by every items-driven node."""
 
-import warnings
-
 import pytest
 
 from nodebpy.builder import (
@@ -158,49 +156,6 @@ def test_format_string_and_menu_switch_iterables():
         assert fs.items["z"].input.socket.default_value == "hi"
         ms = g.MenuSwitch.float(items=[1.0, 2.0])
         assert [i.name for i in ms.items] == ["Item", "Item.001"]
-
-
-def test_deprecated_entry_points_still_work():
-    with g.tree():
-        cap = g.CaptureAttribute(g.Cube())
-        zone = g.RepeatZone(2)
-        fe = g.ForEachGeometryElementZone(g.Cube())
-        fe.generated_items.geometry(g.Cone())  # stores the generated fields below
-        ms = g.MenuSwitch.float()
-        cz = g.ClosureZone()
-        ftl = g.FieldToList(2)
-        with warnings.catch_warnings(record=True) as caught:
-            warnings.simplefilter("always")
-            legacy = cap.items.float("Legacy", 0.25)
-            assert legacy.name == "Legacy"
-            assert legacy.input.socket.default_value == pytest.approx(0.25)
-            assert cap.items.vector("Old").name == "Old"
-            assert cap.add_item("x", 1.0).name == "x"
-            handles = cap.add_items({"y": "FLOAT", "z": g.Index()})
-            assert [h.socket_type for h in handles.values()] == ["FLOAT", "INT"]
-            assert cap.capture(g.Position()).socket.is_output
-            assert zone.item("q", 1.0).name == "q"
-            assert zone.item("r", "VECTOR").socket_type == "VECTOR"
-            assert ms.item("C", 2.0).name == "C"
-            assert ftl.float(1.0).socket.is_output
-            assert cz.input_item("I").socket.is_output
-            assert not cz.output_item("O").socket.is_output
-            ftg = g.FieldToGrid.float()
-            for method in ("float", "boolean", "vector", "integer"):
-                assert getattr(ftg, f"capture_{method}")().socket.is_output
-            for method in ("integer", "boolean", "vector", "color", "rotation"):
-                assert getattr(ftl, method)().socket.is_output
-            for method in ("matrix", "string", "menu"):
-                assert getattr(ftl, method)().socket.is_output
-            assert fe.inputs is not None and fe.main is not None
-            assert fe.generated is not None
-            assert fe.item("a", g.Index()).name == "a"
-            assert fe.main_item("b", type="FLOAT").name == "b"
-            assert fe.generated_item("c", type="FLOAT").name == "c"
-            assert fe.output.add_generated_item("d", 1.0).name == "d"
-            assert fe.output.capture_generated(g.Index(), name="e").socket.is_output
-        assert all(w.category is DeprecationWarning for w in caught)
-        assert len(caught) == 31
 
 
 def test_handle_stands_in_for_its_sockets():

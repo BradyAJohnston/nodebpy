@@ -77,14 +77,14 @@ class RGBCurves(BaseNode):
     Parameters
     ----------
     factor : InputFloat
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     color : InputColor
         Color
 
     Inputs
     ------
     i.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it.
     i.color : ColorSocket
         Color
 
@@ -96,13 +96,11 @@ class RGBCurves(BaseNode):
 
     _bl_idname = "ShaderNodeRGBCurve"
     node: bpy.types.ShaderNodeRGBCurve
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"fac": "factor"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"fac": "factor"}
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``i.fac`` still resolves to it."""
         color: ColorSocket
         """Color"""
 

@@ -208,6 +208,12 @@ class BoneInfo(BaseNode):
         Rest Length
     o.exists : BooleanSocket
         Exists
+    o.envelope_distance : FloatSocket
+        Envelope Distance
+    o.radius_head : FloatSocket
+        Radius Head
+    o.radius_tail : FloatSocket
+        Radius Tail
     """
 
     _bl_idname = "GeometryNodeBoneInfo"
@@ -232,6 +238,12 @@ class BoneInfo(BaseNode):
         """Rest Length"""
         exists: BooleanSocket
         """Exists"""
+        envelope_distance: FloatSocket
+        """Envelope Distance"""
+        radius_head: FloatSocket
+        """Radius Head"""
+        radius_tail: FloatSocket
+        """Radius Tail"""
 
     if TYPE_CHECKING:
 
@@ -1369,12 +1381,12 @@ class FaceGroupBoundaries(BaseNode):
     Parameters
     ----------
     face_group_id : InputInteger
-        Face Group ID
+        Face Group ID. Renamed from ``Face Set``; ``i.face_set`` still resolves to it.
 
     Inputs
     ------
     i.face_group_id : IntegerSocket
-        Face Group ID
+        Face Group ID. Renamed from ``Face Set``; ``i.face_set`` still resolves to it.
 
     Outputs
     -------
@@ -1384,13 +1396,11 @@ class FaceGroupBoundaries(BaseNode):
 
     _bl_idname = "GeometryNodeMeshFaceSetBoundaries"
     node: bpy.types.GeometryNodeMeshFaceSetBoundaries
-    _renamed_params: ClassVar[dict[str, dict[str, str]]] = {
-        "__init__": {"face_set": "face_group_id"}
-    }
+    _socket_params: ClassVar[dict[str, str]] = {"face_set": "face_group_id"}
 
     class _Inputs(SocketAccessor):
         face_group_id: IntegerSocket
-        """Face Group ID"""
+        """Face Group ID. Renamed from ``Face Set``; ``i.face_set`` still resolves to it."""
 
     class _Outputs(SocketAccessor):
         boundary_edges: BooleanSocket
@@ -1577,6 +1587,222 @@ class Font(BaseNode):
     @font.setter
     def font(self, value: bpy.types.VectorFont | None) -> None:
         self.node.font = value
+
+
+class GreasePencilColor(BaseNode):
+    """
+    Retrieve the color of Grease Pencil points and fills
+
+    Outputs
+    -------
+    o.point : ColorSocket
+        Point
+    o.fill : ColorSocket
+        Fill
+    """
+
+    _bl_idname = "GeometryNodeGreasePencilColor"
+    node: bpy.types.GeometryNodeGreasePencilColor
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        point: ColorSocket
+        """Point"""
+        fill: ColorSocket
+        """Fill"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class GreasePencilDrawTime(BaseNode):
+    """
+    Retrieve information as to when a Grease Pencil curve was drawn
+
+    Outputs
+    -------
+    o.creation_time : FloatSocket
+        Creation Time
+    o.delta_time : FloatSocket
+        Delta Time
+    """
+
+    _bl_idname = "GeometryNodeGreasePencilDrawTime"
+    node: bpy.types.GeometryNodeGreasePencilDrawTime
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        creation_time: FloatSocket
+        """Creation Time"""
+        delta_time: FloatSocket
+        """Delta Time"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class GreasePencilFillID(BaseNode):
+    """
+    Retrieve information about the grouping of Grease Pencil fills
+
+    Outputs
+    -------
+    o.fill_id : IntegerSocket
+        Fill ID
+    """
+
+    _bl_idname = "GeometryNodeGreasePencilFillID"
+    node: bpy.types.GeometryNodeGreasePencilFillID
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        fill_id: IntegerSocket
+        """Fill ID"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class GreasePencilOpacity(BaseNode):
+    """
+    Retrieve the opacity of Grease Pencil points and fills
+
+    Outputs
+    -------
+    o.point : FloatSocket
+        Point
+    o.fill : FloatSocket
+        Fill
+    """
+
+    _bl_idname = "GeometryNodeGreasePencilOpacity"
+    node: bpy.types.GeometryNodeGreasePencilOpacity
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        point: FloatSocket
+        """Point"""
+        fill: FloatSocket
+        """Fill"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class GreasePencilStrokeSoftness(BaseNode):
+    """
+    Retrieve the softness of Grease Pencil strokes
+
+    Outputs
+    -------
+    o.softness : FloatSocket
+        Softness
+    """
+
+    _bl_idname = "GeometryNodeGreasePencilStrokeSoftness"
+    node: bpy.types.GeometryNodeGreasePencilStrokeSoftness
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        softness: FloatSocket
+        """Softness"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class GreasePencilStrokeVisibility(BaseNode):
+    """
+    Retrieve the visibility of Grease Pencil strokes
+
+    Outputs
+    -------
+    o.is_hidden : BooleanSocket
+        Is Hidden
+    """
+
+    _bl_idname = "GeometryNodeGreasePencilStrokeVisibility"
+    node: bpy.types.GeometryNodeGreasePencilStrokeVisibility
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        is_hidden: BooleanSocket
+        """Is Hidden"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
 
 
 class HandleTypeSelection(_HandleModeMixin, BaseNode):
@@ -1911,8 +2137,8 @@ class ImportPLY(BaseNode):
 
     Outputs
     -------
-    o.mesh : GeometrySocket
-        Mesh
+    o.geometry : GeometrySocket
+        Geometry. Renamed from ``Mesh``; ``o.mesh`` still resolves to it.
     """
 
     _bl_idname = "GeometryNodeImportPLY"
@@ -1923,8 +2149,53 @@ class ImportPLY(BaseNode):
         """Path"""
 
     class _Outputs(SocketAccessor):
-        mesh: GeometrySocket
-        """Mesh"""
+        geometry: GeometrySocket
+        """Geometry. Renamed from ``Mesh``; ``o.mesh`` still resolves to it."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, path: InputString = ""):
+        super().__init__()
+        key_args = {"Path": path}
+
+        self._establish_links(**key_args)
+
+
+class ImportSpz(BaseNode):
+    """
+    Import a point cloud object that is rendered as gaussian splat from an SPZ file
+
+    Parameters
+    ----------
+    path : InputString
+        Path
+
+    Inputs
+    ------
+    i.path : StringSocket
+        Path
+
+    Outputs
+    -------
+    o.points : GeometrySocket
+        Points
+    """
+
+    _bl_idname = "GeometryNodeImportSPZ"
+    node: bpy.types.GeometryNodeImportSPZ
+
+    class _Inputs(SocketAccessor):
+        path: StringSocket
+        """Path"""
+
+    class _Outputs(SocketAccessor):
+        points: GeometrySocket
+        """Points"""
 
     if TYPE_CHECKING:
 
@@ -2635,6 +2906,74 @@ class MousePosition(BaseNode):
         self._establish_links(**key_args)
 
 
+class NURBSOrder(BaseNode):
+    """
+    Retrieve how many curve control points influence each evaluated point
+
+    Outputs
+    -------
+    o.order : IntegerSocket
+        Order
+    """
+
+    _bl_idname = "GeometryNodeNURBSOrder"
+    node: bpy.types.GeometryNodeNURBSOrder
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        order: IntegerSocket
+        """Order"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class NURBSWeight(BaseNode):
+    """
+    Retrieve the influence of each NURBS control point on the curve
+
+    Outputs
+    -------
+    o.weight : FloatSocket
+        Weight
+    """
+
+    _bl_idname = "GeometryNodeNURBSWeight"
+    node: bpy.types.GeometryNodeNURBSWeight
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        weight: FloatSocket
+        """Weight"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
 class NamedAttribute[T](BaseNode):
     """
     Retrieve the data of a specified attribute
@@ -3272,7 +3611,7 @@ class Selection(BaseNode):
     Outputs
     -------
     o.boolean : BooleanSocket
-        Boolean
+        Boolean. Renamed from ``Selection``; ``o.selection`` still resolves to it.
     o.float : FloatSocket
         Float
     """
@@ -3285,7 +3624,7 @@ class Selection(BaseNode):
 
     class _Outputs(SocketAccessor):
         boolean: BooleanSocket
-        """Boolean"""
+        """Boolean. Renamed from ``Selection``; ``o.selection`` still resolves to it."""
         float: FloatSocket
         """Float"""
 

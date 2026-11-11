@@ -126,7 +126,7 @@ class Attribute(BaseNode):
     o.vector : VectorSocket
         Vector
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     o.alpha : FloatSocket
         Alpha
     """
@@ -143,7 +143,7 @@ class Attribute(BaseNode):
         vector: VectorSocket
         """Vector"""
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
         alpha: FloatSocket
         """Alpha"""
 
@@ -157,7 +157,7 @@ class Attribute(BaseNode):
     def __init__(
         self,
         attribute_type: Literal[
-            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"
+            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"
         ] = "GEOMETRY",
         attribute_name: str = "",
     ):
@@ -170,12 +170,12 @@ class Attribute(BaseNode):
     @property
     def attribute_type(
         self,
-    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]:
+    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"]:
         return self.node.attribute_type
 
     @attribute_type.setter
     def attribute_type(
-        self, value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]
+        self, value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"]
     ) -> None:
         self._set_enum("attribute_type", value)
 
@@ -206,6 +206,11 @@ class Attribute(BaseNode):
     def view_layer(cls, attribute_name: str = "") -> "Attribute":
         """Create Attribute with operation 'View Layer'."""
         return cls(attribute_type="VIEW_LAYER", attribute_name=attribute_name)
+
+    @classmethod
+    def light(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Light'."""
+        return cls(attribute_type="LIGHT", attribute_name=attribute_name)
 
 
 class Bevel(BaseNode):
@@ -472,7 +477,7 @@ class Fresnel(BaseNode):
         Outputs
         -------
         o.factor : FloatSocket
-            Factor
+            Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeFresnel"
@@ -486,7 +491,7 @@ class Fresnel(BaseNode):
 
     class _Outputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 
@@ -628,6 +633,149 @@ class LayerWeight(BaseNode):
     ):
         super().__init__()
         key_args = {"Blend": blend, "Normal": normal}
+
+        self._establish_links(**key_args)
+
+
+class LightEvaluation(BaseNode):
+    """
+    Light Evaluation
+
+    Parameters
+    ----------
+    position : InputVector
+        Position
+    normal : InputVector
+        Normal
+    roughness : InputFloat
+        Roughness
+
+    Inputs
+    ------
+    i.position : VectorSocket
+        Position
+    i.normal : VectorSocket
+        Normal
+    i.roughness : FloatSocket
+        Roughness
+
+    Outputs
+    -------
+    o.factor : FloatSocket
+        Factor
+    o.mask : FloatSocket
+        Mask
+    o.direction : VectorSocket
+        Direction
+    o.distance : FloatSocket
+        Distance
+    """
+
+    _bl_idname = "ShaderNodeLightEvaluation"
+    node: bpy.types.ShaderNodeLightEvaluation
+
+    class _Inputs(SocketAccessor):
+        position: VectorSocket
+        """Position"""
+        normal: VectorSocket
+        """Normal"""
+        roughness: FloatSocket
+        """Roughness"""
+
+    class _Outputs(SocketAccessor):
+        factor: FloatSocket
+        """Factor"""
+        mask: FloatSocket
+        """Mask"""
+        direction: VectorSocket
+        """Direction"""
+        distance: FloatSocket
+        """Distance"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        position: InputVector = None,
+        normal: InputVector = None,
+        roughness: InputFloat = 0.5,
+        *,
+        mode: Literal["DIFFUSE", "GLOSSY"] = "DIFFUSE",
+    ):
+        super().__init__()
+        key_args = {"Position": position, "Normal": normal, "Roughness": roughness}
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @classmethod
+    def diffuse(
+        cls, position: InputVector = None, normal: InputVector = None
+    ) -> "LightEvaluation":
+        """Create Light Evaluation with operation 'Diffuse'."""
+        return cls(mode="DIFFUSE", position=position, normal=normal)
+
+    @classmethod
+    def glossy(
+        cls,
+        position: InputVector = None,
+        normal: InputVector = None,
+        roughness: InputFloat = 0.5,
+    ) -> "LightEvaluation":
+        """Create Light Evaluation with operation 'Glossy'."""
+        return cls(mode="GLOSSY", position=position, normal=normal, roughness=roughness)
+
+    @property
+    def mode(self) -> Literal["DIFFUSE", "GLOSSY"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["DIFFUSE", "GLOSSY"]) -> None:
+        self._set_enum("mode", value)
+
+
+class LightInfo(BaseNode):
+    """
+    Exposes physical properties of the light being evaluated and computes basic information relative to the evaluation position
+
+    Outputs
+    -------
+    o.color : ColorSocket
+        Color
+    o.power : FloatSocket
+        Power
+    o.position : VectorSocket
+        Position
+    """
+
+    _bl_idname = "ShaderNodeLightInfo"
+    node: bpy.types.ShaderNodeLightInfo
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+        power: FloatSocket
+        """Power"""
+        position: VectorSocket
+        """Position"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self) -> None:
+        super().__init__()
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -969,6 +1117,61 @@ class Raycast(_RaycastMixin, BaseNode):
         self.node.only_local = value
 
 
+class ShadowRaycast(BaseNode):
+    """
+    Shadow Raycast
+
+    Parameters
+    ----------
+    position : InputVector
+        Position
+    softness : InputFloat
+        Softness
+
+    Inputs
+    ------
+    i.position : VectorSocket
+        Position
+    i.softness : FloatSocket
+        Softness
+
+    Outputs
+    -------
+    o.color : ColorSocket
+        Color
+    """
+
+    _bl_idname = "ShaderNodeShadowRaycast"
+    node: bpy.types.ShaderNodeShadowRaycast
+
+    class _Inputs(SocketAccessor):
+        position: VectorSocket
+        """Position"""
+        softness: FloatSocket
+        """Softness"""
+
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        position: InputVector = None,
+        softness: InputFloat = 1.0,
+    ):
+        super().__init__()
+        key_args = {"Position": position, "Softness": softness}
+
+        self._establish_links(**key_args)
+
+
 class Tangent(BaseNode):
     """
     Generate a tangent direction for the Anisotropic BSDF
@@ -1230,7 +1433,7 @@ class Wireframe(BaseNode):
         Outputs
         -------
         o.factor : FloatSocket
-            Factor
+            Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
     """
 
     _bl_idname = "ShaderNodeWireframe"
@@ -1242,7 +1445,7 @@ class Wireframe(BaseNode):
 
     class _Outputs(SocketAccessor):
         factor: FloatSocket
-        """Factor"""
+        """Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it."""
 
     if TYPE_CHECKING:
 
