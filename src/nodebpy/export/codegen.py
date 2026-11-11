@@ -4879,6 +4879,81 @@ def _all_collapsed(node_tree) -> bool:
     return bool(nodes) and all(n.hide for n in nodes)
 
 
+def _frame_expr(frame, alias: str, empty: bool = False) -> Expr:
+    """``g.Frame(...)`` for a frame node: its label, ``shrink``, text and
+    label size, then ``.props(...)`` for its colour and, when it doesn't fit
+    itself around nodes (``shrink=False``, or ``empty``), its size."""
+    args: list[Expr] = [Lit(frame.label)] if frame.label else []
+    kwargs: dict[str, Expr] = {}
+    if not frame.shrink:
+        kwargs["shrink"] = Lit(False)
+    if frame.text is not None:
+        kwargs["text"] = Lit(frame.text)
+    if frame.label_size != 20:
+        kwargs["label_size"] = Lit(frame.label_size)
+    expr: Expr = Call(f"{alias}.Frame", args, kwargs)
+    props: dict[str, Expr] = {}
+    if frame.use_custom_color:
+        props["color"] = _color_expr(frame.color)
+    if empty or not frame.shrink:
+        if abs(frame.width - frame.bl_width_default) > 0.01:
+            props["width"] = Lit(round(frame.width, 2))
+        if abs(frame.height - frame.bl_height_default) > 0.01:
+            props["height"] = Lit(round(frame.height, 2))
+    return MethodCall(expr, "props", kwargs=props) if props else expr
+
+
+def _empty_frames(node_tree, ordered, frame_nodes) -> list:
+    """The frames holding no node the body builds, directly or in a nested
+    frame — authored empty, or holding only dissolved reroutes."""
+    held = {f.name for node in ordered for f in _frame_chain(node)}
+    return sorted(
+        (
+            n
+            for n in node_tree.nodes
+            if n.bl_idname == "NodeFrame" and n.name not in held
+        ),
+        key=lambda n: n.name,
+    )
+
+
+def _place_empty_frames(tagged_body, empty_frames, frame_nodes, alias: str):
+    """``tagged_body`` with a statement for each empty frame, right after the
+    last line of its parent frame's block (or at the end when it has none), so
+    the block isn't opened twice. An empty frame holding another opens a
+    ``with`` block of its own: it joins ``frame_nodes``."""
+    empty_names = {f.name for f in empty_frames}
+
+    def path_of(frame) -> tuple[str, ...]:
+        return tuple(
+            f.name
+            for f in _frame_chain(frame)
+            if f.name in frame_nodes or f.name in empty_names
+        )
+
+    parents = {p.name for frame in empty_frames for p in _frame_chain(frame)}
+    body = list(tagged_body)
+    for frame in empty_frames:
+        if frame.name in parents:
+            # Holds another empty frame: becomes that frame's ``with`` block.
+            frame_nodes[frame.name] = frame
+            continue
+        path = path_of(frame)
+        line = f"    {_frame_expr(frame, alias, empty=True).render()}"
+        # The parent's block ends at the last line inside it; a parent that is
+        # itself empty has no lines yet, so place by its own enclosing block.
+        anchor = path
+        while anchor and anchor[-1] in empty_names:
+            anchor = anchor[:-1]
+        at = len(body)
+        for index in range(len(body) - 1, -1, -1):
+            if body[index][0][: len(anchor)] == anchor:
+                at = index + 1
+                break
+        body.insert(at, (path, line))
+    return body
+
+
 def _node_props_kwargs(node, collapse: bool = False) -> dict[str, Expr]:
     """``.props(...)`` keyword arguments for the properties every node has
     that differ from a newly built node's: label, colour, width, collapsed
@@ -5335,6 +5410,14 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
     # shared and open the newly entered ones. ``line`` already has the base
     # 4-space indent, so each frame level adds another 4.
     frame_alias = _TREE_ALIAS.get(node_tree.bl_idname, "g")
+    # Frames holding no node the body builds never open a block; each is
+    # built on its own, inside its parent frame's block.
+    empty_frames = _empty_frames(node_tree, ordered, frame_nodes)
+    if empty_frames:
+        ctx.used_aliases.add(frame_alias)
+        tagged_body = _place_empty_frames(
+            tagged_body, empty_frames, frame_nodes, frame_alias
+        )
     body: list[str] = []
     open_path: tuple[str, ...] = ()
     for path, line in tagged_body:
@@ -5347,9 +5430,8 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
             common += 1
         for depth in range(common, len(path)):
             ctx.used_aliases.add(frame_alias)
-            frame_node = frame_nodes[path[depth]]
-            label = _fmt(frame_node.label) if frame_node.label else ""
-            body.append(f"{'    ' * (depth + 1)}with {frame_alias}.Frame({label}):")
+            header = _frame_expr(frame_nodes[path[depth]], frame_alias).render()
+            body.append(f"{'    ' * (depth + 1)}with {header}:")
         open_path = path
         body.append(("    " * len(path)) + line)
 
