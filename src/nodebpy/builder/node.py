@@ -27,6 +27,7 @@ from bpy.types import (
 
 from ..types import SOCKET_COMPATIBILITY, Default, InputAny
 from ._combine import holds_sockets, link_combined
+from ._muted import Muted, muting
 from ._utils import (
     SocketError,
     WarningPropagation,
@@ -84,6 +85,8 @@ def _value_socket_type(value: Any) -> str | None:
     """The Blender socket ``type`` an input value carries, when knowable —
     used to disambiguate same-named target sockets. ``None`` for plain
     defaults and multi-output nodes (resolution then falls back to order)."""
+    if isinstance(value, Muted):
+        value = value.source
     if isinstance(value, _SocketLike):
         return value.socket.type
     if isinstance(value, NodeSocket):
@@ -307,6 +310,10 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         # field or context value Blender reads when nothing is linked): nothing to
         # set or link, the same as ``None``.
         if isinstance(value, Default):
+            return
+        if isinstance(value, Muted):
+            with muting(value.value):
+                self._apply_input(target, value.source)
             return
         # TODO: don't like these manual overrides for particular nodes, but best I can do for now
         if value is None or (

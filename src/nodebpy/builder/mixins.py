@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Self, TypeVar, cast, overload
 from bpy.types import NodeLink, NodeSocket
 
 from ..types import Default
+from ._muted import Muted
 from ._registry import _wrap_socket
 from ._utils import SocketError, _resolve_promotion, _SocketLike
 
@@ -251,6 +252,9 @@ class LinkingMixin:
 
     def _source_socket(self, node: InputLinkable | Socket | NodeSocket) -> NodeSocket:
         assert node is not None
+        if isinstance(node, Muted):
+            # stays wrapped down to TreeBuilder.link, which mutes the link
+            return cast(NodeSocket, Muted(self._source_socket(node.source), node.value))
         if isinstance(node, Default):
             raise TypeError(f"{node} marks an input's fallback, it cannot be linked")
         if isinstance(node, NodeSocket):
@@ -281,6 +285,12 @@ class LinkingMixin:
         from ..builder.socket import Socket
         from ..types import PREFER_FIRST_SOCKET, SOCKET_COMPATIBILITY
 
+        if isinstance(source, Muted):
+            # stays wrapped down to TreeBuilder.link, which mutes the link
+            pair_source, pair_target = self._find_best_socket_pair(
+                source.source, target
+            )
+            return cast(NodeSocket, Muted(pair_source, source.value)), pair_target
         if isinstance(source, BaseNode):
             outputs = source.o._available
         elif isinstance(source, NodeSocket):

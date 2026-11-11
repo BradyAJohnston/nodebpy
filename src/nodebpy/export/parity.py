@@ -404,9 +404,9 @@ def _compare_tree(
     # the count catches whole links appearing or vanishing). With reroutes
     # ignored, links touching a reroute socket don't count.
     def link_count(tree: dict) -> int:
-        # Muted links and links into disabled sockets are inert (Blender
-        # keeps but ignores them; a rebuild drops them by design) and never
-        # count. With reroutes ignored, links are counted by their
+        # Links into disabled sockets are inert (Blender keeps but ignores
+        # them; a rebuild drops them by design) and never count; muted links
+        # are counted on their own (muted_count). With reroutes ignored, links are counted by their
         # non-reroute destination only: A→reroute→B counts once (the
         # reroute→B hop), exactly like the collapsed direct A→B — so a
         # rebuild that dissolved the chain still matches, and dangling
@@ -432,7 +432,7 @@ def _compare_tree(
         count = 0
         for link in _collection_items(tree.get("links")):
             if link.get("is_muted"):
-                continue
+                continue  # compared on their own, below
             ids = set()
             for lkey in ("from_socket", "to_socket"):
                 ref = link.get(lkey)
@@ -446,9 +446,33 @@ def _compare_tree(
             count += 1
         return count
 
+    def muted_count(tree: dict) -> int:
+        # Muted links pass nothing, so their sockets read as inactive: they
+        # are counted apart from the live links, without the inert filter.
+        known = {
+            item["id"]
+            for node in _collection_items(tree.get("nodes"))
+            for key in ("inputs", "outputs")
+            if isinstance(node.get(key), dict)
+            for item in node[key]["data"]["items"]
+        }
+        count = 0
+        for link in _collection_items(tree.get("links")):
+            if not link.get("is_muted"):
+                continue
+            to_ref = link.get("to_socket")
+            to_id = to_ref.get("id") if isinstance(to_ref, dict) else to_ref
+            if "reroutes" in ignore and to_id not in known:
+                continue
+            count += 1
+        return count
+
     la, lb = link_count(a), link_count(b)
     if la != lb:
         findings.append(ParityFinding(name, "links", "count", f"{la} -> {lb}"))
+    ma, mb = muted_count(a), muted_count(b)
+    if ma != mb:
+        findings.append(ParityFinding(name, "links", "muted count", f"{ma} -> {mb}"))
     return findings
 
 
