@@ -100,6 +100,7 @@ quartodoc:
         - builder.accessor
         - TreeBuilder
         - builder.BaseNode
+        - muted
     - title: Arrangement
       desc: Automatic node layout and its options.
       contents:

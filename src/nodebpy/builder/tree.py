@@ -34,6 +34,7 @@ from ..types import (
     _AttributeDomains,
     _SocketShapeStructureType,
 )
+from . import _muted
 from ._utils import (
     InvalidLinkWarning,
     SocketError,
@@ -1517,6 +1518,11 @@ class TreeBuilder[TreeT: NodeTree]:
         return self
 
     def __exit__(self, *args: object) -> None:
+        if _muted.has_pending(self.tree):
+            # Menu defaults first: their items don't propagate through a
+            # muted link. Then mute, before splitting or arranging moves links.
+            self._apply_input_defaults()
+            _muted.apply(self.tree)
         # Split before auto-layout, so the created instances get arranged
         # next to their consumers.
         split = self._split_inputs
@@ -1734,8 +1740,8 @@ class TreeBuilder[TreeT: NodeTree]:
         structurally: exact name+type matches seed the correspondence, then
         it grows through link/frame evidence against already-matched
         neighbours; matched nodes are renamed to their authored names and
-        moved to their authored locations and collapsed state (an entry
-        without display state leaves the node expanded). Entries a rebuild has no
+        moved to their authored locations, and collapsed or expanded when
+        the entry records ``"hide"``. Entries a rebuild has no
         counterpart for (e.g. dropped reroutes) are skipped, so applying a
         snapshot to an edited tree degrades gracefully."""
         entries: dict[str, _LayoutEntry] = {
@@ -1772,7 +1778,8 @@ class TreeBuilder[TreeT: NodeTree]:
             if parent_node is not None or parent is None:
                 node.parent = cast("NodeFrame | None", parent_node)
             node.location = location
-            node.hide = bool(display[entry_name].get("hide", False))
+            if "hide" in display[entry_name]:
+                node.hide = bool(display[entry_name]["hide"])
         for node, old_name in displaced:
             node.name = old_name  # re-suffixed by Blender on collision
 
@@ -1881,13 +1888,16 @@ class TreeBuilder[TreeT: NodeTree]:
                 )
                 if from_socket is None:
                     continue  # pragma: no cover - instance lacks the socket
+                was_muted = link.is_muted
                 self.tree.links.remove(link)
                 # Removing the link can retype a reroute consumer, freeing
                 # and recreating its sockets — re-resolve before relinking.
                 to_socket = resolve_socket_key(to_node.inputs, to_socket_key)
                 if to_socket is None:
                     continue  # pragma: no cover - socket vanished on retype
-                self.tree.links.new(from_socket, to_socket)
+                moved = self.tree.links.new(from_socket, to_socket)
+                assert moved is not None
+                moved.is_muted = was_muted
         if splits:
             self._hide_unused_input_sockets()
 
@@ -2001,6 +2011,9 @@ class TreeBuilder[TreeT: NodeTree]:
             return node
 
     def link(self, socket1: NodeSocket, socket2: NodeSocket) -> bpy.types.NodeLink:
+        if isinstance(socket1, _muted.Muted):
+            with _muted.muting(socket1.value):
+                return self.link(socket1.source, socket2)
         # Unwrap Socket wrappers to raw NodeSocket
         if not isinstance(socket1, NodeSocket):
             socket1 = socket1.socket  # type: ignore[attr-defined]
@@ -2030,6 +2043,7 @@ class TreeBuilder[TreeT: NodeTree]:
 
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
         assert link is not None
+        _muted.record(link)
 
         # handle_dynamic_sockets=True can free and recreate an endpoint (a
         # reroute retypes its sockets to match the link), leaving socket1 /

@@ -895,19 +895,24 @@ class _Link(NamedTuple):
     to_node: Any
     to_socket: Any
     sort_id: int = 0  # multi_input_sort_id; later-created links get higher ids
+    # Muted, or reached through a muted segment of a collapsed reroute chain.
+    is_muted: bool = False
 
 
 def _trace_reroute(node, socket, node_tree):
-    """Follow a reroute chain backward to the real source node and socket."""
+    """Follow a reroute chain backward to the real source node and socket;
+    also returns whether any link along the chain is muted."""
     visited = set()
+    muted = False
     while node.bl_idname == "NodeReroute" and node.name not in visited:
         visited.add(node.name)
         upstream = [link for link in node_tree.links if link.to_node.name == node.name]
         if not upstream:
             break
+        muted = muted or upstream[0].is_muted
         node = upstream[0].from_node
         socket = upstream[0].from_socket
-    return node, socket
+    return node, socket, muted
 
 
 def _canonical_links(node_tree, links: list[_Link]) -> list[_Link]:
@@ -955,10 +960,11 @@ def _effective_links(node_tree, keep_reroutes: bool = False) -> list[_Link]:
             continue
         if _is_ignored_link(link):
             continue
+        chain_muted = False
         if keep_reroutes:
             from_node, from_socket = link.from_node, link.from_socket
         else:
-            from_node, from_socket = _trace_reroute(
+            from_node, from_socket, chain_muted = _trace_reroute(
                 link.from_node, link.from_socket, node_tree
             )
             if from_node.bl_idname == "NodeReroute":
@@ -970,6 +976,7 @@ def _effective_links(node_tree, keep_reroutes: bool = False) -> list[_Link]:
                 link.to_node,
                 link.to_socket,
                 getattr(link, "multi_input_sort_id", 0),
+                link.is_muted or chain_muted,
             )
         )
     return _canonical_links(node_tree, links)
@@ -994,6 +1001,12 @@ def _is_ignored_link(link) -> bool:
     ):
         if node.bl_idname == "NodeReroute":
             continue  # collapsed away on rebuild — its sockets never link
+        if link.is_muted:
+            # Muting a link leaves its sockets unused, which Blender reports as
+            # inactive: only a socket the node's settings turn off is ignored.
+            if getattr(socket, "is_unavailable", False):
+                return True
+            continue
         if (
             getattr(socket, "is_inactive", False)
             and not _allow_innactive_sockets(node)
@@ -1216,6 +1229,9 @@ class EmitContext:
     pending_lines: list[str] = field(default_factory=list)
     zones: dict[str, _ZoneState] = field(default_factory=dict)
     collector: _GroupCollector | None = None
+    # Every node the body builds is collapsed: the tree is built with
+    # ``collapse=True`` and no node needs ``.props(hide=True)``.
+    collapse: bool = False
 
     def input_link(self, node: Node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
@@ -1247,14 +1263,43 @@ class EmitContext:
 
         ``pipeline`` marks a ``>>`` statement source: the arrow already
         implies the node's primary output, so a multi-output node stays a
-        bare reference there instead of forcing ``.o.<name>``."""
-        return _output_expr(
+        bare reference there instead of forcing ``.o.<name>``. A muted link
+        wraps it in ``muted(...)``, with the input's own value."""
+        expr = _output_expr(
             self._resolve(link),
             link.from_node,
             link.from_socket,
             to_socket=link.to_socket,
             pipeline=pipeline,
         )
+        return self._muted(link, expr) if link.is_muted else expr
+
+    def _muted(self, link: _Link, expr: Expr) -> Expr:
+        """``muted(expr, value=...)``: the value is the one the input uses
+        while the link is muted, written when it may differ from a rebuilt
+        node's."""
+        if self.collector is not None:
+            self.collector.uses_muted = True
+        kwargs: dict[str, Expr] = {}
+        socket = link.to_socket
+        # A menu behind a muted link gets no items to pick a value from.
+        if (
+            hasattr(socket, "default_value")
+            and socket.type != "MENU"
+            and link.to_node.bl_idname not in ("NodeGroupOutput", "NodeReroute")
+        ):
+            value = socket.default_value
+            if not isinstance(value, (str, bool, int, float)) and value is not None:
+                try:
+                    value = tuple(value)
+                except TypeError:
+                    pass
+            fresh = _get_blender_socket_defaults(
+                self.node_tree.bl_idname, link.to_node.bl_idname
+            ).get(socket.identifier, _UNKNOWN)
+            if fresh is _UNKNOWN or not _eq(value, fresh):
+                kwargs["value"] = Lit(value)
+        return Call("muted", [expr], kwargs)
 
     def socket_expr(self, link: _Link) -> Expr:
         """Like :meth:`upstream_expr` but guaranteed to evaluate to a Socket.
@@ -1265,6 +1310,13 @@ class EmitContext:
         return _output_expr(
             self._resolve(link), link.from_node, link.from_socket, force_socket=True
         )
+
+    def socket_arg(self, link: _Link) -> Expr:
+        """:meth:`socket_expr` for an argument position, so a muted link is
+        wrapped in ``muted(...)`` (as :meth:`upstream_expr` does). Not for a
+        method receiver: ``muted(...)`` has no socket methods."""
+        expr = self.socket_expr(link)
+        return self._muted(link, expr) if link.is_muted else expr
 
     def promote_to_var(self, link: _Link, expr: Expr) -> Expr:
         """Bind an upstream socket expression to a variable and return its Ref.
@@ -3477,6 +3529,17 @@ EmitterFn = Callable[[Any, EmitContext], "Expr | _Val | None"]
 
 _EMITTERS: dict[str, EmitterFn] = {}
 
+# Emitters that write an input as an operand or method receiver (``a > b``,
+# ``template.format(...)``), where ``muted(...)`` can't go: a node with a muted
+# incoming link is written with its constructor instead.
+_RECEIVER_EMITTERS = frozenset(
+    {
+        "FunctionNodeFormatString",
+        "GeometryNodeStringJoin",
+        "GeometryNodeListGetItem",
+    }
+)
+
 
 def register_emitter(bl_idname: str) -> Callable[[EmitterFn], EmitterFn]:
     """Register a custom code emitter for a node type.
@@ -4407,6 +4470,8 @@ def to_python(
     # ``_build_group(self, tree: TreeBuilder)``, so editors type the whole
     # body of a dumped class.
     import_names = import_parts + ["TreeBuilder"]
+    if collector.uses_muted:
+        import_names.append("muted")
     lines: list[str] = []
     if collector.tree_param_types:
         # The ``tree: TreeBuilder[GeometryNodeTree]`` annotations on emitted
@@ -4447,6 +4512,8 @@ def to_python(
             ctor_args.append("arrange=None")
         if in_place:
             ctor_args.append("clear=True")
+        if emission.collapse:
+            ctor_args.append("collapse=True")
         # The modifier/tool flags are constructor options; the other tree
         # properties only the class form carries.
         tree_props = _tree_prop_overrides(node_tree)
@@ -4601,14 +4668,21 @@ def _layout_snapshot_lines(
         entry_links = "".join(
             f"{_fmt(entry)}, " for entry in sorted(incoming.get(node.name, ()))
         )
-        # Display state differing from a new node's, left out when empty so
-        # trees without it dump as before.
-        extras = ', {"hide": True}' if node.hide else ""
         lines.append(
             f"{indent}    {_fmt(node.name)}: ({_fmt(node.bl_idname)}, "
-            f"{_fmt(loc)}, {parent}, ({entry_links}){extras}),"
+            f"{_fmt(loc)}, {parent}, ({entry_links})),"
         )
     lines.append(f"{indent}}}")
+    # The builder makes the group input/output nodes itself, so no
+    # ``.props(...)`` call reaches them: collapse them by their authored names,
+    # which the snapshot has just restored. Extra Group Input instances carry
+    # their own ``"hide"`` in the splits block.
+    for node in sorted(node_tree.nodes, key=lambda n: n.name):
+        if not node.hide or node.bl_idname not in ("NodeGroupInput", "NodeGroupOutput"):
+            continue
+        if node.bl_idname == "NodeGroupInput" and node.name != primary_input:
+            continue
+        lines.append(f"{indent}tree.tree.nodes[{_fmt(node.name)}].hide = True")
     return lines
 
 
@@ -4643,6 +4717,7 @@ class _TreeEmission:
     body_lines: list[str]
     out_lines: list[str]
     used_aliases: set[str]
+    collapse: bool = False
 
 
 @dataclass
@@ -4721,6 +4796,8 @@ class _GroupCollector:
     # modules it binds (see to_python's ``namespace``).
     script_classes: dict[type, str] = field(default_factory=dict)
     script_modules: dict[str, ModuleType] = field(default_factory=dict)
+    # A muted link was written as ``muted(...)``, which needs importing.
+    uses_muted: bool = False
 
     def reference(self, node: Node) -> tuple[str, dict[str, str] | None] | None:
         """The name to call a loaded class by when it builds ``node``'s
@@ -4883,16 +4960,152 @@ def _tree_prop_overrides(node_tree) -> dict[str, Any]:
     }
 
 
-def _node_prop_lines(node) -> list[str]:
-    """Assignments for node-instance properties no constructor expresses (a
-    muted/bypassed node, non-default warning propagation), rendered as
-    ``<attr> = <value>`` to append after ``<var>.node.``."""
-    lines: list[str] = []
-    if getattr(node, "mute", False):
-        lines.append("mute = True")
-    if getattr(node, "warning_propagation", "ALL") != "ALL":
-        lines.append(f"warning_propagation = {_fmt(node.warning_propagation)}")
-    return lines
+def _color_expr(color) -> Expr:
+    """A node colour as a hex string when 8-bit channels hold it exactly (to
+    the precision parity compares), else as an ``(r, g, b)`` tuple."""
+    channels = tuple(color)
+    if all(abs(round(c * 255) / 255 - c) < 5e-5 for c in channels):
+        return Lit("#" + "".join(f"{round(c * 255):02X}" for c in channels))
+    return Lit(tuple(round(c, 4) for c in channels))
+
+
+# Nodes the builder's ``collapse`` option doesn't reach: it makes the group
+# input/output nodes itself, frames are ``with`` blocks, and reroutes are
+# dissolved or carry no header to collapse.
+_NOT_COLLAPSIBLE = frozenset(
+    {"NodeGroupInput", "NodeGroupOutput", "NodeFrame", "NodeReroute"}
+)
+
+
+def _all_collapsed(node_tree) -> bool:
+    """Whether every node the body builds is collapsed, so the tree can be
+    built with ``collapse=True`` instead of a ``.props(hide=True)`` per node.
+    Any expanded node rules it out: ``collapse`` would collapse every node
+    the body builds, including ones it doesn't write out (a dissolved
+    Separate XYZ)."""
+    nodes = [n for n in node_tree.nodes if n.bl_idname not in _NOT_COLLAPSIBLE]
+    return bool(nodes) and all(n.hide for n in nodes)
+
+
+def _frame_expr(frame, alias: str, empty: bool = False) -> Expr:
+    """``g.Frame(...)`` for a frame node: its label, ``shrink``, text and
+    label size, then ``.props(...)`` for its colour and, when it doesn't fit
+    itself around nodes (``shrink=False``, or ``empty``), its size."""
+    args: list[Expr] = [Lit(frame.label)] if frame.label else []
+    kwargs: dict[str, Expr] = {}
+    if not frame.shrink:
+        kwargs["shrink"] = Lit(False)
+    if frame.text is not None:
+        kwargs["text"] = Lit(frame.text)
+    if frame.label_size != 20:
+        kwargs["label_size"] = Lit(frame.label_size)
+    expr: Expr = Call(f"{alias}.Frame", args, kwargs)
+    props: dict[str, Expr] = {}
+    if frame.use_custom_color:
+        props["color"] = _color_expr(frame.color)
+    if empty or not frame.shrink:
+        if abs(frame.width - frame.bl_width_default) > 0.01:
+            props["width"] = Lit(round(frame.width, 2))
+        if abs(frame.height - frame.bl_height_default) > 0.01:
+            props["height"] = Lit(round(frame.height, 2))
+    return MethodCall(expr, "props", kwargs=props) if props else expr
+
+
+def _empty_frames(node_tree, ordered, frame_nodes) -> list:
+    """The frames holding no node the body builds, directly or in a nested
+    frame — authored empty, or holding only dissolved reroutes."""
+    held = {f.name for node in ordered for f in _frame_chain(node)}
+    return sorted(
+        (
+            n
+            for n in node_tree.nodes
+            if n.bl_idname == "NodeFrame" and n.name not in held
+        ),
+        key=lambda n: n.name,
+    )
+
+
+def _place_empty_frames(tagged_body, empty_frames, frame_nodes, alias: str):
+    """``tagged_body`` with a statement for each empty frame, right after the
+    last line of its parent frame's block (or at the end when it has none), so
+    the block isn't opened twice. An empty frame holding another opens a
+    ``with`` block of its own: it joins ``frame_nodes``."""
+    empty_names = {f.name for f in empty_frames}
+
+    def path_of(frame) -> tuple[str, ...]:
+        return tuple(
+            f.name
+            for f in _frame_chain(frame)
+            if f.name in frame_nodes or f.name in empty_names
+        )
+
+    parents = {p.name for frame in empty_frames for p in _frame_chain(frame)}
+    body = list(tagged_body)
+    for frame in empty_frames:
+        if frame.name in parents:
+            # Holds another empty frame: becomes that frame's ``with`` block.
+            frame_nodes[frame.name] = frame
+            continue
+        path = path_of(frame)
+        line = f"    {_frame_expr(frame, alias, empty=True).render()}"
+        # The parent's block ends at the last line inside it; a parent that is
+        # itself empty has no lines yet, so place by its own enclosing block.
+        anchor = path
+        while anchor and anchor[-1] in empty_names:
+            anchor = anchor[:-1]
+        at = len(body)
+        for index in range(len(body) - 1, -1, -1):
+            if body[index][0][: len(anchor)] == anchor:
+                at = index + 1
+                break
+        body.insert(at, (path, line))
+    return body
+
+
+def _node_props_kwargs(node, collapse: bool = False) -> dict[str, Expr]:
+    """``.props(...)`` keyword arguments for the properties every node has
+    that differ from a newly built node's: label, colour, width, collapsed
+    state (unless ``collapse`` builds every node collapsed), options, hidden
+    sockets, mute and warning propagation."""
+    from ..builder._utils import gizmo_socket, visible_socket_key
+
+    kwargs: dict[str, Expr] = {}
+    if node.label:
+        kwargs["label"] = Lit(node.label)
+    if node.use_custom_color:
+        kwargs["color"] = _color_expr(node.color)
+    group_tree = getattr(node, "node_tree", None)
+    # A built node takes the type's default width; a group node too, since
+    # its tree's default_group_node_width only applies when added in the UI.
+    if abs(node.width - node.bl_width_default) > 0.01:
+        kwargs["width"] = Lit(round(node.width, 2))
+    if node.hide and not collapse:
+        kwargs["hide"] = Lit(True)
+    # Group nodes are left alone: nodebpy builds them with their options (the
+    # node-group selector) folded away, where the editor shows them.
+    if group_tree is None and not node.show_options:
+        kwargs["show_options"] = Lit(False)
+    for side, sockets in (("hide_inputs", node.inputs), ("hide_outputs", node.outputs)):
+        hidden = [visible_socket_key(s) for s in sockets if s.enabled and s.hide]
+        if hidden:
+            kwargs[side] = Raw("[" + ", ".join(_fmt(k) for k in hidden) + "]")
+    if node.mute:
+        kwargs["mute"] = Lit(True)
+    if node.warning_propagation != "ALL":
+        kwargs["warning_propagation"] = Lit(node.warning_propagation)
+    own = None
+    if node.outputs or node.bl_idname.startswith("GeometryNodeGizmo"):
+        own = gizmo_socket(node)
+        if own.pin_gizmo:
+            kwargs["pin_gizmo"] = Lit(True)
+    pinned = [
+        visible_socket_key(s)
+        for s in node.inputs
+        if s.enabled and s.pin_gizmo and s != own
+    ]
+    if pinned:
+        kwargs["pin_gizmo_inputs"] = Raw("[" + ", ".join(_fmt(k) for k in pinned) + "]")
+    return kwargs
 
 
 # -- Curve mappings (Float Curve, RGB/Vector Curves, Hue Correct) -----------
@@ -5088,6 +5301,8 @@ def _render_group_class(
     # Either option needs auto-layout off (it dissolves reroutes and overwrites
     # locations); the disable line goes at the body's "in-block" 4-space indent,
     # which the re-indent below lifts to the method-body depth.
+    if emission.collapse:
+        inner = ["    tree.collapse = True", ""] + inner
     if snapshot_positions or keep_reroutes:
         inner = ["    tree.disable_arrange()", ""] + inner
     if snapshot_positions:
@@ -5135,7 +5350,14 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         incoming.setdefault(link.to_node.name, []).append(link)
         outgoing.setdefault(link.from_node.name, []).append(link)
 
-    ctx = EmitContext(node_tree, links, incoming, outgoing, collector=collector)
+    ctx = EmitContext(
+        node_tree,
+        links,
+        incoming,
+        outgoing,
+        collector=collector,
+        collapse=_all_collapsed(node_tree),
+    )
     skip = _SKIP_BL_IDNAMES
     if collector.keep_reroutes:
         skip = skip - {"NodeReroute"}  # reroutes emit as ordinary nodes
@@ -5166,14 +5388,19 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # 1. Build the node's value:
         #    emitter → socket method → lift → factory/constructor.
         val: _Val | None = None
+        # A muted incoming link is written ``muted(source)``, which only a
+        # constructor's arguments take: no socket method or operator form.
+        has_muted = any(link.is_muted for link in ctx.incoming.get(name, ()))
         emitter = _EMITTERS.get(node.bl_idname)
+        if has_muted and node.bl_idname in _RECEIVER_EMITTERS:
+            emitter = None
         if emitter is not None:
             emitted = emitter(node, ctx)
             if emitted is not None:
                 val = emitted if isinstance(emitted, _Val) else _Val(emitted)
-        if val is None:
+        if val is None and not has_muted:
             val = _socket_method_val(ctx, node)
-        if val is None:
+        if val is None and not has_muted:
             plan = _lift_plan(
                 node, _linked_ids(ctx, node), _linked_src_types(ctx, node)
             )
@@ -5226,16 +5453,21 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
             link for link in out_links if link.to_node.bl_idname == "NodeGroupOutput"
         ]
 
-        # Node-instance properties no constructor expresses (a muted/bypassed
-        # node, non-default warning propagation, an edited curve mapping)
-        # force a variable binding so they can be applied to the built node
-        # afterwards.
-        node_prop_lines = _node_prop_lines(node)
+        # Properties every node has (label, colour, mute, ...) go on the
+        # value as ``.props(...)``, which returns the node or socket it is
+        # called on. An edited curve mapping forces a variable binding so it
+        # can be applied to the built node afterwards.
+        props = _node_props_kwargs(node, ctx.collapse)
+        if props:
+            val = _Val(
+                MethodCall(val.require_expr(), "props", kwargs=props),
+                is_socket=val.is_socket,
+                socket_id=val.socket_id,
+            )
         custom_mapping = _has_custom_mapping(node, node_tree.bl_idname)
 
         if (
-            not node_prop_lines
-            and not custom_mapping
+            not custom_mapping
             and len(out_links) == 1
             and not group_outs
             # Inlining would create this node at the consumer's statement —
@@ -5255,10 +5487,10 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # Gated nodes render no >> syntax; everything else with a single link
         # to a group output finishes its chain right here.
         if (
-            not node_prop_lines
-            and not custom_mapping
+            not custom_mapping
             and len(out_links) == 1
             and group_outs
+            and not group_outs[0].is_muted  # the >> below takes no muted()
             and name not in gated_nodes
         ):
             link = group_outs[0]
@@ -5281,17 +5513,13 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # A node created purely for its side effect (a gizmo, a dangling
         # node) is never referenced again — prefix its variable so the
         # generated module passes lint (F841).
-        if not out_links and not node_prop_lines and not custom_mapping:
+        if not out_links and not custom_mapping:
             var = "_" + var
         width = _MAX_LINE_WIDTH - 4 * len(frame)
         tagged_body.extend(
             (frame, line)
             for line in _stmt_lines(val.require_expr(), assign=var, width=width)
         )
-        for prop_line in node_prop_lines:
-            # ``.node`` reaches the bpy node from a node wrapper and a socket
-            # wrapper alike, so this works for constructor and method values.
-            tagged_body.append((frame, f"    {var}.node.{prop_line}"))
         if custom_mapping:
             tagged_body.extend(
                 (frame, f"    {line}")
@@ -5308,6 +5536,14 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
     # shared and open the newly entered ones. ``line`` already has the base
     # 4-space indent, so each frame level adds another 4.
     frame_alias = _TREE_ALIAS.get(node_tree.bl_idname, "g")
+    # Frames holding no node the body builds never open a block; each is
+    # built on its own, inside its parent frame's block.
+    empty_frames = _empty_frames(node_tree, ordered, frame_nodes)
+    if empty_frames:
+        ctx.used_aliases.add(frame_alias)
+        tagged_body = _place_empty_frames(
+            tagged_body, empty_frames, frame_nodes, frame_alias
+        )
     body: list[str] = []
     open_path: tuple[str, ...] = ()
     for path, line in tagged_body:
@@ -5320,9 +5556,8 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
             common += 1
         for depth in range(common, len(path)):
             ctx.used_aliases.add(frame_alias)
-            frame_node = frame_nodes[path[depth]]
-            label = _fmt(frame_node.label) if frame_node.label else ""
-            body.append(f"{'    ' * (depth + 1)}with {frame_alias}.Frame({label}):")
+            header = _frame_expr(frame_nodes[path[depth]], frame_alias).render()
+            body.append(f"{'    ' * (depth + 1)}with {header}:")
         open_path = path
         body.append(("    " * len(path)) + line)
 
@@ -5341,7 +5576,7 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         source = ctx.upstream_expr(link, pipeline=True)
         out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
-    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases)
+    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases, ctx.collapse)
 
 
 # ---------------------------------------------------------------------------
@@ -5425,7 +5660,9 @@ def _emit_compare(node, ctx: EmitContext) -> Expr | _Val | None:
     constructor — Compare's ``mode`` is consumed via ``**kwargs`` (required
     for VECTOR), so it never appears in the signature and is added
     explicitly."""
-    lifted = _lift_compare(node, ctx)
+    # ``a > b`` takes no muted(...) operand
+    muted = any(link.is_muted for link in ctx.incoming.get(node.name, ()))
+    lifted = None if muted else _lift_compare(node, ctx)
     if lifted is not None:
         return lifted
     call = ctx.constructor(node)
@@ -5906,16 +6143,18 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
 
     ctx.used_aliases.add(alias)
     var_name = _make_var(spec.label, ctx.counter)
-    prop_lines = _node_prop_lines(node)
+    props = _node_props_kwargs(node, ctx.collapse)
     # No items, props or consumers → nothing ever references the variable;
     # prefix it so the generated module passes lint (F841).
-    if not items and not prop_lines and not ctx.outgoing.get(node.name):
+    if not items and not props and not ctx.outgoing.get(node.name):
         var_name = "_" + var_name
     ref = Ref(var_name)
     ctor = _items_node_ctor(alias, cls, spec, node, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
-    for prop_line in prop_lines:
-        ctx.pending_lines.append(f"    {ref.name}.node.{prop_line}")
+    if props:
+        ctx.pending_lines.append(
+            f"    {MethodCall(ref, 'props', kwargs=props).render()}"
+        )
 
     outputs: dict[str, Expr] = {
         ident: Attr(ref, attr) for ident, attr in spec.fixed_outputs
@@ -6040,7 +6279,7 @@ def _emit_reroute(node, ctx: EmitContext) -> Expr | _Val | None:
     link = ctx.input_link(node, node.inputs[0].identifier)
     if link is None:
         return Call(reroute)
-    return Call(reroute, kwargs={"input": ctx.socket_expr(link)})
+    return Call(reroute, kwargs={"input": ctx.socket_arg(link)})
 
 
 def _bundle_item_call(
@@ -6469,7 +6708,7 @@ def _zone_value_expr(ctx: EmitContext, link: _Link) -> Expr:
     drift to a different best-compatible output."""
     real_outputs = [s for s in link.from_node.outputs if s.enabled]
     if len(real_outputs) > 1:
-        return ctx.socket_expr(link)
+        return ctx.socket_arg(link)
     return ctx.upstream_expr(link)
 
 

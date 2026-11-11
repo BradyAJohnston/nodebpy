@@ -5,6 +5,7 @@ from ..layout import (
     arrange,
     default_sugiyama_options,
 )
+from ._muted import muted
 from ._utils import InvalidLinkWarning, SocketError, denormalize_name, normalize_name
 from .accessor import SocketAccessor
 from .asset import (
@@ -169,5 +170,6 @@ __all__ = [
     "default_sugiyama_options",
     "denormalize_name",
     "link_assets",
+    "muted",
     "normalize_name",
 ]

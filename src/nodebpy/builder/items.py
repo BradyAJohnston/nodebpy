@@ -19,6 +19,7 @@ from mathutils import Euler
 
 from ..types import _is_default_value
 from ._combine import holds_sockets, link_combined
+from ._muted import Muted, muting
 from ._registry import _wrap_socket
 from ._utils import _SocketLike
 from .node import DynamicInputsMixin, _match_compatible_data
@@ -424,6 +425,9 @@ class ItemCollection(Generic[_HandleT]):
         type. Returns ``Any`` so the typed methods narrow the handle.
         """
         owner = self._owner
+        if isinstance(value, Muted):
+            with muting(value.value):
+                return self._declare(value.source, name, type, **props)
         source = None
         if _is_linkable(value):
             types = self._value_types or owner._socket_data_types

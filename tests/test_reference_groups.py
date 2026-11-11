@@ -362,3 +362,31 @@ def test_tree_names():
     assert _groups.tree_name(g.Array) == "Array"
     assert _groups.tree_name(SliceToIndices) == "Slice to Indices"
     assert _groups.tree_name(_Variant) is None
+
+
+def test_classes_of_unloaded_modules_are_not_called():
+    """A class whose module was unloaded lingers among the subclasses until
+    it is garbage collected; the import it would need fails, so the loaded
+    class is called instead, however recently the other was defined."""
+    from nodebpy.builder import CustomGeometryGroup
+
+    namespace: dict = {
+        "__name__": "_unloaded_asset_sources",
+        "CustomGeometryGroup": CustomGeometryGroup,
+    }
+    exec(  # noqa: S102
+        "class Array(CustomGeometryGroup):\n"
+        "    _name = 'Array'\n"
+        "    def _build_group(self, tree):\n"
+        "        pass\n",
+        namespace,
+    )
+    stale = namespace["Array"]  # kept alive, as an uncollected class would be
+    assert stale.__module__ not in sys.modules
+
+    tree = _appended("Array", rename="Appended Array")
+    node = tree.tree.nodes["Group"]
+    node.node_tree = node.node_tree.copy()
+    bpy.data.node_groups.remove(bpy.data.node_groups["Appended Array"])
+    node.node_tree.name = "Array"
+    assert "g.Array()" in to_python(tree, groups="reference")

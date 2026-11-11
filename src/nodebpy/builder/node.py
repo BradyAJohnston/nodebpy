@@ -27,11 +27,14 @@ from bpy.types import (
 
 from ..types import SOCKET_COMPATIBILITY, Default, InputAny
 from ._combine import holds_sockets, link_combined
+from ._muted import Muted, muting
 from ._utils import (
     SocketError,
+    WarningPropagation,
     _deprecated,
     _NodeLike,
     _SocketLike,
+    apply_node_props,
     enum_value_error,
     normalize_name,
 )
@@ -83,6 +86,8 @@ def _value_socket_type(value: Any) -> str | None:
     """The Blender socket ``type`` an input value carries, when knowable —
     used to disambiguate same-named target sockets. ``None`` for plain
     defaults and multi-output nodes (resolution then falls back to order)."""
+    if isinstance(value, Muted):
+        value = value.source
     if isinstance(value, _SocketLike):
         return value.socket.type
     if isinstance(value, NodeSocket):
@@ -137,6 +142,68 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     def name(self) -> str:
         """The name of the node being wrapped by this instance."""
         return str(self.node.name)
+
+    def props(
+        self,
+        *,
+        label: str | None = None,
+        color: str | tuple[float, float, float] | None = None,
+        width: float | None = None,
+        height: float | None = None,
+        hide: bool | None = None,
+        show_options: bool | None = None,
+        hide_inputs: Iterable[str] = (),
+        hide_outputs: Iterable[str] = (),
+        mute: bool | None = None,
+        warning_propagation: WarningPropagation | None = None,
+        pin_gizmo: bool | None = None,
+        pin_gizmo_inputs: Iterable[str] = (),
+    ) -> Self:
+        """Set the properties every node has and return the node, so it can
+        go at the end of a chain::
+
+            g.SetPosition(geometry=geo, offset=offset).props(
+                label="Lift", color="#FFAA00", width=200
+            )
+
+        Properties left as ``None`` are unchanged.
+
+        Args:
+            label: The node's header label.
+            color: A custom header colour, as a hex string (``"#FFAA00"``) or an
+                ``(r, g, b)`` tuple; turns on ``use_custom_color``.
+            width: The node's width.
+            height: The node's height; only frames use it.
+            hide: Collapse the node.
+            show_options: Show the node's options (dropdowns and toggles).
+            hide_inputs: Input sockets to hide, by name; ``"Value#1"`` names
+                the second visible ``Value``.
+            hide_outputs: Output sockets to hide, by name.
+            mute: Mute (bypass) the node.
+            warning_propagation: Which of the node's warnings show on the
+                group node it sits in.
+            pin_gizmo: Keep the node's gizmo visible when it isn't selected:
+                a gizmo node's, or a value node's (Value, Vector, ...).
+            pin_gizmo_inputs: Inputs whose gizmos stay visible when the node
+                isn't selected, by name; for group nodes passing a gizmo
+                through.
+        """
+        apply_node_props(
+            self.node,
+            label=label,
+            color=color,
+            width=width,
+            height=height,
+            hide=hide,
+            show_options=show_options,
+            hide_inputs=hide_inputs,
+            hide_outputs=hide_outputs,
+            mute=mute,
+            warning_propagation=warning_propagation,
+            pin_gizmo=pin_gizmo,
+            pin_gizmo_inputs=pin_gizmo_inputs,
+        )
+        return self
 
     @property
     def _default_input_socket(self) -> NodeSocket:
@@ -246,6 +313,10 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         # field or context value Blender reads when nothing is linked): nothing to
         # set or link, the same as ``None``.
         if isinstance(value, Default):
+            return
+        if isinstance(value, Muted):
+            with muting(value.value):
+                self._apply_input(target, value.source)
             return
         # TODO: don't like these manual overrides for particular nodes, but best I can do for now
         if value is None or (

@@ -802,7 +802,18 @@ class EvaluateClosure(ItemsMixin, BaseNode):
 
 
 class Frame(BaseNode):
-    """Frame for visually grouping nodes in the editor."""
+    """Frame for visually grouping nodes in the editor.
+
+    Used as ``with g.Frame("Label"):`` around the nodes it holds, or on its
+    own for an empty frame. Its colour and size are set with :meth:`props`,
+    e.g. ``g.Frame("Notes", shrink=False).props(width=300, height=200)``.
+
+    Args:
+        label: The frame's title.
+        shrink: Fit the frame around the nodes it holds.
+        text: A text datablock to show in the frame.
+        label_size: The title's font size.
+    """
 
     _bl_idname = "NodeFrame"
     node: bpy.types.NodeFrame
@@ -812,11 +823,13 @@ class Frame(BaseNode):
         label: str | None = None,
         shrink: bool = True,
         text: bpy.types.Text | None = None,
+        label_size: int = 20,
     ):
         super().__init__()
         self.label = label
         self.shrink = shrink
         self.text = text
+        self.node.label_size = label_size
 
     @property
     def label(self) -> str | None:

@@ -5,12 +5,13 @@ import keyword
 import re
 import unicodedata
 import warnings
+from collections.abc import Iterable
 from functools import cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
 
 import bpy
-from bpy.types import NodeSocket
+from bpy.types import Node, NodeSocket
 
 if TYPE_CHECKING:
     from ..types import SOCKET_TYPES
@@ -186,6 +187,105 @@ def socket_key(socket: NodeSocket) -> str:
         if other.name == socket.name:
             repeat += 1
     return f"{socket.name}#{repeat}" if repeat else socket.name
+
+
+type WarningPropagation = Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"]
+
+
+def visible_socket_key(socket: NodeSocket) -> str:
+    """The key :meth:`BaseNode.props` takes in ``hide_inputs`` /
+    ``hide_outputs``: the socket name, plus ``#<n>`` for repeats among the
+    node's *enabled* sockets on that side, so ``"Value#1"`` is a Math node's
+    second visible ``Value`` input."""
+    node = socket.node
+    assert node is not None
+    collection = node.outputs if socket.is_output else node.inputs
+    repeat = 0
+    for other in collection:
+        if other.identifier == socket.identifier:
+            break
+        if other.enabled and other.name == socket.name:
+            repeat += 1
+    return f"{socket.name}#{repeat}" if repeat else socket.name
+
+
+def _resolve_visible_socket(sockets, key: str, side: str, node: Node) -> NodeSocket:
+    name, _, repeat = key.partition("#")
+    index = int(repeat) if repeat.isdigit() else 0
+    matches = [s for s in sockets if s.enabled and s.name == name]
+    if index < len(matches):
+        return matches[index]
+    names = [visible_socket_key(s) for s in sockets if s.enabled]
+    raise ValueError(
+        f"{node.bl_idname} has no {side} socket {key!r}; its {side}s are {names}"
+    )
+
+
+def _parse_color(color: str | tuple[float, float, float]) -> tuple[float, float, float]:
+    if isinstance(color, str):
+        digits = color.removeprefix("#")
+        if len(digits) != 6 or any(c not in "0123456789abcdefABCDEF" for c in digits):
+            raise ValueError(f"Expected a hex colour like '#FFAA00', got {color!r}")
+        r, g, b = (int(digits[i : i + 2], 16) / 255 for i in (0, 2, 4))
+        return (r, g, b)
+    if len(color) != 3:
+        raise ValueError(f"Expected an (r, g, b) colour, got {color!r}")
+    return (float(color[0]), float(color[1]), float(color[2]))
+
+
+def apply_node_props(
+    node: Node,
+    *,
+    label: str | None = None,
+    color: str | tuple[float, float, float] | None = None,
+    width: float | None = None,
+    height: float | None = None,
+    hide: bool | None = None,
+    show_options: bool | None = None,
+    hide_inputs: Iterable[str] = (),
+    hide_outputs: Iterable[str] = (),
+    mute: bool | None = None,
+    warning_propagation: WarningPropagation | None = None,
+    pin_gizmo: bool | None = None,
+    pin_gizmo_inputs: Iterable[str] = (),
+) -> None:
+    """Set the properties every node has; ``None`` leaves one unchanged."""
+    if label is not None:
+        node.label = label
+    if color is not None:
+        node.use_custom_color = True
+        node.color = _parse_color(color)
+    if width is not None:
+        node.width = width
+    if height is not None:
+        node.height = height
+    if hide is not None:
+        node.hide = hide
+    if show_options is not None:
+        node.show_options = show_options
+    for key in hide_inputs:
+        _resolve_visible_socket(node.inputs, key, "input", node).hide = True
+    for key in hide_outputs:
+        _resolve_visible_socket(node.outputs, key, "output", node).hide = True
+    if mute is not None:
+        node.mute = mute
+    if warning_propagation is not None:
+        node.warning_propagation = warning_propagation
+    if pin_gizmo is not None:
+        gizmo_socket(node).pin_gizmo = pin_gizmo
+    for key in pin_gizmo_inputs:
+        _resolve_visible_socket(node.inputs, key, "input", node).pin_gizmo = True
+
+
+def gizmo_socket(node: Node) -> NodeSocket:
+    """The socket whose ``pin_gizmo`` Blender reads for the node's own gizmo:
+    a gizmo node's first input, or a value node's (Value, Vector, ...)
+    output."""
+    if node.bl_idname.startswith("GeometryNodeGizmo"):
+        return node.inputs[0]
+    if not node.outputs:
+        raise ValueError(f"{node.bl_idname} has no gizmo to pin")
+    return node.outputs[0]
 
 
 def resolve_socket_key(sockets, key: str) -> NodeSocket | None:

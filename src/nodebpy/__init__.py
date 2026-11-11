@@ -10,6 +10,7 @@ from .builder import (
     default_keep_edits,
     default_split_inputs,
     default_sugiyama_options,
+    muted,
 )
 from .nodes import compositor, geometry, shader
 from .types import Default
@@ -32,6 +33,7 @@ __all__ = [
     "export",
     "geometry",
     "live",
+    "muted",
     "nodes",
     "shader",
     "types",
