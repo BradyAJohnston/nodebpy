@@ -1,0 +1,57 @@
+name: Run Tests
+
+# Reusable workflow that runs the tests against one version of bpy on each
+# platform. It is called from a workflow per Blender version (tests-5.2.yml,
+# tests-5.3.yml) so that each version has its own status badge in the README.
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: "The major.minor version of bpy to test against, e.g. 5.3"
+        required: true
+        type: string
+      coverage:
+        description: "Upload coverage reports to Codecov"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  test:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 4
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Install
+        shell: bash
+        run: |
+          uv sync --all-extras
+          uv pip install --python .venv "bpy==${{ inputs.version }}.*"
+
+      # `--no-sync` stops uv from restoring the locked version of bpy
+      - name: Check bpy version
+        run: uv run --no-sync python -c "import bpy; print(bpy.app.version_string)"
+
+      # Tests that need another Blender than this one skip themselves
+      - name: Run tests
+        run: |
+          uv run --no-sync pytest -n auto -vv --cov=nodebpy --cov-report=xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        if: inputs.coverage && matrix.os == 'macos-latest'
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: coverage.xml
