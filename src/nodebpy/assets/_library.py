@@ -1314,7 +1314,7 @@ def build_library(
     # build mid-way on the name/type clash. Fail upfront with the way out.
     by_name: dict[str, list[Path]] = {}
     for file, module in asset_modules:
-        name = getattr(module.ASSET, "_name", None)  # ty: ignore[unresolved-attribute]
+        name = getattr(module.ASSET, "_name", None)  # ty: ignore[missing-attribute]
         if isinstance(name, str):
             by_name.setdefault(name, []).append(file)
     if duplicates := {n: fs for n, fs in by_name.items() if len(fs) > 1}:
@@ -1333,7 +1333,7 @@ def build_library(
     # the dump code-generated are provided by their own modules, not looked
     # up, so they never count as missing.
     provided_materials = {
-        getattr(module, "MATERIAL_NAME", None) or module.MATERIAL._name  # ty: ignore[unresolved-attribute]
+        getattr(module, "MATERIAL_NAME", None) or module.MATERIAL._name  # ty: ignore[missing-attribute]
         for _, module in material_modules
     }
     needed: dict[str, set[str]] = {}
@@ -1364,7 +1364,7 @@ def build_library(
         # Materials first: asset trees look them up by name while building.
         built_materials = []
         for file, module in material_modules:
-            material_cls = module.MATERIAL  # ty: ignore[unresolved-attribute]
+            material_cls = module.MATERIAL  # ty: ignore[missing-attribute]
             if not (
                 isinstance(material_cls, type)
                 and issubclass(material_cls, NodeGroupBuilder)
@@ -1391,7 +1391,7 @@ def build_library(
 
         trees = []
         for file, module in asset_modules:
-            asset_cls = module.ASSET  # ty: ignore[unresolved-attribute]
+            asset_cls = module.ASSET  # ty: ignore[missing-attribute]
             if not (
                 isinstance(asset_cls, type) and issubclass(asset_cls, NodeGroupBuilder)
             ):

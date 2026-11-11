@@ -198,7 +198,7 @@ class BaseSocket:
     def __init__(self, socket: NodeSocket):
         assert socket.node is not None
         self._tree = None
-        self.socket = socket
+        self._wrapped_socket = socket
         self._interface_socket: bpy.types.NodeTreeInterfaceSocket | None = None
         # Captured at wrap time: _interface_socket can go stale as the
         # interface grows, but the identifier string stays addressable.
@@ -213,6 +213,13 @@ class BaseSocket:
             "Python, so it can't be used in `if`, `and`/`or`, `max()` or `min()`. "
             "Use .max()/.min() or a Switch node."
         )
+
+    # Read-only, so subclasses can narrow its type (``socket: NodeSocketFloat``).
+    # Wrappers that skip ``__init__`` have none, and ``hasattr`` says so.
+    @property
+    def socket(self) -> NodeSocket:
+        """The Blender socket this instance wraps."""
+        return self._wrapped_socket
 
     @property
     def node(self) -> Node:
@@ -1201,7 +1208,7 @@ class _VectorMixin[
         from ..nodes.geometry import SeparateSpherical
 
         node = SeparateSpherical(self.socket)
-        return ResultSpherical(node.o.r, node.o.phi, node.o.theta)  # ty: ignore[invalid-argument-type]
+        return ResultSpherical(node.o.r, node.o.phi, node.o.theta)  # ty: ignore[invalid-return-type]
 
     def to_cylindrical(self) -> ResultCylindrical[FloatResult]:
         """Convert to cylindrical coordinates `(r, phi, z)`."""
@@ -1209,7 +1216,7 @@ class _VectorMixin[
         from ..nodes.geometry import SeparateCylindrical
 
         node = SeparateCylindrical(self.socket)
-        return ResultCylindrical(node.o.r, node.o.phi, node.o.z)  # ty: ignore[invalid-argument-type]
+        return ResultCylindrical(node.o.r, node.o.phi, node.o.z)  # ty: ignore[invalid-return-type]
 
     def project_point(self, matrix: InputMatrix) -> VectorResult:
         """Project this point by *matrix*, dividing by the resulting w component."""
@@ -1810,7 +1817,7 @@ class _RotationMixin[
         from ..nodes.geometry import RotationToQuaternion
 
         o = RotationToQuaternion._find_or_create_linked(self.socket).o
-        return ResultQuaternionComponents(o.w, o.x, o.y, o.z)  # ty: ignore[invalid-argument-type]
+        return ResultQuaternionComponents(o.w, o.x, o.y, o.z)  # ty: ignore[invalid-return-type]
 
     def to_axis_angle(self) -> ResultAxisAngle[FloatResult, VectorResult]:
         "Decompose the rotation into axis-angle components `(axis, angle)`."
@@ -1818,7 +1825,7 @@ class _RotationMixin[
         from ..nodes.geometry import RotationToAxisAngle
 
         o = RotationToAxisAngle(self.socket).o
-        return ResultAxisAngle(o.axis, o.angle)  # ty: ignore[invalid-argument-type]
+        return ResultAxisAngle(o.axis, o.angle)  # ty: ignore[invalid-return-type]
 
     def align_to_vector(
         self,
@@ -2362,7 +2369,7 @@ class _StringMixin[
         from ..nodes.geometry import FindInString
 
         o = FindInString(self.socket, search).o
-        return ResultStringFind(o.first_found, o.count)  # ty: ignore[invalid-argument-type]
+        return ResultStringFind(o.first_found, o.count)  # ty: ignore[invalid-return-type]
 
     def uppercase(self) -> StringResult:
         "Convert the string to uppercase and return as `StringSocket`."
@@ -2459,7 +2466,7 @@ class _MatrixMixin[
         from ..nodes.geometry import MatrixSVD
 
         o = MatrixSVD(self.socket).o
-        return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-argument-type]
+        return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-return-type]
 
     @staticmethod
     def _cast_to_matrix(value) -> MatrixSocket:
@@ -2646,13 +2653,13 @@ class _DefaultValueMixin[T](BaseSocket):
     def default_value(self) -> T:
         """Get or set the default value of the socket. Only relevant for input sockets."""
         self._assert_input("default_value")
-        return self.socket.default_value  # ty: ignore[unresolved-attribute]
+        return self.socket.default_value  # ty: ignore[missing-attribute]
 
     @default_value.setter
     def default_value(self, value: T) -> None:
         """Get or set the default value of the socket. Only relevant for input sockets."""
         self._assert_input("default_value")
-        self.socket.default_value = value  # ty: ignore[unresolved-attribute]
+        self.socket.default_value = value  # ty: ignore[missing-attribute]
 
 
 class _ToListMixin[T](BaseSocket):
@@ -2857,13 +2864,14 @@ class VectorSocketList(
         def __getitem__(self, key: slice) -> list[FloatSocketList]: ...
         @overload
         def __getitem__(self, key: int) -> FloatSocketList: ...
-        def __getitem__(
+        def __getitem__(  # ty: ignore[incompatible-method-override]
             self, key: int | slice
         ) -> FloatSocketList | list[FloatSocketList]: ...
-        def __len__(self) -> int: ...
+        def __len__(self) -> int: ...  # ty: ignore[incompatible-method-override]
 
 
-class VectorSocketGrid(
+# _VectorMixin.transform(matrix) shadows the grid's ``transform`` property (MRO)
+class VectorSocketGrid(  # ty: ignore[incompatible-property-override]
     _VectorMixin,
     _GridSocketMixin[VectorSocket, "VectorSocketGrid"],
     _VectorGridOperatorMixin,
@@ -2887,10 +2895,12 @@ class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):
     def __getitem__(self, key: slice) -> list[FloatSocket]: ...
     @overload
     def __getitem__(self, key: int) -> FloatSocket: ...
-    def __getitem__(self, key: int | slice) -> FloatSocket | list[FloatSocket]:
+    def __getitem__(  # ty: ignore[incompatible-method-override]
+        self, key: int | slice
+    ) -> FloatSocket | list[FloatSocket]:
         return _ColorMixin.__getitem__(self, key)
 
-    def __len__(self) -> int:
+    def __len__(self) -> int:  # ty: ignore[incompatible-method-override]
         return _ColorMixin.__len__(self)
 
 

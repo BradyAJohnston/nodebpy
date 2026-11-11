@@ -557,7 +557,7 @@ def legacy_menu_customization(
         f"    def {prop}(self) -> {old}:",
         f'        """Deprecated: use ``i.{param}``."""',
         f'        _deprecated("{class_name}.{prop}", "i.{param}", removed_in={removed_in})',
-        f"        value = self.i[{socket!r}].socket.default_value  # ty: ignore[unresolved-attribute]",
+        f"        value = self.i[{socket!r}].socket.default_value  # ty: ignore[missing-attribute]",
         f"        names: dict[str, {old}] = { {v: k for k, v in legacy.items()}!r}",
         "        return names[value]",
         "",

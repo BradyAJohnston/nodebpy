@@ -234,12 +234,14 @@ class LinkingMixin:
     and ``_default_input_socket`` on the concrete class.
     """
 
-    tree: TreeBuilder[Any]
-
     if TYPE_CHECKING:
         import bpy
 
-        node: bpy.types.Node
+        @property
+        def tree(self) -> TreeBuilder[Any]: ...
+
+        @property
+        def node(self) -> bpy.types.Node: ...
 
         @property
         def i(self) -> SocketAccessor: ...

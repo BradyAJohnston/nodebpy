@@ -165,7 +165,8 @@ class Node:
 
 
 class _RealNode(Node):
-    node: bNode
+    # only a TypeGuard target (``is_real``): nothing is written through it
+    node: bNode  # ty: ignore[incompatible-mutable-override]
 
 
 def is_real(v: Node | Cluster) -> TypeGuard[_RealNode]:

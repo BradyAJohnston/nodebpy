@@ -1,6 +1,6 @@
 from abc import ABC
 from collections.abc import Iterable, Iterator, Mapping
-from typing import TYPE_CHECKING, ClassVar, NoReturn, TypeVar, cast
+from typing import TYPE_CHECKING, Any, ClassVar, NoReturn, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -89,7 +89,16 @@ class BaseZone(ItemsMixin, BaseNode, ABC):
 class BaseZoneInput(BaseZone, ABC):
     """Base class for zone input nodes"""
 
-    node: bpy.types.GeometryNodeSimulationInput | bpy.types.GeometryNodeRepeatInput
+    if TYPE_CHECKING:
+
+        @property
+        def node(
+            self,
+        ) -> (
+            bpy.types.GeometryNodeSimulationInput
+            | bpy.types.GeometryNodeRepeatInput
+            | bpy.types.GeometryNodeForeachGeometryElementInput
+        ): ...
 
     @property
     def _items_node(self):
@@ -109,7 +118,16 @@ class BaseZoneInput(BaseZone, ABC):
 class BaseZoneOutput(BaseZone, ABC):
     """Base class for zone output nodes"""
 
-    node: bpy.types.GeometryNodeSimulationOutput | bpy.types.GeometryNodeRepeatOutput
+    if TYPE_CHECKING:
+
+        @property
+        def node(
+            self,
+        ) -> (
+            bpy.types.GeometryNodeSimulationOutput
+            | bpy.types.GeometryNodeRepeatOutput
+            | bpy.types.GeometryNodeForeachGeometryElementOutput
+        ): ...
 
 
 class ZoneItem(Item[_SocketT]):
@@ -169,20 +187,20 @@ class ZoneItem(Item[_SocketT]):
         self._no_role("output")
 
 
-class _ZonePair:
+class _ZonePair[In: BaseNode = BaseNode, Out: BaseNode = BaseNode]:
     """Zone wrapper holding the paired input and output builder nodes.
 
     Supports ``input, output = zone`` unpacking and indexing with
     ``zone[0]`` / ``zone[1]``.
     """
 
-    input: BaseNode
-    output: BaseNode
+    input: In
+    output: Out
 
     def _pair(self) -> None:
         """Pair the two nodes. Must run before any linking — sockets on an
         unpaired zone node are inactive."""
-        self.input.node.pair_with_output(self.output.node)  # ty: ignore[unresolved-attribute]
+        self.input.node.pair_with_output(self.output.node)  # ty: ignore[missing-attribute]
 
     def __getitem__(self, index: int) -> BaseNode:
         match index:
@@ -197,11 +215,11 @@ class _ZonePair:
         return iter((self.input, self.output))
 
 
-class _StateZone(_ZonePair):
+class _StateZone[
+    In: BaseZoneInput = BaseZoneInput,
+    Out: BaseZoneOutput = BaseZoneOutput,
+](_ZonePair[In, Out]):
     """Zone wrapper for zones with shared state items (simulation/repeat)."""
-
-    input: BaseZoneInput
-    output: BaseZoneOutput
 
     if TYPE_CHECKING:
 
@@ -228,7 +246,7 @@ class _StateZoneItems(_ValueItems[ZoneItem]):
 
     _handle_type = ZoneItem
 
-    def __init__(self, zone: _StateZone):
+    def __init__(self, zone: _StateZone[Any, Any]):
         super().__init__(zone.output)
         self._zone = zone
 
@@ -379,7 +397,7 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
         def i(self) -> _Inputs: ...
 
 
-class SimulationZone(_StateZone):
+class SimulationZone(_StateZone[SimulationInput, SimulationOutput]):
     input: SimulationInput
     output: SimulationOutput
 
@@ -454,7 +472,7 @@ class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
     node: bpy.types.GeometryNodeRepeatOutput
 
 
-class RepeatZone(_StateZone):
+class RepeatZone(_StateZone[RepeatInput, RepeatOutput]):
     input: RepeatInput
     output: RepeatOutput
 
@@ -588,7 +606,9 @@ class _ForEachGeneratedItems(_ValueItems[Item]):
         return self._typed(value, name, "GEOMETRY", domain=domain)
 
 
-class ForEachGeometryElementZone(_ZonePair):
+class ForEachGeometryElementZone(
+    _ZonePair["ForEachGeometryElementInput", "ForEachGeometryElementOutput"]
+):
     input: "ForEachGeometryElementInput"
     output: "ForEachGeometryElementOutput"
 
@@ -806,7 +826,7 @@ class _ClosureOutputItems(_SocketItems):
         return _socket_for_item(self._zone.output.node, self._bpy, "Item_", item)
 
 
-class ClosureZone(_ZonePair):
+class ClosureZone(_ZonePair["ClosureInput", "ClosureOutput"]):
     input: "ClosureInput"
     output: "ClosureOutput"
 
