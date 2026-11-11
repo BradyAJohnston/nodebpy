@@ -51,6 +51,41 @@ Generate a perturbed normal from a height texture for bump mapping. Typically us
 | [`o`](#nodebpy.nodes.shader.vector.Bump.o) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.Bump.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.vector.Bump.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute        | Type           | Description  |
@@ -101,6 +136,41 @@ Displace the surface along the surface normal
 | [`o`](#nodebpy.nodes.shader.vector.Displacement.o) |  |
 | [`space`](#nodebpy.nodes.shader.vector.Displacement.space) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.Displacement.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.vector.Displacement.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -158,6 +228,7 @@ Transform the input vector by applying translation, rotation, and scale
 |----|----|
 | [normal](#nodebpy.nodes.shader.vector.Mapping.normal) | Create Mapping with operation ‘Normal’. Transform a unit normal vector (Location is ignored) |
 | [point](#nodebpy.nodes.shader.vector.Mapping.point) | Create Mapping with operation ‘Point’. Transform a point |
+| [props](#nodebpy.nodes.shader.vector.Mapping.props) | Set the properties every node has and return the node, so it can |
 | [texture](#nodebpy.nodes.shader.vector.Mapping.texture) | Create Mapping with operation ‘Texture’. Transform a texture by inverse mapping the texture coordinate |
 | [vector](#nodebpy.nodes.shader.vector.Mapping.vector) | Create Mapping with operation ‘Vector’. Transform a direction vector (Location is ignored) |
 
@@ -181,6 +252,35 @@ point(
 ```
 
 Create Mapping with operation ‘Point’. Transform a point
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### texture
 
@@ -242,6 +342,41 @@ Generate a normal vector and a dot product
 | [`o`](#nodebpy.nodes.shader.vector.Normal.o) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.Normal.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.vector.Normal.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute  | Type           | Description |
@@ -292,6 +427,41 @@ Generate a perturbed normal from an RGB normal map image. Typically used for fak
 | [`tree`](#nodebpy.nodes.shader.vector.NormalMap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`uv_map`](#nodebpy.nodes.shader.vector.NormalMap.uv_map) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.vector.NormalMap.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute    | Type          | Description |
@@ -331,6 +501,41 @@ Displace the surface along an arbitrary direction
 | [`o`](#nodebpy.nodes.shader.vector.VectorDisplacement.o) |  |
 | [`space`](#nodebpy.nodes.shader.vector.VectorDisplacement.space) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.VectorDisplacement.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.vector.VectorDisplacement.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -385,6 +590,7 @@ Convert a vector, point, or normal between world, camera, and object coordinate 
 |----|----|
 | [normal](#nodebpy.nodes.shader.vector.VectorTransform.normal) | Create Vector Transform with operation ‘Normal’. Transform a normal vector with unit length |
 | [point](#nodebpy.nodes.shader.vector.VectorTransform.point) | Create Vector Transform with operation ‘Point’. Transform a point |
+| [props](#nodebpy.nodes.shader.vector.VectorTransform.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.shader.vector.VectorTransform.vector) | Create Vector Transform with operation ‘Vector’. Transform a direction vector |
 
 ##### normal
@@ -402,6 +608,35 @@ point(vector=(0.5, 0.5, 0.5), *, convert_from='WORLD', convert_to='OBJECT')
 ```
 
 Create Vector Transform with operation ‘Point’. Transform a point
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 

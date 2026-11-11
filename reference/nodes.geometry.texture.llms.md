@@ -70,6 +70,41 @@ Generate a procedural texture producing bricks
 | [`squash_frequency`](#nodebpy.nodes.geometry.texture.BrickTexture.squash_frequency) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.BrickTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.texture.BrickTexture.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute         | Type           | Description   |
@@ -87,10 +122,10 @@ Generate a procedural texture producing bricks
 
 **Outputs**
 
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.color`  | `ColorSocket` | Color       |
-| `o.factor` | `FloatSocket` | Factor      |
+| Attribute | Type | Description |
+|----|----|----|
+| `o.color` | `ColorSocket` | Color |
+| `o.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `o.fac` still resolves to it. |
 
 ### CheckerTexture
 
@@ -124,6 +159,41 @@ Generate a checkerboard texture
 | [`o`](#nodebpy.nodes.geometry.texture.CheckerTexture.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.CheckerTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.texture.CheckerTexture.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute  | Type           | Description |
@@ -135,10 +205,10 @@ Generate a checkerboard texture
 
 **Outputs**
 
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.color`  | `ColorSocket` | Color       |
-| `o.factor` | `FloatSocket` | Factor      |
+| Attribute | Type | Description |
+|----|----|----|
+| `o.color` | `ColorSocket` | Color |
+| `o.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `o.fac` still resolves to it. |
 
 ### GaborTexture
 
@@ -183,8 +253,38 @@ Generate Gabor noise
 
 | Name | Description |
 |----|----|
+| [props](#nodebpy.nodes.geometry.texture.GaborTexture.props) | Set the properties every node has and return the node, so it can |
 | [type_2d](#nodebpy.nodes.geometry.texture.GaborTexture.type_2d) | Create Gabor Texture with operation ‘2D’. Use the 2D vector (X, Y) as input. The Z component is ignored. |
 | [type_3d](#nodebpy.nodes.geometry.texture.GaborTexture.type_3d) | Create Gabor Texture with operation ‘3D’. Use the 3D vector (X, Y, Z) as input |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### type_2d
 
@@ -265,6 +365,7 @@ Generate interpolated color and intensity values based on the input vector
 | [diagonal](#nodebpy.nodes.geometry.texture.GradientTexture.diagonal) | Create Gradient Texture with operation ‘Diagonal’. Create a diagonal progression |
 | [easing](#nodebpy.nodes.geometry.texture.GradientTexture.easing) | Create Gradient Texture with operation ‘Easing’. Create a progression easing from one step to the next |
 | [linear](#nodebpy.nodes.geometry.texture.GradientTexture.linear) | Create Gradient Texture with operation ‘Linear’. Create a linear progression |
+| [props](#nodebpy.nodes.geometry.texture.GradientTexture.props) | Set the properties every node has and return the node, so it can |
 | [quadratic](#nodebpy.nodes.geometry.texture.GradientTexture.quadratic) | Create Gradient Texture with operation ‘Quadratic’. Create a quadratic progression |
 | [quadratic_sphere](#nodebpy.nodes.geometry.texture.GradientTexture.quadratic_sphere) | Create Gradient Texture with operation ‘Quadratic Sphere’. Create a quadratic progression in the shape of a sphere |
 | [radial](#nodebpy.nodes.geometry.texture.GradientTexture.radial) | Create Gradient Texture with operation ‘Radial’. Create a radial progression |
@@ -293,6 +394,35 @@ linear(vector=None)
 ```
 
 Create Gradient Texture with operation ‘Linear’. Create a linear progression
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### quadratic
 
@@ -334,10 +464,10 @@ Create Gradient Texture with operation ‘Spherical’. Create a spherical progr
 
 **Outputs**
 
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.color`  | `ColorSocket` | Color       |
-| `o.factor` | `FloatSocket` | Factor      |
+| Attribute | Type | Description |
+|----|----|----|
+| `o.color` | `ColorSocket` | Color |
+| `o.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `o.fac` still resolves to it. |
 
 ### ImageTexture
 
@@ -373,6 +503,41 @@ Sample values from an image texture
 | [`node`](#nodebpy.nodes.geometry.texture.ImageTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.ImageTexture.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.ImageTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.texture.ImageTexture.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -416,6 +581,41 @@ Generate a psychedelic color texture
 | [`tree`](#nodebpy.nodes.geometry.texture.MagicTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`turbulence_depth`](#nodebpy.nodes.geometry.texture.MagicTexture.turbulence_depth) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.texture.MagicTexture.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute      | Type           | Description |
@@ -426,10 +626,10 @@ Generate a psychedelic color texture
 
 **Outputs**
 
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.color`  | `ColorSocket` | Color       |
-| `o.factor` | `FloatSocket` | Factor      |
+| Attribute | Type | Description |
+|----|----|----|
+| `o.color` | `ColorSocket` | Color |
+| `o.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `o.fac` still resolves to it. |
 
 ### NoiseTexture
 
@@ -488,6 +688,7 @@ Generate fractal Perlin noise
 | [hetero_terrain](#nodebpy.nodes.geometry.texture.NoiseTexture.hetero_terrain) | Create Noise Texture with operation ‘Hetero Terrain’. Similar to Hybrid Multifractal creates a heterogeneous terrain, but with the likeness of river channels |
 | [hybrid_multifractal](#nodebpy.nodes.geometry.texture.NoiseTexture.hybrid_multifractal) | Create Noise Texture with operation ‘Hybrid Multifractal’. Create peaks and valleys with different roughness values |
 | [multifractal](#nodebpy.nodes.geometry.texture.NoiseTexture.multifractal) | Create Noise Texture with operation ‘Multifractal’. More uneven result (varies with location), more similar to a real terrain |
+| [props](#nodebpy.nodes.geometry.texture.NoiseTexture.props) | Set the properties every node has and return the node, so it can |
 | [ridged_multifractal](#nodebpy.nodes.geometry.texture.NoiseTexture.ridged_multifractal) | Create Noise Texture with operation ‘Ridged Multifractal’. Create sharp peaks |
 
 ##### fbm
@@ -562,6 +763,35 @@ multifractal(
 
 Create Noise Texture with operation ‘Multifractal’. More uneven result (varies with location), more similar to a real terrain
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### ridged_multifractal
 
 ``` python
@@ -597,10 +827,10 @@ Create Noise Texture with operation ‘Ridged Multifractal’. Create sharp peak
 
 **Outputs**
 
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.factor` | `FloatSocket` | Factor      |
-| `o.color`  | `ColorSocket` | Color       |
+| Attribute | Type | Description |
+|----|----|----|
+| `o.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `o.fac` still resolves to it. |
+| `o.color` | `ColorSocket` | Color |
 
 ### VoronoiTexture
 
@@ -652,6 +882,41 @@ Generate Worley noise based on the distance to random points. Typically used to 
 | [`o`](#nodebpy.nodes.geometry.texture.VoronoiTexture.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.VoronoiTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`voronoi_dimensions`](#nodebpy.nodes.geometry.texture.VoronoiTexture.voronoi_dimensions) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.texture.VoronoiTexture.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -729,6 +994,7 @@ Generate procedural bands or rings with noise
 | Name | Description |
 |----|----|
 | [bands](#nodebpy.nodes.geometry.texture.WaveTexture.bands) | Create Wave Texture with operation ‘Bands’. Use standard wave texture in bands |
+| [props](#nodebpy.nodes.geometry.texture.WaveTexture.props) | Set the properties every node has and return the node, so it can |
 | [rings](#nodebpy.nodes.geometry.texture.WaveTexture.rings) | Create Wave Texture with operation ‘Rings’. Use wave texture in rings |
 
 ##### bands
@@ -749,6 +1015,35 @@ bands(
 ```
 
 Create Wave Texture with operation ‘Bands’. Use standard wave texture in bands
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### rings
 
@@ -783,10 +1078,10 @@ Create Wave Texture with operation ‘Rings’. Use wave texture in rings
 
 **Outputs**
 
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.color`  | `ColorSocket` | Color       |
-| `o.factor` | `FloatSocket` | Factor      |
+| Attribute | Type | Description |
+|----|----|----|
+| `o.color` | `ColorSocket` | Color |
+| `o.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `o.fac` still resolves to it. |
 
 ### WhiteNoiseTexture
 
@@ -813,6 +1108,41 @@ Calculate a random value or color based on an input seed
 | [`noise_dimensions`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.noise_dimensions) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 

@@ -35,6 +35,7 @@ ClipFieldToBox(box_object=None, invert=False)
 | Name | Description |
 |----|----|
 | [create_group](#nodebpy.nodes.geometry.groups.ClipFieldToBox.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+| [props](#nodebpy.nodes.geometry.groups.ClipFieldToBox.props) | Set the properties every node has and return the node, so it can |
 
 ##### create_group
 
@@ -45,6 +46,35 @@ create_group()
 Build this group’s node tree and return it, reusing an existing tree of the same name.
 
 Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### GeometryPrincipalComponents
 
@@ -68,6 +98,7 @@ GeometryPrincipalComponents(geometry=None, position=None)
 | Name | Description |
 |----|----|
 | [create_group](#nodebpy.nodes.geometry.groups.GeometryPrincipalComponents.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+| [props](#nodebpy.nodes.geometry.groups.GeometryPrincipalComponents.props) | Set the properties every node has and return the node, so it can |
 
 ##### create_group
 
@@ -78,6 +109,35 @@ create_group()
 Build this group’s node tree and return it, reusing an existing tree of the same name.
 
 Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### OffsetVector
 
@@ -103,6 +163,7 @@ Evaluate a given vector field at an offset to the current `Index`.
 | Name | Description |
 |----|----|
 | [create_group](#nodebpy.nodes.geometry.groups.OffsetVector.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+| [props](#nodebpy.nodes.geometry.groups.OffsetVector.props) | Set the properties every node has and return the node, so it can |
 
 ##### create_group
 
@@ -113,6 +174,35 @@ create_group()
 Build this group’s node tree and return it, reusing an existing tree of the same name.
 
 Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### OtherVertex
 
@@ -138,6 +228,7 @@ Given a vertex and an edge number from that vertex, returns the other vertex of 
 | Name | Description |
 |----|----|
 | [create_group](#nodebpy.nodes.geometry.groups.OtherVertex.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+| [props](#nodebpy.nodes.geometry.groups.OtherVertex.props) | Set the properties every node has and return the node, so it can |
 
 ##### create_group
 
@@ -148,6 +239,35 @@ create_group()
 Build this group’s node tree and return it, reusing an existing tree of the same name.
 
 Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### PrincipalComponents
 
@@ -173,6 +293,7 @@ Compute PCA on a given vector field.
 | Name | Description |
 |----|----|
 | [create_group](#nodebpy.nodes.geometry.groups.PrincipalComponents.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+| [props](#nodebpy.nodes.geometry.groups.PrincipalComponents.props) | Set the properties every node has and return the node, so it can |
 
 ##### create_group
 
@@ -183,6 +304,35 @@ create_group()
 Build this group’s node tree and return it, reusing an existing tree of the same name.
 
 Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### SliceToIndices
 
@@ -208,6 +358,7 @@ Converts a python slice to a list of indices.
 | Name | Description |
 |----|----|
 | [create_group](#nodebpy.nodes.geometry.groups.SliceToIndices.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+| [props](#nodebpy.nodes.geometry.groups.SliceToIndices.props) | Set the properties every node has and return the node, so it can |
 
 ##### create_group
 
@@ -218,3 +369,32 @@ create_group()
 Build this group’s node tree and return it, reusing an existing tree of the same name.
 
 Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.

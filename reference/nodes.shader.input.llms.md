@@ -16,11 +16,14 @@
 | [Fresnel](#nodebpy.nodes.shader.input.Fresnel) | Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations. |
 | [Geometry](#nodebpy.nodes.shader.input.Geometry) | Retrieve geometric information about the current shading point |
 | [LayerWeight](#nodebpy.nodes.shader.input.LayerWeight) | Produce a blending factor depending on the angle between the surface normal and the view direction. |
+| [LightEvaluation](#nodebpy.nodes.shader.input.LightEvaluation) | Light Evaluation |
+| [LightInfo](#nodebpy.nodes.shader.input.LightInfo) | Exposes physical properties of the light being evaluated and computes basic information relative to the evaluation position |
 | [LightPath](#nodebpy.nodes.shader.input.LightPath) | Retrieve the type of incoming ray for which the shader is being executed. |
 | [ObjectInfo](#nodebpy.nodes.shader.input.ObjectInfo) | Retrieve information about the object instance |
 | [ParticleInfo](#nodebpy.nodes.shader.input.ParticleInfo) | Retrieve the data of the particle that spawned the object instance, for example to give variation to multiple instances of an object |
 | [PointInfo](#nodebpy.nodes.shader.input.PointInfo) | Retrieve information about points in a point cloud |
 | [Raycast](#nodebpy.nodes.shader.input.Raycast) | Cast rays and retrieve information from the hit point |
+| [ShadowRaycast](#nodebpy.nodes.shader.input.ShadowRaycast) | Shadow Raycast |
 | [Tangent](#nodebpy.nodes.shader.input.Tangent) | Generate a tangent direction for the Anisotropic BSDF |
 | [TextureCoordinate](#nodebpy.nodes.shader.input.TextureCoordinate) | Retrieve multiple types of texture coordinates. |
 | [UVAlongStroke](#nodebpy.nodes.shader.input.UVAlongStroke) | UV coordinates that map a texture along the stroke length |
@@ -83,6 +86,41 @@ Note: For Cycles, this may slow down renders significantly
 | [`samples`](#nodebpy.nodes.shader.input.AmbientOcclusion.samples) |  |
 | [`tree`](#nodebpy.nodes.shader.input.AmbientOcclusion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.AmbientOcclusion.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### Attribute
 
 ``` python
@@ -109,7 +147,9 @@ Retrieve attributes attached to objects or geometry
 |----|----|
 | [geometry](#nodebpy.nodes.shader.input.Attribute.geometry) | Create Attribute with operation ‘Geometry’. |
 | [instancer](#nodebpy.nodes.shader.input.Attribute.instancer) | Create Attribute with operation ‘Instancer’. |
+| [light](#nodebpy.nodes.shader.input.Attribute.light) | Create Attribute with operation ‘Light’. |
 | [object](#nodebpy.nodes.shader.input.Attribute.object) | Create Attribute with operation ‘Object’. |
+| [props](#nodebpy.nodes.shader.input.Attribute.props) | Set the properties every node has and return the node, so it can |
 | [view_layer](#nodebpy.nodes.shader.input.Attribute.view_layer) | Create Attribute with operation ‘View Layer’. |
 
 ##### geometry
@@ -128,6 +168,14 @@ instancer(attribute_name='')
 
 Create Attribute with operation ‘Instancer’.
 
+##### light
+
+``` python
+light(attribute_name='')
+```
+
+Create Attribute with operation ‘Light’.
+
 ##### object
 
 ``` python
@@ -135,6 +183,35 @@ object(attribute_name='')
 ```
 
 Create Attribute with operation ‘Object’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### view_layer
 
@@ -146,12 +223,12 @@ Create Attribute with operation ‘View Layer’.
 
 **Outputs**
 
-| Attribute  | Type           | Description |
-|------------|----------------|-------------|
-| `o.color`  | `ColorSocket`  | Color       |
-| `o.vector` | `VectorSocket` | Vector      |
-| `o.factor` | `FloatSocket`  | Factor      |
-| `o.alpha`  | `FloatSocket`  | Alpha       |
+| Attribute | Type | Description |
+|----|----|----|
+| `o.color` | `ColorSocket` | Color |
+| `o.vector` | `VectorSocket` | Vector |
+| `o.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `o.fac` still resolves to it. |
+| `o.alpha` | `FloatSocket` | Alpha |
 
 ### Bevel
 
@@ -193,6 +270,41 @@ Note: only supported in Cycles, and may slow down renders
 | [`samples`](#nodebpy.nodes.shader.input.Bevel.samples) |  |
 | [`tree`](#nodebpy.nodes.shader.input.Bevel.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.Bevel.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### CameraData
 
 ``` python
@@ -210,6 +322,41 @@ Retrieve information about the camera and how it relates to the current shading 
 | [`node`](#nodebpy.nodes.shader.input.CameraData.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.CameraData.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.CameraData.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.CameraData.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -237,6 +384,41 @@ A color picker
 | [`o`](#nodebpy.nodes.shader.input.Color.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.Color.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.Color.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Outputs**
 
 | Attribute | Type          | Description |
@@ -262,6 +444,41 @@ Retrieve a color attribute, or the default fallback if none is specified
 | [`o`](#nodebpy.nodes.shader.input.ColorAttribute.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.ColorAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.ColorAttribute.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Outputs**
 
 | Attribute | Type          | Description |
@@ -286,6 +503,41 @@ Retrieve hair curve information
 | [`node`](#nodebpy.nodes.shader.input.CurvesInfo.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.CurvesInfo.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.CurvesInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.CurvesInfo.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -325,7 +577,7 @@ Typically used for mixing reflections at grazing angles
 #### Outputs
 
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
 
 #### Attributes
 
@@ -336,6 +588,41 @@ Typically used for mixing reflections at grazing angles
 | [`node`](#nodebpy.nodes.shader.input.Fresnel.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Fresnel.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.Fresnel.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.Fresnel.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### Geometry
 
@@ -354,6 +641,41 @@ Retrieve geometric information about the current shading point
 | [`node`](#nodebpy.nodes.shader.input.Geometry.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Geometry.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.Geometry.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.Geometry.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -410,6 +732,199 @@ Typically used for layering shaders with the Mix Shader node
 | [`o`](#nodebpy.nodes.shader.input.LayerWeight.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.LayerWeight.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.LayerWeight.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+### LightEvaluation
+
+``` python
+LightEvaluation(position=None, normal=None, roughness=0.5, *, mode='DIFFUSE')
+```
+
+Light Evaluation
+
+#### Parameters
+
+| Name      | Type        | Description | Default |
+|-----------|-------------|-------------|---------|
+| position  | InputVector | Position    | `None`  |
+| normal    | InputVector | Normal      | `None`  |
+| roughness | InputFloat  | Roughness   | `0.5`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.LightEvaluation.i) |  |
+| [`mode`](#nodebpy.nodes.shader.input.LightEvaluation.mode) |  |
+| [`name`](#nodebpy.nodes.shader.input.LightEvaluation.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.LightEvaluation.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.LightEvaluation.o) |  |
+| [`tree`](#nodebpy.nodes.shader.input.LightEvaluation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [diffuse](#nodebpy.nodes.shader.input.LightEvaluation.diffuse) | Create Light Evaluation with operation ‘Diffuse’. |
+| [glossy](#nodebpy.nodes.shader.input.LightEvaluation.glossy) | Create Light Evaluation with operation ‘Glossy’. |
+| [props](#nodebpy.nodes.shader.input.LightEvaluation.props) | Set the properties every node has and return the node, so it can |
+
+##### diffuse
+
+``` python
+diffuse(position=None, normal=None)
+```
+
+Create Light Evaluation with operation ‘Diffuse’.
+
+##### glossy
+
+``` python
+glossy(position=None, normal=None, roughness=0.5)
+```
+
+Create Light Evaluation with operation ‘Glossy’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+**Inputs**
+
+| Attribute     | Type           | Description |
+|---------------|----------------|-------------|
+| `i.position`  | `VectorSocket` | Position    |
+| `i.normal`    | `VectorSocket` | Normal      |
+| `i.roughness` | `FloatSocket`  | Roughness   |
+
+**Outputs**
+
+| Attribute     | Type           | Description |
+|---------------|----------------|-------------|
+| `o.factor`    | `FloatSocket`  | Factor      |
+| `o.mask`      | `FloatSocket`  | Mask        |
+| `o.direction` | `VectorSocket` | Direction   |
+| `o.distance`  | `FloatSocket`  | Distance    |
+
+### LightInfo
+
+``` python
+LightInfo()
+```
+
+Exposes physical properties of the light being evaluated and computes basic information relative to the evaluation position
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.LightInfo.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.LightInfo.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.LightInfo.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.LightInfo.o) |  |
+| [`tree`](#nodebpy.nodes.shader.input.LightInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.LightInfo.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+**Outputs**
+
+| Attribute    | Type           | Description |
+|--------------|----------------|-------------|
+| `o.color`    | `ColorSocket`  | Color       |
+| `o.power`    | `FloatSocket`  | Power       |
+| `o.position` | `VectorSocket` | Position    |
+
 ### LightPath
 
 ``` python
@@ -463,6 +978,41 @@ Typically used for non-physically-based tricks
 | [`o`](#nodebpy.nodes.shader.input.LightPath.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.LightPath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.LightPath.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### ObjectInfo
 
 ``` python
@@ -480,6 +1030,41 @@ Retrieve information about the object instance
 | [`node`](#nodebpy.nodes.shader.input.ObjectInfo.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.ObjectInfo.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.ObjectInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.ObjectInfo.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -509,6 +1094,41 @@ Retrieve the data of the particle that spawned the object instance, for example 
 | [`node`](#nodebpy.nodes.shader.input.ParticleInfo.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.ParticleInfo.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.ParticleInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.ParticleInfo.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -540,6 +1160,41 @@ Retrieve information about points in a point cloud
 | [`node`](#nodebpy.nodes.shader.input.PointInfo.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.PointInfo.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.PointInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.PointInfo.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -581,33 +1236,36 @@ Cast rays and retrieve information from the hit point
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.shader.input.Raycast.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.shader.input.Raycast.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.shader.input.Raycast.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.shader.input.Raycast.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -626,6 +1284,79 @@ Deprecated: use `items.new(value, name).output`.
 | `o.hit_distance` | `FloatSocket`  | Hit Distance |
 | `o.hit_position` | `VectorSocket` | Hit Position |
 | `o.hit_normal`   | `VectorSocket` | Hit Normal   |
+
+### ShadowRaycast
+
+``` python
+ShadowRaycast(position=None, softness=1.0)
+```
+
+Shadow Raycast
+
+#### Parameters
+
+| Name     | Type        | Description | Default |
+|----------|-------------|-------------|---------|
+| position | InputVector | Position    | `None`  |
+| softness | InputFloat  | Softness    | `1.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.ShadowRaycast.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.ShadowRaycast.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.ShadowRaycast.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.ShadowRaycast.o) |  |
+| [`tree`](#nodebpy.nodes.shader.input.ShadowRaycast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.ShadowRaycast.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+**Inputs**
+
+| Attribute    | Type           | Description |
+|--------------|----------------|-------------|
+| `i.position` | `VectorSocket` | Position    |
+| `i.softness` | `FloatSocket`  | Softness    |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.color` | `ColorSocket` | Color       |
 
 ### Tangent
 
@@ -647,6 +1378,41 @@ Generate a tangent direction for the Anisotropic BSDF
 | [`o`](#nodebpy.nodes.shader.input.Tangent.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.Tangent.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`uv_map`](#nodebpy.nodes.shader.input.Tangent.uv_map) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.Tangent.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -693,6 +1459,41 @@ Typically used as inputs for texture nodes
 | [`object`](#nodebpy.nodes.shader.input.TextureCoordinate.object) |  |
 | [`tree`](#nodebpy.nodes.shader.input.TextureCoordinate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.TextureCoordinate.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### UVAlongStroke
 
 ``` python
@@ -711,6 +1512,41 @@ UV coordinates that map a texture along the stroke length
 | [`o`](#nodebpy.nodes.shader.input.UVAlongStroke.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.UVAlongStroke.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_tips`](#nodebpy.nodes.shader.input.UVAlongStroke.use_tips) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.UVAlongStroke.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -737,6 +1573,41 @@ Retrieve a UV map from the geometry, or the default fallback if none is specifie
 | [`o`](#nodebpy.nodes.shader.input.UVMap.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.UVMap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`uv_map`](#nodebpy.nodes.shader.input.UVMap.uv_map) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.UVMap.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Outputs**
 
@@ -767,7 +1638,7 @@ Note: as meshes are triangulated before being processed by Cycles, topology will
 #### Outputs
 
     o.factor : FloatSocket
-        Factor
+        Factor. Renamed from ``Fac``; ``o.fac`` still resolves to it.
 
 #### Attributes
 
@@ -779,3 +1650,38 @@ Note: as meshes are triangulated before being processed by Cycles, topology will
 | [`o`](#nodebpy.nodes.shader.input.Wireframe.o) |  |
 | [`tree`](#nodebpy.nodes.shader.input.Wireframe.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_pixel_size`](#nodebpy.nodes.shader.input.Wireframe.use_pixel_size) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.input.Wireframe.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.

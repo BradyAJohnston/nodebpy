@@ -81,7 +81,7 @@ This is a new node group asset in Blender 5.2 to do PCA on the positions of poin
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 
-with TreeBuilder("Principal Components") as tree:
+with TreeBuilder("Principal Components", collapse=True) as tree:
     position = tree.inputs.vector("Position", (0.0, 0.0, 0.0), default_input="POSITION")
     group_id = tree.inputs.integer(
         "Group ID",
@@ -336,7 +336,7 @@ tree.layout_snapshot = {
 }
 ```
 
-Positions are applied by name, so a node a rebuild does not recreate (a reroute) or renames is skipped rather than erroring. Positions inside nested groups are preserved too.
+Positions are applied by name, so a node a rebuild does not recreate (a reroute) or renames is skipped rather than erroring. The builder makes the Group Input and Group Output nodes itself, so when they are collapsed a `tree.tree.nodes["Group Input"].hide = True` line follows the snapshot. Positions inside nested groups are preserved too.
 
 ### Reroutes
 
@@ -377,7 +377,7 @@ with TreeBuilder("Stack") as tree:
 
 ## Frames
 
-Frames are reconstructed as `with g.Frame("..."):` blocks, including frames nested inside other frames (and container frames that hold only sub-frames):
+Frames are reconstructed as `with g.Frame("..."):` blocks, including frames nested inside other frames (and container frames that hold only sub-frames). A frame’s settings come back as `g.Frame(...)` arguments and `.props(...)` (its size only when it doesn’t shrink to fit its nodes), and a frame holding no nodes is built on its own, inside its parent’s block:
 
 ``` python
 with TreeBuilder("Framed") as tree:
@@ -386,6 +386,7 @@ with TreeBuilder("Framed") as tree:
         with g.Frame("Warp"):
             warped = geo >> g.SetPosition(offset=(0.0, 0.0, 1.0))
     warped >> g.SetShadeSmooth() >> tree.outputs.geometry("Out")
+    g.Frame("Notes", shrink=False).props(color="#336699", width=300, height=150)
 
 code = tree.to_python()
 ```
@@ -402,6 +403,42 @@ with TreeBuilder("Framed") as tree:
         with g.Frame("Warp"):
             set_position = geometry >> g.SetPosition(offset=(0.0, 0.0, 1.0))
     set_position >> g.SetShadeSmooth.face() >> out
+    g.Frame("Notes", shrink=False).props(color="#336699", width=300.0, height=150.0)
+```
+
+## Node Properties and Muted Links
+
+The properties every node has come back as a `.props(...)` call on the node: its label, colour, width, collapsed state, hidden sockets, mute, warning propagation and gizmo pins (see [Node Properties](node-api.llms.md#node-properties)). A tree whose nodes are all collapsed is built with `collapse=True` instead of a `.props(hide=True)` on each. Muted links come back as `muted(...)`, with the value the input uses while its link is muted:
+
+``` python
+from nodebpy import muted
+
+with TreeBuilder("Props") as tree:
+    geo = tree.inputs.geometry()
+    ripple = (g.Position().o.position.x * 0.1).props(label="Ripple")
+    lifted = g.SetPosition(geometry=geo, offset=g.CombineXYZ(z=ripple)).props(
+        color="#FFAA00", hide_inputs=["Selection"]
+    )
+    g.JoinGeometry([lifted, muted(geo)]) >> tree.outputs.geometry("Out")
+
+code = tree.to_python()
+```
+
+``` python
+from nodebpy import TreeBuilder, muted
+from nodebpy import geometry as g
+
+with TreeBuilder("Props") as tree:
+    geometry = tree.inputs.geometry("Geometry")
+    out = tree.outputs.geometry("Out")
+
+    set_position = g.SetPosition(
+        geometry=geometry,
+        offset=g.CombineXYZ(z=(g.Position().o.position.x * 0.1).props(label="Ripple")),
+    ).props(color="#FFAA00", hide_inputs=["Selection"])
+    join_geometry = g.JoinGeometry((set_position, muted(geometry)))
+
+    join_geometry >> out
 ```
 
 ## Archiving as Classes

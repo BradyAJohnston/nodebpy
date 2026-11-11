@@ -28,7 +28,6 @@ PrincipledVolume(
     blackbody_tint=(1.0, 1.0, 1.0, 1.0),
     temperature=1000.0,
     temperature_attribute='temperature',
-    weight=0.0,
 )
 ```
 
@@ -50,7 +49,6 @@ Combine all volume shading components into a single easy to use node
 | blackbody_tint | InputColor | Blackbody Tint | `(1.0, 1.0, 1.0, 1.0)` |
 | temperature | InputFloat | Temperature | `1000.0` |
 | temperature_attribute | InputString | Temperature Attribute | `'temperature'` |
-| weight | InputFloat | Weight | `0.0` |
 
 #### Attributes
 
@@ -61,6 +59,41 @@ Combine all volume shading components into a single easy to use node
 | [`node`](#nodebpy.nodes.shader.grid.PrincipledVolume.node) |  |
 | [`o`](#nodebpy.nodes.shader.grid.PrincipledVolume.o) |  |
 | [`tree`](#nodebpy.nodes.shader.grid.PrincipledVolume.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.grid.PrincipledVolume.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -78,7 +111,6 @@ Combine all volume shading components into a single easy to use node
 | `i.blackbody_tint`        | `ColorSocket`  | Blackbody Tint        |
 | `i.temperature`           | `FloatSocket`  | Temperature           |
 | `i.temperature_attribute` | `StringSocket` | Temperature Attribute |
-| `i.weight`                | `FloatSocket`  | Weight                |
 
 **Outputs**
 
@@ -89,7 +121,7 @@ Combine all volume shading components into a single easy to use node
 ### VolumeAbsorption
 
 ``` python
-VolumeAbsorption(color=(0.8, 0.8, 0.8, 1.0), density=1.0, weight=0.0)
+VolumeAbsorption(color=(0.8, 0.8, 0.8, 1.0), density=1.0)
 ```
 
 Absorb light as it passes through the volume
@@ -100,7 +132,6 @@ Absorb light as it passes through the volume
 |---------|------------|-------------|------------------------|
 | color   | InputColor | Color       | `(0.8, 0.8, 0.8, 1.0)` |
 | density | InputFloat | Density     | `1.0`                  |
-| weight  | InputFloat | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -112,13 +143,47 @@ Absorb light as it passes through the volume
 | [`o`](#nodebpy.nodes.shader.grid.VolumeAbsorption.o) |  |
 | [`tree`](#nodebpy.nodes.shader.grid.VolumeAbsorption.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.grid.VolumeAbsorption.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute   | Type          | Description |
 |-------------|---------------|-------------|
 | `i.color`   | `ColorSocket` | Color       |
 | `i.density` | `FloatSocket` | Density     |
-| `i.weight`  | `FloatSocket` | Weight      |
 
 **Outputs**
 
@@ -130,7 +195,6 @@ Absorb light as it passes through the volume
 
 ``` python
 VolumeCoefficients(
-    weight=0.0,
     absorption_coefficients=(1.0, 1.0, 1.0),
     scatter_coefficients=(1.0, 1.0, 1.0),
     anisotropy=0.0,
@@ -150,7 +214,6 @@ Model all three physical processes in a volume, represented by their coefficient
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| weight | InputFloat | Weight | `0.0` |
 | absorption_coefficients | InputVector | Absorption Coefficients | `(1.0, 1.0, 1.0)` |
 | scatter_coefficients | InputVector | Scatter Coefficients | `(1.0, 1.0, 1.0)` |
 | anisotropy | InputFloat | Anisotropy | `0.0` |
@@ -171,11 +234,45 @@ Model all three physical processes in a volume, represented by their coefficient
 | [`phase`](#nodebpy.nodes.shader.grid.VolumeCoefficients.phase) |  |
 | [`tree`](#nodebpy.nodes.shader.grid.VolumeCoefficients.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.grid.VolumeCoefficients.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute                   | Type           | Description             |
 |-----------------------------|----------------|-------------------------|
-| `i.weight`                  | `FloatSocket`  | Weight                  |
 | `i.absorption_coefficients` | `VectorSocket` | Absorption Coefficients |
 | `i.scatter_coefficients`    | `VectorSocket` | Scatter Coefficients    |
 | `i.anisotropy`              | `FloatSocket`  | Anisotropy              |
@@ -209,6 +306,41 @@ Read volume data attributes from volume grids
 | [`o`](#nodebpy.nodes.shader.grid.VolumeInfo.o) |  |
 | [`tree`](#nodebpy.nodes.shader.grid.VolumeInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.grid.VolumeInfo.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Outputs**
 
 | Attribute       | Type          | Description |
@@ -229,7 +361,6 @@ VolumeScatter(
     backscatter=0.1,
     alpha=0.5,
     diameter=20.0,
-    weight=0.0,
     *,
     phase='HENYEY_GREENSTEIN',
 )
@@ -248,7 +379,6 @@ Scatter light as it passes through the volume, often used to add fog to a scene
 | backscatter | InputFloat | Backscatter | `0.1`                  |
 | alpha       | InputFloat | Alpha       | `0.5`                  |
 | diameter    | InputFloat | Diameter    | `20.0`                 |
-| weight      | InputFloat | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -261,6 +391,41 @@ Scatter light as it passes through the volume, often used to add fog to a scene
 | [`phase`](#nodebpy.nodes.shader.grid.VolumeScatter.phase) |  |
 | [`tree`](#nodebpy.nodes.shader.grid.VolumeScatter.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.grid.VolumeScatter.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute       | Type          | Description |
@@ -272,7 +437,6 @@ Scatter light as it passes through the volume, often used to add fog to a scene
 | `i.backscatter` | `FloatSocket` | Backscatter |
 | `i.alpha`       | `FloatSocket` | Alpha       |
 | `i.diameter`    | `FloatSocket` | Diameter    |
-| `i.weight`      | `FloatSocket` | Weight      |
 
 **Outputs**
 

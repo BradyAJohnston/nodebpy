@@ -244,6 +244,72 @@ with g.tree() as tree:
     eai.domain = "FACE"
 ```
 
+## Node Properties
+
+Every node has properties that aren’t sockets or options: its label, colour, width, whether it is collapsed or muted, and so on. `.props()` sets them while writing the tree, and returns the node it is called on, so it goes at the end of a chain. Called on a socket, it sets the properties of the node the socket belongs to and returns the socket.
+
+``` python
+with g.tree() as tree:
+    geo = tree.inputs.geometry("Geometry")
+    offset = (g.Position().o.position.x * 0.1).props(label="Ripple", hide=True)
+    lifted = g.SetPosition(geometry=geo, offset=g.CombineXYZ(z=offset)).props(
+        color="#FFAA00",
+        width=200,
+        hide_inputs=["Selection"],
+        warning_propagation="ERRORS",
+    )
+    lifted >> tree.outputs.geometry("Geometry")
+
+lifted.node.label, lifted.node.width, lifted.node.inputs["Selection"].hide
+```
+
+    ('', 200.0, True)
+
+| Argument | Sets |
+|----|----|
+| `label` | The header label. |
+| `color` | A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple. |
+| `width`, `height` | The node’s size; only frames use `height`. |
+| `hide` | Collapse the node. |
+| `show_options` | Show the node’s dropdowns and toggles. |
+| `hide_inputs`, `hide_outputs` | Sockets to hide, by name; `"Value#1"` is the second visible `Value`. Blender won’t hide a linked socket. |
+| `mute` | Mute (bypass) the node. |
+| `warning_propagation` | Which of the node’s warnings show on the group node it sits in. |
+| `pin_gizmo` | Keep a value node’s or gizmo node’s gizmo visible when the node isn’t selected. |
+| `pin_gizmo_inputs` | The same for inputs passing a gizmo through, on group nodes. |
+
+Properties left as `None` are unchanged.
+
+### Frames
+
+`g.Frame` takes the frame’s own settings (`label`, `shrink`, `text` and `label_size`); its colour and size go through `.props()`. Used as a `with` block it holds the nodes made inside; made on its own it is an empty frame, for notes:
+
+``` python
+with g.tree() as tree:
+    with g.Frame("Lift", label_size=28).props(color="#336699"):
+        lifted = g.SetPosition(offset=(0, 0, 1))
+    g.Frame("Notes", shrink=False).props(width=300, height=150)
+```
+
+## Muted Links
+
+A muted link stays in the tree but passes nothing, so the input it feeds uses its own value. Wrap the node or socket passed as an input in `muted()` to mute its link; `value=` sets the value the input uses meanwhile. It works wherever a node or socket is passed: as an argument, in a list for a multi-input socket, with `>>` and when declaring items.
+
+``` python
+from nodebpy import muted
+
+with g.tree() as tree:
+    geo = tree.inputs.geometry("Geometry")
+    lifted = g.SetPosition(geometry=geo, offset=muted(g.Position(), value=(0, 0, 1)))
+    g.JoinGeometry([lifted, muted(geo)]) >> tree.outputs.geometry("Geometry")
+
+[(link.from_node.name, link.to_node.name) for link in tree.tree.links if link.is_muted]
+```
+
+    [('Position', 'Set Position'), ('Group Input', 'Join Geometry')]
+
+`muted()` takes only a node or socket, and can’t be an operand: write `g.Math.add(muted(a), b)` rather than `muted(a) + b`. The links are muted when the tree’s `with` block exits, as muting them straight away would change which inputs Blender counts as used while the rest of the tree is being built.
+
 ## Class Methods
 
 For nodes that have `mode`, `domain`, `data_type` and `operation` as potential enum values, convenience class methods are provided.
@@ -315,7 +381,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x12c2f6ad0>
+>     <nodebpy.builder.socket.BooleanSocket at 0x133d1c050>
 >
 > ### Comparing Python Objects
 >

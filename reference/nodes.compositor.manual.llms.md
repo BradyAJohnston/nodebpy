@@ -41,10 +41,7 @@ The same node as in Geometry Nodes, with the same items API and type inference, 
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.compositor.manual.IndexSwitch.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.compositor.manual.IndexSwitch.add_items) | Deprecated: use `items.new(value, name)` per item. |
 | [boolean](#nodebpy.nodes.compositor.manual.IndexSwitch.boolean) |  |
-| [capture](#nodebpy.nodes.compositor.manual.IndexSwitch.capture) | Deprecated: use `items.new(value, name).output`. |
 | [color](#nodebpy.nodes.compositor.manual.IndexSwitch.color) |  |
 | [float](#nodebpy.nodes.compositor.manual.IndexSwitch.float) |  |
 | [font](#nodebpy.nodes.compositor.manual.IndexSwitch.font) |  |
@@ -53,39 +50,16 @@ The same node as in Geometry Nodes, with the same items API and type inference, 
 | [matrix](#nodebpy.nodes.compositor.manual.IndexSwitch.matrix) |  |
 | [menu](#nodebpy.nodes.compositor.manual.IndexSwitch.menu) |  |
 | [object](#nodebpy.nodes.compositor.manual.IndexSwitch.object) |  |
+| [props](#nodebpy.nodes.compositor.manual.IndexSwitch.props) | Set the properties every node has and return the node, so it can |
 | [rotation](#nodebpy.nodes.compositor.manual.IndexSwitch.rotation) |  |
 | [string](#nodebpy.nodes.compositor.manual.IndexSwitch.string) |  |
 | [vector](#nodebpy.nodes.compositor.manual.IndexSwitch.vector) |  |
-
-##### add_item
-
-``` python
-add_item(name, value=None, *, type=None)
-```
-
-Deprecated: use `items.new(value, name, type=)`.
-
-##### add_items
-
-``` python
-add_items(items)
-```
-
-Deprecated: use `items.new(value, name)` per item.
 
 ##### boolean
 
 ``` python
 boolean(index=0, items=())
 ```
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
 
 ##### color
 
@@ -135,6 +109,35 @@ menu(index=0, items=())
 object(index=0, items=())
 ```
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### rotation
 
 ``` python
@@ -177,48 +180,21 @@ Node builder for the Menu Switch node (Compositor tree)
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.compositor.manual.MenuSwitch.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.compositor.manual.MenuSwitch.add_items) | Deprecated: use `items.new(value, name)` per item. |
 | [boolean](#nodebpy.nodes.compositor.manual.MenuSwitch.boolean) |  |
-| [capture](#nodebpy.nodes.compositor.manual.MenuSwitch.capture) | Deprecated: use `items.new(value, name).output`. |
 | [color](#nodebpy.nodes.compositor.manual.MenuSwitch.color) |  |
 | [float](#nodebpy.nodes.compositor.manual.MenuSwitch.float) |  |
 | [integer](#nodebpy.nodes.compositor.manual.MenuSwitch.integer) |  |
 | [is_selected](#nodebpy.nodes.compositor.manual.MenuSwitch.is_selected) | Gets the boolean output socket that is True when the named menu item is selected. |
-| [item](#nodebpy.nodes.compositor.manual.MenuSwitch.item) | Deprecated: use `items.new(value, name, description=)`. |
 | [menu](#nodebpy.nodes.compositor.manual.MenuSwitch.menu) |  |
+| [props](#nodebpy.nodes.compositor.manual.MenuSwitch.props) | Set the properties every node has and return the node, so it can |
 | [string](#nodebpy.nodes.compositor.manual.MenuSwitch.string) |  |
 | [vector](#nodebpy.nodes.compositor.manual.MenuSwitch.vector) |  |
-
-##### add_item
-
-``` python
-add_item(name, value=None, *, type=None)
-```
-
-Deprecated: use `items.new(value, name, type=)`.
-
-##### add_items
-
-``` python
-add_items(items)
-```
-
-Deprecated: use `items.new(value, name)` per item.
 
 ##### boolean
 
 ``` python
 boolean(menu=None, items=None)
 ```
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
 
 ##### color
 
@@ -260,19 +236,40 @@ Cannot be used with the “Output” name as this refers to the output socket it
 |----|----|----|
 |  | BooleanSocket | The boolean output socket that is True when the named menu item is selected. |
 
-##### item
-
-``` python
-item(name, value=None, *, description=None)
-```
-
-Deprecated: use `items.new(value, name, description=)`.
-
 ##### menu
 
 ``` python
 menu(menu=None, items=None)
 ```
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### string
 

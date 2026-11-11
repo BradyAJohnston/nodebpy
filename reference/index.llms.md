@@ -10,6 +10,7 @@
 | [builder.accessor](../reference/builder.accessor.llms.md#nodebpy.builder.accessor) |  |
 | [TreeBuilder](../reference/TreeBuilder.llms.md#nodebpy.TreeBuilder) | Builder for creating Blender node trees with a clean Python API. |
 | [builder.BaseNode](../reference/builder.BaseNode.llms.md#nodebpy.builder.BaseNode) | Base class for all node wrappers. |
+| [muted](../reference/muted.llms.md#nodebpy.muted) | Link `source` into an input through a muted link. |
 
 ## Arrangement
 
@@ -93,6 +94,7 @@ Nodes use in Material / Shader node trees
 | [nodes.shader.grid](../reference/nodes.shader.grid.llms.md#nodebpy.nodes.shader.grid) |  |
 | [nodes.shader.group](../reference/nodes.shader.group.llms.md#nodebpy.nodes.shader.group) |  |
 | [nodes.shader.input](../reference/nodes.shader.input.llms.md#nodebpy.nodes.shader.input) |  |
+| [nodes.shader.interface](../reference/nodes.shader.interface.llms.md#nodebpy.nodes.shader.interface) |  |
 | [nodes.shader.manual](../reference/nodes.shader.manual.llms.md#nodebpy.nodes.shader.manual) |  |
 | [nodes.shader.output](../reference/nodes.shader.output.llms.md#nodebpy.nodes.shader.output) |  |
 | [nodes.shader.script](../reference/nodes.shader.script.llms.md#nodebpy.nodes.shader.script) |  |

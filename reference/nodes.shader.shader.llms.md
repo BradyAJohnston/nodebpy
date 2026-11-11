@@ -14,6 +14,7 @@
 | [GlossyBSDF](#nodebpy.nodes.shader.shader.GlossyBSDF) | Reflection with microfacet distribution, used for materials such as metal or mirrors |
 | [HairBSDF](#nodebpy.nodes.shader.shader.HairBSDF) | Reflection and transmission shaders optimized for hair rendering |
 | [Holdout](#nodebpy.nodes.shader.shader.Holdout) | Create a “hole” in the image with zero alpha transparency, which is useful for compositing. |
+| [LightAccumulation](#nodebpy.nodes.shader.shader.LightAccumulation) | Adds the result of all the evaluated lights and stores each input into its respective Compositing Pass. |
 | [MetallicBSDF](#nodebpy.nodes.shader.shader.MetallicBSDF) | Metallic reflection with microfacet distribution, and metallic fresnel |
 | [MixShader](#nodebpy.nodes.shader.shader.MixShader) | Mix two shaders together. Typically used for material layering |
 | [PrincipledBSDF](#nodebpy.nodes.shader.shader.PrincipledBSDF) | Physically-based, easy-to-use shader for rendering surface materials, based on the OpenPBR model |
@@ -52,6 +53,41 @@ Add two Shaders together
 | [`o`](#nodebpy.nodes.shader.shader.AddShader.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.AddShader.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.AddShader.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute      | Type           | Description |
@@ -68,7 +104,7 @@ Add two Shaders together
 ### Background
 
 ``` python
-Background(color=(0.8, 0.8, 0.8, 1.0), strength=1.0, weight=0.0)
+Background(color=(0.8, 0.8, 0.8, 1.0), strength=1.0)
 ```
 
     Add background light emission.
@@ -81,8 +117,6 @@ Note: This node should only be used for the world surface output
         Color
     strength : InputFloat
         Strength
-    weight : InputFloat
-        Weight
 
 #### Inputs
 
@@ -90,8 +124,6 @@ Note: This node should only be used for the world surface output
         Color
     i.strength : FloatSocket
         Strength
-    i.weight : FloatSocket
-        Weight
 
 #### Outputs
 
@@ -108,10 +140,45 @@ Note: This node should only be used for the world surface output
 | [`o`](#nodebpy.nodes.shader.shader.Background.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.Background.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.Background.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### DiffuseBSDF
 
 ``` python
-DiffuseBSDF(color=(0.8, 0.8, 0.8, 1.0), roughness=0.0, normal=None, weight=0.0)
+DiffuseBSDF(color=(0.8, 0.8, 0.8, 1.0), roughness=0.0, normal=None)
 ```
 
 Lambertian and Oren-Nayar diffuse reflection
@@ -123,7 +190,6 @@ Lambertian and Oren-Nayar diffuse reflection
 | color     | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
 | roughness | InputFloat  | Roughness   | `0.0`                  |
 | normal    | InputVector | Normal      | `None`                 |
-| weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -135,6 +201,41 @@ Lambertian and Oren-Nayar diffuse reflection
 | [`o`](#nodebpy.nodes.shader.shader.DiffuseBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.DiffuseBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.DiffuseBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute     | Type           | Description |
@@ -142,7 +243,6 @@ Lambertian and Oren-Nayar diffuse reflection
 | `i.color`     | `ColorSocket`  | Color       |
 | `i.roughness` | `FloatSocket`  | Roughness   |
 | `i.normal`    | `VectorSocket` | Normal      |
-| `i.weight`    | `FloatSocket`  | Weight      |
 
 **Outputs**
 
@@ -153,7 +253,7 @@ Lambertian and Oren-Nayar diffuse reflection
 ### Emission
 
 ``` python
-Emission(color=(1.0, 1.0, 1.0, 1.0), strength=1.0, weight=0.0)
+Emission(color=(1.0, 1.0, 1.0, 1.0), strength=1.0)
 ```
 
 Lambertian emission shader
@@ -164,7 +264,6 @@ Lambertian emission shader
 |----------|------------|-------------|------------------------|
 | color    | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
 | strength | InputFloat | Strength    | `1.0`                  |
-| weight   | InputFloat | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -176,13 +275,47 @@ Lambertian emission shader
 | [`o`](#nodebpy.nodes.shader.shader.Emission.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.Emission.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.Emission.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute    | Type          | Description |
 |--------------|---------------|-------------|
 | `i.color`    | `ColorSocket` | Color       |
 | `i.strength` | `FloatSocket` | Strength    |
-| `i.weight`   | `FloatSocket` | Weight      |
 
 **Outputs**
 
@@ -196,9 +329,11 @@ Lambertian emission shader
 GlassBSDF(
     color=(1.0, 1.0, 1.0, 1.0),
     roughness=0.0,
+    anisotropy=0.0,
+    rotation=0.0,
     ior=1.5,
     normal=None,
-    weight=0.0,
+    tangent=None,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
     *,
@@ -214,9 +349,11 @@ Glass-like shader mixing refraction and reflection at grazing angles
 |---------------------|-------------|---------------------|------------------------|
 | color               | InputColor  | Color               | `(1.0, 1.0, 1.0, 1.0)` |
 | roughness           | InputFloat  | Roughness           | `0.0`                  |
+| anisotropy          | InputFloat  | Anisotropy          | `0.0`                  |
+| rotation            | InputFloat  | Rotation            | `0.0`                  |
 | ior                 | InputFloat  | IOR                 | `1.5`                  |
 | normal              | InputVector | Normal              | `None`                 |
-| weight              | InputFloat  | Weight              | `0.0`                  |
+| tangent             | InputVector | Tangent             | `None`                 |
 | thin_film_thickness | InputFloat  | Thin Film Thickness | `0.0`                  |
 | thin_film_ior       | InputFloat  | Thin Film IOR       | `1.33`                 |
 
@@ -231,15 +368,52 @@ Glass-like shader mixing refraction and reflection at grazing angles
 | [`o`](#nodebpy.nodes.shader.shader.GlassBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.GlassBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.GlassBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute               | Type           | Description         |
 |-------------------------|----------------|---------------------|
 | `i.color`               | `ColorSocket`  | Color               |
 | `i.roughness`           | `FloatSocket`  | Roughness           |
+| `i.anisotropy`          | `FloatSocket`  | Anisotropy          |
+| `i.rotation`            | `FloatSocket`  | Rotation            |
 | `i.ior`                 | `FloatSocket`  | IOR                 |
 | `i.normal`              | `VectorSocket` | Normal              |
-| `i.weight`              | `FloatSocket`  | Weight              |
+| `i.tangent`             | `VectorSocket` | Tangent             |
 | `i.thin_film_thickness` | `FloatSocket`  | Thin Film Thickness |
 | `i.thin_film_ior`       | `FloatSocket`  | Thin Film IOR       |
 
@@ -259,7 +433,6 @@ GlossyBSDF(
     rotation=0.0,
     normal=None,
     tangent=None,
-    weight=0.0,
     *,
     distribution='MULTI_GGX',
 )
@@ -277,7 +450,6 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 | rotation   | InputFloat  | Rotation    | `0.0`                  |
 | normal     | InputVector | Normal      | `None`                 |
 | tangent    | InputVector | Tangent     | `None`                 |
-| weight     | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -290,6 +462,41 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 | [`o`](#nodebpy.nodes.shader.shader.GlossyBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.GlossyBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.GlossyBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute      | Type           | Description |
@@ -300,7 +507,6 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 | `i.rotation`   | `FloatSocket`  | Rotation    |
 | `i.normal`     | `VectorSocket` | Normal      |
 | `i.tangent`    | `VectorSocket` | Tangent     |
-| `i.weight`     | `FloatSocket`  | Weight      |
 
 **Outputs**
 
@@ -317,7 +523,6 @@ HairBSDF(
     roughnessu=0.1,
     roughnessv=1.0,
     tangent=None,
-    weight=0.0,
     *,
     component='Reflection',
 )
@@ -334,7 +539,6 @@ Reflection and transmission shaders optimized for hair rendering
 | roughnessu | InputFloat  | RoughnessU  | `0.1`                  |
 | roughnessv | InputFloat  | RoughnessV  | `1.0`                  |
 | tangent    | InputVector | Tangent     | `None`                 |
-| weight     | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -347,6 +551,41 @@ Reflection and transmission shaders optimized for hair rendering
 | [`o`](#nodebpy.nodes.shader.shader.HairBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.HairBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.HairBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute      | Type           | Description |
@@ -356,7 +595,6 @@ Reflection and transmission shaders optimized for hair rendering
 | `i.roughnessu` | `FloatSocket`  | RoughnessU  |
 | `i.roughnessv` | `FloatSocket`  | RoughnessV  |
 | `i.tangent`    | `VectorSocket` | Tangent     |
-| `i.weight`     | `FloatSocket`  | Weight      |
 
 **Outputs**
 
@@ -367,22 +605,12 @@ Reflection and transmission shaders optimized for hair rendering
 ### Holdout
 
 ``` python
-Holdout(weight=0.0)
+Holdout()
 ```
 
     Create a "hole" in the image with zero alpha transparency, which is useful for compositing.
 
 Note: the holdout shader can only create alpha when transparency is enabled in the film settings
-
-#### Parameters
-
-    weight : InputFloat
-        Weight
-
-#### Inputs
-
-    i.weight : FloatSocket
-        Weight
 
 #### Outputs
 
@@ -399,6 +627,138 @@ Note: the holdout shader can only create alpha when transparency is enabled in t
 | [`o`](#nodebpy.nodes.shader.shader.Holdout.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.Holdout.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.Holdout.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+### LightAccumulation
+
+``` python
+LightAccumulation(
+    diffuse_light=None,
+    diffuse_color=None,
+    glossy_light=None,
+    glossy_color=None,
+    transmission_light=None,
+    transmission_color=None,
+)
+```
+
+    Adds the result of all the evaluated lights and stores each input into its respective Compositing Pass.
+
+The combined result is computed as (Diffuse Light \* Diffuse Color) + (Glossy Light \* Glossy Color)
+
+#### Parameters
+
+    diffuse_light : InputColor
+        Diffuse Light
+    diffuse_color : InputColor
+        Diffuse Color
+    glossy_light : InputColor
+        Glossy Light
+    glossy_color : InputColor
+        Glossy Color
+    transmission_light : InputColor
+        Transmission Light
+    transmission_color : InputColor
+        Transmission Color
+
+#### Inputs
+
+    i.diffuse_light : ColorSocket
+        Diffuse Light
+    i.diffuse_color : ColorSocket
+        Diffuse Color
+    i.glossy_light : ColorSocket
+        Glossy Light
+    i.glossy_color : ColorSocket
+        Glossy Color
+    i.transmission_light : ColorSocket
+        Transmission Light
+    i.transmission_color : ColorSocket
+        Transmission Color
+
+#### Outputs
+
+    o.shader : ShaderSocket
+        Shader
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.shader.LightAccumulation.i) |  |
+| [`name`](#nodebpy.nodes.shader.shader.LightAccumulation.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.shader.LightAccumulation.node) |  |
+| [`o`](#nodebpy.nodes.shader.shader.LightAccumulation.o) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.LightAccumulation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.LightAccumulation.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### MetallicBSDF
 
 ``` python
@@ -412,7 +772,6 @@ MetallicBSDF(
     rotation=0.0,
     normal=None,
     tangent=None,
-    weight=0.0,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
     *,
@@ -436,7 +795,6 @@ Metallic reflection with microfacet distribution, and metallic fresnel
 | rotation | InputFloat | Rotation | `0.0` |
 | normal | InputVector | Normal | `None` |
 | tangent | InputVector | Tangent | `None` |
-| weight | InputFloat | Weight | `0.0` |
 | thin_film_thickness | InputFloat | Thin Film Thickness | `0.0` |
 | thin_film_ior | InputFloat | Thin Film IOR | `1.33` |
 
@@ -458,6 +816,7 @@ Metallic reflection with microfacet distribution, and metallic fresnel
 |----|----|
 | [f82_tint](#nodebpy.nodes.shader.shader.MetallicBSDF.f82_tint) | Create Metallic BSDF with operation ‘F82 Tint’. An approximation of the Fresnel conductor curve based on the colors at perpendicular and near-grazing (roughly 82°) angles |
 | [physical_conductor](#nodebpy.nodes.shader.shader.MetallicBSDF.physical_conductor) | Create Metallic BSDF with operation ‘Physical Conductor’. Fresnel conductor based on the complex refractive index per color channel |
+| [props](#nodebpy.nodes.shader.shader.MetallicBSDF.props) | Set the properties every node has and return the node, so it can |
 
 ##### f82_tint
 
@@ -499,6 +858,35 @@ physical_conductor(
 
 Create Metallic BSDF with operation ‘Physical Conductor’. Fresnel conductor based on the complex refractive index per color channel
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute               | Type           | Description         |
@@ -512,7 +900,6 @@ Create Metallic BSDF with operation ‘Physical Conductor’. Fresnel conductor 
 | `i.rotation`            | `FloatSocket`  | Rotation            |
 | `i.normal`              | `VectorSocket` | Normal              |
 | `i.tangent`             | `VectorSocket` | Tangent             |
-| `i.weight`              | `FloatSocket`  | Weight              |
 | `i.thin_film_thickness` | `FloatSocket`  | Thin Film Thickness |
 | `i.thin_film_ior`       | `FloatSocket`  | Thin Film IOR       |
 
@@ -532,11 +919,11 @@ Mix two shaders together. Typically used for material layering
 
 #### Parameters
 
-| Name       | Type        | Description | Default |
-|------------|-------------|-------------|---------|
-| factor     | InputFloat  | Factor      | `0.5`   |
-| shader     | InputShader | Shader      | `None`  |
-| shader_001 | InputShader | Shader      | `None`  |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| factor | InputFloat | Factor. Renamed from `Fac`; `i.fac` still resolves to it. | `0.5` |
+| shader | InputShader | Shader | `None` |
+| shader_001 | InputShader | Shader | `None` |
 
 #### Attributes
 
@@ -548,13 +935,48 @@ Mix two shaders together. Typically used for material layering
 | [`o`](#nodebpy.nodes.shader.shader.MixShader.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.MixShader.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.MixShader.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
-| Attribute      | Type           | Description |
-|----------------|----------------|-------------|
-| `i.factor`     | `FloatSocket`  | Factor      |
-| `i.shader`     | `ShaderSocket` | Shader      |
-| `i.shader_001` | `ShaderSocket` | Shader      |
+| Attribute | Type | Description |
+|----|----|----|
+| `i.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `i.fac` still resolves to it. |
+| `i.shader` | `ShaderSocket` | Shader |
+| `i.shader_001` | `ShaderSocket` | Shader |
 
 **Outputs**
 
@@ -573,7 +995,6 @@ PrincipledBSDF(
     alpha=1.0,
     thin_wall=False,
     normal=None,
-    weight=0.0,
     diffuse_roughness=0.0,
     subsurface_weight=0.0,
     subsurface_radius=(1.0, 0.2, 0.1),
@@ -586,6 +1007,8 @@ PrincipledBSDF(
     anisotropic_rotation=0.0,
     tangent=None,
     transmission_weight=0.0,
+    transmission_dispersion_scale=0.0,
+    transmission_dispersion_abbe_number=20.0,
     coat_weight=0.0,
     coat_roughness=0.03,
     coat_ior=1.5,
@@ -617,7 +1040,6 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 | alpha | InputFloat | Alpha | `1.0` |
 | thin_wall | InputBoolean | Thin Wall | `False` |
 | normal | InputVector | Normal | `None` |
-| weight | InputFloat | Weight | `0.0` |
 | diffuse_roughness | InputFloat | Diffuse Roughness | `0.0` |
 | subsurface_weight | InputFloat | Subsurface Weight | `0.0` |
 | subsurface_radius | InputVector | Subsurface Radius | `(1.0, 0.2, 0.1)` |
@@ -630,6 +1052,8 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 | anisotropic_rotation | InputFloat | Anisotropic Rotation | `0.0` |
 | tangent | InputVector | Tangent | `None` |
 | transmission_weight | InputFloat | Transmission Weight | `0.0` |
+| transmission_dispersion_scale | InputFloat | Transmission Dispersion Scale | `0.0` |
+| transmission_dispersion_abbe_number | InputFloat | Transmission Dispersion Abbe Number | `20.0` |
 | coat_weight | InputFloat | Coat Weight | `0.0` |
 | coat_roughness | InputFloat | Coat Roughness | `0.03` |
 | coat_ior | InputFloat | Coat IOR | `1.5` |
@@ -655,42 +1079,78 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 | [`subsurface_method`](#nodebpy.nodes.shader.shader.PrincipledBSDF.subsurface_method) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.PrincipledBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.PrincipledBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
-| Attribute                 | Type            | Description           |
-|---------------------------|-----------------|-----------------------|
-| `i.base_color`            | `ColorSocket`   | Base Color            |
-| `i.metallic`              | `FloatSocket`   | Metallic              |
-| `i.roughness`             | `FloatSocket`   | Roughness             |
-| `i.ior`                   | `FloatSocket`   | IOR                   |
-| `i.alpha`                 | `FloatSocket`   | Alpha                 |
-| `i.thin_wall`             | `BooleanSocket` | Thin Wall             |
-| `i.normal`                | `VectorSocket`  | Normal                |
-| `i.weight`                | `FloatSocket`   | Weight                |
-| `i.diffuse_roughness`     | `FloatSocket`   | Diffuse Roughness     |
-| `i.subsurface_weight`     | `FloatSocket`   | Subsurface Weight     |
-| `i.subsurface_radius`     | `VectorSocket`  | Subsurface Radius     |
-| `i.subsurface_scale`      | `FloatSocket`   | Subsurface Scale      |
-| `i.subsurface_ior`        | `FloatSocket`   | Subsurface IOR        |
-| `i.subsurface_anisotropy` | `FloatSocket`   | Subsurface Anisotropy |
-| `i.specular_ior_level`    | `FloatSocket`   | Specular IOR Level    |
-| `i.specular_tint`         | `ColorSocket`   | Specular Tint         |
-| `i.anisotropic`           | `FloatSocket`   | Anisotropic           |
-| `i.anisotropic_rotation`  | `FloatSocket`   | Anisotropic Rotation  |
-| `i.tangent`               | `VectorSocket`  | Tangent               |
-| `i.transmission_weight`   | `FloatSocket`   | Transmission Weight   |
-| `i.coat_weight`           | `FloatSocket`   | Coat Weight           |
-| `i.coat_roughness`        | `FloatSocket`   | Coat Roughness        |
-| `i.coat_ior`              | `FloatSocket`   | Coat IOR              |
-| `i.coat_tint`             | `ColorSocket`   | Coat Tint             |
-| `i.coat_normal`           | `VectorSocket`  | Coat Normal           |
-| `i.sheen_weight`          | `FloatSocket`   | Sheen Weight          |
-| `i.sheen_roughness`       | `FloatSocket`   | Sheen Roughness       |
-| `i.sheen_tint`            | `ColorSocket`   | Sheen Tint            |
-| `i.emission_color`        | `ColorSocket`   | Emission Color        |
-| `i.emission_strength`     | `FloatSocket`   | Emission Strength     |
-| `i.thin_film_thickness`   | `FloatSocket`   | Thin Film Thickness   |
-| `i.thin_film_ior`         | `FloatSocket`   | Thin Film IOR         |
+| Attribute | Type | Description |
+|----|----|----|
+| `i.base_color` | `ColorSocket` | Base Color |
+| `i.metallic` | `FloatSocket` | Metallic |
+| `i.roughness` | `FloatSocket` | Roughness |
+| `i.ior` | `FloatSocket` | IOR |
+| `i.alpha` | `FloatSocket` | Alpha |
+| `i.thin_wall` | `BooleanSocket` | Thin Wall |
+| `i.normal` | `VectorSocket` | Normal |
+| `i.diffuse_roughness` | `FloatSocket` | Diffuse Roughness |
+| `i.subsurface_weight` | `FloatSocket` | Subsurface Weight |
+| `i.subsurface_radius` | `VectorSocket` | Subsurface Radius |
+| `i.subsurface_scale` | `FloatSocket` | Subsurface Scale |
+| `i.subsurface_ior` | `FloatSocket` | Subsurface IOR |
+| `i.subsurface_anisotropy` | `FloatSocket` | Subsurface Anisotropy |
+| `i.specular_ior_level` | `FloatSocket` | Specular IOR Level |
+| `i.specular_tint` | `ColorSocket` | Specular Tint |
+| `i.anisotropic` | `FloatSocket` | Anisotropic |
+| `i.anisotropic_rotation` | `FloatSocket` | Anisotropic Rotation |
+| `i.tangent` | `VectorSocket` | Tangent |
+| `i.transmission_weight` | `FloatSocket` | Transmission Weight |
+| `i.transmission_dispersion_scale` | `FloatSocket` | Transmission Dispersion Scale |
+| `i.transmission_dispersion_abbe_number` | `FloatSocket` | Transmission Dispersion Abbe Number |
+| `i.coat_weight` | `FloatSocket` | Coat Weight |
+| `i.coat_roughness` | `FloatSocket` | Coat Roughness |
+| `i.coat_ior` | `FloatSocket` | Coat IOR |
+| `i.coat_tint` | `ColorSocket` | Coat Tint |
+| `i.coat_normal` | `VectorSocket` | Coat Normal |
+| `i.sheen_weight` | `FloatSocket` | Sheen Weight |
+| `i.sheen_roughness` | `FloatSocket` | Sheen Roughness |
+| `i.sheen_tint` | `ColorSocket` | Sheen Tint |
+| `i.emission_color` | `ColorSocket` | Emission Color |
+| `i.emission_strength` | `FloatSocket` | Emission Strength |
+| `i.thin_film_thickness` | `FloatSocket` | Thin Film Thickness |
+| `i.thin_film_ior` | `FloatSocket` | Thin Film IOR |
 
 **Outputs**
 
@@ -716,7 +1176,6 @@ PrincipledHairBSDF(
     random_color=0.0,
     random_roughness=0.0,
     random=None,
-    weight=0.0,
     reflection=1.0,
     transmission=1.0,
     secondary_reflection=1.0,
@@ -746,10 +1205,9 @@ Physically-based, easy-to-use shader for rendering hair and fur
 | random_color | InputFloat | Random Color | `0.0` |
 | random_roughness | InputFloat | Random Roughness | `0.0` |
 | random | InputFloat | Random | `None` |
-| weight | InputFloat | Weight | `0.0` |
-| reflection | InputFloat | Reflection | `1.0` |
-| transmission | InputFloat | Transmission | `1.0` |
-| secondary_reflection | InputFloat | Secondary Reflection | `1.0` |
+| reflection | InputFloat | Reflection. Renamed from `R lobe`; `i.r_lobe` still resolves to it. | `1.0` |
+| transmission | InputFloat | Transmission. Renamed from `TT lobe`; `i.tt_lobe` still resolves to it. | `1.0` |
+| secondary_reflection | InputFloat | Secondary Reflection. Renamed from `TRT lobe`; `i.trt_lobe` still resolves to it. | `1.0` |
 
 #### Attributes
 
@@ -763,28 +1221,62 @@ Physically-based, easy-to-use shader for rendering hair and fur
 | [`parametrization`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.parametrization) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
-| Attribute                  | Type           | Description            |
-|----------------------------|----------------|------------------------|
-| `i.color`                  | `ColorSocket`  | Color                  |
-| `i.melanin`                | `FloatSocket`  | Melanin                |
-| `i.melanin_redness`        | `FloatSocket`  | Melanin Redness        |
-| `i.tint`                   | `ColorSocket`  | Tint                   |
+| Attribute | Type | Description |
+|----|----|----|
+| `i.color` | `ColorSocket` | Color |
+| `i.melanin` | `FloatSocket` | Melanin |
+| `i.melanin_redness` | `FloatSocket` | Melanin Redness |
+| `i.tint` | `ColorSocket` | Tint |
 | `i.absorption_coefficient` | `VectorSocket` | Absorption Coefficient |
-| `i.aspect_ratio`           | `FloatSocket`  | Aspect Ratio           |
-| `i.roughness`              | `FloatSocket`  | Roughness              |
-| `i.radial_roughness`       | `FloatSocket`  | Radial Roughness       |
-| `i.coat`                   | `FloatSocket`  | Coat                   |
-| `i.ior`                    | `FloatSocket`  | IOR                    |
-| `i.offset`                 | `FloatSocket`  | Offset                 |
-| `i.random_color`           | `FloatSocket`  | Random Color           |
-| `i.random_roughness`       | `FloatSocket`  | Random Roughness       |
-| `i.random`                 | `FloatSocket`  | Random                 |
-| `i.weight`                 | `FloatSocket`  | Weight                 |
-| `i.reflection`             | `FloatSocket`  | Reflection             |
-| `i.transmission`           | `FloatSocket`  | Transmission           |
-| `i.secondary_reflection`   | `FloatSocket`  | Secondary Reflection   |
+| `i.aspect_ratio` | `FloatSocket` | Aspect Ratio |
+| `i.roughness` | `FloatSocket` | Roughness |
+| `i.radial_roughness` | `FloatSocket` | Radial Roughness |
+| `i.coat` | `FloatSocket` | Coat |
+| `i.ior` | `FloatSocket` | IOR |
+| `i.offset` | `FloatSocket` | Offset |
+| `i.random_color` | `FloatSocket` | Random Color |
+| `i.random_roughness` | `FloatSocket` | Random Roughness |
+| `i.random` | `FloatSocket` | Random |
+| `i.reflection` | `FloatSocket` | Reflection. Renamed from `R lobe`; `i.r_lobe` still resolves to it. |
+| `i.transmission` | `FloatSocket` | Transmission. Renamed from `TT lobe`; `i.tt_lobe` still resolves to it. |
+| `i.secondary_reflection` | `FloatSocket` | Secondary Reflection. Renamed from `TRT lobe`; `i.trt_lobe` still resolves to it. |
 
 **Outputs**
 
@@ -795,12 +1287,7 @@ Physically-based, easy-to-use shader for rendering hair and fur
 ### RayPortalBSDF
 
 ``` python
-RayPortalBSDF(
-    color=(1.0, 1.0, 1.0, 1.0),
-    position=None,
-    direction=None,
-    weight=0.0,
-)
+RayPortalBSDF(color=(1.0, 1.0, 1.0, 1.0), position=None, direction=None)
 ```
 
 Continue tracing from an arbitrary new position and in a new direction
@@ -812,7 +1299,6 @@ Continue tracing from an arbitrary new position and in a new direction
 | color     | InputColor  | Color       | `(1.0, 1.0, 1.0, 1.0)` |
 | position  | InputVector | Position    | `None`                 |
 | direction | InputVector | Direction   | `None`                 |
-| weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -824,6 +1310,41 @@ Continue tracing from an arbitrary new position and in a new direction
 | [`o`](#nodebpy.nodes.shader.shader.RayPortalBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.RayPortalBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.RayPortalBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute     | Type           | Description |
@@ -831,7 +1352,6 @@ Continue tracing from an arbitrary new position and in a new direction
 | `i.color`     | `ColorSocket`  | Color       |
 | `i.position`  | `VectorSocket` | Position    |
 | `i.direction` | `VectorSocket` | Direction   |
-| `i.weight`    | `FloatSocket`  | Weight      |
 
 **Outputs**
 
@@ -847,7 +1367,6 @@ RefractionBSDF(
     roughness=0.0,
     ior=1.45,
     normal=None,
-    weight=0.0,
     *,
     distribution='BECKMANN',
 )
@@ -863,7 +1382,6 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 | roughness | InputFloat  | Roughness   | `0.0`                  |
 | ior       | InputFloat  | IOR         | `1.45`                 |
 | normal    | InputVector | Normal      | `None`                 |
-| weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -876,6 +1394,41 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 | [`o`](#nodebpy.nodes.shader.shader.RefractionBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.RefractionBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.RefractionBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute     | Type           | Description |
@@ -884,7 +1437,6 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 | `i.roughness` | `FloatSocket`  | Roughness   |
 | `i.ior`       | `FloatSocket`  | IOR         |
 | `i.normal`    | `VectorSocket` | Normal      |
-| `i.weight`    | `FloatSocket`  | Weight      |
 
 **Outputs**
 
@@ -899,7 +1451,6 @@ SheenBSDF(
     color=(0.8, 0.8, 0.8, 1.0),
     roughness=0.5,
     normal=None,
-    weight=0.0,
     *,
     distribution='MICROFIBER',
 )
@@ -917,8 +1468,6 @@ Typically mixed with other shaders (such as a Diffuse Shader) and is not particu
         Roughness
     normal : InputVector
         Normal
-    weight : InputFloat
-        Weight
 
 #### Inputs
 
@@ -928,8 +1477,6 @@ Typically mixed with other shaders (such as a Diffuse Shader) and is not particu
         Roughness
     i.normal : VectorSocket
         Normal
-    i.weight : FloatSocket
-        Weight
 
 #### Outputs
 
@@ -947,6 +1494,41 @@ Typically mixed with other shaders (such as a Diffuse Shader) and is not particu
 | [`o`](#nodebpy.nodes.shader.shader.SheenBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.SheenBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.SheenBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### SpecularBSDF
 
 ``` python
@@ -960,7 +1542,6 @@ SpecularBSDF(
     clear_coat=0.0,
     clear_coat_roughness=0.0,
     clear_coat_normal=None,
-    weight=0.0,
 )
 ```
 
@@ -979,7 +1560,6 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 | clear_coat | InputFloat | Clear Coat | `0.0` |
 | clear_coat_roughness | InputFloat | Clear Coat Roughness | `0.0` |
 | clear_coat_normal | InputVector | Clear Coat Normal | `None` |
-| weight | InputFloat | Weight | `0.0` |
 
 #### Attributes
 
@@ -990,6 +1570,41 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 | [`node`](#nodebpy.nodes.shader.shader.SpecularBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SpecularBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.SpecularBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.SpecularBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -1004,7 +1619,6 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 | `i.clear_coat`           | `FloatSocket`  | Clear Coat           |
 | `i.clear_coat_roughness` | `FloatSocket`  | Clear Coat Roughness |
 | `i.clear_coat_normal`    | `VectorSocket` | Clear Coat Normal    |
-| `i.weight`               | `FloatSocket`  | Weight               |
 
 **Outputs**
 
@@ -1023,7 +1637,6 @@ SubsurfaceScattering(
     roughness=1.0,
     anisotropy=0.0,
     normal=None,
-    weight=0.0,
     *,
     falloff='RANDOM_WALK',
 )
@@ -1049,8 +1662,6 @@ Typically used for materials such as skin, wax, marble or milk
         Anisotropy
     normal : InputVector
         Normal
-    weight : InputFloat
-        Weight
 
 #### Inputs
 
@@ -1068,8 +1679,6 @@ Typically used for materials such as skin, wax, marble or milk
         Anisotropy
     i.normal : VectorSocket
         Normal
-    i.weight : FloatSocket
-        Weight
 
 #### Outputs
 
@@ -1087,6 +1696,41 @@ Typically used for materials such as skin, wax, marble or milk
 | [`o`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.SubsurfaceScattering.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### ToonBSDF
 
 ``` python
@@ -1095,7 +1739,6 @@ ToonBSDF(
     size=0.5,
     smooth=0.0,
     normal=None,
-    weight=0.0,
     *,
     component='DIFFUSE',
 )
@@ -1111,7 +1754,6 @@ Diffuse and Glossy shaders with cartoon light effects
 | size   | InputFloat  | Size        | `0.5`                  |
 | smooth | InputFloat  | Smooth      | `0.0`                  |
 | normal | InputVector | Normal      | `None`                 |
-| weight | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -1124,6 +1766,41 @@ Diffuse and Glossy shaders with cartoon light effects
 | [`o`](#nodebpy.nodes.shader.shader.ToonBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.ToonBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.ToonBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute  | Type           | Description |
@@ -1132,7 +1809,6 @@ Diffuse and Glossy shaders with cartoon light effects
 | `i.size`   | `FloatSocket`  | Size        |
 | `i.smooth` | `FloatSocket`  | Smooth      |
 | `i.normal` | `VectorSocket` | Normal      |
-| `i.weight` | `FloatSocket`  | Weight      |
 
 **Outputs**
 
@@ -1143,7 +1819,7 @@ Diffuse and Glossy shaders with cartoon light effects
 ### TranslucentBSDF
 
 ``` python
-TranslucentBSDF(color=(0.8, 0.8, 0.8, 1.0), normal=None, weight=0.0)
+TranslucentBSDF(color=(0.8, 0.8, 0.8, 1.0), normal=None)
 ```
 
 Lambertian diffuse transmission
@@ -1154,7 +1830,6 @@ Lambertian diffuse transmission
 |--------|-------------|-------------|------------------------|
 | color  | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
 | normal | InputVector | Normal      | `None`                 |
-| weight | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -1166,13 +1841,47 @@ Lambertian diffuse transmission
 | [`o`](#nodebpy.nodes.shader.shader.TranslucentBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.TranslucentBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.TranslucentBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute  | Type           | Description |
 |------------|----------------|-------------|
 | `i.color`  | `ColorSocket`  | Color       |
 | `i.normal` | `VectorSocket` | Normal      |
-| `i.weight` | `FloatSocket`  | Weight      |
 
 **Outputs**
 
@@ -1183,17 +1892,16 @@ Lambertian diffuse transmission
 ### TransparentBSDF
 
 ``` python
-TransparentBSDF(color=(1.0, 1.0, 1.0, 1.0), weight=0.0)
+TransparentBSDF(color=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Transparency without refraction, passing straight through the surface as if there were no geometry
 
 #### Parameters
 
-| Name   | Type       | Description | Default                |
-|--------|------------|-------------|------------------------|
-| color  | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
-| weight | InputFloat | Weight      | `0.0`                  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| color | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -1205,12 +1913,46 @@ Transparency without refraction, passing straight through the surface as if ther
 | [`o`](#nodebpy.nodes.shader.shader.TransparentBSDF.o) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.TransparentBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.shader.TransparentBSDF.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `i.color`  | `ColorSocket` | Color       |
-| `i.weight` | `FloatSocket` | Weight      |
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.color` | `ColorSocket` | Color       |
 
 **Outputs**
 

@@ -38,6 +38,41 @@ Transform Coordinate System for Radial Tiling
 | [`o`](#nodebpy.nodes.geometry.vector.RadialTiling.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.vector.RadialTiling.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.vector.RadialTiling.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute     | Type           | Description |
@@ -65,10 +100,10 @@ Map input vector components with curves
 
 #### Parameters
 
-| Name   | Type        | Description | Default           |
-|--------|-------------|-------------|-------------------|
-| factor | InputFloat  | Factor      | `1.0`             |
-| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| factor | InputFloat | Factor. Renamed from `Fac`; `i.fac` still resolves to it. | `1.0` |
+| vector | InputVector | Vector | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -80,12 +115,47 @@ Map input vector components with curves
 | [`o`](#nodebpy.nodes.geometry.vector.VectorCurves.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.vector.VectorCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.vector.VectorCurves.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
-| Attribute  | Type           | Description |
-|------------|----------------|-------------|
-| `i.factor` | `FloatSocket`  | Factor      |
-| `i.vector` | `VectorSocket` | Vector      |
+| Attribute | Type | Description |
+|----|----|----|
+| `i.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `i.fac` still resolves to it. |
+| `i.vector` | `VectorSocket` | Vector |
 
 **Outputs**
 
@@ -152,6 +222,7 @@ Perform vector math operation
 | [normalize](#nodebpy.nodes.geometry.vector.VectorMath.normalize) | Create Vector Math with operation ‘Normalize’. Normalize A |
 | [power](#nodebpy.nodes.geometry.vector.VectorMath.power) | Create Vector Math with operation ‘Power’. Entry-wise power |
 | [project](#nodebpy.nodes.geometry.vector.VectorMath.project) | Create Vector Math with operation ‘Project’. Project A onto B |
+| [props](#nodebpy.nodes.geometry.vector.VectorMath.props) | Set the properties every node has and return the node, so it can |
 | [reflect](#nodebpy.nodes.geometry.vector.VectorMath.reflect) | Create Vector Math with operation ‘Reflect’. Reflect A around the normal B. B does not need to be normalized. |
 | [refract](#nodebpy.nodes.geometry.vector.VectorMath.refract) | Create Vector Math with operation ‘Refract’. For a given incident vector A, surface normal B and ratio of indices of refraction, Ior, refract returns the refraction vector, R |
 | [round](#nodebpy.nodes.geometry.vector.VectorMath.round) | Create Vector Math with operation ‘Round’. Entry-wise round to the nearest integer. Round upward if the fraction part is 0.5 |
@@ -331,6 +402,35 @@ project(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 
 Create Vector Math with operation ‘Project’. Project A onto B
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### reflect
 
 ``` python
@@ -476,6 +576,7 @@ Rotate a vector around a pivot point (center)
 |----|----|
 | [axis_angle](#nodebpy.nodes.geometry.vector.VectorRotate.axis_angle) | Create Vector Rotate with operation ‘Axis Angle’. Rotate a point using axis angle |
 | [euler](#nodebpy.nodes.geometry.vector.VectorRotate.euler) | Create Vector Rotate with operation ‘Euler’. Rotate a point using XYZ order |
+| [props](#nodebpy.nodes.geometry.vector.VectorRotate.props) | Set the properties every node has and return the node, so it can |
 | [x_axis](#nodebpy.nodes.geometry.vector.VectorRotate.x_axis) | Create Vector Rotate with operation ‘X Axis’. Rotate a point using X axis |
 | [y_axis](#nodebpy.nodes.geometry.vector.VectorRotate.y_axis) | Create Vector Rotate with operation ‘Y Axis’. Rotate a point using Y axis |
 | [z_axis](#nodebpy.nodes.geometry.vector.VectorRotate.z_axis) | Create Vector Rotate with operation ‘Z Axis’. Rotate a point using Z axis |
@@ -508,6 +609,35 @@ euler(
 ```
 
 Create Vector Rotate with operation ‘Euler’. Rotate a point using XYZ order
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### x_axis
 

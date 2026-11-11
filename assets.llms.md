@@ -122,7 +122,7 @@ nodebpy dump my_assets.blend my_assets_src/
 nodebpy build my_assets_src/ my_assets.blend
 ```
 
-`nodebpy` is installed as a console script (`python -m nodebpy` works too). The older `python -m nodebpy.assets` entry point is deprecated and will be removed in nodebpy 530: it still forwards to `nodebpy`, with a warning. Inside a full Blender, run any subcommand as `blender -b --factory-startup -P <.../nodebpy/__main__.py> -- <subcommand ...>`.
+`nodebpy` is installed as a console script (`python -m nodebpy` works too). Inside a full Blender, run any subcommand as `blender -b --factory-startup -P <.../nodebpy/__main__.py> -- <subcommand ...>`.
 
 Dumping a whole library takes a while, so while iterating on a few assets pass `--names` (`names=` in Python) with exact names or wildcards, as for `plot` below:
 

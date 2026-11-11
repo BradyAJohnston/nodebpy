@@ -1,5 +1,70 @@
 # Changelog
 
+## v530.0.0 - UNRELEASED
+
+### Enhancements
+
+- **Blender 5.3** — the node classes and bundled-essentials asset APIs are generated from Blender 5.3. Blender 5.2 keeps getting bug fixes as `520.x` releases from the `5.2` branch. New nodes: `Comment` (every tree), `CombineList`, `GetVectorComponent`, `GridSolvePoisson`, `GridTopologyBoolean`, `DeactivateVoxels`, `ImportSpz`, `RasterizePoints`, `SetPointCloudType`, `GeometryMaterials`, `NurbsOrder`, `NurbsWeight`, the Grease Pencil attribute inputs (`GreasePencilColor`, `GreasePencilOpacity`, `GreasePencilDrawTime`, `GreasePencilFillID`, `GreasePencilStrokeSoftness`, `GreasePencilStrokeVisibility`) and the EEVEE light shader nodes (`LightEvaluation`, `LightInfo`, `LightAccumulation`, `ShadowRaycast`). Shader trees gained `Switch` / `IndexSwitch`, compositor trees `Compare` / `GetBundleItem` / `StoreBundleItem`, and the shader `Attribute` node its new `light()` attribute type.
+- Merge Layers, Set Grease Pencil Color and Set Grease Pencil Depth take their mode as a Menu socket in 5.3, so `mode` / `depth_order` are now inputs in Blender’s socket order, taking the menu items: `g.MergeLayers(geo, selection, "By Group ID", group_id)`, `g.SetGreasePencilColor(geo, mode="Fill")`, `g.SetGreasePencilDepth(geo, "3D Location")`.
+- Shader nodes leave out the inputs Blender only makes available in the shader trees it builds for the GPU (`.available(is_gpu_internal)`): the BSDF, volume, emission and background nodes’ `Weight`, and `LightIndex`. `gen.socket_order` records them from Blender’s sources.
+- `allow_usage_in_scene_compositor_effect` joined the round-tripped tree-level properties.
+- A `Switch` whose values don’t decide its type takes the type a new node has in that tree, as Blender 5.3 starts shader and compositor Switches as Color.
+- Socket docstrings name the label a socket had before, when Blender kept it as the identifier and the old attribute still resolves: `o.geometry` on Import PLY reads “Renamed from `Mesh`; `o.mesh` still resolves to it”, and likewise `fac` → `factor` and `group_index` → `group_id`.
+- **Group inputs that share a name are told apart by their panel.** In typed group classes (bundled assets and `nodebpy dump --api-only`) and the code `to_python` writes for them, an input whose name another input also has now takes its panel’s name as a prefix, instead of both falling back to socket identifiers that change as the asset is edited. Blender 5.3’s Clump and Curl Hair Curves gained a second “Seed” in their Guide Map panel: `seed` keeps its name and the new one is `guide_map_seed` (not `input_14` / `socket_1`). `i.<name>` resolves these names too. **Breaking:** `g.CustomForce(socket_14=, socket_15=)` are now `geometry_space_object=` / `force_space_object=`.
+
+### Deprecations
+
+Removed in 540:
+
+- The 520 spellings of the three menu-socket nodes above still work with a `DeprecationWarning`: the enum identifiers (`mode="MERGE_BY_ID"`, `"STROKE"`, `depth_order="3D"`), the `MergeLayers.by_name()` / `.by_group_id()` and `SetGreasePencilColor.stroke()` / `.fill()` factories, and the `.mode` / `.depth_order` properties. Use the menu items as the `mode=` / `depth_order=` argument.
+
+### Breaking
+
+Positional arguments follow Blender’s socket order, which 5.3 changed for some nodes. Calls that pass these by keyword are unaffected:
+
+- `g.MergeLayers`: `group_id` moved from the third to the fourth slot, after `mode`. `g.SetGreasePencilColor`: `color` and `opacity` moved after `mode`.
+- `s.GlassBSDF`: `anisotropy` and `rotation` come before `ior`. `s.PrincipledBSDF`: `transmission_dispersion_scale` and `transmission_dispersion_abbe_number` come before `coat_weight`. `g.CurveToTube`: `miter_scale` and `miter_scale_limit` come before `resample`.
+- `g.BraidHairCurves`, `g.ClumpHairCurves` and `g.CurlHairCurves`: the new seed inputs come before `existing_guide_map`.
+- The shader nodes’ `weight=` parameter and `i.weight` attribute are gone (see above); `i.weight` still resolves at runtime.
+- `g.ImportPLY`’s output is typed `o.geometry`, as Blender now labels it; `o.mesh` still resolves.
+
+### Removals
+
+The APIs deprecated during 520 for removal in 530 are gone:
+
+- The old keyword names of inputs renamed after their socket (`g.ColorRamp(fac=)`, `g.GeometryProximity(target=, source_position=)`, `g.AccumulateField.<domain>.<type>(group_index=)`, `c.BrightnessContrast(bright=)`, …) now raise `TypeError`; use the socket names (`factor=`, `group_id=`, `brightness=`).
+- `MatrixSocket.transform_direction(direction)` and `ObjectSocket.transform()`: use `VectorSocket.transform_direction(matrix)` and `ObjectSocket.matrix()`.
+- The name-first item order `items.float("Name", value)`: item factories take the value first, `items.float(value, "Name")`.
+- `add_item`, `add_items`, `capture`, `zone.item`, `zone.main_item`, `zone.generated_item`, `zone.generation`, `capture_generated`, `add_generated_item`, `input_item`, `output_item`, `MenuSwitch.item`, the for-each `inputs` / `main` / `generated` aliases, Field to List’s per-type methods and `fields=` argument, and Field to Grid’s `capture_*` methods: use the `items` / `main_items` / `generated_items` collections (`items.new(value, name)` or `items.<type>(value, name)`), and a closure zone’s `inputs` / `outputs`.
+- `python -m nodebpy.assets`: use the `nodebpy` command.
+
+## v520.42.0
+
+## Enhancements
+
+- **`.props()` sets the properties every node has while writing a tree.** It is on every node and socket, and returns what it was called on, so it ends a chain: `g.SetPosition(...).props(label="Lift", color="#FFAA00", width=200, hide=True, hide_inputs=["Selection"], mute=True, warning_propagation="ERRORS")`. On a socket it sets the properties of the node the socket belongs to. `to_python` writes them back the same way, so labels, colours, widths, collapsed nodes, folded options and sockets hidden on any node now survive a dump and rebuild; muted nodes and warning propagation, which were written as `.node.mute = True` lines, are now `.props(...)` arguments too. A tree whose nodes are all collapsed is built with `collapse=True` instead. With `snapshot_positions=True`, collapsed Group Input and Group Output nodes are collapsed by name after the snapshot (collapsed nodes were first kept in the snapshot itself, after a proposal by @RomainGuimbal).
+- **`to_python` keeps frame settings and empty frames.** `g.Frame` takes `label_size`, and `.props()` takes `height`. A frame’s `shrink`, text, label size and colour come back as `g.Frame(...)` arguments and `.props(...)`, and its size when it doesn’t shrink to fit its nodes. A frame holding no nodes was dropped; it is now built on its own, inside its parent frame.
+- **Gizmos can be pinned.** `.props(pin_gizmo=True)` keeps a value node’s or gizmo node’s gizmo visible when the node isn’t selected, and `pin_gizmo_inputs=["Offset"]` does the same for a group node’s inputs. `to_python` writes both.
+- **`muted()` mutes a link.** `from nodebpy import muted`, then wrap the node or socket passed as an input: `g.JoinGeometry([muted(set_position), geo])`, `g.SetPosition(offset=muted(offset, value=(0, 0, 1)))` or `muted(geo) >> g.SetPosition()`. The input then uses its own value, which `value=` sets. It works in constructor arguments, lists into multi-input sockets, tuples combined into vectors, `>>` and items; the links are muted when the tree’s `with` block exits.
+
+### Fixes
+
+- **Muted links stay muted through `to_python`.** They came back as live links. They are now written as `muted(...)`, with the value the input uses while its link is muted, including links through collapsed reroute chains and on split Group Input nodes. `compare_libraries` compares muted links, which it skipped.
+- **`to_python(groups="reference")` no longer calls a class whose module was unloaded.** Such a class (from the throwaway package asset sources are imported under) lingers until it is garbage collected, and could be picked over the loaded one, writing an import that fails.
+
+## v520.41.0
+
+### Enhancements
+
+- **`to_python` exports materials and worlds as `with s.material(...)` / `with s.world(...)`.** It takes a `Material` or `World`, and their node trees export as the block that rebuilds them; anything that isn’t a node tree raises a `TypeError`. `top_level="class"` is unchanged, so asset dumps still write material trees as group classes.
+- **Shader output nodes take their target as a class method:** `s.MaterialOutput.eevee()`, `.cycles()` and `.all()`, and the same for the World, Light and Line Style outputs.
+- **Nodes keep the datablocks they point to in exported code.** A node’s datablock properties (`image`, `object`, `clip`, `mask`, `scene`, `font`, …) are optional constructor arguments, which `to_python` writes as `bpy.data.<collection>.get(...)`.
+- **For Each zones start without a generation item**, like Repeat and Simulation zones. Declare generated geometry with `zone.generated_items.geometry()`, or by linking geometry into `zone.output`. `to_python` declares every generation item, so renamed, removed and reordered items export. `Item.name` can be set.
+
+### Deprecations
+
+- `zone.generation` on a For Each zone adds the Geometry generation item when it is missing, with a `DeprecationWarning`, and is removed in 530; use `zone.generated_items.geometry(value, "Geometry")`.
+
 ## v520.40.0
 
 ### Enhancements

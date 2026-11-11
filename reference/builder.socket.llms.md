@@ -82,6 +82,39 @@ BaseSocket(socket)
 | [`tree`](#nodebpy.builder.socket.BaseSocket.tree)     |             |
 | [`type`](#nodebpy.builder.socket.BaseSocket.type)     |             |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.builder.socket.BaseSocket.props) | Set the properties of the node this socket belongs to and return |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### BooleanSocket
 
 ``` python
@@ -118,6 +151,7 @@ Runtime boolean socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.BooleanSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.BooleanSocket.props) | Set the properties of the node this socket belongs to and return |
 | [to_list](#nodebpy.builder.socket.BooleanSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 
 ##### enable_output
@@ -141,6 +175,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### to_list
 
@@ -183,6 +244,7 @@ Runtime boolean grid socket wrapper.
 | [dilate_erode](#nodebpy.builder.socket.BooleanSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
 | [enable_output](#nodebpy.builder.socket.BooleanSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [field_to_grid](#nodebpy.builder.socket.BooleanSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
+| [props](#nodebpy.builder.socket.BooleanSocketGrid.props) | Set the properties of the node this socket belongs to and return |
 | [prune](#nodebpy.builder.socket.BooleanSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [sample](#nodebpy.builder.socket.BooleanSocketGrid.sample) | Retrieve values from the specified volume grid. |
 | [sample_index](#nodebpy.builder.socket.BooleanSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
@@ -236,6 +298,33 @@ field_to_grid()
 ```
 
 Create new grids by evaluating new values on an existing volume grid topology.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### prune
 
@@ -325,6 +414,7 @@ List of boolean sockets.
 | [get](#nodebpy.builder.socket.BooleanSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.BooleanSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.BooleanSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.BooleanSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.BooleanSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.BooleanSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -381,6 +471,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -443,6 +560,7 @@ Runtime bundle socket wrapper.
 | [has](#nodebpy.builder.socket.BundleSocket.has) | Whether the bundle has an item at *path*. |
 | [join](#nodebpy.builder.socket.BundleSocket.join) | Join this bundle with *others*; on a duplicate path the later bundle wins. |
 | [paths](#nodebpy.builder.socket.BundleSocket.paths) | The paths of the items in this bundle and any nested bundles. |
+| [props](#nodebpy.builder.socket.BundleSocket.props) | Set the properties of the node this socket belongs to and return |
 | [store](#nodebpy.builder.socket.BundleSocket.store) | This bundle with *value* stored at *path*; the item type follows *value*. |
 
 ##### enable_output
@@ -491,6 +609,33 @@ paths(mode='All', pattern_mode='Exact', bundle_type='', data_type='Float')
 
 The paths of the items in this bundle and any nested bundles.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### store
 
 ``` python
@@ -530,6 +675,7 @@ List of bundle sockets.
 | [get](#nodebpy.builder.socket.BundleSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.BundleSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.BundleSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.BundleSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.BundleSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.BundleSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -586,6 +732,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -644,6 +817,7 @@ Runtime closure socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.ClosureSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.ClosureSocket.props) | Set the properties of the node this socket belongs to and return |
 
 ##### enable_output
 
@@ -666,6 +840,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### ClosureSocketList
 
@@ -698,6 +899,7 @@ List of closure sockets.
 | [get](#nodebpy.builder.socket.ClosureSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ClosureSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ClosureSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.ClosureSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.ClosureSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ClosureSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -754,6 +956,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -815,6 +1044,7 @@ Runtime collection socket wrapper.
 | [children](#nodebpy.builder.socket.CollectionSocket.children) | The child collections and objects, as lists; *recursive* includes nested ones. |
 | [enable_output](#nodebpy.builder.socket.CollectionSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [instances](#nodebpy.builder.socket.CollectionSocket.instances) | Import objects from the collection as instances. |
+| [props](#nodebpy.builder.socket.CollectionSocket.props) | Set the properties of the node this socket belongs to and return |
 
 ##### children
 
@@ -872,6 +1102,33 @@ Import objects from the collection as instances.
 |----|----|----|
 |  | GeometrySocket | The output ‘Instances’ `GeometrySocket`. Will be a single instance or multiple instances if `separate_children` is `True`. |
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### CollectionSocketList
 
 ``` python
@@ -903,6 +1160,7 @@ List of collection sockets.
 | [get](#nodebpy.builder.socket.CollectionSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.CollectionSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.CollectionSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.CollectionSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.CollectionSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.CollectionSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -959,6 +1217,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -1032,6 +1317,7 @@ Runtime color socket wrapper.
 | [enable_output](#nodebpy.builder.socket.ColorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [gamma](#nodebpy.builder.socket.ColorSocket.gamma) | Apply a gamma correction, raising each RGB channel to the power *gamma*. |
 | [hash](#nodebpy.builder.socket.ColorSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
+| [props](#nodebpy.builder.socket.ColorSocket.props) | Set the properties of the node this socket belongs to and return |
 | [to_list](#nodebpy.builder.socket.ColorSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 
 ##### blur
@@ -1079,6 +1365,33 @@ hash(seed=0)
 ```
 
 Hash this value to a pseudo-random integer, varied by *seed*.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### to_list
 
@@ -1134,6 +1447,7 @@ List of color sockets.
 | [hash](#nodebpy.builder.socket.ColorSocketList.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [list_length](#nodebpy.builder.socket.ColorSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ColorSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.ColorSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.ColorSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ColorSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [to_list](#nodebpy.builder.socket.ColorSocketList.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
@@ -1215,6 +1529,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -1315,6 +1656,7 @@ Runtime float socket wrapper.
 | [negate](#nodebpy.builder.socket.FloatSocket.negate) | Negate the `FloatSocket` by multiplying the value by `-1`. |
 | [ping_pong](#nodebpy.builder.socket.FloatSocket.ping_pong) | Input ping-pongs between 0 and *value*. |
 | [power](#nodebpy.builder.socket.FloatSocket.power) | Raise this value to *exponent*. |
+| [props](#nodebpy.builder.socket.FloatSocket.props) | Set the properties of the node this socket belongs to and return |
 | [round](#nodebpy.builder.socket.FloatSocket.round) | Round to the nearest integer. |
 | [sign](#nodebpy.builder.socket.FloatSocket.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
 | [sin](#nodebpy.builder.socket.FloatSocket.sin) | Create a Math node with operation ‘Sine’. The sine of self |
@@ -1564,6 +1906,33 @@ power(exponent=2.0)
 
 Raise this value to *exponent*.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### round
 
 ``` python
@@ -1763,6 +2132,7 @@ Runtime float grid socket wrapper.
 | [negate](#nodebpy.builder.socket.FloatSocketGrid.negate) | Negate the `FloatSocket` by multiplying the value by `-1`. |
 | [ping_pong](#nodebpy.builder.socket.FloatSocketGrid.ping_pong) | Input ping-pongs between 0 and *value*. |
 | [power](#nodebpy.builder.socket.FloatSocketGrid.power) | Raise this value to *exponent*. |
+| [props](#nodebpy.builder.socket.FloatSocketGrid.props) | Set the properties of the node this socket belongs to and return |
 | [prune](#nodebpy.builder.socket.FloatSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [round](#nodebpy.builder.socket.FloatSocketGrid.round) | Round to the nearest integer. |
 | [sample](#nodebpy.builder.socket.FloatSocketGrid.sample) | Retrieve values from the specified volume grid. |
@@ -2095,6 +2465,33 @@ power(exponent=2.0)
 
 Raise this value to *exponent*.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### prune
 
 ``` python
@@ -2400,6 +2797,7 @@ List float sockets.
 | [negate](#nodebpy.builder.socket.FloatSocketList.negate) | Negate the `FloatSocket` by multiplying the value by `-1`. |
 | [ping_pong](#nodebpy.builder.socket.FloatSocketList.ping_pong) | Input ping-pongs between 0 and *value*. |
 | [power](#nodebpy.builder.socket.FloatSocketList.power) | Raise this value to *exponent*. |
+| [props](#nodebpy.builder.socket.FloatSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.FloatSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [round](#nodebpy.builder.socket.FloatSocketList.round) | Round to the nearest integer. |
 | [sign](#nodebpy.builder.socket.FloatSocketList.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
@@ -2682,6 +3080,33 @@ power(exponent=2.0)
 
 Raise this value to *exponent*.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### reverse
 
 ``` python
@@ -2867,6 +3292,7 @@ Runtime font socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.FontSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.FontSocket.props) | Set the properties of the node this socket belongs to and return |
 
 ##### enable_output
 
@@ -2889,6 +3315,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### FontSocketList
 
@@ -2921,6 +3374,7 @@ List of font sockets.
 | [get](#nodebpy.builder.socket.FontSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.FontSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.FontSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.FontSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.FontSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.FontSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -2977,6 +3431,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -3036,6 +3517,7 @@ Runtime geometry socket wrapper.
 |----|----|
 | [bundle](#nodebpy.builder.socket.GeometrySocket.bundle) | The bundle stored on this geometry. |
 | [enable_output](#nodebpy.builder.socket.GeometrySocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.GeometrySocket.props) | Set the properties of the node this socket belongs to and return |
 | [realize_instances](#nodebpy.builder.socket.GeometrySocket.realize_instances) |  |
 | [set_bundle](#nodebpy.builder.socket.GeometrySocket.set_bundle) | This geometry with *bundle* stored on it. |
 
@@ -3068,6 +3550,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### realize_instances
 
@@ -3115,6 +3624,7 @@ List of geometry sockets.
 | [get](#nodebpy.builder.socket.GeometrySocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.GeometrySocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.GeometrySocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.GeometrySocketList.props) | Set the properties of the node this socket belongs to and return |
 | [realize_instances](#nodebpy.builder.socket.GeometrySocketList.realize_instances) |  |
 | [reverse](#nodebpy.builder.socket.GeometrySocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [set_bundle](#nodebpy.builder.socket.GeometrySocketList.set_bundle) | This geometry with *bundle* stored on it. |
@@ -3181,6 +3691,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### realize_instances
 
@@ -3255,6 +3792,7 @@ Runtime image socket wrapper.
 |----|----|
 | [enable_output](#nodebpy.builder.socket.ImageSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [info](#nodebpy.builder.socket.ImageSocket.info) | Image Info for this image at *frame*; read its outputs, e.g. `.o.width`. |
+| [props](#nodebpy.builder.socket.ImageSocket.props) | Set the properties of the node this socket belongs to and return |
 
 ##### enable_output
 
@@ -3285,6 +3823,33 @@ info(frame=0)
 ```
 
 Image Info for this image at *frame*; read its outputs, e.g. `.o.width`.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### ImageSocketList
 
@@ -3317,6 +3882,7 @@ List of image sockets.
 | [get](#nodebpy.builder.socket.ImageSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ImageSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ImageSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.ImageSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.ImageSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ImageSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -3373,6 +3939,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -3453,6 +4046,7 @@ Runtime integer socket wrapper.
 | [mul_add](#nodebpy.builder.socket.IntegerSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [power](#nodebpy.builder.socket.IntegerSocket.power) | Raise this value to *exponent*. |
+| [props](#nodebpy.builder.socket.IntegerSocket.props) | Set the properties of the node this socket belongs to and return |
 | [rotate](#nodebpy.builder.socket.IntegerSocket.rotate) | Rotate the 32 bits left by *amount*, or right when *amount* is negative; |
 | [shift](#nodebpy.builder.socket.IntegerSocket.shift) | Shift the bits left by *amount*, or right when *amount* is negative. |
 | [sign](#nodebpy.builder.socket.IntegerSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
@@ -3594,6 +4188,33 @@ power(exponent=2)
 
 Raise this value to *exponent*.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### rotate
 
 ``` python
@@ -3693,6 +4314,7 @@ Runtime integer grid socket wrapper.
 | [mul_add](#nodebpy.builder.socket.IntegerSocketGrid.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocketGrid.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [power](#nodebpy.builder.socket.IntegerSocketGrid.power) | Raise this value to *exponent*. |
+| [props](#nodebpy.builder.socket.IntegerSocketGrid.props) | Set the properties of the node this socket belongs to and return |
 | [prune](#nodebpy.builder.socket.IntegerSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [rotate](#nodebpy.builder.socket.IntegerSocketGrid.rotate) | Rotate the 32 bits left by *amount*, or right when *amount* is negative; |
 | [sample](#nodebpy.builder.socket.IntegerSocketGrid.sample) | Retrieve values from the specified volume grid. |
@@ -3892,6 +4514,33 @@ power(exponent=2)
 
 Raise this value to *exponent*.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### prune
 
 ``` python
@@ -4027,6 +4676,7 @@ List of integer sockets.
 | [mul_add](#nodebpy.builder.socket.IntegerSocketList.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocketList.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [power](#nodebpy.builder.socket.IntegerSocketList.power) | Raise this value to *exponent*. |
+| [props](#nodebpy.builder.socket.IntegerSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.IntegerSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [rotate](#nodebpy.builder.socket.IntegerSocketList.rotate) | Rotate the 32 bits left by *amount*, or right when *amount* is negative; |
 | [shift](#nodebpy.builder.socket.IntegerSocketList.shift) | Shift the bits left by *amount*, or right when *amount* is negative. |
@@ -4201,6 +4851,33 @@ power(exponent=2)
 
 Raise this value to *exponent*.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### reverse
 
 ``` python
@@ -4315,6 +4992,7 @@ Runtime integer vector socket wrapper.
 | [mul_add](#nodebpy.builder.socket.IntegerVectorSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerVectorSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [power](#nodebpy.builder.socket.IntegerVectorSocket.power) | Raise this value to *exponent*. |
+| [props](#nodebpy.builder.socket.IntegerVectorSocket.props) | Set the properties of the node this socket belongs to and return |
 | [rotate](#nodebpy.builder.socket.IntegerVectorSocket.rotate) | Rotate the 32 bits left by *amount*, or right when *amount* is negative; |
 | [shift](#nodebpy.builder.socket.IntegerVectorSocket.shift) | Shift the bits left by *amount*, or right when *amount* is negative. |
 | [sign](#nodebpy.builder.socket.IntegerVectorSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
@@ -4454,6 +5132,33 @@ power(exponent=2)
 
 Raise this value to *exponent*.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### rotate
 
 ``` python
@@ -4516,6 +5221,7 @@ Runtime material socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.MaterialSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.MaterialSocket.props) | Set the properties of the node this socket belongs to and return |
 | [selection](#nodebpy.builder.socket.MaterialSocket.selection) | Whether each face uses this material. |
 
 ##### enable_output
@@ -4539,6 +5245,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### selection
 
@@ -4579,6 +5312,7 @@ List of material sockets.
 | [get](#nodebpy.builder.socket.MaterialSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.MaterialSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.MaterialSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.MaterialSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.MaterialSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.MaterialSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -4635,6 +5369,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -4706,9 +5467,9 @@ Runtime matrix socket wrapper.
 | [enable_output](#nodebpy.builder.socket.MatrixSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [hash](#nodebpy.builder.socket.MatrixSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [invert](#nodebpy.builder.socket.MatrixSocket.invert) | Invert the `MatrixSocet` and return a `MatrixSocket`. |
+| [props](#nodebpy.builder.socket.MatrixSocket.props) | Set the properties of the node this socket belongs to and return |
 | [svd](#nodebpy.builder.socket.MatrixSocket.svd) | Decompose the matrix via SVD. Returns `(u, s, v)`. |
 | [to_list](#nodebpy.builder.socket.MatrixSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
-| [transform_direction](#nodebpy.builder.socket.MatrixSocket.transform_direction) | Deprecated: use `direction.transform_direction(matrix)`, which |
 | [transpose](#nodebpy.builder.socket.MatrixSocket.transpose) | Transpose the `MatrixSocket` and return a `MatrixSocket`. |
 
 ##### determinant
@@ -4757,6 +5518,33 @@ invert()
 
 Invert the `MatrixSocet` and return a `MatrixSocket`.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### svd
 
 ``` python
@@ -4772,14 +5560,6 @@ to_list(count=10)
 ```
 
 Create a list of elements, evaluating this field `count` times based on the `Index` node.
-
-##### transform_direction
-
-``` python
-transform_direction(direction)
-```
-
-Deprecated: use `direction.transform_direction(matrix)`, which keeps the method on the vector that continues down the chain.
 
 ##### transpose
 
@@ -4826,10 +5606,10 @@ List of matrix sockets.
 | [invert](#nodebpy.builder.socket.MatrixSocketList.invert) | Invert the `MatrixSocet` and return a `MatrixSocket`. |
 | [list_length](#nodebpy.builder.socket.MatrixSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.MatrixSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.MatrixSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.MatrixSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.MatrixSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [svd](#nodebpy.builder.socket.MatrixSocketList.svd) | Decompose the matrix via SVD. Returns `(u, s, v)`. |
-| [transform_direction](#nodebpy.builder.socket.MatrixSocketList.transform_direction) | Deprecated: use `direction.transform_direction(matrix)`, which |
 | [transpose](#nodebpy.builder.socket.MatrixSocketList.transpose) | Transpose the `MatrixSocket` and return a `MatrixSocket`. |
 
 ##### determinant
@@ -4910,6 +5690,33 @@ list_slice(start=0, stop=None, step=1)
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### reverse
 
 ``` python
@@ -4948,14 +5755,6 @@ svd()
 
 Decompose the matrix via SVD. Returns `(u, s, v)`.
 
-##### transform_direction
-
-``` python
-transform_direction(direction)
-```
-
-Deprecated: use `direction.transform_direction(matrix)`, which keeps the method on the vector that continues down the chain.
-
 ##### transpose
 
 ``` python
@@ -4992,6 +5791,7 @@ Runtime menu socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.MenuSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.MenuSocket.props) | Set the properties of the node this socket belongs to and return |
 | [to_list](#nodebpy.builder.socket.MenuSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 
 ##### enable_output
@@ -5015,6 +5815,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### to_list
 
@@ -5055,6 +5882,7 @@ List of menu sockets.
 | [get](#nodebpy.builder.socket.MenuSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.MenuSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.MenuSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.MenuSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.MenuSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.MenuSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -5111,6 +5939,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -5175,9 +6030,9 @@ Runtime object socket wrapper.
 | [geometry](#nodebpy.builder.socket.ObjectSocket.geometry) | The object’s geometry, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [location](#nodebpy.builder.socket.ObjectSocket.location) | The object’s location, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [matrix](#nodebpy.builder.socket.ObjectSocket.matrix) | The object’s transform matrix, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
+| [props](#nodebpy.builder.socket.ObjectSocket.props) | Set the properties of the node this socket belongs to and return |
 | [rotation](#nodebpy.builder.socket.ObjectSocket.rotation) | The object’s rotation, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [scale](#nodebpy.builder.socket.ObjectSocket.scale) | The object’s scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
-| [transform](#nodebpy.builder.socket.ObjectSocket.transform) | Deprecated: use :meth:`matrix`, which does not read like |
 
 ##### bone_info
 
@@ -5278,6 +6133,33 @@ The object’s transform matrix, optionally in relative space, via [`ObjectInfo`
 |------|--------------|----------------------------------------|
 |      | MatrixSocket | The output ‘Transform’ `MatrixSocket`. |
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### rotation
 
 ``` python
@@ -5318,14 +6200,6 @@ The object’s scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.
 |------|--------------|------------------------------------|
 |      | VectorSocket | The output ‘Scale’ `VectorSocket`. |
 
-##### transform
-
-``` python
-transform(transform_space='ORIGINAL')
-```
-
-Deprecated: use :meth:`matrix`, which does not read like `VectorSocket.transform(matrix)` (applying a matrix).
-
 ### ObjectSocketList
 
 ``` python
@@ -5357,6 +6231,7 @@ List of object sockets.
 | [get](#nodebpy.builder.socket.ObjectSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ObjectSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ObjectSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.ObjectSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.ObjectSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ObjectSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -5413,6 +6288,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -5592,6 +6494,7 @@ Runtime rotation socket wrapper.
 | [enable_output](#nodebpy.builder.socket.RotationSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [hash](#nodebpy.builder.socket.RotationSocket.hash) | Hash this value to a pseudo-random integer, varied by *seed*. |
 | [invert](#nodebpy.builder.socket.RotationSocket.invert) | Invert the rotation of the socket. |
+| [props](#nodebpy.builder.socket.RotationSocket.props) | Set the properties of the node this socket belongs to and return |
 | [rotate](#nodebpy.builder.socket.RotationSocket.rotate) | Rotate this rotation by the given rotation in the specified rotation space. |
 | [to_axis_angle](#nodebpy.builder.socket.RotationSocket.to_axis_angle) | Decompose the rotation into axis-angle components `(axis, angle)`. |
 | [to_euler](#nodebpy.builder.socket.RotationSocket.to_euler) | Convert the rotation to an XYZ euler rotation and return `VectorSocket`. |
@@ -5649,6 +6552,33 @@ invert()
 ```
 
 Invert the rotation of the socket.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### rotate
 
@@ -5726,6 +6656,7 @@ List of rotation sockets.
 | [invert](#nodebpy.builder.socket.RotationSocketList.invert) | Invert the rotation of the socket. |
 | [list_length](#nodebpy.builder.socket.RotationSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.RotationSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.RotationSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.RotationSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [rotate](#nodebpy.builder.socket.RotationSocketList.rotate) | Rotate this rotation by the given rotation in the specified rotation space. |
 | [sort](#nodebpy.builder.socket.RotationSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
@@ -5816,6 +6747,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -5908,6 +6866,7 @@ Runtime shader socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.ShaderSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.ShaderSocket.props) | Set the properties of the node this socket belongs to and return |
 
 ##### enable_output
 
@@ -5930,6 +6889,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### ShaderSocketList
 
@@ -5962,6 +6948,7 @@ List of shader sockets.
 | [get](#nodebpy.builder.socket.ShaderSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ShaderSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ShaderSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.ShaderSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.ShaderSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ShaderSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -6018,6 +7005,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -6082,6 +7096,7 @@ tree : TreeBuilder The tree this socket belongs to. socket : NodeSocket The unde
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.Socket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.Socket.props) | Set the properties of the node this socket belongs to and return |
 
 ##### enable_output
 
@@ -6104,6 +7119,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### SoundSocket
 
@@ -6132,6 +7174,7 @@ Runtime sound socket wrapper.
 | Name | Description |
 |----|----|
 | [enable_output](#nodebpy.builder.socket.SoundSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [props](#nodebpy.builder.socket.SoundSocket.props) | Set the properties of the node this socket belongs to and return |
 
 ##### enable_output
 
@@ -6154,6 +7197,33 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 | Name | Type | Description                                                      |
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### SoundSocketList
 
@@ -6186,6 +7256,7 @@ List of sound sockets.
 | [get](#nodebpy.builder.socket.SoundSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.SoundSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.SoundSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [props](#nodebpy.builder.socket.SoundSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reverse](#nodebpy.builder.socket.SoundSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.SoundSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 
@@ -6242,6 +7313,33 @@ list_slice(start=0, stop=None, step=1)
 ```
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reverse
 
@@ -6309,6 +7407,7 @@ Runtime string socket wrapper.
 | [join](#nodebpy.builder.socket.StringSocket.join) | Join the input strings with this as the separator. |
 | [length](#nodebpy.builder.socket.StringSocket.length) | Compute the length of a string and return as `IntegerSocket`. |
 | [lowercase](#nodebpy.builder.socket.StringSocket.lowercase) | Convert the string to lowercase and return as `StringSocket`. |
+| [props](#nodebpy.builder.socket.StringSocket.props) | Set the properties of the node this socket belongs to and return |
 | [replace](#nodebpy.builder.socket.StringSocket.replace) | Replace every match of the string with the replacement string |
 | [reverse](#nodebpy.builder.socket.StringSocket.reverse) | Reverse the string. |
 | [slice](#nodebpy.builder.socket.StringSocket.slice) | Slice a given string from a starting position for a given length. |
@@ -6405,6 +7504,33 @@ lowercase()
 ```
 
 Convert the string to lowercase and return as `StringSocket`.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### replace
 
@@ -6522,6 +7648,7 @@ List of string sockets.
 | [list_length](#nodebpy.builder.socket.StringSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.StringSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [lowercase](#nodebpy.builder.socket.StringSocketList.lowercase) | Convert the string to lowercase and return as `StringSocket`. |
+| [props](#nodebpy.builder.socket.StringSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [replace](#nodebpy.builder.socket.StringSocketList.replace) | Replace every match of the string with the replacement string |
 | [reverse](#nodebpy.builder.socket.StringSocketList.reverse) | Reverse the string. |
 | [slice](#nodebpy.builder.socket.StringSocketList.slice) | Slice a given string from a starting position for a given length. |
@@ -6639,6 +7766,33 @@ lowercase()
 ```
 
 Convert the string to lowercase and return as `StringSocket`.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### replace
 
@@ -6768,6 +7922,7 @@ Runtime vector socket wrapper.
 | [normalize](#nodebpy.builder.socket.VectorSocket.normalize) |  |
 | [project](#nodebpy.builder.socket.VectorSocket.project) |  |
 | [project_point](#nodebpy.builder.socket.VectorSocket.project_point) |  |
+| [props](#nodebpy.builder.socket.VectorSocket.props) | Set the properties of the node this socket belongs to and return |
 | [reflect](#nodebpy.builder.socket.VectorSocket.reflect) |  |
 | [refract](#nodebpy.builder.socket.VectorSocket.refract) |  |
 | [rotate](#nodebpy.builder.socket.VectorSocket.rotate) |  |
@@ -6940,6 +8095,33 @@ project(other)
 project_point(matrix)
 ```
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### reflect
 
 ``` python
@@ -7095,6 +8277,7 @@ Runtime vector grid socket wrapper.
 | [normalize](#nodebpy.builder.socket.VectorSocketGrid.normalize) |  |
 | [project](#nodebpy.builder.socket.VectorSocketGrid.project) |  |
 | [project_point](#nodebpy.builder.socket.VectorSocketGrid.project_point) |  |
+| [props](#nodebpy.builder.socket.VectorSocketGrid.props) | Set the properties of the node this socket belongs to and return |
 | [prune](#nodebpy.builder.socket.VectorSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [reflect](#nodebpy.builder.socket.VectorSocketGrid.reflect) |  |
 | [refract](#nodebpy.builder.socket.VectorSocketGrid.refract) |  |
@@ -7342,6 +8525,33 @@ project(other)
 project_point(matrix)
 ```
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ##### prune
 
 ``` python
@@ -7540,6 +8750,7 @@ Class for list of vector sockets.
 | [normalize](#nodebpy.builder.socket.VectorSocketList.normalize) |  |
 | [project](#nodebpy.builder.socket.VectorSocketList.project) |  |
 | [project_point](#nodebpy.builder.socket.VectorSocketList.project_point) |  |
+| [props](#nodebpy.builder.socket.VectorSocketList.props) | Set the properties of the node this socket belongs to and return |
 | [reflect](#nodebpy.builder.socket.VectorSocketList.reflect) |  |
 | [refract](#nodebpy.builder.socket.VectorSocketList.refract) |  |
 | [reverse](#nodebpy.builder.socket.VectorSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
@@ -7744,6 +8955,33 @@ project(other)
 ``` python
 project_point(matrix)
 ```
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties of the node this socket belongs to and return the socket, so it can go at the end of a chain::
+
+    (x + 1.0).props(label="Offset")
+
+See :meth:`BaseNode.props`.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### reflect
 

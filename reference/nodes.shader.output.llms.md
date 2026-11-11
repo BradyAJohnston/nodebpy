@@ -47,6 +47,41 @@ Provide custom render passes for arbitrary shader node outputs
 | [`o`](#nodebpy.nodes.shader.output.AOVOutput.o) |  |
 | [`tree`](#nodebpy.nodes.shader.output.AOVOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.output.AOVOutput.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 ### LightOutput
 
 ``` python
@@ -80,6 +115,7 @@ Output light information to a light object
 | [all](#nodebpy.nodes.shader.output.LightOutput.all) | Create Light Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output |
 | [cycles](#nodebpy.nodes.shader.output.LightOutput.cycles) | Create Light Output with operation ‘Cycles’. Use shaders for Cycles renderer |
 | [eevee](#nodebpy.nodes.shader.output.LightOutput.eevee) | Create Light Output with operation ‘EEVEE’. Use shaders for EEVEE renderer |
+| [props](#nodebpy.nodes.shader.output.LightOutput.props) | Set the properties every node has and return the node, so it can |
 
 ##### all
 
@@ -104,6 +140,35 @@ eevee(surface=None, *, is_active_output=None)
 ```
 
 Create Light Output with operation ‘EEVEE’. Use shaders for EEVEE renderer
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -161,6 +226,7 @@ Control the mixing of texture information into the base color of line styles
 | [all](#nodebpy.nodes.shader.output.LineStyleOutput.all) | Create Line Style Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output |
 | [cycles](#nodebpy.nodes.shader.output.LineStyleOutput.cycles) | Create Line Style Output with operation ‘Cycles’. Use shaders for Cycles renderer |
 | [eevee](#nodebpy.nodes.shader.output.LineStyleOutput.eevee) | Create Line Style Output with operation ‘EEVEE’. Use shaders for EEVEE renderer |
+| [props](#nodebpy.nodes.shader.output.LineStyleOutput.props) | Set the properties every node has and return the node, so it can |
 
 ##### all
 
@@ -216,6 +282,35 @@ eevee(
 
 Create Line Style Output with operation ‘EEVEE’. Use shaders for EEVEE renderer
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute     | Type          | Description |
@@ -269,6 +364,7 @@ Output surface material information for use in rendering
 | [all](#nodebpy.nodes.shader.output.MaterialOutput.all) | Create Material Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output |
 | [cycles](#nodebpy.nodes.shader.output.MaterialOutput.cycles) | Create Material Output with operation ‘Cycles’. Use shaders for Cycles renderer |
 | [eevee](#nodebpy.nodes.shader.output.MaterialOutput.eevee) | Create Material Output with operation ‘EEVEE’. Use shaders for EEVEE renderer |
+| [props](#nodebpy.nodes.shader.output.MaterialOutput.props) | Set the properties every node has and return the node, so it can |
 
 ##### all
 
@@ -315,6 +411,35 @@ eevee(
 
 Create Material Output with operation ‘EEVEE’. Use shaders for EEVEE renderer
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute        | Type           | Description  |
@@ -358,6 +483,7 @@ Output light color information to the scene’s World
 | [all](#nodebpy.nodes.shader.output.WorldOutput.all) | Create World Output with operation ‘All’. Use shaders for all renderers and viewports, unless there exists a more specific output |
 | [cycles](#nodebpy.nodes.shader.output.WorldOutput.cycles) | Create World Output with operation ‘Cycles’. Use shaders for Cycles renderer |
 | [eevee](#nodebpy.nodes.shader.output.WorldOutput.eevee) | Create World Output with operation ‘EEVEE’. Use shaders for EEVEE renderer |
+| [props](#nodebpy.nodes.shader.output.WorldOutput.props) | Set the properties every node has and return the node, so it can |
 
 ##### all
 
@@ -382,6 +508,35 @@ eevee(surface=None, volume=None, *, is_active_output=None)
 ```
 
 Create World Output with operation ‘EEVEE’. Use shaders for EEVEE renderer
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 

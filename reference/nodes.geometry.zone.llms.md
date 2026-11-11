@@ -46,33 +46,36 @@ BaseRepeatZone(node=None)
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseRepeatZone.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseRepeatZone.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseRepeatZone.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.BaseRepeatZone.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### BaseSimulationZone
 
@@ -95,33 +98,36 @@ BaseSimulationZone(node=None)
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseSimulationZone.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseSimulationZone.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseSimulationZone.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.BaseSimulationZone.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### BaseZone
 
@@ -144,33 +150,36 @@ BaseZone(node=None)
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseZone.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseZone.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseZone.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.BaseZone.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### BaseZoneInput
 
@@ -196,33 +205,36 @@ Base class for zone input nodes
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseZoneInput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseZoneInput.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseZoneInput.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.BaseZoneInput.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### BaseZoneOutput
 
@@ -247,33 +259,36 @@ Base class for zone output nodes
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.BaseZoneOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.BaseZoneOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.BaseZoneOutput.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.BaseZoneOutput.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### ClosureInput
 
@@ -295,15 +310,45 @@ Closure Input node
 
 #### Methods
 
-| Name                                                   | Description |
-|--------------------------------------------------------|-------------|
-| [link](#nodebpy.nodes.geometry.zone.ClosureInput.link) |             |
+| Name | Description |
+|----|----|
+| [link](#nodebpy.nodes.geometry.zone.ClosureInput.link) |  |
+| [props](#nodebpy.nodes.geometry.zone.ClosureInput.props) | Set the properties every node has and return the node, so it can |
 
 ##### link
 
 ``` python
 link(target)
 ```
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### ClosureOutput
 
@@ -329,6 +374,7 @@ Closure Output node
 | Name | Description |
 |----|----|
 | [link](#nodebpy.nodes.geometry.zone.ClosureOutput.link) |  |
+| [props](#nodebpy.nodes.geometry.zone.ClosureOutput.props) | Set the properties every node has and return the node, so it can |
 | [sync_signature](#nodebpy.nodes.geometry.zone.ClosureOutput.sync_signature) |  |
 
 ##### link
@@ -336,6 +382,35 @@ Closure Output node
 ``` python
 link(source)
 ```
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### sync_signature
 
@@ -365,29 +440,6 @@ ClosureZone()
 | [`output`](#nodebpy.nodes.geometry.zone.ClosureZone.output) |  |
 | [`outputs`](#nodebpy.nodes.geometry.zone.ClosureZone.outputs) | The closure’s output items. |
 
-#### Methods
-
-| Name | Description |
-|----|----|
-| [input_item](#nodebpy.nodes.geometry.zone.ClosureZone.input_item) | Deprecated: use `zone.inputs.new(name, type=type).output`. |
-| [output_item](#nodebpy.nodes.geometry.zone.ClosureZone.output_item) | Deprecated: use `zone.outputs.new(name, type=type).input`. |
-
-##### input_item
-
-``` python
-input_item(name, type='GEOMETRY')
-```
-
-Deprecated: use `zone.inputs.new(name, type=type).output`.
-
-##### output_item
-
-``` python
-output_item(name, type='GEOMETRY')
-```
-
-Deprecated: use `zone.outputs.new(name, type=type).input`.
-
 ### ForEachGeometryElementInput
 
 ``` python
@@ -412,33 +464,36 @@ For Each Geometry Element Input node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### ForEachGeometryElementOutput
 
@@ -465,51 +520,36 @@ For Each Geometry Element Output node
 
 | Name | Description |
 |----|----|
-| [add_generated_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_generated_item) | Deprecated: use `zone.generated_items.<type>(value, name)`. |
-| [add_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture) | Deprecated: use `items.new(value, name).output`. |
-| [capture_generated](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated) | Deprecated: use `zone.generated_items.<type>(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.props) | Set the properties every node has and return the node, so it can |
 
-##### add_generated_item
+##### props
 
 ``` python
-add_generated_item(name, value=None, *, type=None, domain='POINT')
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `zone.generated_items.<type>(value, name)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_item
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_item(name, value=None, *, type=None)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name, type=)`.
-
-##### add_items
-
-``` python
-add_items(items)
-```
-
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
-
-##### capture_generated
-
-``` python
-capture_generated(value, *, name=None, domain='POINT')
-```
-
-Deprecated: use `zone.generated_items.<type>(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### ForEachGeometryElementZone
 
@@ -526,45 +566,15 @@ ForEachGeometryElementZone(geometry=None, selection=True, *, domain='POINT')
 | [`edge`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.edge) |  |
 | [`element`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.element) | The current element as geometry, read inside the zone body. |
 | [`face`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.face) |  |
-| [`generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated) |  |
 | [`generated_items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_items) | Generation items: values stored on the generated geometry. |
-| [`generation`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generation) | The `Geometry` generation item, added when the zone has none. |
 | [`index`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.index) |  |
 | [`input`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.input) |  |
-| [`inputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.instance) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.items) | Per-element input items, read inside the body. |
 | [`layer`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.layer) |  |
-| [`main`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main) |  |
 | [`main_items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_items) | Main items: per-element results written back onto the geometry. |
 | [`output`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.output) |  |
 | [`point`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.point) |  |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [generated_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated_item) |  |
-| [item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.item) |  |
-| [main_item](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main_item) |  |
-
-##### generated_item
-
-``` python
-generated_item(name, value=None, *, type=None, domain='POINT')
-```
-
-##### item
-
-``` python
-item(name, value=None, *, type=None)
-```
-
-##### main_item
-
-``` python
-main_item(name, value=None, *, type=None)
-```
 
 ### RepeatInput
 
@@ -590,33 +600,36 @@ Repeat Input node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.RepeatInput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.RepeatInput.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.RepeatInput.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.RepeatInput.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### RepeatOutput
 
@@ -641,33 +654,36 @@ Repeat Output node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.RepeatOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.RepeatOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.RepeatOutput.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.RepeatOutput.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### RepeatZone
 
@@ -683,20 +699,6 @@ RepeatZone(iterations=1, items=None)
 | [`items`](#nodebpy.nodes.geometry.zone.RepeatZone.items) | The zone’s state items. |
 | [`iteration`](#nodebpy.nodes.geometry.zone.RepeatZone.iteration) | The current iteration index. |
 | [`output`](#nodebpy.nodes.geometry.zone.RepeatZone.output) |  |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [item](#nodebpy.nodes.geometry.zone.RepeatZone.item) | Deprecated: use `zone.items.new(initial, name, type=)`. |
-
-##### item
-
-``` python
-item(name, initial=None, *, type=None)
-```
-
-Deprecated: use `zone.items.new(initial, name, type=)`.
 
 ### SimulationInput
 
@@ -722,33 +724,36 @@ Simulation Input node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.SimulationInput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.SimulationInput.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.SimulationInput.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.SimulationInput.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### SimulationOutput
 
@@ -773,33 +778,36 @@ Simulation Output node
 
 | Name | Description |
 |----|----|
-| [add_item](#nodebpy.nodes.geometry.zone.SimulationOutput.add_item) | Deprecated: use `items.new(value, name, type=)`. |
-| [add_items](#nodebpy.nodes.geometry.zone.SimulationOutput.add_items) | Deprecated: use `items.new(value, name)` per item. |
-| [capture](#nodebpy.nodes.geometry.zone.SimulationOutput.capture) | Deprecated: use `items.new(value, name).output`. |
+| [props](#nodebpy.nodes.geometry.zone.SimulationOutput.props) | Set the properties every node has and return the node, so it can |
 
-##### add_item
+##### props
 
 ``` python
-add_item(name, value=None, *, type=None)
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
 ```
 
-Deprecated: use `items.new(value, name, type=)`.
+Set the properties every node has and return the node, so it can go at the end of a chain::
 
-##### add_items
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
 
-``` python
-add_items(items)
-```
+Properties left as `None` are unchanged.
 
-Deprecated: use `items.new(value, name)` per item.
-
-##### capture
-
-``` python
-capture(value, *, name=None)
-```
-
-Deprecated: use `items.new(value, name).output`.
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ### SimulationZone
 
@@ -815,20 +823,6 @@ SimulationZone(items=None)
 | [`input`](#nodebpy.nodes.geometry.zone.SimulationZone.input) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.SimulationZone.items) | The zone’s state items. |
 | [`output`](#nodebpy.nodes.geometry.zone.SimulationZone.output) |  |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [item](#nodebpy.nodes.geometry.zone.SimulationZone.item) | Deprecated: use `zone.items.new(initial, name, type=)`. |
-
-##### item
-
-``` python
-item(name, initial=None, *, type=None)
-```
-
-Deprecated: use `zone.items.new(initial, name, type=)`.
 
 ### ZoneItem
 

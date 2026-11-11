@@ -44,6 +44,41 @@ Sample an image file as an environment texture. Typically used to light the scen
 | [`projection`](#nodebpy.nodes.shader.texture.EnvironmentTexture.projection) |  |
 | [`tree`](#nodebpy.nodes.shader.texture.EnvironmentTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.texture.EnvironmentTexture.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute  | Type           | Description |
@@ -90,6 +125,7 @@ Match real world lights with IES files, which store the directional intensity di
 |----|----|
 | [external](#nodebpy.nodes.shader.texture.IESTexture.external) | Create IES Texture with operation ‘External’. Use external .ies file |
 | [internal](#nodebpy.nodes.shader.texture.IESTexture.internal) | Create IES Texture with operation ‘Internal’. Use internal text data-block |
+| [props](#nodebpy.nodes.shader.texture.IESTexture.props) | Set the properties every node has and return the node, so it can |
 
 ##### external
 
@@ -107,6 +143,35 @@ internal(vector=None, strength=1.0, *, ies=None)
 
 Create IES Texture with operation ‘Internal’. Use internal text data-block
 
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute    | Type           | Description |
@@ -116,9 +181,9 @@ Create IES Texture with operation ‘Internal’. Use internal text data-block
 
 **Outputs**
 
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.factor` | `FloatSocket` | Factor      |
+| Attribute | Type | Description |
+|----|----|----|
+| `o.factor` | `FloatSocket` | Factor. Renamed from `Fac`; `o.fac` still resolves to it. |
 
 ### ImageTexture
 
@@ -156,6 +221,41 @@ Sample an image file as a texture
 | [`projection`](#nodebpy.nodes.shader.texture.ImageTexture.projection) |  |
 | [`projection_blend`](#nodebpy.nodes.shader.texture.ImageTexture.projection_blend) |  |
 | [`tree`](#nodebpy.nodes.shader.texture.ImageTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.shader.texture.ImageTexture.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -230,6 +330,7 @@ Generate a procedural sky texture
 | [hosek_wilkie](#nodebpy.nodes.shader.texture.SkyTexture.hosek_wilkie) | Create Sky Texture with operation ‘Hosek / Wilkie’. Hosek / Wilkie 2012 (Legacy) |
 | [multiple_scattering](#nodebpy.nodes.shader.texture.SkyTexture.multiple_scattering) | Create Sky Texture with operation ‘Multiple Scattering’. Multiple scattering sky model (more accurate) |
 | [preetham](#nodebpy.nodes.shader.texture.SkyTexture.preetham) | Create Sky Texture with operation ‘Preetham’. Preetham 1999 (Legacy) |
+| [props](#nodebpy.nodes.shader.texture.SkyTexture.props) | Set the properties every node has and return the node, so it can |
 | [single_scattering](#nodebpy.nodes.shader.texture.SkyTexture.single_scattering) | Create Sky Texture with operation ‘Single Scattering’. Single scattering sky model |
 
 ##### hosek_wilkie
@@ -271,6 +372,35 @@ preetham(vector=None, *, sun_direction=(0.0, 0.0, 1.0), turbidity=2.2)
 ```
 
 Create Sky Texture with operation ‘Preetham’. Preetham 1999 (Legacy)
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### single_scattering
 

@@ -9,8 +9,10 @@
 | [AdvectGrid](#nodebpy.nodes.geometry.grid.AdvectGrid) | Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs |
 | [ClipGrid](#nodebpy.nodes.geometry.grid.ClipGrid) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
 | [CubeGridTopology](#nodebpy.nodes.geometry.grid.CubeGridTopology) | Create a boolean grid topology with the given dimensions, for use with the Field to Grid node |
+| [DeactivateVoxels](#nodebpy.nodes.geometry.grid.DeactivateVoxels) | Deactivate selected voxels and tiles |
 | [DistributePointsInGrid](#nodebpy.nodes.geometry.grid.DistributePointsInGrid) | Generate points inside a volume grid |
 | [DistributePointsInVolume](#nodebpy.nodes.geometry.grid.DistributePointsInVolume) | Generate points inside a volume |
+| [GetGridNames](#nodebpy.nodes.geometry.grid.GetGridNames) | Retrieves the names of all grids stored in a volume as a list of strings |
 | [GetNamedGrid](#nodebpy.nodes.geometry.grid.GetNamedGrid) | Get volume grid from a volume geometry with the specified name |
 | [GridCurl](#nodebpy.nodes.geometry.grid.GridCurl) | Calculate the magnitude and direction of circulation of a directional vector grid |
 | [GridDilateErode](#nodebpy.nodes.geometry.grid.GridDilateErode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
@@ -20,8 +22,10 @@
 | [GridLaplacian](#nodebpy.nodes.geometry.grid.GridLaplacian) | Compute the divergence of the gradient of the input grid |
 | [GridMean](#nodebpy.nodes.geometry.grid.GridMean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [GridMedian](#nodebpy.nodes.geometry.grid.GridMedian) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
+| [GridSolvePoisson](#nodebpy.nodes.geometry.grid.GridSolvePoisson) | Solve the Poisson equation for a scalar field. Computes a grid whose Laplacian equals the input scalar grid. |
 | [GridToMesh](#nodebpy.nodes.geometry.grid.GridToMesh) | Generate a mesh on the “surface” of a volume grid |
 | [GridToPoints](#nodebpy.nodes.geometry.grid.GridToPoints) | Generate a point cloud from a volume grid’s active voxels |
+| [GridTopologyBoolean](#nodebpy.nodes.geometry.grid.GridTopologyBoolean) | Combine the topology of multiple grids |
 | [MeshToDensityGrid](#nodebpy.nodes.geometry.grid.MeshToDensityGrid) | Create a filled volume grid from a mesh |
 | [MeshToSDFGrid](#nodebpy.nodes.geometry.grid.MeshToSDFGrid) | Create a signed distance volume grid from a mesh |
 | [MeshToVolume](#nodebpy.nodes.geometry.grid.MeshToVolume) | Create a fog volume with the shape of the input mesh’s surface |
@@ -86,6 +90,7 @@ Move grid values through a velocity field using numerical integration. Supports 
 |----|----|
 | [float](#nodebpy.nodes.geometry.grid.AdvectGrid.float) | Create Advect Grid with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.AdvectGrid.integer) | Create Advect Grid with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.AdvectGrid.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.AdvectGrid.vector) | Create Advect Grid with operation ‘Vector’. |
 
 ##### float
@@ -115,6 +120,35 @@ integer(
 ```
 
 Create Advect Grid with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -194,6 +228,7 @@ Deactivate grid voxels outside minimum and maximum coordinates, setting them to 
 | [boolean](#nodebpy.nodes.geometry.grid.ClipGrid.boolean) | Create Clip Grid with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.ClipGrid.float) | Create Clip Grid with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.ClipGrid.integer) | Create Clip Grid with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.ClipGrid.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.ClipGrid.vector) | Create Clip Grid with operation ‘Vector’. |
 
 ##### boolean
@@ -219,6 +254,35 @@ integer(grid=None, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
 ```
 
 Create Clip Grid with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -286,6 +350,41 @@ Create a boolean grid topology with the given dimensions, for use with the Field
 | [`o`](#nodebpy.nodes.geometry.grid.CubeGridTopology.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.CubeGridTopology.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.CubeGridTopology.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute        | Type            | Description  |
@@ -304,6 +403,116 @@ Create a boolean grid topology with the given dimensions, for use with the Field
 | Attribute    | Type                | Description |
 |--------------|---------------------|-------------|
 | `o.topology` | `BooleanSocketGrid` | Topology    |
+
+### DeactivateVoxels
+
+``` python
+DeactivateVoxels(grid=None, selection=None, *, data_type='FLOAT')
+```
+
+Deactivate selected voxels and tiles
+
+#### Parameters
+
+| Name      | Type           | Description | Default |
+|-----------|----------------|-------------|---------|
+| grid      | InputFloatGrid | Grid        | `None`  |
+| selection | InputBoolean   | Selection   | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.grid.DeactivateVoxels.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.grid.DeactivateVoxels.i) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.DeactivateVoxels.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.grid.DeactivateVoxels.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.DeactivateVoxels.o) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.DeactivateVoxels.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.grid.DeactivateVoxels.boolean) | Create Deactivate Voxels with operation ‘Boolean’. |
+| [float](#nodebpy.nodes.geometry.grid.DeactivateVoxels.float) | Create Deactivate Voxels with operation ‘Float’. |
+| [integer](#nodebpy.nodes.geometry.grid.DeactivateVoxels.integer) | Create Deactivate Voxels with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.DeactivateVoxels.props) | Set the properties every node has and return the node, so it can |
+| [vector](#nodebpy.nodes.geometry.grid.DeactivateVoxels.vector) | Create Deactivate Voxels with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(grid=None, selection=None)
+```
+
+Create Deactivate Voxels with operation ‘Boolean’.
+
+##### float
+
+``` python
+float(grid=None, selection=None)
+```
+
+Create Deactivate Voxels with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(grid=None, selection=None)
+```
+
+Create Deactivate Voxels with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+##### vector
+
+``` python
+vector(grid=None, selection=None)
+```
+
+Create Deactivate Voxels with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute     | Type              | Description |
+|---------------|-------------------|-------------|
+| `i.grid`      | `FloatSocketGrid` | Grid        |
+| `i.selection` | `BooleanSocket`   | Selection   |
+
+**Outputs**
+
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### DistributePointsInGrid
 
@@ -347,6 +556,7 @@ Generate points inside a volume grid
 | Name | Description |
 |----|----|
 | [grid](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.grid) | Create Distribute Points in Grid with operation ‘Grid’. Distribute the points in a grid pattern inside of the volume |
+| [props](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.props) | Set the properties every node has and return the node, so it can |
 | [random](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.random) | Create Distribute Points in Grid with operation ‘Random’. Distribute points randomly inside of the volume |
 
 ##### grid
@@ -356,6 +566,35 @@ grid(grid=None, spacing=(0.3, 0.3, 0.3), threshold=0.1)
 ```
 
 Create Distribute Points in Grid with operation ‘Grid’. Distribute the points in a grid pattern inside of the volume
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### random
 
@@ -417,6 +656,41 @@ Generate points inside a volume
 | [`o`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute     | Type             | Description |
@@ -433,6 +707,77 @@ Generate points inside a volume
 | Attribute  | Type             | Description |
 |------------|------------------|-------------|
 | `o.points` | `GeometrySocket` | Points      |
+
+### GetGridNames
+
+``` python
+GetGridNames(volume=None)
+```
+
+Retrieves the names of all grids stored in a volume as a list of strings
+
+#### Parameters
+
+| Name   | Type          | Description | Default |
+|--------|---------------|-------------|---------|
+| volume | InputGeometry | Volume      | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.grid.GetGridNames.i) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.GetGridNames.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.grid.GetGridNames.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.GetGridNames.o) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.GetGridNames.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.GetGridNames.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+**Inputs**
+
+| Attribute  | Type             | Description |
+|------------|------------------|-------------|
+| `i.volume` | `GeometrySocket` | Volume      |
+
+**Outputs**
+
+| Attribute | Type               | Description |
+|-----------|--------------------|-------------|
+| `o.names` | `StringSocketList` | Names       |
 
 ### GetNamedGrid
 
@@ -468,6 +813,7 @@ Get volume grid from a volume geometry with the specified name
 | [boolean](#nodebpy.nodes.geometry.grid.GetNamedGrid.boolean) | Create Get Named Grid with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.GetNamedGrid.float) | Create Get Named Grid with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.GetNamedGrid.integer) | Create Get Named Grid with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.GetNamedGrid.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.GetNamedGrid.vector) | Create Get Named Grid with operation ‘Vector’. |
 
 ##### boolean
@@ -493,6 +839,35 @@ integer(volume=None, name='', remove=True)
 ```
 
 Create Get Named Grid with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -540,6 +915,41 @@ Calculate the magnitude and direction of circulation of a directional vector gri
 | [`node`](#nodebpy.nodes.geometry.grid.GridCurl.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridCurl.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridCurl.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.GridCurl.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -595,6 +1005,7 @@ Dilate or erode the active regions of a grid. This changes which voxels are acti
 | [boolean](#nodebpy.nodes.geometry.grid.GridDilateErode.boolean) | Create Grid Dilate & Erode with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.GridDilateErode.float) | Create Grid Dilate & Erode with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.GridDilateErode.integer) | Create Grid Dilate & Erode with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.GridDilateErode.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.GridDilateErode.vector) | Create Grid Dilate & Erode with operation ‘Vector’. |
 
 ##### boolean
@@ -620,6 +1031,35 @@ integer(grid=None, connectivity='Face', tiles='Preserve', steps=1)
 ```
 
 Create Grid Dilate & Erode with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -668,6 +1108,41 @@ Calculate the flow into and out of each point of a directional vector grid
 | [`o`](#nodebpy.nodes.geometry.grid.GridDivergence.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridDivergence.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.GridDivergence.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute | Type               | Description |
@@ -703,6 +1178,41 @@ Calculate the direction and magnitude of the change in values of a scalar grid
 | [`node`](#nodebpy.nodes.geometry.grid.GridGradient.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridGradient.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridGradient.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.GridGradient.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -748,6 +1258,7 @@ Retrieve information about a volume grid
 | [boolean](#nodebpy.nodes.geometry.grid.GridInfo.boolean) | Create Grid Info with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.GridInfo.float) | Create Grid Info with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.GridInfo.integer) | Create Grid Info with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.GridInfo.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.GridInfo.vector) | Create Grid Info with operation ‘Vector’. |
 
 ##### boolean
@@ -773,6 +1284,35 @@ integer(grid=None)
 ```
 
 Create Grid Info with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -819,6 +1359,41 @@ Compute the divergence of the gradient of the input grid
 | [`o`](#nodebpy.nodes.geometry.grid.GridLaplacian.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridLaplacian.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.GridLaplacian.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute | Type              | Description |
@@ -864,6 +1439,7 @@ Apply mean (box) filter smoothing to a voxel. The mean value from surrounding vo
 |----|----|
 | [float](#nodebpy.nodes.geometry.grid.GridMean.float) | Create Grid Mean with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.GridMean.integer) | Create Grid Mean with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.GridMean.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.GridMean.vector) | Create Grid Mean with operation ‘Vector’. |
 
 ##### float
@@ -881,6 +1457,35 @@ integer(grid=None, width=1, iterations=1)
 ```
 
 Create Grid Mean with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -937,6 +1542,7 @@ Apply median (box) filter smoothing to a voxel. The median value from surroundin
 |----|----|
 | [float](#nodebpy.nodes.geometry.grid.GridMedian.float) | Create Grid Median with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.GridMedian.integer) | Create Grid Median with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.GridMedian.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.GridMedian.vector) | Create Grid Median with operation ‘Vector’. |
 
 ##### float
@@ -954,6 +1560,35 @@ integer(grid=None, width=1, iterations=1)
 ```
 
 Create Grid Median with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -976,6 +1611,107 @@ Create Grid Median with operation ‘Vector’.
 | Attribute | Type              | Description |
 |-----------|-------------------|-------------|
 | `o.grid`  | `FloatSocketGrid` | Grid        |
+
+### GridSolvePoisson
+
+``` python
+GridSolvePoisson(
+    grid=None,
+    max_iterations=100,
+    error_threshold=0.001,
+    threshold_mode='Relative',
+    boundary='Fixed',
+    boundary_value=None,
+    boundary_gradient=None,
+    boundary_factor=0.0,
+)
+```
+
+Solve the Poisson equation for a scalar field. Computes a grid whose Laplacian equals the input scalar grid.
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| grid | InputFloatGrid | Grid | `None` |
+| max_iterations | InputInteger | Max Iterations | `100` |
+| error_threshold | InputFloat | Error Threshold | `0.001` |
+| threshold_mode | InputMenu \| Literal\['Relative', 'Absolute'\] | Threshold Mode | `'Relative'` |
+| boundary | InputMenu \| Literal\['Fixed', 'Gradient', 'Mixed'\] | Boundary | `'Fixed'` |
+| boundary_value | InputFloat | Boundary Value | `None` |
+| boundary_gradient | InputVector | Boundary Gradient | `None` |
+| boundary_factor | InputFloat | Boundary Factor | `0.0` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.grid.GridSolvePoisson.i) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.GridSolvePoisson.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.grid.GridSolvePoisson.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.GridSolvePoisson.o) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.GridSolvePoisson.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.GridSolvePoisson.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+**Inputs**
+
+| Attribute             | Type              | Description       |
+|-----------------------|-------------------|-------------------|
+| `i.grid`              | `FloatSocketGrid` | Grid              |
+| `i.max_iterations`    | `IntegerSocket`   | Max Iterations    |
+| `i.error_threshold`   | `FloatSocket`     | Error Threshold   |
+| `i.threshold_mode`    | `MenuSocket`      | Threshold Mode    |
+| `i.boundary`          | `MenuSocket`      | Boundary          |
+| `i.boundary_value`    | `FloatSocket`     | Boundary Value    |
+| `i.boundary_gradient` | `VectorSocket`    | Boundary Gradient |
+| `i.boundary_factor`   | `FloatSocket`     | Boundary Factor   |
+
+**Outputs**
+
+| Attribute                   | Type               | Description             |
+|-----------------------------|--------------------|-------------------------|
+| `o.solution`                | `FloatSocketGrid`  | Solution                |
+| `o.success`                 | `BooleanSocket`    | Success                 |
+| `o.iterations`              | `IntegerSocket`    | Iterations              |
+| `o.absolute_error`          | `FloatSocket`      | Absolute Error          |
+| `o.relative_error`          | `FloatSocket`      | Relative Error          |
+| `o.debug_boundary_value`    | `FloatSocketGrid`  | Debug Boundary Value    |
+| `o.debug_boundary_gradient` | `VectorSocketGrid` | Debug Boundary Gradient |
+| `o.debug_boundary_factor`   | `FloatSocketGrid`  | Debug Boundary Factor   |
 
 ### GridToMesh
 
@@ -1002,6 +1738,41 @@ Generate a mesh on the “surface” of a volume grid
 | [`node`](#nodebpy.nodes.geometry.grid.GridToMesh.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridToMesh.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridToMesh.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.GridToMesh.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -1049,6 +1820,7 @@ Generate a point cloud from a volume grid’s active voxels
 | [boolean](#nodebpy.nodes.geometry.grid.GridToPoints.boolean) | Create Grid to Points with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.GridToPoints.float) | Create Grid to Points with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.GridToPoints.integer) | Create Grid to Points with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.GridToPoints.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.GridToPoints.vector) | Create Grid to Points with operation ‘Vector’. |
 
 ##### boolean
@@ -1074,6 +1846,35 @@ integer(grid=None)
 ```
 
 Create Grid to Points with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -1101,6 +1902,124 @@ Create Grid to Points with operation ‘Vector’.
 | `o.is_tile` | `BooleanSocket`  | Is Tile     |
 | `o.extent`  | `IntegerSocket`  | Extent      |
 
+### GridTopologyBoolean
+
+``` python
+GridTopologyBoolean(
+    operation='Intersect',
+    grid_1=None,
+    grid_2=None,
+    *,
+    data_type='FLOAT',
+)
+```
+
+Combine the topology of multiple grids
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| operation | InputMenu \| Literal\['Intersect', 'Union', 'Difference'\] | Operation | `'Intersect'` |
+| grid_1 | InputFloatGrid | Grid 1 | `None` |
+| grid_2 | InputFloatGrid | Grid 2 | `None` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.i) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.o) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.boolean) | Create Grid Topology Boolean with operation ‘Boolean’. |
+| [float](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.float) | Create Grid Topology Boolean with operation ‘Float’. |
+| [integer](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.integer) | Create Grid Topology Boolean with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.props) | Set the properties every node has and return the node, so it can |
+| [vector](#nodebpy.nodes.geometry.grid.GridTopologyBoolean.vector) | Create Grid Topology Boolean with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(operation='Intersect', grid_1=None, grid_2=None)
+```
+
+Create Grid Topology Boolean with operation ‘Boolean’.
+
+##### float
+
+``` python
+float(operation='Intersect', grid_1=None, grid_2=None)
+```
+
+Create Grid Topology Boolean with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(operation='Intersect', grid_1=None, grid_2=None)
+```
+
+Create Grid Topology Boolean with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
+##### vector
+
+``` python
+vector(operation='Intersect', grid_1=None, grid_2=None)
+```
+
+Create Grid Topology Boolean with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute     | Type              | Description |
+|---------------|-------------------|-------------|
+| `i.operation` | `MenuSocket`      | Operation   |
+| `i.grid_1`    | `FloatSocketGrid` | Grid 1      |
+| `i.grid_2`    | `FloatSocketGrid` | Grid 2      |
+
+**Outputs**
+
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
+
 ### MeshToDensityGrid
 
 ``` python
@@ -1127,6 +2046,41 @@ Create a filled volume grid from a mesh
 | [`node`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -1168,6 +2122,41 @@ Create a signed distance volume grid from a mesh
 | [`node`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -1219,6 +2208,41 @@ Create a fog volume with the shape of the input mesh’s surface
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToVolume.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.MeshToVolume.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.MeshToVolume.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute               | Type             | Description         |
@@ -1261,6 +2285,41 @@ Create a signed distance volume grid from points
 | [`node`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -1311,6 +2370,41 @@ Generate a fog volume sphere around every point
 | [`node`](#nodebpy.nodes.geometry.grid.PointsToVolume.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.PointsToVolume.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.PointsToVolume.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.PointsToVolume.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -1363,6 +2457,7 @@ Make the storage of a volume grid more efficient by collapsing data into tiles o
 | [boolean](#nodebpy.nodes.geometry.grid.PruneGrid.boolean) | Create Prune Grid with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.PruneGrid.float) | Create Prune Grid with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.PruneGrid.integer) | Create Prune Grid with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.PruneGrid.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.PruneGrid.vector) | Create Prune Grid with operation ‘Vector’. |
 
 ##### boolean
@@ -1388,6 +2483,35 @@ integer(grid=None, mode='Threshold', threshold=0)
 ```
 
 Create Prune Grid with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -1436,6 +2560,41 @@ Round off concave internal corners in a signed distance field. Only affects area
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridFillet.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridFillet.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.SDFGridFillet.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute      | Type              | Description |
@@ -1473,6 +2632,41 @@ Apply Laplacian flow smoothing to a signed distance field. Computationally effic
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -1513,6 +2707,41 @@ Apply mean (box) filter smoothing to a signed distance field. Fast separable ave
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMean.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridMean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.SDFGridMean.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute      | Type              | Description |
@@ -1551,6 +2780,41 @@ Apply mean curvature flow smoothing to a signed distance field. Evolves the surf
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 **Inputs**
 
@@ -1591,6 +2855,41 @@ Apply median filter to a signed distance field. Reduces noise while preserving s
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMedian.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridMedian.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.SDFGridMedian.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute      | Type              | Description |
@@ -1630,6 +2929,41 @@ Offset a signed distance field surface by a world-space distance. Dilates (posit
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridOffset.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridOffset.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.SDFGridOffset.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute    | Type              | Description |
@@ -1663,7 +2997,7 @@ Retrieve values from the specified volume grid
 |----|----|----|----|
 | grid | InputFloatGrid | Grid | `None` |
 | position | InputVector | Position | `None` |
-| interpolation | InputMenu \| Literal\['Nearest Neighbor', 'Trilinear', 'Triquadratic'\] | Interpolation | `'Trilinear'` |
+| interpolation | InputMenu \| Literal\['Nearest Neighbor', 'Trilinear', 'Triquadratic', 'Tricubic'\] | Interpolation | `'Trilinear'` |
 
 #### Attributes
 
@@ -1683,6 +3017,7 @@ Retrieve values from the specified volume grid
 | [boolean](#nodebpy.nodes.geometry.grid.SampleGrid.boolean) | Create Sample Grid with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.SampleGrid.float) | Create Sample Grid with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.SampleGrid.integer) | Create Sample Grid with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.SampleGrid.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.SampleGrid.vector) | Create Sample Grid with operation ‘Vector’. |
 
 ##### boolean
@@ -1708,6 +3043,35 @@ integer(grid=None, position=None, interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -1766,6 +3130,7 @@ Retrieve volume grid values at specific voxels
 | [boolean](#nodebpy.nodes.geometry.grid.SampleGridIndex.boolean) | Create Sample Grid Index with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.SampleGridIndex.float) | Create Sample Grid Index with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.SampleGridIndex.integer) | Create Sample Grid Index with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.SampleGridIndex.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.SampleGridIndex.vector) | Create Sample Grid Index with operation ‘Vector’. |
 
 ##### boolean
@@ -1791,6 +3156,35 @@ integer(grid=None, x=0, y=0, z=0)
 ```
 
 Create Sample Grid Index with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -1855,6 +3249,7 @@ Set the background value used for inactive voxels and tiles
 | [boolean](#nodebpy.nodes.geometry.grid.SetGridBackground.boolean) | Create Set Grid Background with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.SetGridBackground.float) | Create Set Grid Background with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.SetGridBackground.integer) | Create Set Grid Background with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.SetGridBackground.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.SetGridBackground.vector) | Create Set Grid Background with operation ‘Vector’. |
 
 ##### boolean
@@ -1880,6 +3275,35 @@ integer(grid=None, background=0, update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -1936,6 +3360,7 @@ Set the transform for the grid from index space into object space.
 | [boolean](#nodebpy.nodes.geometry.grid.SetGridTransform.boolean) | Create Set Grid Transform with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.SetGridTransform.float) | Create Set Grid Transform with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.SetGridTransform.integer) | Create Set Grid Transform with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.SetGridTransform.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.SetGridTransform.vector) | Create Set Grid Transform with operation ‘Vector’. |
 
 ##### boolean
@@ -1961,6 +3386,35 @@ integer(grid=None, transform=None)
 ```
 
 Create Set Grid Transform with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -2018,6 +3472,7 @@ Store grid data in a volume geometry with the specified name
 | [boolean](#nodebpy.nodes.geometry.grid.StoreNamedGrid.boolean) | Create Store Named Grid with operation ‘Boolean’. Boolean |
 | [float](#nodebpy.nodes.geometry.grid.StoreNamedGrid.float) | Create Store Named Grid with operation ‘Float’. Single precision float |
 | [integer](#nodebpy.nodes.geometry.grid.StoreNamedGrid.integer) | Create Store Named Grid with operation ‘Integer’. 32-bit integer |
+| [props](#nodebpy.nodes.geometry.grid.StoreNamedGrid.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.StoreNamedGrid.vector) | Create Store Named Grid with operation ‘Vector’. 3D float vector |
 
 ##### boolean
@@ -2043,6 +3498,35 @@ integer(volume=None, name='', grid=None)
 ```
 
 Create Store Named Grid with operation ‘Integer’. 32-bit integer
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
@@ -2104,6 +3588,41 @@ Generate a dense volume with a field that controls the density at each grid voxe
 | [`o`](#nodebpy.nodes.geometry.grid.VolumeCube.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.VolumeCube.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.VolumeCube.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute        | Type            | Description  |
@@ -2158,6 +3677,41 @@ Generate a mesh on the “surface” of a volume
 | [`o`](#nodebpy.nodes.geometry.grid.VolumeToMesh.o) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.VolumeToMesh.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [props](#nodebpy.nodes.geometry.grid.VolumeToMesh.props) | Set the properties every node has and return the node, so it can |
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
+
 **Inputs**
 
 | Attribute           | Type             | Description     |
@@ -2207,6 +3761,7 @@ Remove sparseness from a volume grid by making the active tiles into voxels
 | [boolean](#nodebpy.nodes.geometry.grid.VoxelizeGrid.boolean) | Create Voxelize Grid with operation ‘Boolean’. |
 | [float](#nodebpy.nodes.geometry.grid.VoxelizeGrid.float) | Create Voxelize Grid with operation ‘Float’. |
 | [integer](#nodebpy.nodes.geometry.grid.VoxelizeGrid.integer) | Create Voxelize Grid with operation ‘Integer’. |
+| [props](#nodebpy.nodes.geometry.grid.VoxelizeGrid.props) | Set the properties every node has and return the node, so it can |
 | [vector](#nodebpy.nodes.geometry.grid.VoxelizeGrid.vector) | Create Voxelize Grid with operation ‘Vector’. |
 
 ##### boolean
@@ -2232,6 +3787,35 @@ integer(grid=None)
 ```
 
 Create Voxelize Grid with operation ‘Integer’.
+
+##### props
+
+``` python
+props(
+    label=None,
+    color=None,
+    width=None,
+    height=None,
+    hide=None,
+    show_options=None,
+    hide_inputs=(),
+    hide_outputs=(),
+    mute=None,
+    warning_propagation=None,
+    pin_gizmo=None,
+    pin_gizmo_inputs=(),
+)
+```
+
+Set the properties every node has and return the node, so it can go at the end of a chain::
+
+    g.SetPosition(geometry=geo, offset=offset).props(
+        label="Lift", color="#FFAA00", width=200
+    )
+
+Properties left as `None` are unchanged.
+
+Args: label: The node’s header label. color: A custom header colour, as a hex string (`"#FFAA00"`) or an `(r, g, b)` tuple; turns on `use_custom_color`. width: The node’s width. height: The node’s height; only frames use it. hide: Collapse the node. show_options: Show the node’s options (dropdowns and toggles). hide_inputs: Input sockets to hide, by name; `"Value#1"` names the second visible `Value`. hide_outputs: Output sockets to hide, by name. mute: Mute (bypass) the node. warning_propagation: Which of the node’s warnings show on the group node it sits in. pin_gizmo: Keep the node’s gizmo visible when it isn’t selected: a gizmo node’s, or a value node’s (Value, Vector, …). pin_gizmo_inputs: Inputs whose gizmos stay visible when the node isn’t selected, by name; for group nodes passing a gizmo through.
 
 ##### vector
 
