@@ -882,19 +882,24 @@ class _Link(NamedTuple):
     to_node: Any
     to_socket: Any
     sort_id: int = 0  # multi_input_sort_id; later-created links get higher ids
+    # Muted, or reached through a muted segment of a collapsed reroute chain.
+    is_muted: bool = False
 
 
 def _trace_reroute(node, socket, node_tree):
-    """Follow a reroute chain backward to the real source node and socket."""
+    """Follow a reroute chain backward to the real source node and socket;
+    also returns whether any link along the chain is muted."""
     visited = set()
+    muted = False
     while node.bl_idname == "NodeReroute" and node.name not in visited:
         visited.add(node.name)
         upstream = [link for link in node_tree.links if link.to_node.name == node.name]
         if not upstream:
             break
+        muted = muted or upstream[0].is_muted
         node = upstream[0].from_node
         socket = upstream[0].from_socket
-    return node, socket
+    return node, socket, muted
 
 
 def _canonical_links(node_tree, links: list[_Link]) -> list[_Link]:
@@ -942,10 +947,11 @@ def _effective_links(node_tree, keep_reroutes: bool = False) -> list[_Link]:
             continue
         if _is_ignored_link(link):
             continue
+        chain_muted = False
         if keep_reroutes:
             from_node, from_socket = link.from_node, link.from_socket
         else:
-            from_node, from_socket = _trace_reroute(
+            from_node, from_socket, chain_muted = _trace_reroute(
                 link.from_node, link.from_socket, node_tree
             )
             if from_node.bl_idname == "NodeReroute":
@@ -957,6 +963,7 @@ def _effective_links(node_tree, keep_reroutes: bool = False) -> list[_Link]:
                 link.to_node,
                 link.to_socket,
                 getattr(link, "multi_input_sort_id", 0),
+                link.is_muted or chain_muted,
             )
         )
     return _canonical_links(node_tree, links)
@@ -981,6 +988,12 @@ def _is_ignored_link(link) -> bool:
     ):
         if node.bl_idname == "NodeReroute":
             continue  # collapsed away on rebuild — its sockets never link
+        if link.is_muted:
+            # Muting a link leaves its sockets unused, which Blender reports as
+            # inactive: only a socket the node's settings turn off is ignored.
+            if getattr(socket, "is_unavailable", False):
+                return True
+            continue
         if (
             getattr(socket, "is_inactive", False)
             and not _allow_innactive_sockets(node)
@@ -1237,14 +1250,43 @@ class EmitContext:
 
         ``pipeline`` marks a ``>>`` statement source: the arrow already
         implies the node's primary output, so a multi-output node stays a
-        bare reference there instead of forcing ``.o.<name>``."""
-        return _output_expr(
+        bare reference there instead of forcing ``.o.<name>``. A muted link
+        wraps it in ``muted(...)``, with the input's own value."""
+        expr = _output_expr(
             self._resolve(link),
             link.from_node,
             link.from_socket,
             to_socket=link.to_socket,
             pipeline=pipeline,
         )
+        return self._muted(link, expr) if link.is_muted else expr
+
+    def _muted(self, link: _Link, expr: Expr) -> Expr:
+        """``muted(expr, value=...)``: the value is the one the input uses
+        while the link is muted, written when it may differ from a rebuilt
+        node's."""
+        if self.collector is not None:
+            self.collector.uses_muted = True
+        kwargs: dict[str, Expr] = {}
+        socket = link.to_socket
+        # A menu behind a muted link gets no items to pick a value from.
+        if (
+            hasattr(socket, "default_value")
+            and socket.type != "MENU"
+            and link.to_node.bl_idname not in ("NodeGroupOutput", "NodeReroute")
+        ):
+            value = socket.default_value
+            if not isinstance(value, (str, bool, int, float)) and value is not None:
+                try:
+                    value = tuple(value)
+                except TypeError:
+                    pass
+            fresh = _get_blender_socket_defaults(
+                self.node_tree.bl_idname, link.to_node.bl_idname
+            ).get(socket.identifier, _UNKNOWN)
+            if fresh is _UNKNOWN or not _eq(value, fresh):
+                kwargs["value"] = Lit(value)
+        return Call("muted", [expr], kwargs)
 
     def socket_expr(self, link: _Link) -> Expr:
         """Like :meth:`upstream_expr` but guaranteed to evaluate to a Socket.
@@ -1255,6 +1297,13 @@ class EmitContext:
         return _output_expr(
             self._resolve(link), link.from_node, link.from_socket, force_socket=True
         )
+
+    def socket_arg(self, link: _Link) -> Expr:
+        """:meth:`socket_expr` for an argument position, so a muted link is
+        wrapped in ``muted(...)`` (as :meth:`upstream_expr` does). Not for a
+        method receiver: ``muted(...)`` has no socket methods."""
+        expr = self.socket_expr(link)
+        return self._muted(link, expr) if link.is_muted else expr
 
     def promote_to_var(self, link: _Link, expr: Expr) -> Expr:
         """Bind an upstream socket expression to a variable and return its Ref.
@@ -3468,6 +3517,17 @@ EmitterFn = Callable[[Any, EmitContext], "Expr | _Val | None"]
 
 _EMITTERS: dict[str, EmitterFn] = {}
 
+# Emitters that write an input as an operand or method receiver (``a > b``,
+# ``template.format(...)``), where ``muted(...)`` can't go: a node with a muted
+# incoming link is written with its constructor instead.
+_RECEIVER_EMITTERS = frozenset(
+    {
+        "FunctionNodeFormatString",
+        "GeometryNodeStringJoin",
+        "GeometryNodeListGetItem",
+    }
+)
+
 
 def register_emitter(bl_idname: str) -> Callable[[EmitterFn], EmitterFn]:
     """Register a custom code emitter for a node type.
@@ -4366,6 +4426,8 @@ def to_python(
     # ``_build_group(self, tree: TreeBuilder)``, so editors type the whole
     # body of a dumped class.
     import_names = import_parts + ["TreeBuilder"]
+    if collector.uses_muted:
+        import_names.append("muted")
     lines: list[str] = []
     if collector.tree_param_types:
         # The ``tree: TreeBuilder[GeometryNodeTree]`` annotations on emitted
@@ -4690,6 +4752,8 @@ class _GroupCollector:
     # modules it binds (see to_python's ``namespace``).
     script_classes: dict[type, str] = field(default_factory=dict)
     script_modules: dict[str, ModuleType] = field(default_factory=dict)
+    # A muted link was written as ``muted(...)``, which needs importing.
+    uses_muted: bool = False
 
     def reference(self, node: Node) -> tuple[str, dict[str, str] | None] | None:
         """The name to call a loaded class by when it builds ``node``'s
@@ -5280,14 +5344,19 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # 1. Build the node's value:
         #    emitter → socket method → lift → factory/constructor.
         val: _Val | None = None
+        # A muted incoming link is written ``muted(source)``, which only a
+        # constructor's arguments take: no socket method or operator form.
+        has_muted = any(link.is_muted for link in ctx.incoming.get(name, ()))
         emitter = _EMITTERS.get(node.bl_idname)
+        if has_muted and node.bl_idname in _RECEIVER_EMITTERS:
+            emitter = None
         if emitter is not None:
             emitted = emitter(node, ctx)
             if emitted is not None:
                 val = emitted if isinstance(emitted, _Val) else _Val(emitted)
-        if val is None:
+        if val is None and not has_muted:
             val = _socket_method_val(ctx, node)
-        if val is None:
+        if val is None and not has_muted:
             plan = _lift_plan(
                 node, _linked_ids(ctx, node), _linked_src_types(ctx, node)
             )
@@ -5377,6 +5446,7 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
             not custom_mapping
             and len(out_links) == 1
             and group_outs
+            and not group_outs[0].is_muted  # the >> below takes no muted()
             and name not in gated_nodes
         ):
             link = group_outs[0]
@@ -5546,7 +5616,9 @@ def _emit_compare(node, ctx: EmitContext) -> Expr | _Val | None:
     constructor — Compare's ``mode`` is consumed via ``**kwargs`` (required
     for VECTOR), so it never appears in the signature and is added
     explicitly."""
-    lifted = _lift_compare(node, ctx)
+    # ``a > b`` takes no muted(...) operand
+    muted = any(link.is_muted for link in ctx.incoming.get(node.name, ()))
+    lifted = None if muted else _lift_compare(node, ctx)
     if lifted is not None:
         return lifted
     call = ctx.constructor(node)
@@ -6142,7 +6214,7 @@ def _emit_reroute(node, ctx: EmitContext) -> Expr | _Val | None:
     link = ctx.input_link(node, node.inputs[0].identifier)
     if link is None:
         return Call(reroute)
-    return Call(reroute, kwargs={"input": ctx.socket_expr(link)})
+    return Call(reroute, kwargs={"input": ctx.socket_arg(link)})
 
 
 def _bundle_item_call(
@@ -6571,7 +6643,7 @@ def _zone_value_expr(ctx: EmitContext, link: _Link) -> Expr:
     drift to a different best-compatible output."""
     real_outputs = [s for s in link.from_node.outputs if s.enabled]
     if len(real_outputs) > 1:
-        return ctx.socket_expr(link)
+        return ctx.socket_arg(link)
     return ctx.upstream_expr(link)
 
 
