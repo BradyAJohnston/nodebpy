@@ -1734,8 +1734,8 @@ class TreeBuilder[TreeT: NodeTree]:
         structurally: exact name+type matches seed the correspondence, then
         it grows through link/frame evidence against already-matched
         neighbours; matched nodes are renamed to their authored names and
-        moved to their authored locations and collapsed state (an entry
-        without display state leaves the node expanded). Entries a rebuild has no
+        moved to their authored locations, and collapsed or expanded when
+        the entry records ``"hide"``. Entries a rebuild has no
         counterpart for (e.g. dropped reroutes) are skipped, so applying a
         snapshot to an edited tree degrades gracefully."""
         entries: dict[str, _LayoutEntry] = {
@@ -1772,7 +1772,8 @@ class TreeBuilder[TreeT: NodeTree]:
             if parent_node is not None or parent is None:
                 node.parent = cast("NodeFrame | None", parent_node)
             node.location = location
-            node.hide = bool(display[entry_name].get("hide", False))
+            if "hide" in display[entry_name]:
+                node.hide = bool(display[entry_name]["hide"])
         for node, old_name in displaced:
             node.name = old_name  # re-suffixed by Blender on collision
 

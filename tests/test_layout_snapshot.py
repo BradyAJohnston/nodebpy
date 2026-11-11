@@ -151,7 +151,7 @@ def test_snapshot_restores_collapsed_nodes():
     a.node.hide = True
 
     code = to_python(tree, snapshot_positions=True, format=False)
-    assert code.count('{"hide": True}') == 1
+    assert code.count(".props(hide=True)") == 1
     bpy.data.node_groups.remove(tree.tree)
     ns: dict = {}
     exec(code, ns)
@@ -162,9 +162,9 @@ def test_snapshot_restores_collapsed_nodes():
     assert not math["MULTIPLY"].hide
 
 
-def test_snapshot_without_display_state_expands():
-    """A four-element entry (the format before display state) still applies,
-    and leaves its node expanded."""
+def test_snapshot_display_state_is_optional():
+    """A four-element entry leaves the node's collapsed state alone; a fifth
+    element's ``"hide"`` sets it."""
     with TreeBuilder("HideOld", arrange=None) as tree:
         x = tree.inputs.float("X")
         (x + 1.0) >> tree.outputs.float("Out")
@@ -176,7 +176,32 @@ def test_snapshot_without_display_state_expands():
     snapshot["Math"] = (bl_idname, (7.0, 8.0), parent, links)
     tree.layout_snapshot = snapshot
     assert tuple(math.location) == (7.0, 8.0)
+    assert math.hide
+
+    snapshot["Math"] = (bl_idname, (7.0, 8.0), parent, links, {"hide": False})
+    tree.layout_snapshot = snapshot
     assert not math.hide
+
+
+def test_snapshot_restores_collapsed_group_io_nodes():
+    """Group Input/Output nodes get no ``.props(...)`` call, so their collapsed
+    state is set by name after the snapshot, and only with snapshot positions."""
+    with TreeBuilder("HideIO", arrange=None) as tree:
+        x = tree.inputs.float("X")
+        (x + 1.0) >> tree.outputs.float("Out")
+    tree.tree.nodes["Group Input"].hide = True
+    tree.tree.nodes["Group Output"].hide = True
+
+    assert "hide" not in to_python(tree, format=False)
+    code = to_python(tree, snapshot_positions=True, format=False)
+    assert 'tree.tree.nodes["Group Input"].hide = True' in code
+    assert 'tree.tree.nodes["Group Output"].hide = True' in code
+    bpy.data.node_groups.remove(tree.tree)
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    assert rebuilt.nodes["Group Input"].hide
+    assert rebuilt.nodes["Group Output"].hide
 
 
 def test_snapshot_dump_unchanged_without_collapsed_nodes():

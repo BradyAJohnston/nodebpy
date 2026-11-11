@@ -4557,14 +4557,21 @@ def _layout_snapshot_lines(
         entry_links = "".join(
             f"{_fmt(entry)}, " for entry in sorted(incoming.get(node.name, ()))
         )
-        # Display state differing from a new node's, left out when empty so
-        # trees without it dump as before.
-        extras = ', {"hide": True}' if node.hide else ""
         lines.append(
             f"{indent}    {_fmt(node.name)}: ({_fmt(node.bl_idname)}, "
-            f"{_fmt(loc)}, {parent}, ({entry_links}){extras}),"
+            f"{_fmt(loc)}, {parent}, ({entry_links})),"
         )
     lines.append(f"{indent}}}")
+    # The builder makes the group input/output nodes itself, so no
+    # ``.props(...)`` call reaches them: collapse them by their authored names,
+    # which the snapshot has just restored. Extra Group Input instances carry
+    # their own ``"hide"`` in the splits block.
+    for node in sorted(node_tree.nodes, key=lambda n: n.name):
+        if not node.hide or node.bl_idname not in ("NodeGroupInput", "NodeGroupOutput"):
+            continue
+        if node.bl_idname == "NodeGroupInput" and node.name != primary_input:
+            continue
+        lines.append(f"{indent}tree.tree.nodes[{_fmt(node.name)}].hide = True")
     return lines
 
 
@@ -4839,16 +4846,46 @@ def _tree_prop_overrides(node_tree) -> dict[str, Any]:
     }
 
 
-def _node_prop_lines(node) -> list[str]:
-    """Assignments for node-instance properties no constructor expresses (a
-    muted/bypassed node, non-default warning propagation), rendered as
-    ``<attr> = <value>`` to append after ``<var>.node.``."""
-    lines: list[str] = []
-    if getattr(node, "mute", False):
-        lines.append("mute = True")
-    if getattr(node, "warning_propagation", "ALL") != "ALL":
-        lines.append(f"warning_propagation = {_fmt(node.warning_propagation)}")
-    return lines
+def _color_expr(color) -> Expr:
+    """A node colour as a hex string when 8-bit channels hold it exactly (to
+    the precision parity compares), else as an ``(r, g, b)`` tuple."""
+    channels = tuple(color)
+    if all(abs(round(c * 255) / 255 - c) < 5e-5 for c in channels):
+        return Lit("#" + "".join(f"{round(c * 255):02X}" for c in channels))
+    return Lit(tuple(round(c, 4) for c in channels))
+
+
+def _node_props_kwargs(node) -> dict[str, Expr]:
+    """``.props(...)`` keyword arguments for the properties every node has
+    that differ from a newly built node's: label, colour, width, collapsed
+    state, options, hidden sockets, mute and warning propagation."""
+    from ..builder._utils import visible_socket_key
+
+    kwargs: dict[str, Expr] = {}
+    if node.label:
+        kwargs["label"] = Lit(node.label)
+    if node.use_custom_color:
+        kwargs["color"] = _color_expr(node.color)
+    group_tree = getattr(node, "node_tree", None)
+    # A built node takes the type's default width; a group node too, since
+    # its tree's default_group_node_width only applies when added in the UI.
+    if abs(node.width - node.bl_width_default) > 0.01:
+        kwargs["width"] = Lit(round(node.width, 2))
+    if node.hide:
+        kwargs["hide"] = Lit(True)
+    # Group nodes are built with their options folded away
+    # (NodeGroupBuilder); every other node starts with them shown.
+    if node.show_options != (group_tree is None):
+        kwargs["show_options"] = Lit(node.show_options)
+    for side, sockets in (("hide_inputs", node.inputs), ("hide_outputs", node.outputs)):
+        hidden = [visible_socket_key(s) for s in sockets if s.enabled and s.hide]
+        if hidden:
+            kwargs[side] = Raw("[" + ", ".join(_fmt(k) for k in hidden) + "]")
+    if node.mute:
+        kwargs["mute"] = Lit(True)
+    if node.warning_propagation != "ALL":
+        kwargs["warning_propagation"] = Lit(node.warning_propagation)
+    return kwargs
 
 
 # -- Curve mappings (Float Curve, RGB/Vector Curves, Hue Correct) -----------
@@ -5182,16 +5219,21 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
             link for link in out_links if link.to_node.bl_idname == "NodeGroupOutput"
         ]
 
-        # Node-instance properties no constructor expresses (a muted/bypassed
-        # node, non-default warning propagation, an edited curve mapping)
-        # force a variable binding so they can be applied to the built node
-        # afterwards.
-        node_prop_lines = _node_prop_lines(node)
+        # Properties every node has (label, colour, mute, ...) go on the
+        # value as ``.props(...)``, which returns the node or socket it is
+        # called on. An edited curve mapping forces a variable binding so it
+        # can be applied to the built node afterwards.
+        props = _node_props_kwargs(node)
+        if props:
+            val = _Val(
+                MethodCall(val.require_expr(), "props", kwargs=props),
+                is_socket=val.is_socket,
+                socket_id=val.socket_id,
+            )
         custom_mapping = _has_custom_mapping(node, node_tree.bl_idname)
 
         if (
-            not node_prop_lines
-            and not custom_mapping
+            not custom_mapping
             and len(out_links) == 1
             and not group_outs
             # Inlining would create this node at the consumer's statement —
@@ -5211,8 +5253,7 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # Gated nodes render no >> syntax; everything else with a single link
         # to a group output finishes its chain right here.
         if (
-            not node_prop_lines
-            and not custom_mapping
+            not custom_mapping
             and len(out_links) == 1
             and group_outs
             and name not in gated_nodes
@@ -5237,17 +5278,13 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # A node created purely for its side effect (a gizmo, a dangling
         # node) is never referenced again — prefix its variable so the
         # generated module passes lint (F841).
-        if not out_links and not node_prop_lines and not custom_mapping:
+        if not out_links and not custom_mapping:
             var = "_" + var
         width = _MAX_LINE_WIDTH - 4 * len(frame)
         tagged_body.extend(
             (frame, line)
             for line in _stmt_lines(val.require_expr(), assign=var, width=width)
         )
-        for prop_line in node_prop_lines:
-            # ``.node`` reaches the bpy node from a node wrapper and a socket
-            # wrapper alike, so this works for constructor and method values.
-            tagged_body.append((frame, f"    {var}.node.{prop_line}"))
         if custom_mapping:
             tagged_body.extend(
                 (frame, f"    {line}")
@@ -5862,16 +5899,18 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
 
     ctx.used_aliases.add(alias)
     var_name = _make_var(spec.label, ctx.counter)
-    prop_lines = _node_prop_lines(node)
+    props = _node_props_kwargs(node)
     # No items, props or consumers → nothing ever references the variable;
     # prefix it so the generated module passes lint (F841).
-    if not items and not prop_lines and not ctx.outgoing.get(node.name):
+    if not items and not props and not ctx.outgoing.get(node.name):
         var_name = "_" + var_name
     ref = Ref(var_name)
     ctor = _items_node_ctor(alias, cls, spec, node, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
-    for prop_line in prop_lines:
-        ctx.pending_lines.append(f"    {ref.name}.node.{prop_line}")
+    if props:
+        ctx.pending_lines.append(
+            f"    {MethodCall(ref, 'props', kwargs=props).render()}"
+        )
 
     outputs: dict[str, Expr] = {
         ident: Attr(ref, attr) for ident, attr in spec.fixed_outputs
