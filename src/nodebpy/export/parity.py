@@ -115,7 +115,7 @@ def serialize_library(trees: Iterable[Any]) -> dict[str, dict[str, Any]]:
             # owning material (duck-typing web_render's MaterialBuilder).
             owner = next((m for m in bpy.data.materials if m.node_tree == tree), None)
             if owner is not None:
-                builder.material = owner  # ty: ignore[unresolved-attribute]
+                builder.material = owner  # ty: ignore[missing-attribute]
         payload = json.loads(to_tree_clipper_payload(builder, compress=False))
         external = {
             int(key): f"<{value.get('fixed_type_name')}:{value.get('description')}>"
