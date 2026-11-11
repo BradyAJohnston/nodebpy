@@ -73,14 +73,14 @@ BaseSocket(socket)
 
 #### Attributes
 
-| Name                                                  | Description |
-|-------------------------------------------------------|-------------|
-| [`links`](#nodebpy.builder.socket.BaseSocket.links)   |             |
-| [`name`](#nodebpy.builder.socket.BaseSocket.name)     |             |
-| [`node`](#nodebpy.builder.socket.BaseSocket.node)     |             |
-| [`socket`](#nodebpy.builder.socket.BaseSocket.socket) |             |
-| [`tree`](#nodebpy.builder.socket.BaseSocket.tree)     |             |
-| [`type`](#nodebpy.builder.socket.BaseSocket.type)     |             |
+| Name | Description |
+|----|----|
+| [`links`](#nodebpy.builder.socket.BaseSocket.links) |  |
+| [`name`](#nodebpy.builder.socket.BaseSocket.name) |  |
+| [`node`](#nodebpy.builder.socket.BaseSocket.node) |  |
+| [`socket`](#nodebpy.builder.socket.BaseSocket.socket) | The Blender socket this instance wraps. |
+| [`tree`](#nodebpy.builder.socket.BaseSocket.tree) |  |
+| [`type`](#nodebpy.builder.socket.BaseSocket.type) |  |
 
 #### Methods
 
@@ -7087,7 +7087,7 @@ tree : TreeBuilder The tree this socket belongs to. socket : NodeSocket The unde
 | [`name`](#nodebpy.builder.socket.Socket.name) |  |
 | [`node`](#nodebpy.builder.socket.Socket.node) |  |
 | [`o`](#nodebpy.builder.socket.Socket.o) |  |
-| [`socket`](#nodebpy.builder.socket.Socket.socket) |  |
+| [`socket`](#nodebpy.builder.socket.Socket.socket) | The Blender socket this instance wraps. |
 | [`tree`](#nodebpy.builder.socket.Socket.tree) |  |
 | [`type`](#nodebpy.builder.socket.Socket.type) |  |
 

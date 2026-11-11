@@ -12,7 +12,7 @@ Base class for all node wrappers.
 |----|----|
 | [`i`](#nodebpy.builder.BaseNode.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`name`](#nodebpy.builder.BaseNode.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.builder.BaseNode.node) |  |
+| [`node`](#nodebpy.builder.BaseNode.node) | The Blender node this instance wraps. |
 | [`o`](#nodebpy.builder.BaseNode.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`tree`](#nodebpy.builder.BaseNode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 

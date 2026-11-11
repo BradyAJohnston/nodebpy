@@ -1,6 +1,17 @@
 # Changelog
 
-## v530.0.0 - UNRELEASED
+## v530.0.1
+
+### Enhancements
+
+- **nodebpy 530 runs on Blender 5.2.** Everything Blender 5.3 didn’t add works there: the node classes import, and an input 5.3 added is left out when it keeps its default. A node, input, menu option or bundled asset only 5.3 has raises `NodeUnavailableError`, naming the Blender it needs. Merge Layers and the Set Grease Pencil Color / Depth nodes take their 530 `mode=` / `depth_order=` values on 5.2 too. The `bpy` extra accepts 5.2.
+
+### Fixes
+
+- `GeometryPrincipalComponents.i.geometry` is typed as a `GeometrySocket`, like every other group input; it was typed as an input value.
+- A node’s `.node` and a socket’s `.socket` are read-only properties, so subclasses can narrow their types for type checkers (ty 0.0.101 requires it); assigning to them raises `AttributeError`.
+
+## v530.0.0
 
 ### Enhancements
 

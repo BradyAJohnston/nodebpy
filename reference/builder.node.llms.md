@@ -27,7 +27,7 @@ Base class for all node wrappers.
 |----|----|
 | [`i`](#nodebpy.builder.node.BaseNode.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`name`](#nodebpy.builder.node.BaseNode.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.builder.node.BaseNode.node) |  |
+| [`node`](#nodebpy.builder.node.BaseNode.node) | The Blender node this instance wraps. |
 | [`o`](#nodebpy.builder.node.BaseNode.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`tree`](#nodebpy.builder.node.BaseNode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -283,7 +283,7 @@ Subclasses implement :meth:`_build_group` with the node-graph logic. Subclass on
 |----|----|
 | [`i`](#nodebpy.builder.node.NodeGroupBuilder.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`name`](#nodebpy.builder.node.NodeGroupBuilder.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.builder.node.NodeGroupBuilder.node) |  |
+| [`node`](#nodebpy.builder.node.NodeGroupBuilder.node) | The Blender node this instance wraps. |
 | [`node_tree`](#nodebpy.builder.node.NodeGroupBuilder.node_tree) | The internal node tree for this group node. |
 | [`o`](#nodebpy.builder.node.NodeGroupBuilder.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`tree`](#nodebpy.builder.node.NodeGroupBuilder.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |

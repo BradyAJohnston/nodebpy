@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Nodes to Code – nodebpy 530.0.0</title>
+<title>Nodes to Code – nodebpy 530.0.1</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -177,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 530.0.0</span>
+    <span class="navbar-title">nodebpy 530.0.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -380,7 +380,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="simple-example" class="level2">
 <h2 class="anchored" data-anchor-id="simple-example">Simple Example</h2>
 <p>Here we build a tree with the raw <code>bpy</code> API, standing in for a tree that already exists in a <code>.blend</code> file:</p>
-<div id="764577cc" class="cell" data-execution_count="1">
+<div id="9148a718" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> bpy</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>nt <span class="op">=</span> bpy.data.node_groups.new(<span class="st">"Scatter"</span>, <span class="st">"GeometryNodeTree"</span>)</span>
@@ -411,9 +411,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>bpy.data.node_groups['Scatter']...NodeLink</code></pre>
 </div>
 </div>
-<div id="e8f1ca91" class="cell" data-execution_count="2">
+<div id="bb1bb497" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
-<div id="gnwr-ea91e245335c472b89ba2d31aa2edf46" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-a4b71adbd803445c94a9f77c5c047ce9" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -423,12 +423,12 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-ea91e245335c472b89ba2d31aa2edf46"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-a4b71adbd803445c94a9f77c5c047ce9"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
 <p>Pass the <code>bpy</code> node tree to <code>to_python()</code>:</p>
-<div id="75d0648e" class="cell" data-execution_count="3">
+<div id="86312461" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy.export <span class="im">import</span> to_python</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>code <span class="op">=</span> to_python(nt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -530,7 +530,7 @@ mountGraphView(document.getElementById("gnwr-ea91e245335c472b89ba2d31aa2edf46"),
 <span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>    combine_xyz_2 <span class="op">&gt;&gt;</span> shortest_axis</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="c3236317" class="cell" data-execution_count="6">
+<div id="97341db6" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
@@ -583,7 +583,7 @@ mountGraphView(document.getElementById("gnwr-ea91e245335c472b89ba2d31aa2edf46"),
 <section id="from-a-treebuilder" class="level2">
 <h2 class="anchored" data-anchor-id="from-a-treebuilder">From a <code>TreeBuilder</code></h2>
 <p>Trees built with <code>nodebpy</code> have a <code>to_python()</code> method directly. The generator recognises lifted operators, so math written with Python syntax comes back out the same way:</p>
-<div id="5c84f43f" class="cell" data-execution_count="7">
+<div id="83d8848e" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -618,7 +618,7 @@ mountGraphView(document.getElementById("gnwr-ea91e245335c472b89ba2d31aa2edf46"),
 <section id="chain-length" class="level3">
 <h3 class="anchored" data-anchor-id="chain-length">Chain length</h3>
 <p>Linear runs of nodes are emitted as <code>&gt;&gt;</code> pipelines when they have at least <code>min_chain_length</code> items (default 3, counting interface endpoints). Raising the threshold produces flat assignments instead:</p>
-<div id="34ab7ab4" class="cell" data-execution_count="9">
+<div id="0c6eb333" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>code <span class="op">=</span> tree.to_python(min_chain_length<span class="op">=</span><span class="dv">99</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder</span>
@@ -647,7 +647,7 @@ mountGraphView(document.getElementById("gnwr-ea91e245335c472b89ba2d31aa2edf46"),
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Hand-written</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Generated code</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div id="bfe6a5dd" class="cell" data-execution_count="11">
+<div id="74078275" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Wave Deform"</span>) <span class="im">as</span> tree:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry()</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
@@ -655,7 +655,7 @@ mountGraphView(document.getElementById("gnwr-ea91e245335c472b89ba2d31aa2edf46"),
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div id="2b3c8c42" class="cell" data-execution_count="12">
+<div id="e0a35de7" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>code <span class="op">=</span> tree.to_python(snapshot_positions<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder</span>
@@ -707,9 +707,9 @@ mountGraphView(document.getElementById("gnwr-ea91e245335c472b89ba2d31aa2edf46"),
 </div>
 </div>
 </div>
-<div id="fbd8ddaa" class="cell" data-execution_count="14">
+<div id="3acdd411" class="cell" data-execution_count="14">
 <div class="cell-output cell-output-display" data-execution_count="14">
-<div id="gnwr-689506ae8db54d498f015aa3aba41eab" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-d47dac98841f455ca1fa0f48402aafd5" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -719,7 +719,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-689506ae8db54d498f015aa3aba41eab"), { payload: "TreeClipper::H4sIAE2i9GoC/+1aUU/jOBD+KyjPu1XSpC29Nw6qVXXQICjcsitkucm09ZHYkePAcoj/fraTFDdNQwvLXhfBA5SxPfF8nu8bx/WDNYmAhsDRLfCUMGr9sWd1Wm7Ltj7tWYIDoCAiSbLcwW45LaetelAWAlLdUmn//mCRUP61ZUOIBZYfHyyKY1Bj/sa3sHcEU8bjlm07anCWApriG0DyA5d9pjhKobDDD8FxtYGkiGdUkBhQ4b9sEXhm/BewiHGU26yRPxqop4UwxVkk0IyzLEF64nckFHPZx/H0lCENOElEEaQaM4nUFIohhArgUxyocATP9IQMUxG8YwaPA0FuQY4M4UcBDBEQpxqypzFtc4zuYKDp1qH5BVgMgt9b9fNOWXADAon7RPceyWDPtckcNycSglscZWBAp42EopiFZEqW0JdLF4AEjiLZEIXL60JomkAgEMtEkonltgRTiJBgs1lkPirC9zKtUojkOFLjNQaayTyQo0Mw7UyHiiMU4QlERkPuyjBgITiZZEKmC4sx0fCc+sPR2MyHp04luBpBucKByDgsQDy4GPvmOELzQK3Lg+MLnWESNpab/Ivx6YV+ilrNhYtz//Cvwdh6fPxUrrz3sbi/3eIOR41re/34qBZYS2P6xPHOqi7IjzSLolIUDM53zc4RC3Cx/t/tltSQrvx9rTAuGhCepCySQa70MAROma05kNlcBeHYuWGRckrh9oY6ar16OfgarTvMKaEzlHCW4Fk5Fevg+LgU8SBLBYuRlt2qDOdz6tq9vvzZtz2v3+11JRib2a7NlS9EN52zO5TnSVqxJhxuCdxVUt5MuxylRVKpQULWGpkLZlorHIy169Xq87Ve5pwTRuf9JjHvv4DvlRCAYlmzw6fII0JvUERiojDy7H6nDKyGXrWykMjcnpF/Y2YW1CKtvwz8k8H47ErPjaSJ5DVK5zhvPB7K0mqomVNb+XcxrMOL87F/UhvU4fDs8HiQE1l50fqWCixMNjtOQ0rIXQMJy+iVPGt2LciVYA5UFOQ30WuvY73rPc/7Sp8tme/nyv5B/Sr1HbeJzo731nx2/j8yd94fmVfE2uk28HgN9XtbU/+JXUvczzdQxTvCYm+lEDOXYX+dKnwuKP/Za9KFlV4bK8MpS4l+1ocqrKhCf5sdQdtu0pC2U8czE/xd49vl4HDsn9Xy7Wh4cOKPjsytdOk535mWv66b62u7vSnJSrFVZNMl1kRuXaltu2tJ5XQ3IVW118akOgc5Jxnr3terbx/EWiFW22ukSm1JupRzltHvWrFtYElRlTYnyaqkdBtx6tXh9HUntaR8v94CJImMyeX9umCv3mmwtS+Q395VsE11wbU3rQvncxwC14djheQWiruuJrhO46FLc0F4YTU4ZPGE0I9iUF8M3OZzcffNRM7ZLdK73psp3K5F2nkzeXN2SNtWyrnbWM7d3ttue37h+8HWO581ZWB/+zJQaO1zVaC/rgo4+88fwlX6bPFWIPY+XrfXFgKv8QXac97vIZzXrovtvPxa7ZcGVwxuiu1P3z8eHIy2PRqoHHl57lufiPzMmH/SachT9LXV3p9OUxC/00vu9kdBK2XR6zTyvvsev0xrKnte7yWnYrK4NJyJPTN4rC6qqG/bKWWirD3F4bXCypxd4zef3vKRaaqAIwbw0qKKg4nvlMuilt92KM9JBTMMHYM1Hfu17nsV9+6Se+eV7t2qe88z3bdf6b5f9e6Y3t1XetdMM907Xpk4cqxgzLyokV8JkzYjo6ziKav3TnIrIDb5Z/l6R9kAIakzp0EWJXUNCSa0Ylf0QzGk8xpzkPFbqLEnTLoJIpaFlYtpd5gINGVc3YsLbmpGzjhg2S8BGpCoutcpEUAxpngG+e2ZRQVUuy25GQJOsTI+KIDTAGiuAY+P/wHstlPjricAAA==", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-d47dac98841f455ca1fa0f48402aafd5"), { payload: "TreeClipper::H4sIAI7l9GoC/+1aUU/jOBD+KyjPu1XSpC29Nw6qVXXQICjcsitkucm09ZHYkePAcoj/fraTFDdNQwvLXhfBA5SxPfF8nu8bx/WDNYmAhsDRLfCUMGr9sWd1Wm7Ltj7tWYIDoCAiSbLcwW45LaetelAWAlLdUmn//mCRUP61ZUOIBZYfHyyKY1Bj/sa3sHcEU8bjlm07anCWApriG0DyA5d9pjhKobDDD8FxtYGkiGdUkBhQ4b9sEXhm/BewiHGU26yRPxqop4UwxVkk0IyzLEF64nckFHPZx/H0lCENOElEEaQaM4nUFIohhArgUxyocATP9IQMUxG8YwaPA0FuQY4M4UcBDBEQpxqypzFtc4zuYKDp1qH5BVgMgt9b9fNOWXADAon7RPceyWDPtckcNycSglscZWBAp42EopiFZEqW0JdLF4AEjiLZEIXL60JomkAgEMtEkonltgRTiJBgs1lkPirC9zKtUojkOFLjNQaayTyQo0Mw7UyHiiMU4QlERkPuyjBgITiZZEKmC4sx0fCc+sPR2MyHp04luBpBucKByDgsQDy4GPvmOELzQK3Lg+MLnWESNpab/Ivx6YV+ilrNhYtz//Cvwdh6fPxUrrz3sbi/3eIOR41re/34qBZYS2P6xPHOqi7IjzSLolIUDM53zc4RC3Cx/t/tltSQrvx9rTAuGhCepCySQa70MAROma05kNlcBeHYuWGRckrh9oY6ar16OfgarTvMKaEzlHCW4Fk5Fevg+LgU8SBLBYuRlt2qDOdz6tq9vvzZtz2v3+11JRib2a7NlS9EN52zO5TnSVqxJhxuCdxVUt5MuxylRVKpQULWGpkLZlorHIy169Xq87Ve5pwTRuf9JjHvv4DvlRCAYlmzw6fII0JvUERiojDy7H6nDKyGXrWykMjcnpF/Y2YW1CKtvwz8k8H47ErPjaSJ5DVK5zhvPB7K0mqomVNb+XcxrMOL87F/UhvU4fDs8HiQE1l50fqWCixMNjtOQ0rIXQMJy+iVPGt2LciVYA5UFOQ30WuvY73rPc/7Sp8tme/nyv5B/Sr1HbeJzo731nx2/j8yd94fmVfE2uk28HgN9XtbU/+JXUvczzdQxTvCYm+lEDOXYX+dKnwuKP/Za9KFlV4bK8MpS4l+1ocqrKhCf5sdQdtu0pC2U8czE/xd49vl4HDsn9Xy7Wh4cOKPjsytdOk535mWv66b62u7vSnJSrFVZNMl1kRuXaltu2tJ5XQ3IVW118akOgc5Jxnr3terbx/EWiFW22ukSm1JupRzltHvWrFtYElRlTYnyaqkdBtx6tXh9HUntaR8v94CJImMyeX9umCv3mmwtS+Q395VsE11wbU3rQvncxwC14djheQWiruuJrhO46FLc0F4YTU4ZPGE0I9iUF8M3OZzcffNRM7ZLdK73psp3K5F2nkzeXN2SNtWyrnbWM7d3ttue37h+8HWO581ZWB/+zJQaO1zVaC/rgo4+88fwlX6bPFWIPY+XrfXFgKv8QXac97vIZzXrovtvPxa7ZcGVwxuiu1P3z8eHIy2PRqoHHl57lufiPzMmH/SachT9LXV3p9OUxC/00vu9kdBK2XR6zTyvvsev0xrKnte7yWnYrK4NJyJPTN4rC6qqG/bKWWirD3F4bXCypxd4zef3vKRaaqAIwbw0qKKg4nvlMuilt92KM9JBTMMHYM1Hfu17nsV9+6Se+eV7t2qe88z3bdf6b5f9e6Y3t1XetdMM907Xpk4cqxgzLyokV8JkzYjo6ziKav3TnIrIDb5Z/l6R9kAIakzp0EWJXUNCSa0Ylf0QzGk8xpzkPFbqLEnTLoJIpaFlYtpd5gINGVc3YsLbmpGzjhg2S8BGpCoutcpEUAxpngG+e2ZRQVUuy25GQJOsTI+KIDTAGiuAY+P/wHstlPjricAAA==", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -737,7 +737,7 @@ mountGraphView(document.getElementById("gnwr-689506ae8db54d498f015aa3aba41eab"),
 <section id="zones" class="level2">
 <h2 class="anchored" data-anchor-id="zones">Zones</h2>
 <p>Simulation, repeat and for-each zones are reconstructed using the typed zone item factories rather than as raw input/output node pairs:</p>
-<div id="0d186952" class="cell" data-execution_count="15">
+<div id="fb26edd6" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Stack"</span>) <span class="im">as</span> tree:</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    zone <span class="op">=</span> g.RepeatZone(<span class="dv">5</span>)</span>
@@ -762,7 +762,7 @@ mountGraphView(document.getElementById("gnwr-689506ae8db54d498f015aa3aba41eab"),
 <section id="frames" class="level2">
 <h2 class="anchored" data-anchor-id="frames">Frames</h2>
 <p>Frames are reconstructed as <code>with g.Frame("..."):</code> blocks, including frames nested inside other frames (and container frames that hold only sub-frames). A frame’s settings come back as <code>g.Frame(...)</code> arguments and <code>.props(...)</code> (its size only when it doesn’t shrink to fit its nodes), and a frame holding no nodes is built on its own, inside its parent’s block:</p>
-<div id="6090f5b7" class="cell" data-execution_count="17">
+<div id="5af84f14" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Framed"</span>) <span class="im">as</span> tree:</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry()</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> g.Frame(<span class="st">"Deform"</span>):</span>
@@ -789,7 +789,7 @@ mountGraphView(document.getElementById("gnwr-689506ae8db54d498f015aa3aba41eab"),
 <section id="node-properties-and-muted-links" class="level2">
 <h2 class="anchored" data-anchor-id="node-properties-and-muted-links">Node Properties and Muted Links</h2>
 <p>The properties every node has come back as a <code>.props(...)</code> call on the node: its label, colour, width, collapsed state, hidden sockets, mute, warning propagation and gizmo pins (see <a href="./node-api.html#node-properties">Node Properties</a>). A tree whose nodes are all collapsed is built with <code>collapse=True</code> instead of a <code>.props(hide=True)</code> on each. Muted links come back as <code>muted(...)</code>, with the value the input uses while its link is muted:</p>
-<div id="49f6f7d4" class="cell" data-execution_count="19">
+<div id="39d9986e" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> muted</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Props"</span>) <span class="im">as</span> tree:</span>
@@ -820,7 +820,7 @@ mountGraphView(document.getElementById("gnwr-689506ae8db54d498f015aa3aba41eab"),
 <section id="archiving-as-classes" class="level2">
 <h2 class="anchored" data-anchor-id="archiving-as-classes">Archiving as Classes</h2>
 <p>By default the top-level tree is emitted as a <code>with TreeBuilder(...) as tree:</code> block. Pass <code>top_level="class"</code> to instead emit <em>every</em> node group — including the one being exported — as a <a href="./custom-node-groups.html"><code>CustomGeometryGroup</code></a> subclass. Each class builds its tree through <code>ClassName.create_group()</code>, making it a clean way to archive a set of node groups as plain, reusable Python:</p>
-<div id="87c0197f" class="cell" data-execution_count="21">
+<div id="a3b576c6" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Wave Deform"</span>) <span class="im">as</span> tree:</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry()</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
@@ -868,13 +868,13 @@ mountGraphView(document.getElementById("gnwr-689506ae8db54d498f015aa3aba41eab"),
 <section id="round-tripping" class="level2">
 <h2 class="anchored" data-anchor-id="round-tripping">Round-Tripping</h2>
 <p>In the default <code>with</code> form the generated source assigns the builder to a variable named <code>tree</code>, so it can be executed directly to rebuild the tree:</p>
-<div id="ba6ef395" class="cell" data-execution_count="23">
+<div id="c88fb294" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>namespace <span class="op">=</span> {}</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span>(tree.to_python(), namespace)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>rebuilt <span class="op">=</span> namespace[<span class="st">"tree"</span>]</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>rebuilt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="23">
-<div id="gnwr-b92b49151bd94ee098ee59ecf29d84c8" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-79de4ec584ec4598a0425c7fd0e6d4cb" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -884,7 +884,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-b92b49151bd94ee098ee59ecf29d84c8"), { payload: "TreeClipper::H4sIAE2i9GoC/+1aUU/jOBD+KyjPu1XSpC29Nw6qVXXQICjcsitkucm09ZHYkePAcoj/fraTFDdNQwvLXhfBA5SxPfF8nu8bx/WDNYmAhsDRLfCUMGr9sWd1Wm7Ltj7tWYIDoCAiSbLcwW45LaetelAWAlLdUmn//mCRUP61ZUOIBZYfHyyKY1Bj/sa3sHcEU8bjlm27anCWApriG0DyA5d9pjhKobDDD8FxtYGkiGdUkBhQ4b9sEXhm/BewiHGU26yRPxqop4UwxVkk0IyzLEF64nckFHPZx/H0lCENOElEEaQaM4nUFIohhArgUxyocATP9IQMUxG8YwaPA0FuQY4M4UcBDBEQpxqypzFtc4zuYKDp1qH5BVgMgt9b9fNOWXADAon7RPceyWDPtckcNycSglscZWBAp42EopiFZEqW0JdLF4AEjiLZEIXL60JomkAgEMtEkonltgRTiJBgs1lkPirC9zKtUojkOFLjNQaayTyQo0Mw7UyHiiMU4QlERkPuyjBgITiZZEKmC4sx0fCc+sPR2MyHp04luBpBucKByDgsQDy4GPvmOELzQK3Lg+MLnWESNpab/Ivx6YV+ilrNhYtz//Cvwdh6fPxUrrz3sbi/3eIOR41re/34qBZYS2P6xPHOqi7IjzSLolIUDM53zc4RC3Cx/t/tltSQrvx9rTAuGhCepCySQa70MAROma05kNlcBeHYuWGRckrh9oY6ar16OfgarTvMKaEzlHCW4Fk5Fevg+LgU8SBLBYuRlt2qDOdz6tq9vvzZtz2v3+11JRib2a7NlS9EN52zO5TnSVqxJhxuCdxVUt5MuxylRVKpQULWGpkLZlorHIy169Xq87Ve5pwTRuf9JjHvv4DvlRCAYlmzw6fII0JvUERiojDy7H6nDKyGXrWykMjcnpF/Y2YW1CKtvwz8k8H47ErPjaSJ5DVK5zhvPB7K0mqomVNb+XcxrMOL87F/UhvU4fDs8HiQE1l50fqWCixMNjtOQ0rIXQMJy+iVPGt2LciVYA5UFOQ30WuvY73rPc/7Sp8tme/nyv5B/Sr1HbeJzo731nx2/j8yd94fmVfE2uk28HgN9XtbU/+JXUvczzdQxTvCYm+lEDOXYX+dKnwuKP/Za9KFlV4bK8MpS4l+1ocqrKhCf5sdQdtu0pC2U8czE/xd49vl4HDsn9Xy7Wh4cOKPjsytdOk535mWv66b62u7vSnJSrFVZNMl1kRuXaltu2tJ5XQ3IVW118akOgc5Jxnr3terbx/EWiFW22ukSm1JupRzltHvWrFtYElRlTYnyaqkdBtx6tXh9HUntaR8v94CJImMyeX9umCv3mmwtS+Q395VsE11wbU3rQvncxwC14djheQWiruuJrhO46FLc0F4YTU4ZPGE0I9iUF8M3OZzcffNRM7ZLdK73psp3K5F2nkzeXN2SNtWyrnbWM7d3ttue37h+8HWO581ZWB/+zJQaO1zVaC/rgo4+88fwlX6bPFWIPY+XrfXFgKv8QXac97vIZzXrovtvPxa7ZcGVwxuiu1P3z8eHIy2PRqoHHl57lufiPzMmH/SachT9LXV3p9OUxC/00vu9kdBK2XR6zTyvvsev0xrKnte7yWnYrK4NJyJPTN4rC6qqG/bKWWirD3F4bXCypxd4zef3vKRaaqAIwbw0qKKg4nvlMuilt92KM9JBTMMHYM1Hfu17nsV9+6Se+eV7t2qe88z3bdf6b5f9e6Y3t1XetdMM907Xpk4cqxgzLyokV8JkzYjo6ziKav3TnIrIDb5Z/l6R9kAIakzp0EWJXUNCSa0Ylf0QzGk8xpzkPFbqLEnTLoJIpaFlYtpd5gINGVc3YsLbmpGzjhg2S8BGpCoutcpEUAxpngG+e2ZRQVUuy25GQJOsTI+KIDTAGiuAY+P/wEYXRUJricAAA==", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-79de4ec584ec4598a0425c7fd0e6d4cb"), { payload: "TreeClipper::H4sIAI7l9GoC/+1aUU/jOBD+KyjPu1XSpC29Nw6qVXXQICjcsitkucm09ZHYkePAcoj/fraTFDdNQwvLXhfBA5SxPfF8nu8bx/WDNYmAhsDRLfCUMGr9sWd1Wm7Ltj7tWYIDoCAiSbLcwW45LaetelAWAlLdUmn//mCRUP61ZUOIBZYfHyyKY1Bj/sa3sHcEU8bjlm27anCWApriG0DyA5d9pjhKobDDD8FxtYGkiGdUkBhQ4b9sEXhm/BewiHGU26yRPxqop4UwxVkk0IyzLEF64nckFHPZx/H0lCENOElEEaQaM4nUFIohhArgUxyocATP9IQMUxG8YwaPA0FuQY4M4UcBDBEQpxqypzFtc4zuYKDp1qH5BVgMgt9b9fNOWXADAon7RPceyWDPtckcNycSglscZWBAp42EopiFZEqW0JdLF4AEjiLZEIXL60JomkAgEMtEkonltgRTiJBgs1lkPirC9zKtUojkOFLjNQaayTyQo0Mw7UyHiiMU4QlERkPuyjBgITiZZEKmC4sx0fCc+sPR2MyHp04luBpBucKByDgsQDy4GPvmOELzQK3Lg+MLnWESNpab/Ivx6YV+ilrNhYtz//Cvwdh6fPxUrrz3sbi/3eIOR41re/34qBZYS2P6xPHOqi7IjzSLolIUDM53zc4RC3Cx/t/tltSQrvx9rTAuGhCepCySQa70MAROma05kNlcBeHYuWGRckrh9oY6ar16OfgarTvMKaEzlHCW4Fk5Fevg+LgU8SBLBYuRlt2qDOdz6tq9vvzZtz2v3+11JRib2a7NlS9EN52zO5TnSVqxJhxuCdxVUt5MuxylRVKpQULWGpkLZlorHIy169Xq87Ve5pwTRuf9JjHvv4DvlRCAYlmzw6fII0JvUERiojDy7H6nDKyGXrWykMjcnpF/Y2YW1CKtvwz8k8H47ErPjaSJ5DVK5zhvPB7K0mqomVNb+XcxrMOL87F/UhvU4fDs8HiQE1l50fqWCixMNjtOQ0rIXQMJy+iVPGt2LciVYA5UFOQ30WuvY73rPc/7Sp8tme/nyv5B/Sr1HbeJzo731nx2/j8yd94fmVfE2uk28HgN9XtbU/+JXUvczzdQxTvCYm+lEDOXYX+dKnwuKP/Za9KFlV4bK8MpS4l+1ocqrKhCf5sdQdtu0pC2U8czE/xd49vl4HDsn9Xy7Wh4cOKPjsytdOk535mWv66b62u7vSnJSrFVZNMl1kRuXaltu2tJ5XQ3IVW118akOgc5Jxnr3terbx/EWiFW22ukSm1JupRzltHvWrFtYElRlTYnyaqkdBtx6tXh9HUntaR8v94CJImMyeX9umCv3mmwtS+Q395VsE11wbU3rQvncxwC14djheQWiruuJrhO46FLc0F4YTU4ZPGE0I9iUF8M3OZzcffNRM7ZLdK73psp3K5F2nkzeXN2SNtWyrnbWM7d3ttue37h+8HWO581ZWB/+zJQaO1zVaC/rgo4+88fwlX6bPFWIPY+XrfXFgKv8QXac97vIZzXrovtvPxa7ZcGVwxuiu1P3z8eHIy2PRqoHHl57lufiPzMmH/SachT9LXV3p9OUxC/00vu9kdBK2XR6zTyvvsev0xrKnte7yWnYrK4NJyJPTN4rC6qqG/bKWWirD3F4bXCypxd4zef3vKRaaqAIwbw0qKKg4nvlMuilt92KM9JBTMMHYM1Hfu17nsV9+6Se+eV7t2qe88z3bdf6b5f9e6Y3t1XetdMM907Xpk4cqxgzLyokV8JkzYjo6ziKav3TnIrIDb5Z/l6R9kAIakzp0EWJXUNCSa0Ylf0QzGk8xpzkPFbqLEnTLoJIpaFlYtpd5gINGVc3YsLbmpGzjhg2S8BGpCoutcpEUAxpngG+e2ZRQVUuy25GQJOsTI+KIDTAGiuAY+P/wEYXRUJricAAA==", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -893,7 +893,7 @@ mountGraphView(document.getElementById("gnwr-b92b49151bd94ee098ee59ecf29d84c8"),
 <section id="in-place" class="level3">
 <h3 class="anchored" data-anchor-id="in-place">In place</h3>
 <p>By default the generated header names the tree, so each run creates a <em>new</em> datablock (<code>Name.001</code>, <code>Name.002</code>, …) and anything that used the original — a modifier, a group node, a pinned editor — keeps pointing at the old one. <code>in_place=True</code> emits <code>clear=True</code> in the header instead, which empties the existing tree of that name and rebuilds it in the same datablock:</p>
-<div id="b00703e5" class="cell" data-execution_count="24">
+<div id="531975d2" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>code <span class="op">=</span> tree.to_python(in_place<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">next</span>(line <span class="cf">for</span> line <span class="kw">in</span> code.splitlines() <span class="cf">if</span> line.startswith(<span class="st">"with "</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -901,7 +901,7 @@ mountGraphView(document.getElementById("gnwr-b92b49151bd94ee098ee59ecf29d84c8"),
 </div>
 </div>
 <p>Running that source any number of times rebuilds the one tree, with its users still attached:</p>
-<div id="a95a2a0a" class="cell" data-execution_count="25">
+<div id="0a61007a" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>namespace <span class="op">=</span> {}</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span>(code, namespace)</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span>(code, namespace)</span>
