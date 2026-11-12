@@ -5,6 +5,7 @@ import re
 
 import numpy as np
 import pytest
+from mathutils import Euler, Matrix, Vector
 
 import nodebpy.math as m
 from nodebpy import geometry as g
@@ -273,3 +274,106 @@ def test_export_leaves_out_default_arguments():
 @pytest.mark.parametrize("build", ROUNDTRIP_BUILDERS, ids=lambda b: b.__name__)
 def test_roundtrip_usecases_with_node_math(build):
     _assert_roundtrip(build(), node_math=True)
+
+
+@pytest.mark.parametrize(
+    "value, kind",
+    [
+        (Euler((0, 0, 1)), "ROTATION"),
+        (Matrix.Identity(4), "MATRIX"),
+        (Vector((1, 2, 3)), "VECTOR"),
+        (np.zeros(3), "VECTOR"),
+        ((1, 0, 0, 1), "COLOR"),
+        ("text", None),
+        (object(), None),
+    ],
+)
+def test_value_kinds(value, kind):
+    assert m._value_kind(value) == kind
+
+
+def test_color_reads_as_vector_without_a_color_node():
+    with g.tree("NodeMathColor") as tree:
+        color = tree.inputs.color("C")
+        assert m.sin(color).node.bl_idname == "ShaderNodeVectorMath"
+
+
+@pytest.mark.parametrize(
+    "build, bl_idname",
+    [
+        (lambda: m.matmul(g.CombineTransform(), g.CombineTransform()), "FunctionNodeMatrixMultiply"),
+        (lambda: m.matmul(g.EulerToRotation(), g.EulerToRotation()), "FunctionNodeRotateRotation"),
+        (lambda: m.matmul(g.EulerToRotation(), V), "FunctionNodeRotateVector"),
+        (lambda: m.matmul(g.Position(), W), "ShaderNodeVectorMath"),
+    ],
+)  # fmt: skip
+def test_matmul_follows_input_kinds(build, bl_idname):
+    with g.tree("NodeMathMatmul"):
+        assert build().node.bl_idname == bl_idname
+
+
+def test_matmul_and_svd_reject_other_kinds():
+    with g.tree("NodeMathMatmulError"):
+        with pytest.raises(TypeError):
+            m.matmul(1.0, g.Position())
+        with pytest.raises(TypeError):
+            m.svd(g.Position())
+
+
+def test_every_table_factory_is_analysable():
+    """Codegen reads each factory's operation and sockets from its source."""
+    from nodebpy.export.codegen import _class_factories
+
+    for spec in m._SPECS.values():
+        for impl in spec.impls.values():
+            if impl.factory is not None:
+                paths = {f.path for f in _class_factories(m._impl_class(impl))}
+                assert impl.factory in paths, impl
+
+
+def test_export_falls_back_when_a_call_cannot_rebuild_the_node():
+    with g.tree("NodeMathFallback") as tree:
+        f = tree.inputs.float("F")
+        i = tree.inputs.integer("I")
+        out = [
+            g.Math.square_root(f, use_clamp=True),  # a flag the call can't carry
+            g.IntegerMath.greatest_common_divisor(f, i),  # a float m.gcd refuses
+        ]
+        for index, node in enumerate(out):
+            node >> tree.outputs.float(f"Out{index}")
+        g.InvertMatrix()  # a matrix input with no value to write
+    code = _assert_roundtrip(tree, node_math=True)
+    assert "m." not in code, code
+
+
+@pytest.fixture
+def partial_entries(monkeypatch):
+    """Table entries that leave an input or output of their node unused."""
+    from nodebpy.export.codegen import _node_math_index
+
+    specs = {
+        # ahead of the real entries, so they are tried first
+        "first": m._Spec({"FLOAT": m._Impl("Math", "minimum", "value", ("value",))}),
+        "xof": m._Spec({"VECTOR": m._Impl("SeparateXYZ", None, "x")}),
+        **m._SPECS,
+    }
+    monkeypatch.setattr(m, "_SPECS", specs)
+    monkeypatch.setattr(m, "first", lambda x: m._call("first", x), raising=False)
+    monkeypatch.setattr(m, "xof", lambda v: m._call("xof", v), raising=False)
+    _node_math_index.cache_clear()
+    yield
+    _node_math_index.cache_clear()
+
+
+def test_export_checks_inputs_and_outputs_the_call_leaves_out(partial_entries):
+    with g.tree("NodeMathPartial") as tree:
+        f = tree.inputs.float("F")
+        v = tree.inputs.vector("V")
+        g.Math.minimum(f, 0.5) >> tree.outputs.float("Default")  # left out at default
+        g.Math.minimum(f, 2.0) >> tree.outputs.float("Set")  # left out, off default
+        g.Math.minimum(f, f) >> tree.outputs.float("Linked")  # left out, linked
+        g.SeparateXYZ(v).o.x >> tree.outputs.float("X")
+        g.SeparateXYZ(v).o.y >> tree.outputs.float("Y")  # another output
+    code = to_python(tree, node_math=True)
+    assert code.count("m.first(") == 1, code
+    assert code.count("m.xof(") == 1, code

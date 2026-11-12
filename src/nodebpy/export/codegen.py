@@ -3849,7 +3849,7 @@ def _node_math_inputs(node, impl) -> tuple[dict[str, Any], list] | None:
         factory = next(
             (f for f in _class_factories(cls) if f.path == impl.factory), None
         )
-        if factory is None:
+        if factory is None:  # pragma: no cover - test_every_table_factory_is_analysable
             return None
         props = factory.props
         socket_kwarg = {param: kwarg for kwarg, param in factory.socket_params.items()}

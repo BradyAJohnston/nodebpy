@@ -275,7 +275,7 @@ def _resolve(name: str, kinds: Sequence[str | None], geometry: bool) -> str:
     if "COLOR" in present:
         if "COLOR" in available:
             return "COLOR"
-        present.add("VECTOR")
+        present = (present - {"COLOR"}) | {"VECTOR"}  # read as a vector
     start = max((_LADDER.index(k) for k in present), default=_LADDER.index("FLOAT"))
     for kind in _LADDER[start:]:
         if kind in available:
