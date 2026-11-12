@@ -248,3 +248,42 @@ def test_bundle_methods():
     assert np.allclose(result["v"], V)
     assert result["has"] and not result["missing"]
     assert result["from_geometry"] == 3
+
+
+def test_numpy_style_operators():
+    e1, e2 = (0.3, -0.8, 1.1), (-0.5, 0.2, 0.9)
+    with g.tree("NumpyOperators") as tree:
+        v = g.Vector(V).o.vector
+        r1 = g.Vector(e1).o.vector.euler_to_rotation()
+        r2 = g.Vector(e2).o.vector.euler_to_rotation()
+        matrix = g.CombineTransform(translation=(1, 2, 3), rotation=r1, scale=(1, 2, 3))
+        result = evaluate(
+            tree,
+            dot=v @ g.Vector(W).o.vector,
+            dot_node=g.Vector(V) @ g.Vector(W),  # ty: ignore[unsupported-operator]
+            dot_tuple=W @ v,
+            rotated=r1 @ g.Vector(W),
+            composed=(r1 @ r2) @ g.Vector(W),
+            transposed=matrix.o.transform.T @ v,
+            inverted=(matrix.o.transform**-1) @ v,
+            positive=+v,
+        )
+    m1, m2 = Euler(e1).to_matrix(), Euler(e2).to_matrix()
+    matrix = np.diag((1.0, 2.0, 3.0, 1.0))
+    matrix[:3, :3] = np.array(m1) @ np.diag((1.0, 2.0, 3.0))
+    matrix[:3, 3] = (1, 2, 3)
+    assert result["dot"] == pytest.approx(np.dot(V, W), rel=1e-5)
+    assert result["dot_node"] == pytest.approx(np.dot(V, W), rel=1e-5)
+    assert result["dot_tuple"] == pytest.approx(np.dot(V, W), rel=1e-5)
+    assert np.allclose(result["rotated"], m1 @ Vector(W), atol=1e-5)
+    assert np.allclose(result["composed"], m1 @ m2 @ Vector(W), atol=1e-5)
+    assert np.allclose(result["transposed"], (matrix.T @ (*V, 1))[:3], atol=1e-5)
+    assert np.allclose(
+        result["inverted"], (np.linalg.inv(matrix) @ (*V, 1))[:3], atol=1e-5
+    )
+    assert np.allclose(result["positive"], V)
+
+
+def test_matrix_power_only_inverts():
+    with g.tree("MatrixPower"), pytest.raises(TypeError):
+        _ = g.CombineTransform().o.transform ** 2  # ty: ignore[unsupported-operator]

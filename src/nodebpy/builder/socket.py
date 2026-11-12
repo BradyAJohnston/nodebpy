@@ -16,7 +16,7 @@ Organization (top to bottom):
 from __future__ import annotations
 
 import math
-from collections.abc import Iterable, Iterator, Mapping
+from collections.abc import Iterable, Iterator, Mapping, Sized
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -393,6 +393,7 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         def __rmod__(self, other: Any) -> Self: ...
         def __floordiv__(self, other: Any) -> Self: ...
         def __rfloordiv__(self, other: Any) -> Self: ...
+        def __pos__(self) -> Self: ...
         def __neg__(self) -> Self: ...
         def __abs__(self) -> Self: ...
 
@@ -1339,6 +1340,10 @@ class _VectorMixin[
 
         return TransformDirection(self.socket, matrix).o.direction  # ty: ignore[invalid-return-type]
 
+    def __matmul__(self, other: InputVector) -> FloatResult:
+        "Dot product with another vector, as numpy's ``a @ b`` for 1-D arrays."
+        return self.dot(other)
+
     @overload
     def __rmatmul__(self, other: CombineTransform) -> VectorResult: ...
     @overload
@@ -1347,13 +1352,25 @@ class _VectorMixin[
     def __rmatmul__(self, other: CombineMatrix) -> VectorResult: ...
     @overload
     def __rmatmul__(self, other: MatrixSocket) -> VectorResult: ...
+    @overload
+    def __rmatmul__(self, other: tuple[float, float, float]) -> FloatResult: ...
     def __rmatmul__(
-        self, other: CombineTransform | MultiplyMatrices | CombineMatrix | MatrixSocket
-    ) -> VectorResult:
-        "Transform this vector by the given matrix."
+        self,
+        other: CombineTransform
+        | MultiplyMatrices
+        | CombineMatrix
+        | MatrixSocket
+        | tuple[float, float, float],
+    ) -> VectorResult | FloatResult:
+        "Transform this vector by the given matrix, or dot it with another vector."
         from ..nodes.geometry import TransformPoint
 
-        return TransformPoint(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
+        other_type = _output_socket_type(other)
+        if other_type == "VECTOR" or (
+            other_type is None and isinstance(other, Sized) and len(other) == 3
+        ):
+            return self.dot(other)
+        return TransformPoint(self.socket, other).o.vector  # ty: ignore[invalid-argument-type, invalid-return-type]
 
     @overload
     def __getitem__(self, key: slice) -> list[FloatResult]: ...
@@ -1803,6 +1820,19 @@ class _RotationMixin[
         return RotateRotation(
             self.socket, rotation, rotation_space=rotation_space
         ).o.rotation  # ty: ignore[invalid-return-type]
+
+    @overload
+    def __matmul__(self, other: VectorSocket) -> VectorResult: ...
+    @overload
+    def __matmul__(self, other: InputRotation) -> Self: ...
+    def __matmul__(self, other: Any) -> Self | VectorResult:
+        """``r1 @ r2`` composes rotations (``r2`` applied first), as matrices do;
+        ``r @ v`` rotates the vector."""
+        if _output_socket_type(other) == "VECTOR":
+            from ..nodes.geometry import RotateVector
+
+            return RotateVector(other, self.socket).o.vector  # ty: ignore[invalid-return-type]
+        return self.rotate(other, rotation_space="LOCAL")
 
     def to_euler(self) -> VectorResult:
         "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
@@ -2459,6 +2489,17 @@ class _MatrixMixin[
         from ..nodes.geometry import TransposeMatrix
 
         return TransposeMatrix._find_or_create_linked(self.socket).o.matrix  # ty: ignore[invalid-return-type]
+
+    @property
+    def T(self) -> Self:
+        """Transpose of the matrix, as numpy's ``a.T``."""
+        return self.transpose()
+
+    def __pow__(self, other: Literal[-1]) -> Self:
+        """``m ** -1`` is the inverse of the matrix."""
+        if isinstance(other, int) and other == -1:
+            return self.invert()
+        raise TypeError("only matrix ** -1 (the inverse) is supported")
 
     def svd(self) -> ResultMatrixSVD[MatrixResult, VectorResult]:
         """Decompose the matrix via SVD. Returns `(u, s, v)`."""
