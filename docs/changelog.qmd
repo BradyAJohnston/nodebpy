@@ -2,7 +2,9 @@
 title: Changelog
 ---
 
-## v530.0.2
+## v530.0.3
+
+530.0.2 was yanked from PyPI: it was published from the wrong commit.
 
 ### Fixes
 
