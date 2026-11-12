@@ -49,6 +49,7 @@ which runs, in order:
 
 1. `uv run python -m gen` — regenerates the typed classes for Blender's bundled essentials asset libraries, then the node classes for every tree type
 2. `make format` — `ruff format`, `ruff check --fix`, and `ty check --fix src`
+3. `uv run python -m gen.math_stub` — regenerates the typed overloads for `nodebpy.math` (it imports `nodebpy`, so it runs after the fixes)
 
 CI regenerates on every pull request and fails when the checked-in classes differ from the generator's output, so a change to `gen/` ships with its regenerated classes. The generator imports the project's own `nodebpy` before `bpy`: Blender puts its extensions' site-packages first on the path when `bpy` loads, and a `nodebpy` installed there would otherwise shadow the sources being generated.
 
@@ -68,6 +69,14 @@ The socket *draw order* table `src/nodebpy/builder/_socket_order.py` is generate
 uv run python -m gen.socket_order            # sparse-clones the tag matching the installed bpy
 uv run python -m gen.socket_order --source ~/src/blender   # or parse a local checkout
 ```
+
+The typed overloads for `nodebpy.math` (`src/nodebpy/math.pyi`) are generated from its `_SPECS` table. `make generate` rebuilds them; after editing the table run
+
+```sh
+uv run python -m gen.math_stub
+```
+
+`tests/test_node_math.py` fails while the stub is stale.
 
 Nodes that need special handling are hand-written in `src/nodebpy/nodes/*/manual.py` (and the zone nodes in `nodes/geometry/zone.py` / `nodes/shader/zone.py`); the generator skips these and re-exports them alongside the generated classes.
 

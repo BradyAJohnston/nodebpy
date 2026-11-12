@@ -3817,6 +3817,154 @@ def _linked_ids(ctx: EmitContext, node) -> set[str]:
 
 
 # ---------------------------------------------------------------------------
+# Node math: ``m.sqrt(x)`` (``to_python(node_math=True)``)
+#
+# The table is nodebpy.math's own. A node is written as ``m.<fn>(...)`` only
+# when nodebpy.math's dispatch, run on the written arguments, picks this node
+# back.
+# ---------------------------------------------------------------------------
+
+
+@cache
+def _node_math_index() -> dict[str, list[tuple[str, Any]]]:
+    """bl_idname → ``(function name, impl)`` over nodebpy.math's table."""
+    from .. import math as node_math
+
+    index: dict[str, list[tuple[str, Any]]] = {}
+    for name, spec in node_math._SPECS.items():
+        for impl in spec.impls.values():
+            bl_idname = node_math._impl_class(impl)._bl_idname
+            index.setdefault(bl_idname, []).append((name, impl))
+    return index
+
+
+def _node_math_inputs(node, impl) -> tuple[dict[str, Any], list] | None:
+    """(constant props the impl's factory sets, input socket per argument)."""
+    from .. import math as node_math
+
+    cls = node_math._impl_class(impl)
+    props: dict[str, Any] = {}
+    socket_kwarg = {param: param for param in node_math._impl_params(impl)}
+    if impl.factory is not None:
+        factory = next(
+            (f for f in _class_factories(cls) if f.path == impl.factory), None
+        )
+        if factory is None:  # pragma: no cover - test_every_table_factory_is_analysable
+            return None
+        props = factory.props
+        socket_kwarg = {param: kwarg for kwarg, param in factory.socket_params.items()}
+    sockets = []
+    for param in node_math._impl_params(impl):
+        kwarg = socket_kwarg.get(param)
+        socket = None if kwarg is None else _input_socket_by_kwarg(node, cls, kwarg)
+        if socket is None:
+            return None
+        sockets.append(socket)
+    return props, sockets
+
+
+def _node_math_val(ctx: EmitContext, node) -> _Val | None:
+    """Emit a node as a ``nodebpy.math`` call, if one rebuilds it."""
+    entries = _node_math_index().get(node.bl_idname)
+    if not entries:
+        return None
+    linked = _linked_ids(ctx, node)
+    # an operator reads better than ``m.add``-style calls: leave those
+    if _lift_plan(node, linked, _linked_src_types(ctx, node)) is not None:
+        return None
+    if node.bl_idname == "FunctionNodeCompare" and _lift_compare(node, ctx):
+        return None
+    from .. import math as node_math
+
+    geometry = ctx.node_tree.bl_idname == "GeometryNodeTree"
+    fresh = _get_blender_socket_defaults(node.id_data.bl_idname, node.bl_idname)
+    for name, impl in entries:
+        cls = node_math._impl_class(impl)
+        found = _node_math_inputs(node, impl)
+        if found is None:
+            continue
+        props, sockets = found
+        if not _factory_state_matches(node, cls, props):
+            continue
+        if set(_non_default_props(node, cls)) - set(props):
+            continue
+        ids = {socket.identifier for socket in sockets}
+        if linked - ids:
+            continue
+        out_id = next(
+            (
+                o.identifier
+                for o in node.outputs
+                if o.enabled
+                and impl.output in (_normalize(o.identifier), _normalize(o.name))
+            ),
+            None,
+        )
+        if out_id is None or any(
+            link.from_socket.identifier != out_id
+            for link in ctx.outgoing.get(node.name, ())
+        ):
+            continue
+        # an input the call doesn't write must sit at its default
+        if any(
+            socket.identifier not in ids
+            and socket.identifier not in linked
+            and socket.enabled
+            and hasattr(socket, "default_value")
+            and (default := fresh.get(socket.identifier)) is not None
+            and not _eq(socket.default_value, default)
+            for socket in node.inputs
+        ):
+            continue
+
+        args: list[Expr] = []
+        values: list[Any] = []  # unlinked argument values, _UNSET when linked
+        kinds: list[str | None] = []
+        for socket in sockets:
+            link = ctx.input_link(node, socket.identifier)
+            if link is not None:
+                args.append(ctx.upstream_expr(link))
+                values.append(_UNSET)
+                kinds.append(node_math._SOCKET_KINDS.get(link.from_socket.type))
+                continue
+            if not hasattr(socket, "default_value"):
+                break
+            value = socket.default_value
+            if not isinstance(value, (bool, int, float, str)):
+                value = tuple(value)  # renders as a tuple literal
+            args.append(Lit(value))
+            values.append(value)
+            kinds.append(node_math._value_kind(value))
+        else:
+            spec = node_math._SPECS[name]
+            try:
+                kind = node_math._resolve(
+                    name, node_math._dispatch_kinds(name, kinds), geometry
+                )
+            except TypeError:
+                continue
+            if spec.impls[kind] != impl:
+                continue
+            # trailing arguments at the function's own default are left out
+            defaults = [
+                param.default
+                for param in inspect.signature(
+                    getattr(node_math, name)
+                ).parameters.values()
+            ]
+            while (
+                args
+                and values[len(args) - 1] is not _UNSET
+                and defaults[len(args) - 1] is not inspect.Parameter.empty
+                and _eq(values[len(args) - 1], defaults[len(args) - 1])
+            ):
+                args.pop()
+            ctx.used_aliases.add("m")
+            return _Val(Call(f"m.{name}", args=args), is_socket=True, socket_id=out_id)
+    return None
+
+
+# ---------------------------------------------------------------------------
 # Chain analysis (>> stitching)
 # ---------------------------------------------------------------------------
 
@@ -4276,6 +4424,7 @@ def to_python(
     groups: Literal["inline", "reference"] = "inline",
     group_modules: Collection[str] | None = None,
     namespace: Mapping[str, Any] | None = None,
+    node_math: bool = False,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -4381,6 +4530,10 @@ def to_python(
         out takes the name of the script's class for it, so the code
         replaces that class. :meth:`nodebpy.live.RunResult.to_python` passes
         it for you.
+    node_math: bool
+        Write math nodes as :mod:`nodebpy.math` calls, ``m.sqrt(x)`` or
+        ``m.cross(a, b)``, where one rebuilds the node. Operators still win:
+        an Add node stays ``a + b``.
 
     Returns
     -------
@@ -4442,6 +4595,7 @@ def to_python(
         root_interface=root_interface,
         root_tree_name=node_tree.name if root_interface is not None else None,
         reference_groups=groups == "reference",
+        node_math=node_math,
         nodebpy_pkg=nodebpy_pkg,
         script_classes=script,
         script_modules=modules,
@@ -4469,6 +4623,8 @@ def to_python(
         for alias in ("g", "s", "c")
         if alias in used_aliases
     ]
+    if "m" in used_aliases:
+        import_parts.append("math as m")
     # TreeBuilder anchors the `with` block and annotates every generated
     # ``_build_group(self, tree: TreeBuilder)``, so editors type the whole
     # body of a dumped class.
@@ -4791,6 +4947,8 @@ class _GroupCollector:
     # groups="reference": call the loaded class that builds a group instead
     # of emitting one (see nodebpy.export._groups).
     reference_groups: bool = False
+    # write math nodes as nodebpy.math calls (``m.sqrt(x)``)
+    node_math: bool = False
     nodebpy_pkg: str = "nodebpy"
     # Module → {class name: name it is imported as} for referenced classes.
     group_imports: dict[str, dict[str, str]] = field(default_factory=dict)
@@ -5389,15 +5547,17 @@ def _emit_tree_lines(node_tree, collector: _GroupCollector) -> _TreeEmission:
         frame = frame_path_of.get(name, ())
 
         # 1. Build the node's value:
-        #    emitter → socket method → lift → factory/constructor.
+        #    [node math →] emitter → socket method → lift → factory/constructor.
         val: _Val | None = None
         # A muted incoming link is written ``muted(source)``, which only a
         # constructor's arguments take: no socket method or operator form.
         has_muted = any(link.is_muted for link in ctx.incoming.get(name, ()))
+        if collector.node_math and not has_muted:
+            val = _node_math_val(ctx, node)
         emitter = _EMITTERS.get(node.bl_idname)
         if has_muted and node.bl_idname in _RECEIVER_EMITTERS:
             emitter = None
-        if emitter is not None:
+        if val is None and emitter is not None:
             emitted = emitter(node, ctx)
             if emitted is not None:
                 val = emitted if isinstance(emitted, _Val) else _Val(emitted)
