@@ -1819,3 +1819,22 @@ def test_data_block_info_methods():
         info = image.info(frame=3)
         assert info.node.bl_idname == g.ImageInfo._bl_idname
         assert info.i.frame.default_value == 3
+
+
+def test_interface_structure_type_selects_wrapper():
+    """``structure_type="LIST"`` / ``"GRID"`` return the list / grid wrapper,
+    so list and grid methods work on the interface socket directly."""
+    from nodebpy.builder import FloatSocketGrid
+
+    with g.tree() as tree:
+        lst = tree.inputs.float("List", structure_type="LIST")
+        grid = tree.inputs.float("Grid", structure_type="GRID")
+        plain = tree.inputs.float("Plain")
+        out = tree.outputs.float("Out", structure_type="LIST")
+        assert isinstance(lst, FloatSocketList)
+        assert isinstance(grid, FloatSocketGrid)
+        assert type(plain) is FloatSocket
+        assert isinstance(out, FloatSocketList)
+        item = lst[g.Index()]
+        assert item.node.bl_idname == GetListItem._bl_idname
+        assert lst._interface_identifier == lst._interface_socket.identifier
