@@ -35,6 +35,7 @@ from ..types import (
     _SocketShapeStructureType,
 )
 from . import _muted
+from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
 from ._utils import (
     InvalidLinkWarning,
     SocketError,
@@ -374,6 +375,13 @@ class SocketContext:
             bpy_socket = self.builder._input_node().outputs[interface_socket.identifier]
         else:
             bpy_socket = self.builder._output_node().inputs[interface_socket.identifier]
+        # An explicit LIST / GRID structure gets the matching wrapper (list
+        # subscripts, grid methods); AUTO and the rest keep ``socket_cls``.
+        shaped = {"LIST": _SOCKET_LIST_REGISTRY, "GRID": _SOCKET_GRID_REGISTRY}.get(
+            getattr(interface_socket, "structure_type", "AUTO"), {}
+        )
+        key = next((k for k, v in _SOCKET_REGISTRY.items() if v is socket_cls), None)
+        socket_cls = cast("type[_SocketT]", shaped.get(key, socket_cls))
         s = socket_cls(bpy_socket)
         s._tree = self.builder
         s._interface_socket = interface_socket

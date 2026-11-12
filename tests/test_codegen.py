@@ -2927,6 +2927,34 @@ def test_grid_method_defers_when_rebuild_loses_structure():
     assert ".to_mesh(" not in code
 
 
+def test_list_subscript_on_interface_input_needs_declared_list():
+    """An AUTO group input feeding Get List Item reports LIST only through that
+    link, so the rebuilt ``tree.inputs.boolean(...)`` is a plain wrapper and
+    ``auto[index]`` would raise; codegen emits the constructor. An input
+    declared ``structure_type="LIST"`` rebuilds as a list wrapper and keeps
+    the subscript."""
+    with TreeBuilder("ListInterfaceInput") as tree:
+        auto = tree.inputs.boolean("Auto")
+        explicit = tree.inputs.float("Explicit", structure_type="LIST")
+        index = g.Index()
+        g.GetListItem(auto, index) >> tree.outputs.boolean("A")
+        explicit[index] >> tree.outputs.float("B")
+    assert auto.socket.inferred_structure_type == "LIST"
+    code = _assert_roundtrip(tree)
+    assert "auto[" not in code and "g.GetListItem" in code
+    assert "explicit[index]" in code
+
+
+def test_grid_method_on_declared_grid_interface_input():
+    """A group input declared ``structure_type="GRID"`` rebuilds as a grid
+    wrapper, so grid methods lift onto it."""
+    with TreeBuilder("GridInterfaceInput") as tree:
+        grid = tree.inputs.float("Grid", structure_type="GRID")
+        g.GridToMesh(grid=grid) >> tree.outputs.geometry("Mesh")
+    code = _assert_roundtrip(tree)
+    assert "grid.to_mesh(" in code
+
+
 # ---------------------------------------------------------------------------
 # Parametrised round-trip over every tree built in test_usecases.py
 # ---------------------------------------------------------------------------

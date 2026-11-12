@@ -3198,14 +3198,35 @@ def _input_socket_by_identifier(node, identifier: str):
     return None
 
 
+def _group_input_declares(link, structure: str) -> bool:
+    """False when ``link`` comes from a Group Input socket whose interface
+    item does not declare ``structure``; True for any other source.
+
+    ``tree.inputs.*`` picks the list / grid wrapper from the declared
+    ``structure_type``, not from what Blender infers through links."""
+    if link.from_node.bl_idname != "NodeGroupInput":
+        return True
+    identifier = link.from_socket.identifier
+    for item in link.from_node.id_data.interface.items_tree:
+        if getattr(item, "identifier", None) == identifier:
+            return getattr(item, "structure_type", None) == structure
+    return False
+
+
 def _list_receiver_ok(node, link, type_prop: str) -> bool:
     """Whether ``link`` feeds a list method faithfully: the source must be a
     LIST whose element type matches ``node``'s ``socket_type`` / ``data_type``.
 
     The builder sets that prop from ``_socket_dtype`` (``VALUE`` → ``FLOAT``,
     else unchanged), so the rebuilt method re-derives the same prop only when
-    the receiver element type inverts back to it."""
+    the receiver element type inverts back to it.
+
+    A Group Input source must declare LIST on its interface item: an AUTO
+    socket only infers LIST from the very link being lifted, so the rebuilt
+    ``tree.inputs.*`` would return a plain (non-list) wrapper."""
     if getattr(link.from_socket, "inferred_structure_type", None) != "LIST":
+        return False
+    if not _group_input_declares(link, "LIST"):
         return False
     prop = getattr(node, type_prop, None)
     return prop is not None and prop.replace("FLOAT", "VALUE") == link.from_socket.type
@@ -3217,9 +3238,12 @@ def _receiver_reproduces_structure(ctx: EmitContext, link, structure: str) -> bo
 
     The authored socket must already report the structure, and a freshly
     created node of the same type must reproduce it on the same output — see
-    :func:`_fresh_output_structure` for why the rebuild check is needed."""
+    :func:`_fresh_output_structure` for why the rebuild check is needed. A
+    Group Input reproduces it only when its interface item declares it."""
     if getattr(link.from_socket, "inferred_structure_type", None) != structure:
         return False
+    if link.from_node.bl_idname == "NodeGroupInput":
+        return _group_input_declares(link, structure)
     return (
         _fresh_output_structure(
             ctx.node_tree.bl_idname,
