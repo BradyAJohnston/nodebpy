@@ -1,7 +1,7 @@
 generate:
 	uv run python -m gen
-	uv run python -m gen.math_stub
 	make format
+	uv run python -m gen.math_stub
 
 # Refresh the repository-root copy of the agent skill from the package source,
 # and give the Claude Code plugin manifest the package's version.

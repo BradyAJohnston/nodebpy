@@ -49,6 +49,7 @@ which runs, in order:
 
 1. `uv run python -m gen` — regenerates the typed classes for Blender's bundled essentials asset libraries, then the node classes for every tree type
 2. `make format` — `ruff format`, `ruff check --fix`, and `ty check --fix src`
+3. `uv run python -m gen.math_stub` — regenerates the typed overloads for `nodebpy.math` (it imports `nodebpy`, so it runs after the fixes)
 
 CI regenerates on every pull request and fails when the checked-in classes differ from the generator's output, so a change to `gen/` ships with its regenerated classes. The generator imports the project's own `nodebpy` before `bpy`: Blender puts its extensions' site-packages first on the path when `bpy` loads, and a `nodebpy` installed there would otherwise shadow the sources being generated.
 

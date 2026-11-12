@@ -158,9 +158,17 @@ def test_vector_results_match_numpy():
 
 def test_stub_is_current():
     """``python -m gen.math_stub`` regenerates src/nodebpy/math.pyi."""
-    from gen.math_stub import STUB_PATH, render
+    import importlib.util
+    from pathlib import Path
 
-    assert STUB_PATH.read_text() == render()
+    # load the file alone: importing the gen package runs its customizations,
+    # which raise on a Blender that dropped a deprecated property
+    path = Path(__file__).parents[1] / "gen" / "math_stub.py"
+    spec = importlib.util.spec_from_file_location("_math_stub", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module.STUB_PATH.read_text() == module.render()
 
 
 def test_matrix_functions():
