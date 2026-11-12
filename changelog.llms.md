@@ -1,5 +1,14 @@
 # Changelog
 
+## v530.0.3
+
+530.0.2 was yanked from PyPI: it was published from the wrong commit.
+
+### Fixes
+
+- Interface sockets declared with `structure_type="LIST"` or `"GRID"` return the list or grid wrapper (`tree.inputs.float("X", structure_type="LIST")` is a `FloatSocketList`), so `x[index]` and the grid methods work on them.
+- `to_python` no longer writes `x[index]` or other list methods on a group input whose interface socket is AUTO and only infers LIST from its links; the rebuilt input isn’t a list, so the code failed to run. It writes `g.GetListItem(...)` instead.
+
 ## v530.0.1
 
 ### Enhancements

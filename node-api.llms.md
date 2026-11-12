@@ -381,7 +381,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x116f14190>
+>     <nodebpy.builder.socket.BooleanSocket at 0x119544190>
 >
 > ### Comparing Python Objects
 >
