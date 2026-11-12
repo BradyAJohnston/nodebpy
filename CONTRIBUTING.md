@@ -69,6 +69,14 @@ uv run python -m gen.socket_order            # sparse-clones the tag matching th
 uv run python -m gen.socket_order --source ~/src/blender   # or parse a local checkout
 ```
 
+The typed overloads for `nodebpy.math` (`src/nodebpy/math.pyi`) are generated from its `_SPECS` table. `make generate` rebuilds them; after editing the table run
+
+```sh
+uv run python -m gen.math_stub
+```
+
+`tests/test_node_math.py` fails while the stub is stale.
+
 Nodes that need special handling are hand-written in `src/nodebpy/nodes/*/manual.py` (and the zone nodes in `nodes/geometry/zone.py` / `nodes/shader/zone.py`); the generator skips these and re-exports them alongside the generated classes.
 
 ## Changing the public API
