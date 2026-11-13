@@ -1898,8 +1898,10 @@ def test_interface_offers_the_sockets_its_tree_accepts(tree_type):
     from nodebpy.builder import (
         CompositorSocketContext,
         GeometrySocketContext,
+        NodeUnavailableError,
         ShaderSocketContext,
     )
+    from nodebpy.builder._utils import _older_blender
     from nodebpy.export.codegen import _INTERFACE_TYPE_METHOD
 
     with _TREE_BUILDERS[tree_type]() as tree:
@@ -1922,7 +1924,12 @@ def test_interface_offers_the_sockets_its_tree_accepts(tree_type):
                 accepted = True
             except TypeError:
                 accepted = False
-            assert hasattr(context, method) == accepted, (socket_type, method)
+            if accepted or not hasattr(context, method) or not _older_blender():
+                assert hasattr(context, method) == accepted, (socket_type, method)
+                continue
+            # a socket type the newest Blender added to this tree
+            with pytest.raises(NodeUnavailableError, match="generated from Blender"):
+                getattr(context, method)()
 
         # field, grid and list structures are Geometry Nodes only
         shapes = ("single", "dynamic", "field", "grid", "list")

@@ -377,7 +377,17 @@ class SocketContext:
         }
         if self._active_panel is not None:
             kwargs["parent"] = self._active_panel
-        interface_socket = self.interface.new_socket(**kwargs)
+        try:
+            interface_socket = self.interface.new_socket(**kwargs)
+        except TypeError as error:
+            # Each context offers the socket types the newest Blender accepts
+            # in its tree; an older one may not (strings in shader trees and
+            # bundles in the compositor are new in 5.3).
+            if _older_blender():
+                raise _needs_newer_blender(
+                    f"A {socket_type} socket in a {self.tree.bl_idname}"
+                ) from error
+            raise
         assert interface_socket is not None
         interface_socket.description = description
         return interface_socket
