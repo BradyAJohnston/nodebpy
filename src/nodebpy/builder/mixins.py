@@ -127,6 +127,12 @@ class OperatorMixin:
             TransformPoint,
         )
 
+        # nodes with a vector or rotation output use that socket's ``@``
+        # (dot product, rotate)
+        socket = self._default_output_socket
+        if socket.type in ("VECTOR", "ROTATION") and not isinstance(self, _SocketLike):
+            return _wrap_socket(socket) @ other
+
         if isinstance(other, (Position, VectorSocket)):
             return TransformPoint(other, self).o.vector  # ty: ignore[invalid-argument-type]
 
@@ -146,6 +152,9 @@ class OperatorMixin:
             return TransformPoint(self, other).o.vector
 
         return MultiplyMatrices(other, self).o.matrix  # ty: ignore[invalid-argument-type]
+
+    def __pos__(self) -> Socket:
+        return _wrap_socket(self._default_output_socket)
 
     def __neg__(self) -> Socket:
         return _wrap_socket(self._default_output_socket)._dispatch_unary("negate")
