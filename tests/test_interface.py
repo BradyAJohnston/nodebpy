@@ -1881,3 +1881,75 @@ def test_interface_shape_factories():
         assert not hasattr(tree.inputs.single, "shader")  # not in Geometry Nodes
         with pytest.raises(TypeError):
             tree.inputs.grid.float("X", structure_type="LIST")  # ty: ignore[unknown-argument]
+
+
+_TREE_BUILDERS = {
+    "GeometryNodeTree": g.tree,
+    "ShaderNodeTree": s.tree,
+    "CompositorNodeTree": c.tree,
+}
+
+
+@pytest.mark.parametrize("tree_type", list(_TREE_BUILDERS))
+def test_interface_offers_the_sockets_its_tree_accepts(tree_type):
+    """``tree.inputs`` has a factory for each socket type Blender accepts in
+    that tree type, and none for the rest (a shader tree has no
+    ``geometry()``, Geometry Nodes no ``shader()``)."""
+    from nodebpy.builder import (
+        CompositorSocketContext,
+        GeometrySocketContext,
+        NodeUnavailableError,
+        ShaderSocketContext,
+    )
+    from nodebpy.builder._utils import _older_blender
+    from nodebpy.export.codegen import _INTERFACE_TYPE_METHOD
+
+    with _TREE_BUILDERS[tree_type]() as tree:
+        context = tree.inputs
+        assert (
+            type(context)
+            is {
+                "GeometryNodeTree": GeometrySocketContext,
+                "ShaderNodeTree": ShaderSocketContext,
+                "CompositorNodeTree": CompositorSocketContext,
+            }[tree_type]
+        )
+        assert type(tree.outputs) is type(context)
+        assert tree.inputs is context  # one context, so its panel state sticks
+        interface = tree.tree.interface
+        assert interface is not None
+        for socket_type, method in _INTERFACE_TYPE_METHOD.items():
+            try:
+                interface.new_socket("probe", in_out="INPUT", socket_type=socket_type)
+                accepted = True
+            except TypeError:
+                accepted = False
+            if accepted or not hasattr(context, method) or not _older_blender():
+                assert hasattr(context, method) == accepted, (socket_type, method)
+                continue
+            # a socket type the newest Blender added to this tree
+            with pytest.raises(NodeUnavailableError, match="generated from Blender"):
+                getattr(context, method)()
+
+        # field, grid and list structures are Geometry Nodes only
+        shapes = ("single", "dynamic", "field", "grid", "list")
+        geometry = tree_type == "GeometryNodeTree"
+        assert all(hasattr(context, shape) == geometry for shape in shapes)
+
+
+def test_deprecated_interface_contexts_warn_and_work():
+    from nodebpy.builder import InputInterfaceContext, OutputInterfaceContext
+
+    with g.tree() as tree:
+        with pytest.warns(DeprecationWarning, match="tree.inputs / tree.outputs"):
+            inputs = InputInterfaceContext(tree)
+        with pytest.warns(DeprecationWarning):
+            outputs = OutputInterfaceContext(tree)
+        inputs.float("In") >> outputs.float("Out")
+    assert tree.tree.interface is not None
+    items = {
+        (item.name, item.in_out)
+        for item in tree.tree.interface.items_tree
+        if isinstance(item, bpy.types.NodeTreeInterfaceSocket)
+    }
+    assert items == {("In", "INPUT"), ("Out", "OUTPUT")}
