@@ -19,8 +19,11 @@ from nodebpy.builder import (
     CustomGeometryGroup,
     FloatSocket,
     FloatSocketGrid,
+    FloatSocketList,
     GeometrySocket,
+    ImageSocketList,
     IntegerSocket,
+    MaterialSocketList,
     ShaderSocket,
     Socket,
     TreeBuilder,
@@ -61,6 +64,13 @@ def interface_sockets() -> None:
         assert_type(tree.inputs.vector("Offset"), VectorSocket)
         assert_type(tree.inputs.geometry("Geometry"), GeometrySocket)
         assert_type(tree.inputs.boolean("Flag"), BooleanSocket)
+        assert_type(tree.inputs.grid.float("Density"), FloatSocketGrid)
+        assert_type(tree.inputs.list.vector("Points"), VectorSocketList)
+        assert_type(tree.inputs.list.material("Materials"), MaterialSocketList)
+        assert_type(tree.inputs.list.image("Image"), ImageSocketList)
+        assert_type(tree.inputs.field.color("Tint"), ColorSocket)
+        assert_type(tree.inputs.single.geometry("Mesh"), GeometrySocket)
+        assert_type(tree.outputs.list.float("Out"), FloatSocketList)
 
 
 def socket_operators() -> None:
