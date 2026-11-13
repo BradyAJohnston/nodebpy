@@ -1838,3 +1838,44 @@ def test_interface_structure_type_selects_wrapper():
         item = lst[g.Index()]
         assert item.node.bl_idname == GetListItem._bl_idname
         assert lst._interface_identifier == lst._interface_socket.identifier
+
+
+def test_interface_shape_factories():
+    """``tree.inputs.<shape>.<type>(...)`` declares the socket with that
+    ``structure_type`` and returns the wrapper for it; each shape offers only
+    the socket types Blender accepts it for."""
+    from nodebpy.builder import FloatSocketGrid, MaterialSocketList
+
+    with g.tree() as tree:
+
+        def iface(socket: Socket) -> bpy.types.NodeTreeInterfaceSocket:
+            assert socket._interface_socket is not None
+            return socket._interface_socket
+
+        grid = tree.inputs.grid.float("Grid", 0.5, min_value=0.0)
+        assert isinstance(grid, FloatSocketGrid)
+        grid_iface = iface(grid)
+        assert isinstance(grid_iface, bpy.types.NodeTreeInterfaceSocketFloat)
+        assert grid_iface.structure_type == "GRID"
+        assert grid_iface.default_value == 0.5
+        assert grid_iface.min_value == 0.0
+
+        points = tree.inputs.list.vector("Points")
+        assert isinstance(points, VectorSocketList)
+        assert isinstance(tree.inputs.list.material("Materials"), MaterialSocketList)
+
+        tint = tree.inputs.field.color("Tint")
+        assert type(tint) is ColorSocket
+        assert iface(tint).structure_type == "FIELD"
+        assert iface(tree.inputs.dynamic.string("S")).structure_type == "DYNAMIC"
+        assert iface(tree.inputs.single.geometry("G")).structure_type == "SINGLE"
+
+        out = tree.outputs.list.float("Out")
+        assert isinstance(out, FloatSocketList)
+        assert iface(out).in_out == "OUTPUT"
+
+        assert not hasattr(tree.inputs.grid, "color")
+        assert not hasattr(tree.inputs.field, "geometry")
+        assert not hasattr(tree.inputs.list, "shader")
+        with pytest.raises(TypeError):
+            tree.inputs.grid.float("X", structure_type="LIST")  # ty: ignore[unknown-argument]

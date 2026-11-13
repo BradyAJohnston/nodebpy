@@ -2,8 +2,15 @@
 title: Changelog
 ---
 
-## v530.0.3
 
+## Unreleased
+
+### Enhancements
+
+- **Interface sockets take their shape from the factory.** `tree.inputs.grid.float("Density")` declares a grid input and returns a `FloatSocketGrid`; likewise `single`, `dynamic`, `field` and `list` (`tree.inputs.list.vector("Points")` is a `VectorSocketList`), on `tree.outputs` too. Each shape offers only the socket types Blender accepts it for, so `tree.inputs.grid.color` doesn't exist. `structure_type=` keeps working, and `to_python` writes the shape factory.
+- `MaterialSocketList` and `ClosureSocketList` are returned for material and closure lists; they were plain sockets.
+
+## v530.0.3
 530.0.2 was yanked from PyPI: it was published from the wrong commit.
 
 ### Fixes
