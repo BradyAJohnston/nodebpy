@@ -1844,7 +1844,7 @@ def test_interface_shape_factories():
     """``tree.inputs.<shape>.<type>(...)`` declares the socket with that
     ``structure_type`` and returns the wrapper for it; each shape offers only
     the socket types Blender accepts it for."""
-    from nodebpy.builder import FloatSocketGrid, MaterialSocketList
+    from nodebpy.builder import FloatSocketGrid, ImageSocketList, MaterialSocketList
 
     with g.tree() as tree:
 
@@ -1863,6 +1863,7 @@ def test_interface_shape_factories():
         points = tree.inputs.list.vector("Points")
         assert isinstance(points, VectorSocketList)
         assert isinstance(tree.inputs.list.material("Materials"), MaterialSocketList)
+        assert isinstance(tree.inputs.list.image("Images"), ImageSocketList)
 
         tint = tree.inputs.field.color("Tint")
         assert type(tint) is ColorSocket
@@ -1877,5 +1878,6 @@ def test_interface_shape_factories():
         assert not hasattr(tree.inputs.grid, "color")
         assert not hasattr(tree.inputs.field, "geometry")
         assert not hasattr(tree.inputs.list, "shader")
+        assert not hasattr(tree.inputs.single, "shader")  # not in Geometry Nodes
         with pytest.raises(TypeError):
             tree.inputs.grid.float("X", structure_type="LIST")  # ty: ignore[unknown-argument]

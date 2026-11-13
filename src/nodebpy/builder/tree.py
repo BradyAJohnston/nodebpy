@@ -1318,17 +1318,7 @@ class _SingleShapes(
         ClosureSocket,
     ]
 ):
-    def shader(
-        self,
-        name: str = "Shader",
-        description: str = "",
-        *,
-        optional_label: bool = False,
-        hide_value: bool = False,
-        hide_in_modifier: bool = False,
-        force_non_field: bool = False,
-    ) -> ShaderSocket:
-        return self._make("shader", locals())
+    pass
 
 
 # structure_type → the shape factories that declare it (``to_python``).
