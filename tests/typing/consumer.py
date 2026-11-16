@@ -16,15 +16,18 @@ from nodebpy import shader as s
 from nodebpy.builder import (
     BooleanSocket,
     ColorSocket,
+    CompositorSocketContext,
     CustomGeometryGroup,
     FloatSocket,
     FloatSocketGrid,
     FloatSocketList,
     GeometrySocket,
+    GeometrySocketContext,
     ImageSocketList,
     IntegerSocket,
     MaterialSocketList,
     ShaderSocket,
+    ShaderSocketContext,
     Socket,
     TreeBuilder,
     VectorSocket,
@@ -71,6 +74,15 @@ def interface_sockets() -> None:
         assert_type(tree.inputs.field.color("Tint"), ColorSocket)
         assert_type(tree.inputs.single.geometry("Mesh"), GeometrySocket)
         assert_type(tree.outputs.list.float("Out"), FloatSocketList)
+
+    # each tree type offers only the sockets (and shapes) Blender accepts there
+    assert_type(tree.inputs, GeometrySocketContext)
+    with s.tree("Shader Interface") as shader_tree:
+        assert_type(shader_tree.inputs, ShaderSocketContext)
+        assert_type(shader_tree.outputs.shader("BSDF"), ShaderSocket)
+    with c.tree("Compositor Interface") as compositor_tree:
+        assert_type(compositor_tree.outputs, CompositorSocketContext)
+        assert_type(compositor_tree.inputs.color("Image"), ColorSocket)
 
 
 def socket_operators() -> None:

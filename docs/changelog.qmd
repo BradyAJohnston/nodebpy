@@ -9,6 +9,11 @@ title: Changelog
 
 - **Interface sockets take their shape from the factory.** `tree.inputs.grid.float("Density")` declares a grid input and returns a `FloatSocketGrid`; likewise `single`, `dynamic`, `field` and `list` (`tree.inputs.list.vector("Points")` is a `VectorSocketList`), on `tree.outputs` too. Each shape offers only the socket types Blender accepts it for, so `tree.inputs.grid.color` doesn't exist. `structure_type=` keeps working, and `to_python` writes the shape factory.
 - `MaterialSocketList` and `ClosureSocketList` are returned for material and closure lists; they were plain sockets.
+- **`tree.inputs` / `tree.outputs` offer only what the tree type accepts.** Their class follows the tree: `GeometrySocketContext`, `ShaderSocketContext` or `CompositorSocketContext`, with the socket types shared by all three on `SocketContext`. A type checker now flags `tree.inputs.geometry()` in a shader tree, `tree.outputs.shader()` in Geometry Nodes, and the `single` / `dynamic` / `field` / `list` / `grid` shapes outside Geometry Nodes, all of which Blender rejected only when the tree was built. Methods moved off `SocketContext` itself (`geometry`, `rotation`, `shader`, ...) are on the subclass of every tree that accepts them.
+
+### Deprecations
+
+- `InputInterfaceContext` and `OutputInterfaceContext` (and `DirectionalContext`) warn when constructed; use `tree.inputs` / `tree.outputs`. Removed in 540.
 
 ## v530.0.3
 530.0.2 was yanked from PyPI: it was published from the wrong commit.

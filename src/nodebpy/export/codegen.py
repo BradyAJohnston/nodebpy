@@ -3968,6 +3968,13 @@ _IFACE_PARAM_ATTR = {
 }
 
 
+def _socket_context(item) -> type:
+    """The ``tree.inputs`` / ``tree.outputs`` class of ``item``'s tree."""
+    from ..builder.tree import _SOCKET_CONTEXTS, SocketContext
+
+    return _SOCKET_CONTEXTS.get(item.id_data.bl_idname, SocketContext)
+
+
 def _interface_kwargs(item, method: str) -> dict[str, Any]:
     """Keyword args whose interface values differ from a fresh socket.
 
@@ -3976,9 +3983,7 @@ def _interface_kwargs(item, method: str) -> dict[str, Any]:
     parameters like ``min_value`` whose Python default ``None`` means
     "leave Blender's default alone").
     """
-    from ..builder.tree import SocketContext
-
-    fn = getattr(SocketContext, method, None)
+    fn = getattr(_socket_context(item), method, None)
     if fn is None:
         return {}
     try:
@@ -4057,10 +4062,8 @@ def _emit_interface(
             # fresh socket's default AND the factory parameter's (a colour
             # socket starts (0,0,0,1) but the factory fills (1,1,1,1)) to be
             # skipped. Inputs keep emitting theirs unconditionally, as before.
-            from ..builder.tree import SocketContext
-
             fresh = _get_interface_defaults(item.id_data.bl_idname, item.socket_type)
-            param = _signature(getattr(SocketContext, method)).parameters.get(
+            param = _signature(getattr(_socket_context(item), method)).parameters.get(
                 "default_value"
             )
             factory_default = None if param is None else param.default
@@ -4081,10 +4084,11 @@ def _emit_interface(
     if description:
         args.append(f"description={_fmt(description)}")
     kwargs = _interface_kwargs(item, method)
-    # A declared shape is written as its factory, ``tree.inputs.grid.float``.
+    # A declared shape is written as its factory, ``tree.inputs.grid.float``
+    # (Geometry Nodes only: other trees have no shapes).
     factory = method
     structure = kwargs.get("structure_type")
-    if structure is not None:
+    if structure is not None and hasattr(_socket_context(item), "single"):
         from ..builder.tree import _SHAPES
 
         shapes = _SHAPES.get(structure)

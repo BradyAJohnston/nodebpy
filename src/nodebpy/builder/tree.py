@@ -7,7 +7,16 @@ from contextlib import AbstractContextManager, contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Literal,
+    Self,
+    TypeVar,
+    cast,
+    overload,
+)
 
 import bpy
 from bpy.types import (
@@ -40,6 +49,7 @@ from ._utils import (
     InvalidLinkWarning,
     SocketError,
     _allow_innactive_sockets,
+    _deprecated,
     _needs_newer_blender,
     _older_blender,
     enum_value_error,
@@ -315,9 +325,21 @@ class TreePanelContext:
 
 
 class SocketContext:
-    _direction: Literal["INPUT", "OUTPUT"] | None
+    """``tree.inputs`` / ``tree.outputs``: the interface socket factories.
 
-    def __init__(self, tree_builder: TreeBuilder[Any]):
+    This base has the socket types every tree accepts; the tree's own
+    subclass (``GeometrySocketContext``, ``ShaderSocketContext``,
+    ``CompositorSocketContext``) adds the rest."""
+
+    _direction: Literal["INPUT", "OUTPUT"] = "INPUT"
+
+    def __init__(
+        self,
+        tree_builder: TreeBuilder[Any],
+        direction: Literal["INPUT", "OUTPUT"] | None = None,
+    ):
+        if direction is not None:
+            self._direction = direction
         self.builder = tree_builder
         self._active_panel: bpy.types.NodeTreeInterfacePanel | None = None
 
@@ -355,7 +377,17 @@ class SocketContext:
         }
         if self._active_panel is not None:
             kwargs["parent"] = self._active_panel
-        interface_socket = self.interface.new_socket(**kwargs)
+        try:
+            interface_socket = self.interface.new_socket(**kwargs)
+        except TypeError as error:
+            # Each context offers the socket types the newest Blender accepts
+            # in its tree; an older one may not (strings in shader trees and
+            # bundles in the compositor are new in 5.3).
+            if _older_blender():
+                raise _needs_newer_blender(
+                    f"A {socket_type} socket in a {self.tree.bl_idname}"
+                ) from error
+            raise
         assert interface_socket is not None
         interface_socket.description = description
         return interface_socket
@@ -594,62 +626,6 @@ class SocketContext:
         )
         return self._wrap(ColorSocket, iface)
 
-    def rotation(
-        self,
-        name: str = "Rotation",
-        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
-        description: str = "",
-        *,
-        optional_label: bool = False,
-        hide_value: bool = False,
-        hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
-        attribute_domain: _AttributeDomains = "POINT",
-        default_attribute: str | None = None,
-        force_non_field: bool = False,
-    ) -> RotationSocket:
-        iface = self._add_socket("NodeSocketRotation", name, description)
-        self._set_props(
-            iface,
-            default_value=default_value,
-            optional_label=optional_label,
-            hide_value=hide_value,
-            hide_in_modifier=hide_in_modifier,
-            structure_type=structure_type,
-            attribute_domain=attribute_domain,
-            default_attribute=default_attribute,
-            force_non_field=force_non_field,
-        )
-        return self._wrap(RotationSocket, iface)
-
-    def matrix(
-        self,
-        name: str = "Matrix",
-        description: str = "",
-        *,
-        optional_label: bool = False,
-        hide_value: bool = False,
-        hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: _MatrixDefaultInputs | Default = "VALUE",
-        attribute_domain: _AttributeDomains = "POINT",
-        default_attribute: str | None = None,
-        force_non_field: bool = False,
-    ) -> MatrixSocket:
-        iface = self._add_socket("NodeSocketMatrix", name, description)
-        self._set_props(
-            iface,
-            optional_label=optional_label,
-            hide_value=hide_value,
-            hide_in_modifier=hide_in_modifier,
-            structure_type=structure_type,
-            default_input=default_input,
-            attribute_domain=attribute_domain,
-            default_attribute=default_attribute,
-            force_non_field=force_non_field,
-        )
-        return self._wrap(MatrixSocket, iface)
-
     def string(
         self,
         name: str = "String",
@@ -702,6 +678,99 @@ class SocketContext:
         )
         return self._wrap(MenuSocket, iface)
 
+    def bundle(
+        self,
+        name: str = "Bundle",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
+    ) -> BundleSocket:
+        iface = self._add_socket("NodeSocketBundle", name, description)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
+        )
+        return self._wrap(BundleSocket, iface)
+
+    def __len__(self) -> int:
+        assert self.tree.interface is not None
+        return len(
+            [
+                item
+                for item in self.tree.interface.items_tree
+                if isinstance(item, bpy.types.NodeTreeInterfaceSocket)
+                and item.in_out == self._direction
+            ]
+        )
+
+
+class _GeometryCompositorSockets(SocketContext):
+    """Socket types Geometry Nodes and the compositor accept."""
+
+    def rotation(
+        self,
+        name: str = "Rotation",
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        force_non_field: bool = False,
+    ) -> RotationSocket:
+        iface = self._add_socket("NodeSocketRotation", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+            force_non_field=force_non_field,
+        )
+        return self._wrap(RotationSocket, iface)
+
+    def matrix(
+        self,
+        name: str = "Matrix",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        default_input: _MatrixDefaultInputs | Default = "VALUE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        force_non_field: bool = False,
+    ) -> MatrixSocket:
+        iface = self._add_socket("NodeSocketMatrix", name, description)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+            force_non_field=force_non_field,
+        )
+        return self._wrap(MatrixSocket, iface)
+
     def object(
         self,
         name: str = "Object",
@@ -727,6 +796,56 @@ class SocketContext:
             default_input=default_input,
         )
         return self._wrap(ObjectSocket, iface)
+
+    def font(
+        self,
+        name: str = "Font",
+        default_value: bpy.types.VectorFont | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> FontSocket:
+        iface = self._add_socket("NodeSocketFont", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+        return self._wrap(FontSocket, iface)
+
+
+class _GeometryShaderSockets(SocketContext):
+    """Socket types Geometry Nodes and shader trees accept."""
+
+    def closure(
+        self,
+        name: str = "Closure",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
+    ) -> ClosureSocket:
+        iface = self._add_socket("NodeSocketClosure", name, description)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
+        )
+        return self._wrap(ClosureSocket, iface)
+
+
+class GeometrySocketContext(_GeometryCompositorSockets, _GeometryShaderSockets):
+    """``tree.inputs`` / ``tree.outputs`` of a Geometry Nodes tree."""
 
     def geometry(
         self,
@@ -822,26 +941,6 @@ class SocketContext:
         )
         return self._wrap(MaterialSocket, iface)
 
-    def font(
-        self,
-        name: str = "Font",
-        default_value: bpy.types.VectorFont | None = None,
-        description: str = "",
-        *,
-        optional_label: bool = False,
-        hide_value: bool = False,
-        hide_in_modifier: bool = False,
-    ) -> FontSocket:
-        iface = self._add_socket("NodeSocketFont", name, description)
-        self._set_props(
-            iface,
-            default_value=default_value,
-            optional_label=optional_label,
-            hide_value=hide_value,
-            hide_in_modifier=hide_in_modifier,
-        )
-        return self._wrap(FontSocket, iface)
-
     def sound(
         self,
         name: str = "Sound",
@@ -861,83 +960,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
         )
         return self._wrap(SoundSocket, iface)
-
-    def bundle(
-        self,
-        name: str = "Bundle",
-        description: str = "",
-        *,
-        optional_label: bool = False,
-        hide_value: bool = False,
-        hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
-        force_non_field: bool = False,
-    ) -> BundleSocket:
-        iface = self._add_socket("NodeSocketBundle", name, description)
-        self._set_props(
-            iface,
-            optional_label=optional_label,
-            hide_value=hide_value,
-            hide_in_modifier=hide_in_modifier,
-            structure_type=structure_type,
-            force_non_field=force_non_field,
-        )
-        return self._wrap(BundleSocket, iface)
-
-    def closure(
-        self,
-        name: str = "Closure",
-        description: str = "",
-        *,
-        optional_label: bool = False,
-        hide_value: bool = False,
-        hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
-        force_non_field: bool = False,
-    ) -> ClosureSocket:
-        iface = self._add_socket("NodeSocketClosure", name, description)
-        self._set_props(
-            iface,
-            optional_label=optional_label,
-            hide_value=hide_value,
-            hide_in_modifier=hide_in_modifier,
-            structure_type=structure_type,
-            force_non_field=force_non_field,
-        )
-        return self._wrap(ClosureSocket, iface)
-
-    def shader(
-        self,
-        name: str = "Shader",
-        description: str = "",
-        *,
-        optional_label: bool = False,
-        hide_value: bool = False,
-        hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
-        force_non_field: bool = False,
-    ) -> ShaderSocket:
-        iface = self._add_socket("NodeSocketShader", name, description)
-        self._set_props(
-            iface,
-            optional_label=optional_label,
-            hide_value=hide_value,
-            hide_in_modifier=hide_in_modifier,
-            structure_type=structure_type,
-            force_non_field=force_non_field,
-        )
-        return self._wrap(ShaderSocket, iface)
-
-    def __len__(self) -> int:
-        assert self.tree.interface is not None
-        return len(
-            [
-                item
-                for item in self.tree.interface.items_tree
-                if isinstance(item, bpy.types.NodeTreeInterfaceSocket)
-                and item.in_out == self._direction
-            ]
-        )
 
     # ------------------------------------------------------------------
     # Socket shapes: ``tree.inputs.grid.float(...)`` declares the socket
@@ -992,6 +1014,36 @@ class SocketContext:
     ]:
         """Sockets that expect a list."""
         return _ListShapes(self, "LIST")
+
+
+class ShaderSocketContext(_GeometryShaderSockets):
+    """``tree.inputs`` / ``tree.outputs`` of a shader tree."""
+
+    def shader(
+        self,
+        name: str = "Shader",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
+    ) -> ShaderSocket:
+        iface = self._add_socket("NodeSocketShader", name, description)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
+        )
+        return self._wrap(ShaderSocket, iface)
+
+
+class CompositorSocketContext(_GeometryCompositorSockets):
+    """``tree.inputs`` / ``tree.outputs`` of a compositor tree."""
 
 
 class _GridShapes[FloatT, IntegerT, BooleanT, VectorT]:
@@ -1331,17 +1383,70 @@ _SHAPES: dict[str, type[_GridShapes[Any, Any, Any, Any]]] = {
 }
 
 
-class DirectionalContext(SocketContext):
-    """Base class for directional socket contexts"""
+# tree bl_idname → its ``tree.inputs`` / ``tree.outputs`` class
+_SOCKET_CONTEXTS: dict[str, type[SocketContext]] = {
+    "GeometryNodeTree": GeometrySocketContext,
+    "ShaderNodeTree": ShaderSocketContext,
+    "CompositorNodeTree": CompositorSocketContext,
+}
 
-    _direction = "INPUT"
+
+class _Interface:
+    """``tree.inputs`` / ``tree.outputs``, typed by the tree type: a shader
+    tree has no ``geometry()`` socket, only Geometry Nodes has shapes."""
+
+    def __init__(self, direction: Literal["INPUT", "OUTPUT"]):
+        self._direction: Literal["INPUT", "OUTPUT"] = direction
+        self._attr = f"_{direction.lower()}_context"
+
+    @overload
+    def __get__(self, obj: None, owner: Any) -> Self: ...
+    @overload
+    def __get__(
+        self, obj: TreeBuilder[GeometryNodeTree], owner: Any
+    ) -> GeometrySocketContext: ...
+    @overload
+    def __get__(
+        self, obj: TreeBuilder[ShaderNodeTree], owner: Any
+    ) -> ShaderSocketContext: ...
+    @overload
+    def __get__(
+        self, obj: TreeBuilder[CompositorNodeTree], owner: Any
+    ) -> CompositorSocketContext: ...
+    @overload
+    def __get__(self, obj: TreeBuilder[Any], owner: Any) -> SocketContext: ...
+    def __get__(self, obj: TreeBuilder[Any] | None, owner: Any) -> Any:
+        if obj is None:
+            return self
+        context = obj.__dict__.get(self._attr)
+        if context is None:
+            cls = _SOCKET_CONTEXTS.get(obj.tree.bl_idname, SocketContext)
+            context = obj.__dict__[self._attr] = cls(obj, self._direction)
+        return context
+
+
+# -- deprecated entry points, removed in 540 --
+
+
+class DirectionalContext(GeometrySocketContext):
+    """Deprecated: use ``tree.inputs`` / ``tree.outputs``, whose class
+    (``GeometrySocketContext``, ``ShaderSocketContext``,
+    ``CompositorSocketContext``) follows the tree type."""
+
+    def __init__(self, tree_builder: TreeBuilder[Any]):
+        _deprecated(type(self).__name__, "tree.inputs / tree.outputs", removed_in=540)
+        super().__init__(tree_builder)
 
 
 class InputInterfaceContext(DirectionalContext):
+    """Deprecated: use ``tree.inputs``."""
+
     _direction = "INPUT"
 
 
 class OutputInterfaceContext(DirectionalContext):
+    """Deprecated: use ``tree.outputs``."""
+
     _direction = "OUTPUT"
 
 
@@ -1619,6 +1724,8 @@ class TreeBuilder[TreeT: NodeTree]:
     """
 
     tree: TreeT
+    inputs: _Interface = _Interface("INPUT")
+    outputs: _Interface = _Interface("OUTPUT")
     _tree_contexts: ClassVar[list[TreeBuilder]] = []
     _frame_contexts: ClassVar[list[NodeFrame]] = []
 
@@ -1706,8 +1813,6 @@ class TreeBuilder[TreeT: NodeTree]:
 
         self._menu_defaults: list[_MenuDefault] = []
         self._exited = False
-        self.inputs: InputInterfaceContext = InputInterfaceContext(self)
-        self.outputs: OutputInterfaceContext = OutputInterfaceContext(self)
         self._arrange = arrange
         self.collapse = collapse
         self.fake_user = fake_user

@@ -2977,6 +2977,15 @@ def test_interface_shape_emitted_as_factory():
     assert "structure_type" not in code
 
 
+def test_interface_structure_kept_as_argument_outside_geometry_nodes():
+    """Only Geometry Nodes has shape factories: a shader tree's declared
+    ``SINGLE`` socket stays a ``structure_type=`` argument."""
+    with TreeBuilder.shader("ShaderSingle") as tree:
+        tree.inputs.float("Value", structure_type="SINGLE") >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert 'tree.inputs.float("Value", 0.0, structure_type="SINGLE")' in code
+
+
 # ---------------------------------------------------------------------------
 # Parametrised round-trip over every tree built in test_usecases.py
 # ---------------------------------------------------------------------------
