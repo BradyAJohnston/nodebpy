@@ -10,6 +10,7 @@ from typing import assert_type, override
 
 from bpy.types import GeometryNodeTree
 
+import nodebpy.math as m
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
@@ -19,8 +20,10 @@ from nodebpy.builder import (
     CustomGeometryGroup,
     FloatSocket,
     FloatSocketGrid,
+    FloatSocketList,
     GeometrySocket,
     IntegerSocket,
+    MatrixSocket,
     ShaderSocket,
     Socket,
     TreeBuilder,
@@ -185,3 +188,21 @@ def shader_and_compositor() -> None:
 
     with c.tree("Compositor"):
         assert_type(c.Blur(), c.Blur)
+
+
+def node_math() -> None:
+    with g.tree("NodeMath"):
+        f = g.Value().o.value
+        i = g.Integer().o.integer
+        v = g.Position().o.position
+        assert_type(m.sqrt(2), FloatSocket)
+        assert_type(m.abs(3), IntegerSocket)
+        assert_type(m.abs(f), FloatSocket)
+        assert_type(m.abs(f.to_list()), FloatSocketList)
+        assert_type(m.power(2.0, v), VectorSocket)
+        assert_type(m.minimum(i, 2), IntegerSocket)
+        assert_type(m.dot(v, (0, 0, 1)), FloatSocket)
+        assert_type(m.where(f > 1, v, (0, 0, 0)), VectorSocket)
+        assert_type(m.inv(g.CombineTransform().o.transform), MatrixSocket)
+        assert_type(m.norm(g.Position()), FloatSocket)
+        assert_type(m.abs(g.Position()), Socket)

@@ -66,11 +66,11 @@ def _structure(node_tree):
     return nodes, links
 
 
-def _assert_roundtrip(tree):
+def _assert_roundtrip(tree, **options):
     """Exec the generated code and assert the rebuilt tree is structurally equal."""
     # format=False keeps this testing the generator's own output (and avoids a
     # ruff subprocess per round-trip); ruff formatting is covered separately.
-    code = to_python(tree, format=False)
+    code = to_python(tree, format=False, **options)
     ns: dict = {}
     # exec(code, ns)
     try:

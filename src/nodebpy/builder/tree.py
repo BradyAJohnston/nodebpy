@@ -1442,6 +1442,7 @@ class TreeBuilder[TreeT: NodeTree]:
         in_place: bool = False,
         groups: Literal["inline", "reference"] = "inline",
         group_modules: Collection[str] | None = None,
+        node_math: bool = False,
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -1462,6 +1463,7 @@ class TreeBuilder[TreeT: NodeTree]:
             in_place=in_place,
             groups=groups,
             group_modules=group_modules,
+            node_math=node_math,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:
