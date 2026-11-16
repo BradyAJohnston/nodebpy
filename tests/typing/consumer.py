@@ -6,7 +6,7 @@ checks this file with mypy, pyright, basedpyright, pyrefly and ty. Every
 checker fails CI.
 """
 
-from typing import assert_type, override
+from typing import ClassVar, assert_type, override
 
 from bpy.types import GeometryNodeTree
 
@@ -32,6 +32,14 @@ from nodebpy.builder import (
     TreeBuilder,
     VectorSocket,
     VectorSocketList,
+)
+from nodebpy.builder.fields import (
+    FloatInput,
+    FloatOutput,
+    GeometryGroup,
+    GeometryInput,
+    GeometryOutput,
+    IntegerInput,
 )
 from nodebpy.builder.items import Item, MenuItem
 from nodebpy.nodes.geometry.zone import ZoneItem
@@ -212,3 +220,31 @@ def shader_and_compositor() -> None:
 
     with c.tree("Compositor"):
         assert_type(c.Blur(), c.Blur)
+
+
+class FieldJitter(GeometryGroup):
+    geometry: GeometryInput = GeometryInput(default=None)
+    amount: FloatInput = FloatInput(default=0.2, min_value=0.0)
+    seed: IntegerInput = IntegerInput(default=0)
+    result: ClassVar[GeometryOutput] = GeometryOutput(name="Geometry")
+    offset: ClassVar[FloatOutput] = FloatOutput()
+
+    @override
+    def build(self) -> None:
+        assert_type(self.amount, FloatSocket)
+        assert_type(self.geometry, GeometrySocket)
+        offset = g.RandomValue.vector(min=-1, seed=self.seed) * self.amount
+        self.geometry >> g.SetPosition(offset=offset) >> self.result
+        g.Math.sine(self.amount) >> self.offset
+
+
+def field_groups() -> None:
+    with g.tree("Field Groups"):
+        node = FieldJitter(g.Cube(), 0.5)
+        FieldJitter(amount=g.Value(0.3), seed=2)
+        assert_type(node.result, GeometrySocket)
+        assert_type(node.offset, FloatSocket)
+        assert_type(node.seed, IntegerSocket)
+        g.Cube() >> node.geometry
+        node.amount = 0.7
+        node >> g.RealizeInstances()

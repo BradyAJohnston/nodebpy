@@ -240,6 +240,76 @@ The constructor mirrors the interface: `Default.POSITION` as a parameter default
 documents the fallback, and passing it through leaves the group node's socket
 untouched so the fallback applies.
 
+## Declaring the Interface with Fields
+
+A group can also declare its interface once, as typed class fields, instead of
+writing it in both `__init__` and `_build_group`. Subclass `GeometryGroup` (or
+`ShaderGroup` / `CompositorGroup`) from `nodebpy.builder.fields` and implement
+`build()`:
+
+```{python}
+from typing import ClassVar
+
+from nodebpy.builder.fields import (
+    BooleanInput,
+    FloatInput,
+    FloatOutput,
+    GeometryGroup,
+    GeometryInput,
+    GeometryOutput,
+    IntegerInput,
+    Panel,
+)
+
+
+class NoisyOffset(GeometryGroup):
+    """Offset each point along Z by random noise."""
+
+    _color_tag = "GEOMETRY"
+
+    geometry: GeometryInput = GeometryInput(default=None)
+    with Panel("Noise", default_closed=True):
+        use_noise: BooleanInput = BooleanInput(default=True, panel_toggle=True)
+        scale: FloatInput = FloatInput(default=0.2, min_value=0.0)
+        seed: IntegerInput = IntegerInput(default=0)
+    result: ClassVar[GeometryOutput] = GeometryOutput(name="Geometry")
+    offset: ClassVar[FloatOutput] = FloatOutput()
+
+    def build(self) -> None:
+        noise = g.RandomValue.float(seed=self.seed) * self.scale
+        z = g.Switch.float(self.use_noise, false=0.0, true=noise)
+        _ = z >> self.offset
+        _ = self.geometry >> g.SetPosition(offset=g.CombineXYZ(z=z)) >> self.result
+```
+
+- **Inputs** are the annotated fields. Type checkers generate the class's
+  `__init__` from them (`typing.dataclass_transform`), taking each input by position
+  or keyword with its `Input*` type. Inside `build()` a field is the group's interface
+  socket (`self.scale` is a `FloatSocket`).
+- **Outputs** are `ClassVar` fields, so they aren't `__init__` parameters. Link into
+  them inside `build()`.
+- **On a group node** every field is that node's socket: `node.offset` is its
+  `FloatSocket` output, `x >> node.geometry` links into an input and
+  `node.scale = 0.5` sets one.
+- **Panels** are `with Panel(...)` blocks in the class body. They nest, and may hold
+  inputs and outputs. `panel_toggle=True` makes a boolean input the panel's
+  header toggle; Blender names that socket after the panel.
+- The tree is named after the class (`NoisyOffset` → "Noisy Offset") unless `_name`
+  is set. Sockets are named after their fields unless `name=` is given.
+
+```{python}
+with g.tree("NoisyOffsetDemo") as tree:
+    offset = NoisyOffset(g.Grid(vertices_x=20, vertices_y=20), scale=0.3)
+    _ = offset >> tree.outputs.geometry()
+    _ = offset.offset >> tree.outputs.float("Offset")
+
+tree
+```
+
+Write `default=` by keyword: pyright only treats a field as optional when its
+`default` is passed by keyword. mypy does not see fields declared inside a `with`
+block, so with mypy the inputs in a panel are missing from `__init__`.
+
 ## Class Options
 
 `CustomGeometryGroup` (via its `NodeGroupBuilder` base class) supports a few class-level options:
