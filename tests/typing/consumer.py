@@ -74,12 +74,17 @@ def interface_sockets() -> None:
         assert_type(tree.inputs.field.color("Tint"), ColorSocket)
         assert_type(tree.inputs.single.geometry("Mesh"), GeometrySocket)
         assert_type(tree.outputs.list.float("Out"), FloatSocketList)
+        assert_type(tree.inputs.float("Grid", structure_type="GRID"), FloatSocket)
 
     # each tree type offers only the sockets (and shapes) Blender accepts there
     assert_type(tree.inputs, GeometrySocketContext)
     with s.tree("Shader Interface") as shader_tree:
         assert_type(shader_tree.inputs, ShaderSocketContext)
         assert_type(shader_tree.outputs.shader("BSDF"), ShaderSocket)
+        # only Geometry Nodes takes FIELD / LIST / GRID / DYNAMIC
+        assert_type(
+            shader_tree.inputs.float("Single", structure_type="SINGLE"), FloatSocket
+        )
     with c.tree("Compositor Interface") as compositor_tree:
         assert_type(compositor_tree.outputs, CompositorSocketContext)
         assert_type(compositor_tree.inputs.color("Image"), ColorSocket)

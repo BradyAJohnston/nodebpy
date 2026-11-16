@@ -324,12 +324,18 @@ class TreePanelContext:
         self._builder.outputs._active_panel = self._previous_outputs
 
 
-class SocketContext:
+# the structure types a shader or compositor socket takes
+_SingleStructureType = Literal["AUTO", "SINGLE"]
+
+
+class SocketContext[StructureT: str = Any]:
     """``tree.inputs`` / ``tree.outputs``: the interface socket factories.
 
     This base has the socket types every tree accepts; the tree's own
     subclass (``GeometrySocketContext``, ``ShaderSocketContext``,
-    ``CompositorSocketContext``) adds the rest."""
+    ``CompositorSocketContext``) adds the rest. ``StructureT`` is the
+    ``structure_type`` values besides ``"AUTO"`` the tree accepts: only
+    Geometry Nodes has fields, lists and grids."""
 
     _direction: Literal["INPUT", "OUTPUT"] = "INPUT"
 
@@ -456,7 +462,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         subtype: FloatInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
@@ -492,7 +498,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         default_input: _IntegerDefaultInputs | Default = "VALUE",
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
@@ -526,7 +532,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         layer_selection_field: bool = False,
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
@@ -564,7 +570,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
         default_input: _VectorDefaultInputs | Default = "VALUE",
@@ -606,7 +612,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
@@ -636,7 +642,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         subtype: StringInterfaceSubtypes = "NONE",
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         force_non_field: bool = False,
     ) -> StringSocket:
         iface = self._add_socket("NodeSocketString", name, description)
@@ -662,7 +668,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         force_non_field: bool = False,
     ) -> MenuSocket:
         iface = self._add_socket("NodeSocketMenu", name, description)
@@ -686,7 +692,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         force_non_field: bool = False,
     ) -> BundleSocket:
         iface = self._add_socket("NodeSocketBundle", name, description)
@@ -712,7 +718,7 @@ class SocketContext:
         )
 
 
-class _GeometryCompositorSockets(SocketContext):
+class _GeometryCompositorSockets[StructureT: str](SocketContext[StructureT]):
     """Socket types Geometry Nodes and the compositor accept."""
 
     def rotation(
@@ -724,7 +730,7 @@ class _GeometryCompositorSockets(SocketContext):
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
@@ -751,7 +757,7 @@ class _GeometryCompositorSockets(SocketContext):
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         default_input: _MatrixDefaultInputs | Default = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
@@ -780,7 +786,7 @@ class _GeometryCompositorSockets(SocketContext):
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         force_non_field: bool = False,
         default_input: _ObjectDefaultInputs | Default = "VALUE",
     ) -> ObjectSocket:
@@ -818,7 +824,7 @@ class _GeometryCompositorSockets(SocketContext):
         return self._wrap(FontSocket, iface)
 
 
-class _GeometryShaderSockets(SocketContext):
+class _GeometryShaderSockets[StructureT: str](SocketContext[StructureT]):
     """Socket types Geometry Nodes and shader trees accept."""
 
     def closure(
@@ -829,7 +835,7 @@ class _GeometryShaderSockets(SocketContext):
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: StructureT | Literal["AUTO"] = "AUTO",
         force_non_field: bool = False,
     ) -> ClosureSocket:
         iface = self._add_socket("NodeSocketClosure", name, description)
@@ -844,7 +850,10 @@ class _GeometryShaderSockets(SocketContext):
         return self._wrap(ClosureSocket, iface)
 
 
-class GeometrySocketContext(_GeometryCompositorSockets, _GeometryShaderSockets):
+class GeometrySocketContext(
+    _GeometryCompositorSockets[_SocketShapeStructureType],
+    _GeometryShaderSockets[_SocketShapeStructureType],
+):
     """``tree.inputs`` / ``tree.outputs`` of a Geometry Nodes tree."""
 
     def geometry(
@@ -1016,7 +1025,7 @@ class GeometrySocketContext(_GeometryCompositorSockets, _GeometryShaderSockets):
         return _ListShapes(self, "LIST")
 
 
-class ShaderSocketContext(_GeometryShaderSockets):
+class ShaderSocketContext(_GeometryShaderSockets[Literal["SINGLE"]]):
     """``tree.inputs`` / ``tree.outputs`` of a shader tree."""
 
     def shader(
@@ -1027,7 +1036,7 @@ class ShaderSocketContext(_GeometryShaderSockets):
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-        structure_type: _SocketShapeStructureType = "AUTO",
+        structure_type: _SingleStructureType = "AUTO",
         force_non_field: bool = False,
     ) -> ShaderSocket:
         iface = self._add_socket("NodeSocketShader", name, description)
@@ -1042,7 +1051,7 @@ class ShaderSocketContext(_GeometryShaderSockets):
         return self._wrap(ShaderSocket, iface)
 
 
-class CompositorSocketContext(_GeometryCompositorSockets):
+class CompositorSocketContext(_GeometryCompositorSockets[Literal["SINGLE"]]):
     """``tree.inputs`` / ``tree.outputs`` of a compositor tree."""
 
 
