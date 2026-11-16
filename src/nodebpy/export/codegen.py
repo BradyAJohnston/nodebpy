@@ -4080,11 +4080,19 @@ def _emit_interface(
     description = getattr(item, "description", "")
     if description:
         args.append(f"description={_fmt(description)}")
-    args.extend(
-        f"{pname}={_fmt(value)}"
-        for pname, value in _interface_kwargs(item, method).items()
-    )
-    return f"{indent}{var_name} = tree.{direction}.{method}({', '.join(args)})"
+    kwargs = _interface_kwargs(item, method)
+    # A declared shape is written as its factory, ``tree.inputs.grid.float``.
+    factory = method
+    structure = kwargs.get("structure_type")
+    if structure is not None:
+        from ..builder.tree import _SHAPES
+
+        shapes = _SHAPES.get(structure)
+        if shapes is not None and hasattr(shapes, method):
+            del kwargs["structure_type"]
+            factory = f"{structure.lower()}.{method}"
+    args.extend(f"{pname}={_fmt(value)}" for pname, value in kwargs.items())
+    return f"{indent}{var_name} = tree.{direction}.{factory}({', '.join(args)})"
 
 
 def _panel_directions(panel) -> set[str]:

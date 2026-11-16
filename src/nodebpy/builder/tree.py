@@ -48,25 +48,45 @@ from ._utils import (
 )
 from .socket import (
     BooleanSocket,
+    BooleanSocketGrid,
+    BooleanSocketList,
     BundleSocket,
+    BundleSocketList,
     ClosureSocket,
+    ClosureSocketList,
     CollectionSocket,
+    CollectionSocketList,
     ColorSocket,
+    ColorSocketList,
     FloatSocket,
+    FloatSocketGrid,
+    FloatSocketList,
     FontSocket,
     GeometrySocket,
+    GeometrySocketList,
     ImageSocket,
+    ImageSocketList,
     IntegerSocket,
+    IntegerSocketGrid,
+    IntegerSocketList,
     MaterialSocket,
+    MaterialSocketList,
     MatrixSocket,
+    MatrixSocketList,
     MenuSocket,
+    MenuSocketList,
     ObjectSocket,
+    ObjectSocketList,
     RotationSocket,
+    RotationSocketList,
     ShaderSocket,
     Socket,
     SoundSocket,
     StringSocket,
+    StringSocketList,
     VectorSocket,
+    VectorSocketGrid,
+    VectorSocketList,
 )
 
 if TYPE_CHECKING:
@@ -918,6 +938,397 @@ class SocketContext:
                 and item.in_out == self._direction
             ]
         )
+
+    # ------------------------------------------------------------------
+    # Socket shapes: ``tree.inputs.grid.float(...)`` declares the socket
+    # with that ``structure_type`` and returns the matching wrapper. Each
+    # shape lists only the socket types Blender accepts it for.
+    # ------------------------------------------------------------------
+
+    @property
+    def single(self) -> _SingleShapes:
+        """Sockets that expect a single value."""
+        return _SingleShapes(self, "SINGLE")
+
+    @property
+    def dynamic(self) -> _PlainFieldShapes:
+        """Sockets that work with different kinds of structures."""
+        return _FieldShapes(self, "DYNAMIC")
+
+    @property
+    def field(self) -> _PlainFieldShapes:
+        """Sockets that expect a field."""
+        return _FieldShapes(self, "FIELD")
+
+    @property
+    def grid(
+        self,
+    ) -> _GridShapes[
+        FloatSocketGrid, IntegerSocketGrid, BooleanSocketGrid, VectorSocketGrid
+    ]:
+        """Sockets that expect a volume grid."""
+        return _GridShapes(self, "GRID")
+
+    @property
+    def list(
+        self,
+    ) -> _ListShapes[
+        FloatSocketList,
+        IntegerSocketList,
+        BooleanSocketList,
+        VectorSocketList,
+        ColorSocketList,
+        RotationSocketList,
+        MatrixSocketList,
+        StringSocketList,
+        MenuSocketList,
+        ObjectSocketList,
+        GeometrySocketList,
+        CollectionSocketList,
+        ImageSocketList,
+        MaterialSocketList,
+        BundleSocketList,
+        ClosureSocketList,
+    ]:
+        """Sockets that expect a list."""
+        return _ListShapes(self, "LIST")
+
+
+class _GridShapes[FloatT, IntegerT, BooleanT, VectorT]:
+    """Interface socket factories with a fixed ``structure_type``.
+
+    Each method takes the arguments of the ``SocketContext`` method of the
+    same name, less ``structure_type``. The subclasses add the socket types
+    the wider shapes accept."""
+
+    def __init__(self, context: SocketContext, structure: _SocketShapeStructureType):
+        self._context = context
+        self._structure = structure
+
+    def _make(self, method: str, args: dict[str, Any]) -> Any:
+        args.pop("self")
+        return getattr(self._context, method)(**args, structure_type=self._structure)
+
+    def float(
+        self,
+        name: str = "Value",
+        default_value: float = 0.0,  # ty: ignore[invalid-type-form]
+        description: str = "",
+        *,
+        min_value: float | None = None,  # ty: ignore[invalid-type-form]
+        max_value: float | None = None,  # ty: ignore[invalid-type-form]
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        subtype: FloatInterfaceSubtypes = "NONE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        force_non_field: bool = False,
+        default_input: _FloatDefaultInputs | Default = "VALUE",
+    ) -> FloatT:
+        return self._make("float", locals())
+
+    def integer(
+        self,
+        name: str = "Integer",
+        default_value: int = 0,
+        description: str = "",
+        *,
+        min_value: int = -2147483648,
+        max_value: int = 2147483647,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        default_input: _IntegerDefaultInputs | Default = "VALUE",
+        subtype: IntegerInterfaceSubtypes = "NONE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        force_non_field: bool = False,
+    ) -> IntegerT:
+        return self._make("integer", locals())
+
+    def boolean(
+        self,
+        name: str = "Boolean",
+        default_value: bool = False,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        layer_selection_field: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        is_panel_toggle: bool = False,
+        force_non_field: bool = False,
+    ) -> BooleanT:
+        return self._make("boolean", locals())
+
+    def vector(
+        self,
+        name: str = "Vector",
+        default_value: tuple[float, float]  # ty: ignore[invalid-type-form]
+        | tuple[float, float, float]  # ty: ignore[invalid-type-form]
+        | tuple[float, float, float, float]  # ty: ignore[invalid-type-form]
+        | None = None,
+        description: str = "",
+        *,
+        dimensions: Literal[2, 3, 4] = 3,
+        min_value: float | None = None,  # ty: ignore[invalid-type-form]
+        max_value: float | None = None,  # ty: ignore[invalid-type-form]
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        subtype: VectorInterfaceSubtypes = "NONE",
+        default_attribute: str | None = None,
+        default_input: _VectorDefaultInputs | Default = "VALUE",
+        attribute_domain: _AttributeDomains = "POINT",
+        force_non_field: bool = False,
+    ) -> VectorT:
+        return self._make("vector", locals())
+
+
+class _FieldShapes[
+    FloatT,
+    IntegerT,
+    BooleanT,
+    VectorT,
+    ColorT,
+    RotationT,
+    MatrixT,
+    StringT,
+    MenuT,
+](_GridShapes[FloatT, IntegerT, BooleanT, VectorT]):
+    def color(
+        self,
+        name: str = "Color",
+        default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        force_non_field: bool = False,
+    ) -> ColorT:
+        return self._make("color", locals())
+
+    def rotation(
+        self,
+        name: str = "Rotation",
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        force_non_field: bool = False,
+    ) -> RotationT:
+        return self._make("rotation", locals())
+
+    def matrix(
+        self,
+        name: str = "Matrix",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        default_input: _MatrixDefaultInputs | Default = "VALUE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        force_non_field: bool = False,
+    ) -> MatrixT:
+        return self._make("matrix", locals())
+
+    def string(
+        self,
+        name: str = "String",
+        default_value: str = "",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        subtype: StringInterfaceSubtypes = "NONE",
+        force_non_field: bool = False,
+    ) -> StringT:
+        return self._make("string", locals())
+
+    def menu(
+        self,
+        name: str = "Menu",
+        default_value: str | None = None,
+        description: str = "",
+        *,
+        expanded: bool = False,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        force_non_field: bool = False,
+    ) -> MenuT:
+        return self._make("menu", locals())
+
+
+class _ListShapes[
+    FloatT,
+    IntegerT,
+    BooleanT,
+    VectorT,
+    ColorT,
+    RotationT,
+    MatrixT,
+    StringT,
+    MenuT,
+    ObjectT,
+    GeometryT,
+    CollectionT,
+    ImageT,
+    MaterialT,
+    BundleT,
+    ClosureT,
+](
+    _FieldShapes[
+        FloatT, IntegerT, BooleanT, VectorT, ColorT, RotationT, MatrixT, StringT, MenuT
+    ]
+):
+    def object(
+        self,
+        name: str = "Object",
+        default_value: bpy.types.Object | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        force_non_field: bool = False,
+        default_input: _ObjectDefaultInputs | Default = "VALUE",
+    ) -> ObjectT:
+        return self._make("object", locals())
+
+    def geometry(
+        self,
+        name: str = "Geometry",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        force_non_field: bool = False,
+    ) -> GeometryT:
+        return self._make("geometry", locals())
+
+    def collection(
+        self,
+        name: str = "Collection",
+        default_value: bpy.types.Collection | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        force_non_field: bool = False,
+    ) -> CollectionT:
+        return self._make("collection", locals())
+
+    def image(
+        self,
+        name: str = "Image",
+        default_value: bpy.types.Image | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        force_non_field: bool = False,
+    ) -> ImageT:
+        return self._make("image", locals())
+
+    def material(
+        self,
+        name: str = "Material",
+        default_value: bpy.types.Material | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        force_non_field: bool = False,
+    ) -> MaterialT:
+        return self._make("material", locals())
+
+    def bundle(
+        self,
+        name: str = "Bundle",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        force_non_field: bool = False,
+    ) -> BundleT:
+        return self._make("bundle", locals())
+
+    def closure(
+        self,
+        name: str = "Closure",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        force_non_field: bool = False,
+    ) -> ClosureT:
+        return self._make("closure", locals())
+
+
+_PlainFieldShapes = _FieldShapes[
+    FloatSocket,
+    IntegerSocket,
+    BooleanSocket,
+    VectorSocket,
+    ColorSocket,
+    RotationSocket,
+    MatrixSocket,
+    StringSocket,
+    MenuSocket,
+]
+
+
+class _SingleShapes(
+    _ListShapes[
+        FloatSocket,
+        IntegerSocket,
+        BooleanSocket,
+        VectorSocket,
+        ColorSocket,
+        RotationSocket,
+        MatrixSocket,
+        StringSocket,
+        MenuSocket,
+        ObjectSocket,
+        GeometrySocket,
+        CollectionSocket,
+        ImageSocket,
+        MaterialSocket,
+        BundleSocket,
+        ClosureSocket,
+    ]
+):
+    pass
+
+
+# structure_type → the shape factories that declare it (``to_python``).
+_SHAPES: dict[str, type[_GridShapes[Any, Any, Any, Any]]] = {
+    "SINGLE": _SingleShapes,
+    "DYNAMIC": _FieldShapes,
+    "FIELD": _FieldShapes,
+    "LIST": _ListShapes,
+    "GRID": _GridShapes,
+}
 
 
 class DirectionalContext(SocketContext):

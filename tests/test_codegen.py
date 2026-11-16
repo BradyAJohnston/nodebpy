@@ -648,7 +648,7 @@ def test_interface_and_tree_properties_roundtrip():
             scale = tree.outputs.float("Scale", 0.01)
         tree.inputs.object("Target", default_input="SELF_OBJECT")
         geo = tree.inputs.geometry("Geometry")
-        geo_out = tree.outputs.geometry("Geometry", structure_type="SINGLE")
+        geo_out = tree.outputs.single.geometry("Geometry")
         fac >> scale
         geo >> geo_out
     tree.tree.description = "Round-trips everything"
@@ -659,7 +659,7 @@ def test_interface_and_tree_properties_roundtrip():
     assert 'with tree.panel("Mixed", description="Both directions."):' in code
     assert "force_non_field=True" in code
     assert 'default_input="SELF_OBJECT"' in code
-    assert 'structure_type="SINGLE"' in code
+    assert 'tree.outputs.single.geometry("Geometry")' in code
     assert '"Scale", 0.01' in code  # output default, emitted positionally
     assert "_tree_properties = {" in code
     assert '"is_modifier": True' in code
@@ -2934,7 +2934,7 @@ def test_list_subscript_on_interface_input_needs_declared_list():
     the subscript."""
     with TreeBuilder("ListInterfaceInput") as tree:
         auto = tree.inputs.boolean("Auto")
-        explicit = tree.inputs.float("Explicit", structure_type="LIST")
+        explicit = tree.inputs.list.float("Explicit")
         index = g.Index()
         g.GetListItem(auto, index) >> tree.outputs.boolean("A")
         explicit[index] >> tree.outputs.float("B")
@@ -2952,6 +2952,29 @@ def test_grid_method_on_declared_grid_interface_input():
         g.GridToMesh(grid=grid) >> tree.outputs.geometry("Mesh")
     code = _assert_roundtrip(tree)
     assert "grid.to_mesh(" in code
+
+
+def test_interface_shape_emitted_as_factory():
+    """A declared structure type is written as the shape factory
+    (``tree.inputs.grid.float``), not as a ``structure_type=`` argument."""
+    with TreeBuilder("InterfaceShapes") as tree:
+        tree.inputs.grid.float("Grid", 0.5)
+        tree.inputs.list.vector("Points")
+        tree.inputs.field.color("Tint")
+        tree.inputs.dynamic.integer("Count")
+        tree.inputs.single.geometry("Geometry")
+        tree.outputs.list.float("Out")
+    code = _assert_roundtrip(tree)
+    for snippet in (
+        'tree.inputs.grid.float("Grid", 0.5)',
+        'tree.inputs.list.vector("Points"',
+        'tree.inputs.field.color("Tint"',
+        'tree.inputs.dynamic.integer("Count"',
+        'tree.inputs.single.geometry("Geometry")',
+        'tree.outputs.list.float("Out")',
+    ):
+        assert snippet in code, snippet
+    assert "structure_type" not in code
 
 
 # ---------------------------------------------------------------------------

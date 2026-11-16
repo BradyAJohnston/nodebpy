@@ -121,14 +121,17 @@ shape  = g.MenuSwitch(mode, {"Mesh": g.Cube(), "Points": g.Points()})
 with tree.inputs.panel("Advanced", default_closed=True):
     seed = tree.inputs.integer("Seed", 0)
 tree.outputs.geometry("Geometry")
-tree.outputs.float("Density", structure_type="GRID")
+tree.outputs.grid.float("Density")     # a FloatSocketGrid
 ```
 
 Types: `float integer boolean vector color rotation matrix string menu object geometry
 collection image material font sound bundle closure shader`. Keywords include
 `min_value`, `max_value`, `subtype`, `hide_value`, `hide_in_modifier`,
-`default_input`, `attribute_domain`, `structure_type`, `dimensions`, `expanded`,
-`is_panel_toggle`. Each call adds one socket; keep the variable. A menu input's
+`default_input`, `attribute_domain`, `dimensions`, `expanded`, `is_panel_toggle`.
+Each call adds one socket; keep the variable. To fix a socket's shape, call the type
+through `single`, `dynamic`, `field`, `list` or `grid`: `tree.inputs.list.vector(...)`
+returns a `VectorSocketList` (so `points[index]` works), and `grid` offers only
+`float integer boolean vector`. A menu input's
 default is applied when the tree closes and must name an item of the Menu Switch it
 feeds.
 
