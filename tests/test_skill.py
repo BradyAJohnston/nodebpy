@@ -1,9 +1,7 @@
 """The bundled agent skill: valid, in sync with the repository copy, and
 reachable through the CLI."""
 
-import json
 import re
-import tomllib
 from pathlib import Path
 
 import pytest
@@ -24,10 +22,26 @@ def _frontmatter(text: str) -> dict[str, str]:
     return fields
 
 
-def test_skill_frontmatter_names_the_skill():
-    meta = _frontmatter((_skill.SKILL_DIR / "SKILL.md").read_text(encoding="utf-8"))
-    assert meta["name"] == "nodebpy"
+def test_skill_follows_agent_skills_spec():
+    """The constraints of https://agentskills.io/specification that agents and
+    `npx skills` rely on to discover and load the skill."""
+    text = (_skill.SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
+    meta = _frontmatter(text)
+    allowed = {
+        "name",
+        "description",
+        "license",
+        "compatibility",
+        "metadata",
+        "allowed-tools",
+    }
+    assert set(meta) <= allowed, f"unknown frontmatter fields: {set(meta) - allowed}"
+    assert meta["name"] == _skill.SKILL_DIR.name == "nodebpy"
+    assert re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", meta["name"])
     assert 50 < len(meta["description"]) <= 1024
+    assert 0 < len(meta.get("compatibility", "x")) <= 500
+    # the whole body loads on activation; detail belongs in references/
+    assert len(text.splitlines()) < 500
 
 
 def test_skill_references_exist():
@@ -37,7 +51,7 @@ def test_skill_references_exist():
 
 
 def test_repository_copy_matches_package_source():
-    """``skills/nodebpy`` (what npx skills add and the marketplace read) is a
+    """``skills/nodebpy`` (what ``npx skills add`` reads) is a
     copy of the package source; ``make skills`` refreshes it."""
     source = {
         p.relative_to(_skill.SKILL_DIR): p
@@ -53,17 +67,6 @@ def test_repository_copy_matches_package_source():
         )
 
 
-def test_plugin_manifest_matches_package():
-    manifest = json.loads((REPO / ".claude-plugin" / "plugin.json").read_text())
-    assert manifest["name"] == "nodebpy"
-    project = tomllib.loads((REPO / "pyproject.toml").read_text(encoding="utf-8"))
-    assert manifest["version"] == project["project"]["version"], (
-        "plugin.json version differs from pyproject.toml; run make skills"
-    )
-    marketplace = json.loads((REPO / ".claude-plugin" / "marketplace.json").read_text())
-    assert [p["name"] for p in marketplace["plugins"]] == ["nodebpy"]
-
-
 def test_skill_cli_path_and_install(tmp_path, capsys):
     main(["skill", "path"])
     assert capsys.readouterr().out.strip() == str(_skill.SKILL_DIR)
@@ -76,6 +79,19 @@ def test_skill_cli_path_and_install(tmp_path, capsys):
     # installing again replaces the copy rather than failing
     main(["skill", "install", "--to", str(tmp_path)])
     assert "installed" in capsys.readouterr().out
+
+
+def test_skill_install_agent_presets(tmp_path, monkeypatch):
+    for agent in _skill.AGENT_DIRS:
+        monkeypatch.setitem(_skill.AGENT_DIRS, agent, tmp_path / agent)
+    main(["skill", "install", "--agent", "claude"])
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["claude"]
+    # the default installs for every agent
+    main(["skill", "install"])
+    for agent in _skill.AGENT_DIRS:
+        assert (tmp_path / agent / "nodebpy" / "SKILL.md").is_file()
+    with pytest.raises(SystemExit):
+        main(["skill", "install", "--agent", "claude", "--to", str(tmp_path)])
 
 
 # Names the code fragments in the skill assume, as a user's script would have them.

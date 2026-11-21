@@ -29,9 +29,10 @@ uv sync --all-extras    # back to the locked bpy
 ## The agent skill
 
 `src/nodebpy/skills/nodebpy/` is the source of the agent skill and ships in the wheel;
-`skills/nodebpy/` at the repository root is the copy that `npx skills add` and the
-Claude Code marketplace (`.claude-plugin/`) read. After editing the source, run
-`make skills` to refresh the copy; a test fails when the two differ. Keep the skill
+`skills/nodebpy/` at the repository root is the copy that `npx skills add` reads (it is
+a copy rather than a symlink so it survives checkouts on Windows). After editing the
+source, run `make skills` to refresh the copy; a test fails when the two differ, or when
+the frontmatter breaks the [Agent Skills spec](https://agentskills.io/specification). Keep the skill
 in step with API changes in the same pull request, since it is what agents rely on for
 the current argument orders and method names: `SKILL.md` holds the loop, the core
 idioms and the errors table, and `references/` one file per task. `test_skill.py` runs

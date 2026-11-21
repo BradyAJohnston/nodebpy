@@ -56,10 +56,12 @@ write, check and port node trees with it. Install it into any skills-aware agent
 npx skills add BradyAJohnston/nodebpy
 ```
 
-Claude Code can also take it as a plugin (`/plugin marketplace add BradyAJohnston/nodebpy`,
-then `/plugin install nodebpy@nodebpy`), and the installed package carries the same
-skill, matched to its version: `nodebpy skill install` copies it into `~/.claude/skills`
-and `nodebpy skill path` prints where it is. `nodebpy lookup search|show|socket` is the
+Add a release tag (`BradyAJohnston/nodebpy@v530.0.3`) to match the nodebpy you have
+installed. The installed package also carries the skill, matched to its version:
+`nodebpy skill install` copies it into both `~/.claude/skills` (Claude Code) and
+`~/.agents/skills` (Codex, Cursor, Gemini CLI, Copilot, OpenCode and others);
+`--agent claude` or `--agent agents` picks one, `--to` any other skills directory.
+`nodebpy skill path` prints where it is. `nodebpy lookup search|show|socket` is the
 lookup the skill uses to find classes, sockets and options.
 
 ## Documentation
