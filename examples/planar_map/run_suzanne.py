@@ -44,15 +44,36 @@ def scene(max_depth: int):
     tree = build()
     mod = monkey.modifiers.new("Planar Map", "NODES")
     mod.node_group = tree.tree
-    ids = {
-        item.name: item.identifier
-        for item in tree.tree.interface.items_tree
-        if item.item_type == "SOCKET" and item.in_out == "INPUT"
-    }
-    getattr(mod.properties.inputs, ids["Camera"]).value = camera
-    getattr(mod.properties.inputs, ids["Max Depth"]).value = max_depth
+    set_input(mod, "Camera", camera)
+    set_input(mod, "Max Depth", max_depth)
+    for name, color in [
+        ("Cell Material", (0.55, 0.6, 0.68, 1.0)),
+        ("Fragment Material", (0.05, 0.25, 0.75, 1.0)),
+        ("Node Material", (0.85, 0.12, 0.1, 1.0)),
+    ]:
+        set_input(mod, name, flat_material(name.replace(" Material", ""), color))
     monkey.update_tag()
     return monkey, mod, tree
+
+
+def set_input(mod, name: str, value) -> None:
+    """Set a modifier input by its socket name."""
+    for item in mod.node_group.interface.items_tree:
+        if item.item_type == "SOCKET" and item.in_out == "INPUT" and item.name == name:
+            getattr(mod.properties.inputs, item.identifier).value = value
+            mod.id_data.update_tag()
+            return
+    raise KeyError(name)
+
+
+def flat_material(name: str, color):
+    """An emissive material, also coloured in the viewport's solid mode."""
+    from nodebpy import shader as s
+
+    with s.material(f"BSP {name}") as mat:
+        s.Emission(color=color, strength=1.0) >> s.MaterialOutput()
+    mat.material.diffuse_color = color
+    return mat.material
 
 
 def read_cloud(obj):
@@ -188,23 +209,16 @@ def main():
     args = parser.parse_args()
 
     monkey, mod, tree = scene(args.max_depth)
-    ids = {
-        item.name: item.identifier
-        for item in tree.tree.interface.items_tree
-        if item.item_type == "SOCKET" and item.in_out == "INPUT"
-    }
-    depth = getattr(mod.properties.inputs, ids["Max Depth"])
+    set_input(mod, "Show Cloud", True)
 
     # depth 0 gives the fragments as they entered, to compare lengths against
-    depth.value = 0
-    monkey.update_tag()
+    set_input(mod, "Max Depth", 0)
     before = read_cloud(monkey)
     input_length = np.linalg.norm(
         before["b"][~before["is_cell"]] - before["a"][~before["is_cell"]], axis=1
     ).sum()
 
-    depth.value = args.max_depth
-    monkey.update_tag()
+    set_input(mod, "Max Depth", args.max_depth)
     start = time.perf_counter()
     cloud = read_cloud(monkey)
     elapsed = time.perf_counter() - start
@@ -227,6 +241,7 @@ def main():
 
     args.out.mkdir(parents=True, exist_ok=True)
     plot(cloud, args.out / "suzanne_bsp.png")
+    set_input(mod, "Show Cloud", False)
     bpy.ops.wm.save_as_mainfile(filepath=str(args.out / "suzanne_bsp.blend"))
 
 
