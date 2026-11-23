@@ -11,6 +11,14 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzan
 `--subdiv N` puts a Subdivision Surface modifier ahead of the planar map, for
 smooth silhouettes; each level saves its own `.blend` in `out/`.
 
+```bash
+BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/turntable.py --subdiv 2
+```
+
+`turntable.py` orbits the camera around Suzanne and vectorises every frame from
+scratch (the paper's Section 5.7), checking each one; it writes a GIF and the
+per-frame numbers to `out/`.
+
 ## Status
 
 | Stage | Paper | State |
@@ -99,6 +107,14 @@ With it, agreement is 99.7%, 100.0% and 100.0% at subdivision levels 0, 1 and 2.
   extruded into a vertical quad, so Raycast works in the screen plane), and fires
   a camera ray through the point halfway to the wall. The hit's patch, normal and
   a headlight shade are stored on every halfedge of the face.
+- **Outer loops.** The clockwise loop around a connected piece borders whatever
+  surrounds the piece, not one region, so a sample beside it can land on another
+  surface behind (the turntable found this: from the side, the background
+  sampled the far side of the head, the head's outline was dropped, and the head
+  went unfilled). Faces with negative signed area, summed from fragment prefix
+  sums and the steps across nodes, take the identity of the smallest region
+  containing them instead, found by casting down onto the regions filled and
+  stacked by area (Section 4.4.1's containment), or the background.
 - **Which edges go.** `EdgeVisibility` hides an edge when both faces see the same
   thing (the paper's rule) *and*, if the edge has geometry, its own curve is
   hidden: the camera ray through its middle meets the surface nearer than the

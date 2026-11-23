@@ -435,6 +435,40 @@ class RegionLoops(CustomGeometryGroup):
             )
 
 
+def region_stack(loops, values: dict):
+    """Every bounded (counter-clockwise) loop filled and stacked by area, smallest
+    on top, carrying `values` ({name: (kind, field)}) on its faces. A ray cast
+    straight down onto it hits the smallest region containing the point first.
+
+    Fill Curve drops curve attributes, so each loop is filled on its own.
+    """
+    area = attr("float", "area")
+    zone = g.ForEachGeometryElementZone.curve(loops, selection=area > 0.0)
+    area_item = zone.items.float(area, "Area")
+    items = {
+        name: getattr(zone.items, kind)(value, name)
+        for name, (kind, value) in values.items()
+    }
+    stamped = g.FillCurve(zone.element, mode="Triangles")
+    for name, item in items.items():
+        store_face = getattr(g.StoreNamedAttribute.face, values[name][0])
+        stamped = stamped >> store_face(name=name, value=item.output)
+    stamped = stamped >> g.SetPosition(offset=g.CombineXYZ(z=-area_item.output))
+    return zone.generated_items.geometry(stamped, "Fill").output
+
+
+def look_down(stack, kind: str, name: str, point):
+    """Cast down onto a region stack from above `point`."""
+    return getattr(g.Raycast, kind)(
+        target_geometry=stack,
+        attribute=attr(kind, name),
+        interpolation="Nearest",
+        source_position=point + g.CombineXYZ(z=10.0).o.vector,
+        ray_direction=(0.0, 0.0, -1.0),
+        ray_length=100.0,
+    ).o
+
+
 class RegionFills(CustomGeometryGroup):
     """Regions as curves ready for Grease Pencil fills, one fill per region.
 
@@ -464,22 +498,13 @@ class RegionFills(CustomGeometryGroup):
         bounded = area > 0.0
 
         with g.Frame("Bounded regions, filled and stacked by area"):
-            # Fill Curve drops curve attributes, so fill each loop on its own
-            zone = g.ForEachGeometryElementZone.curve(loops, selection=bounded)
-            face_item = zone.items.integer(face, "Face")
-            area_item = zone.items.float(area, "Area")
-            seen_item = zone.items.integer(seen.switch.integer(0, 1), "Seen")
-            stamped = (
-                g.FillCurve(zone.element, mode="Triangles")
-                >> g.StoreNamedAttribute.face.integer(
-                    name="face", value=face_item.output
-                )
-                >> g.StoreNamedAttribute.face.integer(
-                    name="seen", value=seen_item.output
-                )
-                >> g.SetPosition(offset=g.CombineXYZ(z=-area_item.output))
+            stack = region_stack(
+                loops,
+                {
+                    "face": ("integer", face),
+                    "seen": ("integer", seen.switch.integer(0, 1)),
+                },
             )
-            stack = zone.generated_items.geometry(stamped, "Fill").output
 
         with g.Frame("What surrounds each outline"):
             p = g.Position().o.position
@@ -489,17 +514,9 @@ class RegionFills(CustomGeometryGroup):
             pick = length == length.point.max(spline)
             # outlines run clockwise, so their left is outside the piece
             outside = (p + q) * 0.5 + perp((q - p).normalize()) * (length * 0.01)
-            above = outside + g.CombineXYZ(z=10.0).o.vector
 
             def down(name):
-                return g.Raycast.integer(
-                    target_geometry=stack,
-                    attribute=attr("integer", name),
-                    interpolation="Nearest",
-                    source_position=above,
-                    ray_direction=(0.0, 0.0, -1.0),
-                    ray_length=100.0,
-                ).o
+                return look_down(stack, "integer", name, outside)
 
             hit = down("face")
             found = pick & hit.is_hit

@@ -17,8 +17,8 @@
 
 from __future__ import annotations
 
-from bsp import BIG, perp
-from regions import at, attr, jump_zone, store
+from bsp import BIG, cross2, perp
+from regions import RegionLoops, at, attr, jump_zone, look_down, region_stack, store
 
 from nodebpy import geometry as g
 from nodebpy.builder import CustomGeometryGroup
@@ -191,7 +191,7 @@ class RegionIdentity(CustomGeometryGroup):
                 face
             )
             shade_face = sample.switch.float(-BIG, shade).point.max(face)
-            store(
+            sampled = store(
                 halfedges,
                 {
                     "known": ("boolean", known > 0),
@@ -199,6 +199,85 @@ class RegionIdentity(CustomGeometryGroup):
                     "patch": ("integer", (seen > 0).switch.integer(-1, patch)),
                     "normal": ("vector", normal),
                     "shade": ("float", shade_face.max(0.0)),
+                },
+            )
+
+        with g.Frame("Outer loops take their container's identity (4.4.1)"):
+            # The clockwise loop around a connected piece borders whatever
+            # surrounds the piece, not one region, so a sample next to it can
+            # land on some other surface behind. It takes the identity of the
+            # smallest region containing it instead, or the background.
+            hid, nxt = attr("integer", "hid"), attr("integer", "next")
+            twin = hid + 1 - (hid % 2) * 2
+            origin = attr("vector", "origin")
+            after = attr("integer", "after")
+
+            def prefix(index):
+                running = g.AccumulateField.point.float(
+                    cross2(attr("vector", "a"), attr("vector", "b"))
+                ).o.leading
+                return g.SampleIndex.point.float(
+                    fragments, value=running, index=index
+                ).o.value
+
+            along = prefix(after + count - 1) - prefix(after - 1)
+            along = attr("boolean", "back").switch.float(along, along * -1.0)
+            step = cross2(at(origin, twin), at(origin, nxt))
+            outer = (along + step).point.total(face) < 0.0
+
+            loops = RegionLoops(sampled, fragments=fragments)
+            stack = region_stack(
+                loops,
+                {
+                    "known": ("integer", attr("boolean", "known").switch.integer(0, 1)),
+                    "seen": ("integer", attr("boolean", "seen").switch.integer(0, 1)),
+                    "patch": ("integer", attr("integer", "patch")),
+                    "shade": ("float", attr("float", "shade")),
+                    "normal": ("vector", attr("vector", "normal")),
+                },
+            )
+            outside = middle + left * (size * 1.0e-3)
+            seen_up = look_down(stack, "integer", "seen", outside)
+            inside_one = sample & seen_up.is_hit
+            # per face, from its chosen halfedge; no hit means the background
+            contained = inside_one.switch.integer(0, 1).point.max(face) > 0
+            up_seen = (inside_one & (seen_up.attribute > 0)).switch.integer(0, 1)
+            up_seen = up_seen.point.max(face) > 0
+            up_patch = inside_one.switch.integer(
+                -(2**30), look_down(stack, "integer", "patch", outside).attribute
+            ).point.max(face)
+            up_shade = inside_one.switch.float(
+                -BIG, look_down(stack, "float", "shade", outside).attribute
+            ).point.max(face)
+            up_normal = inside_one.switch.vector(
+                (-BIG, -BIG, -BIG),
+                look_down(stack, "vector", "normal", outside).attribute,
+            ).point.max(face)
+            seen_now, patch_now = attr("boolean", "seen"), attr("integer", "patch")
+            store(
+                sampled,
+                {
+                    "outer": ("boolean", outer),
+                    "known": ("boolean", outer | attr("boolean", "known")),
+                    "seen": (
+                        "boolean",
+                        outer.switch.boolean(seen_now, contained & up_seen),
+                    ),
+                    "patch": (
+                        "integer",
+                        outer.switch.integer(
+                            patch_now,
+                            (contained & up_seen).switch.integer(-1, up_patch),
+                        ),
+                    ),
+                    "shade": (
+                        "float",
+                        outer.switch.float(attr("float", "shade"), up_shade.max(0.0)),
+                    ),
+                    "normal": (
+                        "vector",
+                        outer.switch.vector(attr("vector", "normal"), up_normal),
+                    ),
                 },
             ) >> tree.outputs.geometry("Halfedges")
 

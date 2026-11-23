@@ -147,8 +147,9 @@ anything from the current geometry must be captured or chosen outside."
 ## Repository
 
 ### The `ty` override for tests and examples misses `missing-union-attribute`
-- `bpy.context.scene.camera` fails `ty` in `examples/` (and would in `tests/`):
-  `bpy.context.scene` is `Scene | None`. The override in `pyproject.toml` relaxes
+- `bpy.context.scene.camera` and `scene.display.shading` fail `ty` in
+  `examples/` (and would in `tests/`): `bpy.context.scene` is `Scene | None`,
+  `scene.display` is `SceneDisplay | None`. The override in `pyproject.toml` relaxes
   `missing-attribute` but not `missing-union-attribute`, the rule this hits.
 - **Workaround:** `bpy.data.objects["Camera"]`, or an `assert`.
 - **Fix:** add `missing-union-attribute = "ignore"` to the override, or keep

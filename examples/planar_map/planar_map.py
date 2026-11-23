@@ -151,6 +151,7 @@ def build(name: str = "Planar Map"):
                 "None": g.JoinGeometry(),
                 "BSP Cloud": cloud,
                 "Halfedges": g.JoinGeometry([final, loops]),
+                "Halfedges Before Merging": judged,
             },
         )
 
