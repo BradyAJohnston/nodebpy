@@ -1,16 +1,21 @@
 name: Run Tests
 
-# Reusable workflow that runs the tests against one version of bpy on each
-# platform. It is called from a workflow per Blender version (tests-5.2.yml,
-# tests-5.3.yml) so that each version has its own status badge in the README.
+# Reusable workflow that runs the tests against one version of bpy on each platform.
+# It is called from a workflow per Blender version (tests-5.1.yml, ...) so that each
+# version has its own status badge in the README.
 
 on:
   workflow_call:
     inputs:
       version:
-        description: "The major.minor version of bpy to test against, e.g. 5.3"
+        description: "The major.minor version of bpy to test against, e.g. 5.2"
         required: true
         type: string
+      daily:
+        description: "Install bpy from the daily builds rather than PyPI releases"
+        required: false
+        default: false
+        type: boolean
       coverage:
         description: "Upload coverage reports to Codecov"
         required: false
@@ -37,17 +42,20 @@ jobs:
       - name: Install
         shell: bash
         run: |
-          uv sync --all-extras
-          uv pip install --python .venv "bpy==${{ inputs.version }}.*"
+          uv sync  --all-extras --dev
+          if [ "${{ inputs.daily }}" = "true" ]; then
+            uv pip install "bpy==${{ inputs.version }}.*" --extra-index-url https://bradyajohnston.github.io/dailybpy/ --index-strategy unsafe-best-match  --prerelease=allow
+          else
+            uv pip install "bpy==${{ inputs.version }}.*"
+          fi
 
       # `--no-sync` stops uv from restoring the locked version of bpy
       - name: Check bpy version
         run: uv run --no-sync python -c "import bpy; print(bpy.app.version_string)"
 
-      # Tests that need another Blender than this one skip themselves
       - name: Run tests
         run: |
-          uv run --no-sync pytest -n auto -vv --cov=nodebpy --cov-report=xml
+          uv run --no-sync -m pytest -vv --cov=databpy --cov-report=xml
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
