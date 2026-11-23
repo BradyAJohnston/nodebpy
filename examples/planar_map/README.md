@@ -5,12 +5,17 @@ A port of [Robust Planar Maps for 3D Vectorization](https://www.cs.cmu.edu/~kmcr
 
 ```bash
 BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzanne.py
+BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzanne.py --subdiv 2
 ```
+
+`--subdiv N` puts a Subdivision Surface modifier ahead of the planar map, for
+smooth silhouettes; each level saves its own `.blend` in `out/`.
 
 ## Status
 
 | Stage | Paper | State |
 |---|---|---|
+| Curves where surfaces intersect in 3D | §6 (future work in the paper) | done: `ResolveIntersections` |
 | 1. Intersection detection (BSP) | §2.1, §2.2 | done: `bsp.py` |
 | Separating lines | §2.3 | done, for cells crossed by exactly two curves |
 | 2. Region identification (halfedge planar map) | §3.1–3.4 | done: `regions.py` |
@@ -19,6 +24,18 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzan
 | Edge classification, line layers | §4.3 | done: `lines.py` |
 | Holes assigned to their region | §4.4.1 | done: `RegionFills` |
 | Partial transparency (layer merging) | §4.4 | out of scope: sequential, with cycle checks |
+
+## Surfaces that pass through each other
+
+Suzanne's eyes push through her head. The visible boundary between eyeball and
+head is then where the two surfaces intersect: not a silhouette, crease or
+boundary, so no input curve marks it, and a region ends up half eye and half
+head (97.9% raster agreement at subdivision level 2). The paper names 3D
+intersections as future work (Section 6). `ResolveIntersections` handles it with
+an exact self-union: faces are labelled with their original Mesh Island first,
+and after the union an edge whose two faces came from different islands is a
+seam. Seams become input curves (classed with creases) and patch boundaries.
+With it, agreement is 99.7%, 100.0% and 100.0% at subdivision levels 0, 1 and 2.
 
 ## How stage 1 maps onto nodes
 

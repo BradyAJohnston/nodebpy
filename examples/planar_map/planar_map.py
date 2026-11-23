@@ -6,7 +6,14 @@ front of the camera, where it lines up with the object in the camera's view.
 
 from __future__ import annotations
 
-from bsp import CREASE, BSPCells, BSPDebugView, CurveFragments, ProjectedContours
+from bsp import (
+    CREASE,
+    BSPCells,
+    BSPDebugView,
+    CurveFragments,
+    ProjectedContours,
+    ResolveIntersections,
+)
 from lines import HiddenLines, VisibleLines
 from occlusion import (
     EdgeVisibility,
@@ -41,6 +48,11 @@ def build(name: str = "Planar Map"):
         crease = tree.inputs.float(
             "Crease Angle", CREASE, subtype="ANGLE", min_value=0.0
         )
+        resolve = tree.inputs.boolean(
+            "Resolve Intersections",
+            True,
+            description="Add the curves where surfaces pass through each other",
+        )
         with tree.inputs.panel("Display"):
             distance = tree.inputs.float(
                 "Overlay Distance", 1.0, min_value=0.001, subtype="DISTANCE"
@@ -63,8 +75,9 @@ def build(name: str = "Planar Map"):
                 description="Raw data to add to the output, for inspection",
             )
 
+        solid = g.Switch(resolve, mesh, ResolveIntersections(mesh))
         cloud = (
-            ProjectedContours(mesh, camera=camera, crease_angle=crease)
+            ProjectedContours(solid, camera=camera, crease_angle=crease)
             >> CurveFragments()
             >> BSPCells(max_depth=max_depth, separating_lines=separating)
         )
@@ -74,7 +87,7 @@ def build(name: str = "Planar Map"):
             halfedges = Stops(fragments) >> Halfedges() >> NextHalfedge() >> Faces()
 
         with g.Frame("Occlusion"):
-            surface = SurfacePatches(mesh, crease_angle=crease)
+            surface = SurfacePatches(solid, crease_angle=crease)
             walls = FragmentWalls(fragments)
 
             def identify(h):

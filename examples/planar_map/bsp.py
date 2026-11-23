@@ -518,6 +518,47 @@ class SplitCells(CustomGeometryGroup):
         ) >> tree.outputs.geometry("Geometry")
 
 
+class ResolveIntersections(CustomGeometryGroup):
+    """Make surfaces that pass through each other meet along an edge.
+
+    Suzanne's eyes push through her head, and the visible boundary between them
+    is where the surfaces intersect: not a silhouette, crease or boundary, so no
+    input curve marks it (the paper leaves 3D intersections to future work, its
+    Section 6). An exact self-union cuts both surfaces along the intersection and
+    drops the buried parts; edges where faces from different islands now meet
+    are marked `intersection`, and become curves and patch boundaries
+    downstream.
+    """
+
+    _name = "Resolve Intersections"
+    _color_tag = "GEOMETRY"
+
+    def __init__(self, mesh: InputGeometry = ...):
+        super().__init__(mesh=mesh)
+
+    def _build_group(self, tree):
+        mesh = tree.inputs.geometry("Mesh")
+        labelled = g.StoreNamedAttribute.face.integer(
+            mesh, name="island", value=g.MeshIsland().o.island_index
+        )
+        union = g.MeshBoolean.union(
+            [labelled], self_intersection=True, hole_tolerant=True, solver="EXACT"
+        )
+        # Intersecting Edges also flags edges the solver re-triangulated, so a
+        # seam is instead an edge whose two faces came from different islands:
+        # on an edge, mean(i^2) - mean(i)^2 of the faces' islands is 0 only
+        # when they agree
+        island = g.NamedAttribute.integer("island").o.attribute.to_float()
+        mean = g.EvaluateOnDomain.face.float(island).o.value
+        mean_sq = g.EvaluateOnDomain.face.float(island * island).o.value
+        seam = (mean_sq - mean * mean) > 0.01
+        (
+            union.o.mesh
+            >> g.StoreNamedAttribute.edge.boolean(name="intersection", value=seam)
+            >> tree.outputs.geometry("Mesh")
+        )
+
+
 class ProjectedContours(CustomGeometryGroup):
     """Silhouette, boundary and crease edges of a mesh as curves in screen space."""
 
@@ -553,7 +594,10 @@ class ProjectedContours(CustomGeometryGroup):
 
         with g.Frame("Boundaries and creases"):
             boundary = g.EdgeNeighbors().o.face_count == 1
-            sharp = g.EdgeAngle().o.unsigned_angle > crease
+            # creases, and edges where surfaces meet (Resolve Intersections)
+            sharp = (g.EdgeAngle().o.unsigned_angle > crease) | (
+                g.NamedAttribute.boolean("intersection").o.attribute
+            )
 
         with g.Frame("Perspective divide"):
             to_camera = camera_matrix.invert() @ self_matrix

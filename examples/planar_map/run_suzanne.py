@@ -5,7 +5,9 @@
 Checks the partition (cells tile the root, fragments sit in their cells, no curve
 length is lost) and the planar map (`next` is a permutation that continues where
 each halfedge ends, every connected piece has V - E + F = 2, signed areas cancel).
-Writes `suzanne_bsp.png` and `suzanne_bsp.blend` to `out/` next to this script.
+Writes `suzanne_bsp.png` and `suzanne_bsp.blend` to `out/` next to this script
+(`suzanne_subdiv<N>_*` with `--subdiv N`, which puts a Subdivision Surface modifier
+before the planar map).
 """
 
 from __future__ import annotations
@@ -28,7 +30,7 @@ from mathutils import Vector
 # isort: on
 
 
-def scene(max_depth: int):
+def scene(max_depth: int, subdiv: int = 0):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.mesh.primitive_monkey_add()
     monkey = bpy.context.object
@@ -44,6 +46,9 @@ def scene(max_depth: int):
     scene.camera = camera
 
     tree = build()
+    if subdiv:
+        smooth = monkey.modifiers.new("Subdivision", "SUBSURF")
+        smooth.levels = smooth.render_levels = subdiv
     mod = monkey.modifiers.new("Planar Map", "NODES")
     mod.node_group = tree.tree
     set_input(mod, "Camera", camera)
@@ -132,10 +137,22 @@ def read_map(obj):
     return half, loops, area, loops_seen
 
 
-def surface_patches(obj, crease: float):
+def surface_mesh(obj):
+    """The mesh the planar map sees: the object evaluated with every modifier
+    before the planar map (a subdivision, say) and without the planar map."""
+    planar = obj.modifiers["Planar Map"]
+    planar.show_viewport = False
+    obj.update_tag()
+    evaluated = obj.evaluated_get(bpy.context.evaluated_depsgraph_get())
+    mesh = bpy.data.meshes.new_from_object(evaluated)
+    planar.show_viewport = True
+    obj.update_tag()
+    return mesh
+
+
+def surface_patches(mesh, crease: float):
     """Face -> patch id: faces joined across edges that are neither creases nor
     boundaries, as `SurfacePatches` does in the tree."""
-    mesh = obj.data
     parent = list(range(len(mesh.polygons)))
 
     def find(x):
@@ -169,10 +186,11 @@ def raster_agreement(obj, camera, loops, area, loops_seen, crease, size=240):
     from mathutils.bvhtree import BVHTree
     from matplotlib.path import Path as MplPath
 
+    mesh = surface_mesh(obj)
     world = obj.matrix_world
-    verts = [world @ v.co for v in obj.data.vertices]
-    tree = BVHTree.FromPolygons(verts, [tuple(p.vertices) for p in obj.data.polygons])
-    patch_of_face = surface_patches(obj, crease)
+    verts = [world @ v.co for v in mesh.vertices]
+    tree = BVHTree.FromPolygons(verts, [tuple(p.vertices) for p in mesh.polygons])
+    patch_of_face = surface_patches(mesh, crease)
 
     points = np.concatenate(loops)
     lo, hi = points.min(0), points.max(0)
@@ -388,6 +406,9 @@ def plot(cloud, path: Path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--max-depth", type=int, default=18)
+    parser.add_argument(
+        "--subdiv", type=int, default=0, help="Subdivision Surface levels first"
+    )
     parser.add_argument("--out", type=Path, default=HERE / "out")
     parser.add_argument(
         "--no-separating", action="store_true", help="turn off separating lines"
@@ -395,11 +416,18 @@ def main():
     parser.add_argument(
         "--no-occlusion", action="store_true", help="don't merge hidden regions"
     )
+    parser.add_argument(
+        "--no-intersections",
+        action="store_true",
+        help="don't add curves where surfaces pass through each other",
+    )
     args = parser.parse_args()
 
-    monkey, mod, tree = scene(args.max_depth)
+    monkey, mod, tree = scene(args.max_depth, args.subdiv)
+    name = f"suzanne_subdiv{args.subdiv}" if args.subdiv else "suzanne"
     set_input(mod, "Separating Lines", not args.no_separating)
     set_input(mod, "Occlusion", not args.no_occlusion)
+    set_input(mod, "Resolve Intersections", not args.no_intersections)
     set_input(mod, "Data", "BSP Cloud")
 
     # depth 0 gives the fragments as they entered, to compare lengths against
@@ -444,9 +472,9 @@ def main():
     print(f"raster agreement: {agreement:.1%} of pixels show the right patch")
 
     args.out.mkdir(parents=True, exist_ok=True)
-    plot(cloud, args.out / "suzanne_bsp.png")
+    plot(cloud, args.out / f"{name}_bsp.png")
     set_input(mod, "Data", "None")
-    bpy.ops.wm.save_as_mainfile(filepath=str(args.out / "suzanne_bsp.blend"))
+    bpy.ops.wm.save_as_mainfile(filepath=str(args.out / f"{name}_bsp.blend"))
 
 
 if __name__ == "__main__":

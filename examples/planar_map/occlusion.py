@@ -1,7 +1,7 @@
 """Stage 3 of "Robust Planar Maps for 3D Vectorization": occlusion (Section 4.1-4.3).
 
 - `SurfacePatches`: the mesh's patches, faces connected across edges that are not
-  creases or boundaries, as a face attribute `patch`.
+  creases, boundaries or intersections, as a face attribute `patch`.
 - `RegionIdentity`: Section 4.1. Each face casts a 2D ray inward from the middle of
   its longest halfedge to the nearest curve, then a camera ray through the point
   halfway along. What that ray hits (patch, normal, or nothing) is the region's
@@ -86,7 +86,10 @@ class SurfacePatches(CustomGeometryGroup):
         crease = tree.inputs.float("Crease Angle", 1.0472, subtype="ANGLE")
         (
             mesh
-            >> g.SplitEdges(selection=g.EdgeAngle().o.unsigned_angle > crease)
+            >> g.SplitEdges(
+                selection=(g.EdgeAngle().o.unsigned_angle > crease)
+                | attr("boolean", "intersection")
+            )
             >> g.StoreNamedAttribute.face.integer(
                 name="patch", value=g.MeshIsland().o.island_index
             )

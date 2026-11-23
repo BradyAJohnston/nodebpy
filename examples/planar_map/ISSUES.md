@@ -103,6 +103,15 @@ anything from the current geometry must be captured or chosen outside."
 - **Report?** Curves to Grease Pencil could offer to set `fill_id`, or the node's
   docs could mention it. **Skill:** add to the Grease Pencil notes.
 
+### Mesh Boolean's Intersecting Edges is broader than the intersection
+- An Exact self-union of Suzanne flags 556 of 1,876 edges as intersecting, many
+  of them edges the solver re-triangulated rather than seams where two surfaces
+  meet. Used as curves and patch boundaries, they cut each eye into five or six
+  patches. **Workaround:** label faces with their original Mesh Island before the
+  union (face attributes survive it) and call an edge a seam when its two faces
+  came from different islands. **Report?** Possibly expected; worth checking
+  what the output promises before filing.
+
 ### Fill Curve drops curve attributes
 - A `face` attribute on the input splines is gone from the filled mesh, so there
   is no way to tell which face came from which curve. **Workaround:** a For Each
