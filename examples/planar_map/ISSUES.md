@@ -42,6 +42,13 @@ method itself are under "Open items in the method" in the README.
 - **Workaround:** `g.GeometryToInstance(a, b)`.
 - **Fix:** accept a list (and tuples) wherever a multi-input takes `*args`.
 
+### `g.MenuSwitch(menu, {"A": False, "B": True})` creates a switch with no items
+- **Seen:** no error at the call; at the end of the `with` block, `The 'Method'
+  menu has no option 'Sampled': it has no items yet`.
+- **Expected:** a Boolean Menu Switch, as `g.MenuSwitch.boolean(...)` makes.
+  Plain Python booleans should pick the boolean type (as `g.Switch` infers types
+  from its values), or raise.
+
 ## nodebpy: typing
 
 ### `InputVector` rejects tuples that mix sockets and numbers
@@ -102,6 +109,47 @@ anything from the current geometry must be captured or chosen outside."
 - Found by reading `fill_cache_from_fill_ids` in `grease_pencil_fills.cc`.
 - **Report?** Curves to Grease Pencil could offer to set `fill_id`, or the node's
   docs could mention it. **Skill:** add to the Grease Pencil notes.
+
+### A repeat zone inside a node group defeats lazy evaluation
+- **Seen (line art example):** a Switch / Menu Switch branch that isn't selected
+  was evaluated on every update. Minimal repro: an expensive geometry (the BSP)
+  passed through a repeat zone. Placed directly in the tree, an unselected branch
+  costs nothing (12 ms total); wrapped in a node group, it costs the full
+  evaluation of its input (104 ms).
+- **Workaround:** gate the branch's input with a Switch so it is empty unless
+  chosen, and gate any repeat count too (see below).
+- **Report:** yes, with the repro in `examples/line_art/README.md` terms; this
+  is a performance bug for any tree that offers alternative methods.
+
+### Repeat-zone passes have a fixed cost
+- Sixteen passes of the BSP over a single point still took about 50 ms: every
+  pass evaluates several hundred nodes regardless of data size. Worth knowing
+  when choosing between a pass-based algorithm and a direct one.
+
+### A menu input linked to two Menu Switches gets no items
+- Reproduced in plain `bpy`: link one menu input to two Menu Switch nodes, even
+  with identical items, and the input's items are empty after
+  `interface_update`, so no default can be set. The definitions conflict by
+  identity, not by content. **Workaround:** one Menu Switch, made boolean, and
+  ordinary Switches from its output.
+
+### A new node group on an existing modifier keeps old values by identifier
+- Assigning another tree to a Nodes modifier keeps input values whose identifiers
+  (`Socket_5`, ...) exist in both, even when they now mean different sockets
+  (here Max Depth and Crease Angle came out as 0). Benchmarks swapping trees on
+  one modifier measured the wrong thing until each variant got a fresh modifier.
+
+### Setting a modifier input doesn't reach the evaluated copy without a tag
+- `getattr(mod.properties.inputs, id).value = v` followed by a depsgraph update
+  triggered elsewhere (here by moving the camera) evaluates with the *old*
+  value: the evaluated object's copy of the modifier isn't refreshed unless the
+  object is tagged (`obj.update_tag()`). A `set_modifier_input` helper in
+  nodebpy should tag.
+
+### Mesh Boolean solvers for intersection seams
+- Exact handles a self-union of an open mesh but is slow (1.2 s at 31k faces);
+  Float doesn't resolve self-intersections within one mesh (no seams); Manifold
+  refuses open meshes. Line Art tests triangle pairs instead.
 
 ### Mesh Boolean's Intersecting Edges is broader than the intersection
 - An Exact self-union of Suzanne flags 556 of 1,876 edges as intersecting, many
