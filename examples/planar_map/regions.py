@@ -99,6 +99,8 @@ class OrderedFragments(CustomGeometryGroup):
                     "in_node": ("boolean", in_node),
                     "pa": ("float", perimeter(r.a, corners)),
                     "pb": ("float", perimeter(r.b, corners)),
+                    # the cell's diagonal, a local length scale
+                    "size": ("float", (corners[2] - corners[0]).length()),
                 },
             )
             >> g.SeparateGeometry.point(selection=~r.is_cell)
@@ -458,8 +460,16 @@ class RegionsToGreasePencil(CustomGeometryGroup):
         width = tree.inputs.float("Line Width", 0.0015, min_value=0.0)
         area = attr("float", "area")
         face = attr("integer", "face")
-        color = g.RandomValue.vector(min=0.25, max=0.95, id=face, seed=seed)
-        bounded = g.SeparateGeometry.spline(loops, selection=area > 0.0).o.selection
+        patch = attr("integer", "patch")
+        shade = attr("float", "shade")
+        # regions coloured by the patch they show, shaded by its normal; regions
+        # that show nothing (background) are left unfilled
+        base = g.RandomValue.vector(min=0.35, max=0.95, id=patch, seed=seed).o.value
+        color = base * (shade * 0.6 + 0.4)
+        seen = attr("boolean", "seen")
+        bounded = g.SeparateGeometry.spline(
+            loops, selection=(area > 0.0) & seen
+        ).o.selection
         (
             bounded
             >> g.SortElements.spline(sort_weight=-area)

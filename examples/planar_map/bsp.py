@@ -57,6 +57,8 @@ CLOUD = {
     "seg": "integer",
     "fa": "float",
     "fb": "float",
+    "da": "float",
+    "db": "float",
     "a": "vector",
     "b": "vector",
     "p0": "vector",
@@ -132,7 +134,7 @@ def writer(group_name: str, names: list[str]) -> type[CustomGeometryGroup]:
 WriteSplit = writer("Write BSP Split", ["split", "axis", "m1", "m2"])
 WriteChildren = writer(
     "Write BSP Children",
-    ["a", "b", "fa", "fb", "cell", "depth", "p0", "p1", "p2", "p3"],
+    ["a", "b", "fa", "fb", "da", "db", "cell", "depth", "p0", "p1", "p2", "p3"],
 )
 
 
@@ -488,6 +490,9 @@ class SplitCells(CustomGeometryGroup):
             new_b = (cut & first_copy).switch.vector(r.b, x)
             new_fa = (cut & ~first_copy).switch.float(r.fa, fx)
             new_fb = (cut & first_copy).switch.float(r.fb, fx)
+            dx = r.da + (r.db - r.da) * t
+            new_da = (cut & ~first_copy).switch.float(r.da, dx)
+            new_db = (cut & first_copy).switch.float(r.db, dx)
             side = cut.switch.float(
                 side_a + side_b, first_copy.switch.float(side_b, side_a)
             )
@@ -502,6 +507,8 @@ class SplitCells(CustomGeometryGroup):
             b=new_b,
             fa=new_fa,
             fb=new_fb,
+            da=new_da,
+            db=new_db,
             cell=r.cell * 2 + child,
             depth=r.depth + split_cell.switch.integer(0, 1),
             p0=new_p[0],
@@ -555,6 +562,10 @@ class ProjectedContours(CustomGeometryGroup):
 
         (
             g.MeshToCurve.edges(mesh, selection=silhouette | boundary | sharp)
+            # distance from the camera, in this object's space, for occlusion
+            >> g.StoreNamedAttribute.point.float(
+                name="dist", value=(g.Position().o.position - eye).length()
+            )
             >> g.SetPosition(position=screen)
             >> tree.outputs.geometry("Curves")
         )
@@ -622,6 +633,15 @@ class CurveFragments(CustomGeometryGroup):
             >> g.StoreNamedAttribute.point.integer(name="seg", value=g.Index())
             >> g.StoreNamedAttribute.point.float(name="fa", value=0.0)
             >> g.StoreNamedAttribute.point.float(name="fb", value=1.0)
+            >> g.StoreNamedAttribute.point.float(
+                name="da", value=g.NamedAttribute.float("dist").o.attribute
+            )
+            >> g.StoreNamedAttribute.point.float(
+                name="db",
+                value=g.NamedAttribute.float("dist").o.attribute.point.at(
+                    nxt.o.point_index
+                ),
+            )
             # stored: Offset Point in Curve means nothing once these are points
             >> g.StoreNamedAttribute.point.boolean(name="keep", value=keep)
             >> g.CurveToPoints.evaluated()

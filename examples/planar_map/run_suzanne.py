@@ -22,6 +22,7 @@ sys.path.insert(0, str(HERE))
 import nodebpy  # noqa: F401  (before bpy, so the source tree wins)
 import bpy
 import numpy as np
+from bsp import CREASE
 from planar_map import build
 from mathutils import Vector
 # isort: on
@@ -117,7 +118,91 @@ def read_map(obj):
         positions.reshape(m, 3)[offsets[i] : offsets[i + 1], :2]
         for i in range(len(curves.curves))
     ]
-    return half, loops, area
+    # what each loop's face sees, from its first point (all points agree)
+    firsts = offsets[:-1]
+    if "patch" in curves.attributes:
+        patch = _get(curves.attributes, "patch", m)[firsts]
+        seen = np.zeros(m, dtype=bool)
+        curves.attributes["seen"].data.foreach_get("value", seen)
+        seen = seen[firsts]
+    else:
+        patch = np.full(len(firsts), -1)
+        seen = np.zeros(len(firsts), dtype=bool)
+    loops_seen = {"patch": patch, "seen": seen}
+    return half, loops, area, loops_seen
+
+
+def surface_patches(obj, crease: float):
+    """Face -> patch id: faces joined across edges that are neither creases nor
+    boundaries, as `SurfacePatches` does in the tree."""
+    mesh = obj.data
+    parent = list(range(len(mesh.polygons)))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    by_edge: dict[tuple[int, int], list[int]] = {}
+    for poly in mesh.polygons:
+        for key in poly.edge_keys:
+            by_edge.setdefault(key, []).append(poly.index)
+    for faces in by_edge.values():
+        if len(faces) != 2:
+            continue
+        a, b = faces
+        angle = mesh.polygons[a].normal.angle(mesh.polygons[b].normal)
+        if angle <= crease:
+            parent[find(a)] = find(b)
+    roots = {}
+    return [roots.setdefault(find(i), len(roots)) for i in range(len(parent))]
+
+
+def raster_agreement(obj, camera, loops, area, loops_seen, crease, size=240):
+    """The paper's measure (Section 5.3): the share of pixels where the region
+    drawn there shows the same patch as a ray cast straight at the mesh.
+
+    Islands are numbered differently here and in the tree, so each drawn patch
+    id is matched to the true id it overlaps most.
+    """
+    from mathutils.bvhtree import BVHTree
+    from matplotlib.path import Path as MplPath
+
+    world = obj.matrix_world
+    verts = [world @ v.co for v in obj.data.vertices]
+    tree = BVHTree.FromPolygons(verts, [tuple(p.vertices) for p in obj.data.polygons])
+    patch_of_face = surface_patches(obj, crease)
+
+    points = np.concatenate(loops)
+    lo, hi = points.min(0), points.max(0)
+    xs = np.linspace(lo[0], hi[0], size)
+    ys = np.linspace(lo[1], hi[1], size)
+    grid = np.stack(np.meshgrid(xs, ys), -1).reshape(-1, 2)
+
+    origin = camera.matrix_world.translation
+    rot = camera.matrix_world.to_3x3()
+    truth = np.full(len(grid), -1)
+    for i, (x, y) in enumerate(grid):
+        hit = tree.ray_cast(origin, (rot @ Vector((x, y, -1.0))).normalized())
+        if hit[0] is not None:
+            truth[i] = patch_of_face[hit[2]]
+
+    drawn = np.full(len(grid), -1)
+    order = np.argsort(-area)  # largest first, as drawn
+    for k in order:
+        if area[k] <= 0 or not loops_seen["seen"][k]:
+            continue
+        inside = MplPath(loops[k]).contains_points(grid)
+        drawn[inside] = loops_seen["patch"][k]
+
+    # match tree patch ids to these by most common overlap
+    mapping = {-1: -1}
+    for p in np.unique(drawn[drawn >= 0]):
+        values, counts = np.unique(truth[drawn == p], return_counts=True)
+        mapping[p] = values[np.argmax(counts)]
+    mapped = np.array([mapping[d] for d in drawn])
+    return float((mapped == truth).mean())
 
 
 def check_map(half, loops, area, node_area: float) -> tuple[list[str], dict]:
@@ -307,10 +392,14 @@ def main():
     parser.add_argument(
         "--no-separating", action="store_true", help="turn off separating lines"
     )
+    parser.add_argument(
+        "--no-occlusion", action="store_true", help="don't merge hidden regions"
+    )
     args = parser.parse_args()
 
     monkey, mod, tree = scene(args.max_depth)
     set_input(mod, "Separating Lines", not args.no_separating)
+    set_input(mod, "Occlusion", not args.no_occlusion)
     set_input(mod, "Data", "BSP Cloud")
 
     # depth 0 gives the fragments as they entered, to compare lengths against
@@ -341,7 +430,7 @@ def main():
     print("partition checks:", "all passed" if not failures else "; ".join(failures))
 
     set_input(mod, "Data", "Halfedges")
-    half, loops, area = read_map(monkey)
+    half, loops, area, loops_seen = read_map(monkey)
     quads = np.stack([cloud[f"p{k}"][cells, :2] for k in range(4)], axis=1)
     node_area = float(_area(quads[cloud["is_intersection"][cells]]).sum())
     failures, counts = check_map(half, loops, area, node_area)
@@ -350,6 +439,9 @@ def main():
         "({regions} bounded regions) in {pieces} pieces".format(**counts)
     )
     print("map checks:", "all passed" if not failures else "; ".join(failures))
+    camera = bpy.data.objects["Camera"]
+    agreement = raster_agreement(monkey, camera, loops, area, loops_seen, CREASE)
+    print(f"raster agreement: {agreement:.1%} of pixels show the right patch")
 
     args.out.mkdir(parents=True, exist_ok=True)
     plot(cloud, args.out / "suzanne_bsp.png")

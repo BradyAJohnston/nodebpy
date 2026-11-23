@@ -7,6 +7,13 @@ front of the camera, where it lines up with the object in the camera's view.
 from __future__ import annotations
 
 from bsp import CREASE, BSPCells, BSPDebugView, CurveFragments, ProjectedContours
+from occlusion import (
+    EdgeVisibility,
+    FragmentWalls,
+    MergeRegions,
+    RegionIdentity,
+    SurfacePatches,
+)
 from regions import (
     Faces,
     Halfedges,
@@ -26,6 +33,9 @@ def build(name: str = "Planar Map"):
         camera = tree.inputs.object("Camera")
         max_depth = tree.inputs.integer("Max Depth", 18, min_value=0, max_value=24)
         separating = tree.inputs.boolean("Separating Lines", True)
+        occlusion = tree.inputs.boolean(
+            "Occlusion", True, description="Merge regions across hidden edges"
+        )
         crease = tree.inputs.float(
             "Crease Angle", CREASE, subtype="ANGLE", min_value=0.0
         )
@@ -58,8 +68,31 @@ def build(name: str = "Planar Map"):
         with g.Frame("Planar map"):
             fragments = OrderedFragments(cloud)
             halfedges = Stops(fragments) >> Halfedges() >> NextHalfedge() >> Faces()
-            loops = RegionLoops(halfedges, fragments=fragments)
-            pencil = RegionsToGreasePencil(loops, material=region_material, seed=seed)
+
+        with g.Frame("Occlusion"):
+            surface = SurfacePatches(mesh, crease_angle=crease)
+            walls = FragmentWalls(fragments)
+
+            def identify(h):
+                return RegionIdentity(
+                    h, fragments=fragments, walls=walls, surface=surface, camera=camera
+                )
+
+            seen = identify(halfedges)
+            merged = identify(
+                EdgeVisibility(
+                    seen, fragments=fragments, surface=surface, camera=camera
+                )
+                >> MergeRegions()
+                >> Faces()
+            )
+            final = g.Switch(occlusion, seen, merged)
+
+        with g.Frame("Regions"):
+            loops = RegionLoops(final, fragments=fragments)
+            pencil = RegionsToGreasePencil(
+                loops, material=region_material, seed=seed, line_width=width
+            )
 
         view = BSPDebugView(cloud, line_width=width)
         bsp_view = g.JoinGeometry(
@@ -97,7 +130,7 @@ def build(name: str = "Planar Map"):
             {
                 "None": g.JoinGeometry(),
                 "BSP Cloud": cloud,
-                "Halfedges": g.JoinGeometry([halfedges, loops]),
+                "Halfedges": g.JoinGeometry([final, loops]),
             },
         )
 

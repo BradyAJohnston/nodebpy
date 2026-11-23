@@ -15,7 +15,8 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzan
 | Separating lines | §2.3 | done, for cells crossed by exactly two curves |
 | 2. Region identification (halfedge planar map) | §3.1–3.4 | done: `regions.py` |
 | Gap circles | §3.5 | not started |
-| 3. Ray-traced region identity, merging | §4.1–4.3 | not started |
+| 3. Ray-traced region identity, merging | §4.1–4.2 | done: `occlusion.py` |
+| Edge classification (silhouette / interior) | §4.3 | not started |
 | Partial transparency (layer merging) | §4.4 | out of scope: sequential, with cycle checks |
 
 ## How stage 1 maps onto nodes
@@ -71,10 +72,46 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzan
   counter-clockwise loops, largest first; Grease Pencil only fills strokes with a
   non-zero `fill_id`.
 
+## How stage 3 maps onto nodes
+
+- **Patches.** `SurfacePatches` splits the mesh at crease edges and numbers the
+  islands: a face attribute `patch`.
+- **Region identity (4.1).** `RegionIdentity` takes each face's longest halfedge,
+  casts a 2D ray inward from its middle against `FragmentWalls` (every fragment
+  extruded into a vertical quad, so Raycast works in the screen plane), and fires
+  a camera ray through the point halfway to the wall. The hit's patch, normal and
+  a headlight shade are stored on every halfedge of the face.
+- **Which edges go.** `EdgeVisibility` hides an edge when both faces see the same
+  thing (the paper's rule) *and*, if the edge has geometry, its own curve is
+  hidden: the camera ray through its middle meets the surface nearer than the
+  curve. Fragments carry their distance from the camera (`da`, `db`) through the
+  BSP for this. The second condition is not in the paper: on a mesh one patch can
+  fold over itself, and the paper's rule alone erases those silhouettes (the ear
+  over the head).
+- **Merging (4.2).** `MergeRegions` points each hidden halfedge at `next(twin)`,
+  pointer-jumps until every chain reaches a kept halfedge, relinks `next` through
+  it, compacts the halfedges, and `Faces` relabels them.
+- **Colour.** Regions are coloured by the patch they show and shaded by its
+  normal; regions that see nothing are left unfilled.
+
+## Open items in the method
+
+- Faces made only of zero-length steps between nodes have no fragment to sample,
+  so they get no identity and stay as unfilled specks. Letting them match any
+  neighbour chained the far eye into the head, so they are left alone.
+- At depth 8 and below, the straight step across a large node can cross another
+  curve; the loop then crosses itself and Grease Pencil leaves part of it
+  unfilled. The map is still valid.
+- Holes (Section 4.4.1) are not assigned to their surrounding region; drawing
+  largest first hides this for opaque regions. Grease Pencil's `fill_id` can
+  group a hole loop with its region when transparency needs it.
+
 `run_suzanne.py` checks the invariants after each run: cells are counter-clockwise
 and tile the root exactly, cell ids are unique, every fragment lies inside its cell,
 cells other than intersection nodes hold at most one curve, and the total length of
 the fragments equals that of the input. For the map: `next` is a permutation, each
 halfedge's `next` starts at the vertex it ends at, every connected piece has
 V - E + F = 2 (which fails if the order around any vertex is inconsistent), and
-the signed areas of all loops cancel to within the intersection nodes' area.
+the signed areas of all loops cancel to within the intersection nodes' area. It
+also reports the paper's raster measure (Section 5.3): the share of a 240 x 240
+grid where the region drawn shows the same patch as a ray cast at the mesh.
