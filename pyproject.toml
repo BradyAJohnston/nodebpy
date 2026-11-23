@@ -74,7 +74,7 @@ dev = [
 # constantly under a real Blender runtime. Relax only those rules for tests;
 # src/ passes `ty check` with no per-directory relaxation.
 [[tool.ty.overrides]]
-include = ["tests/**"]
+include = ["tests/**", "examples/**"]
 
 [tool.ty.overrides.rules]
 missing-attribute = "ignore"
