@@ -24,11 +24,11 @@ region surrounds it, or the outside of everything).
 
 from __future__ import annotations
 
-from bsp import Groups, ReadCloud, cell_corners, lerp
+from bsp import Groups, ReadCloud, cell_corners, lerp, perp
 
 from nodebpy import geometry as g
 from nodebpy.builder import CustomGeometryGroup
-from nodebpy.types import InputFloat, InputGeometry, InputInteger, InputMaterial
+from nodebpy.types import InputGeometry, InputInteger, InputMaterial
 
 
 def attr(kind: str, name: str):
@@ -435,51 +435,141 @@ class RegionLoops(CustomGeometryGroup):
             )
 
 
-class RegionsToGreasePencil(CustomGeometryGroup):
-    """Bounded regions as filled Grease Pencil strokes, largest drawn first so
-    enclosed regions paint over the regions around them."""
+class RegionFills(CustomGeometryGroup):
+    """Regions as curves ready for Grease Pencil fills, one fill per region.
 
-    _name = "Regions To Grease Pencil"
+    A bounded region is a counter-clockwise loop. A connected piece of the map
+    lying inside a region (an eye inside the head) has a clockwise outline; that
+    outline joins the surrounding region's fill as a hole (Section 4.4.1), so each
+    region is filled exactly once and nothing relies on draw order. The
+    surrounding region is the smallest one containing a point just outside the
+    outline: every bounded loop is filled and stacked by area, smallest on top,
+    and a ray cast down from above that point hits it first.
+
+    Edges are drawn by the line layers, so fills have no stroke of their own.
+    """
+
+    _name = "Region Fills"
+    _color_tag = "GEOMETRY"
+
+    def __init__(self, loops: InputGeometry = ..., seed: InputInteger = 0):
+        super().__init__(loops=loops, seed=seed)
+
+    def _build_group(self, tree):
+        loops = tree.inputs.geometry("Loops")
+        seed = tree.inputs.integer("Seed", 0)
+        area = attr("float", "area")
+        face = attr("integer", "face")
+        seen = attr("boolean", "seen")
+        bounded = area > 0.0
+
+        with g.Frame("Bounded regions, filled and stacked by area"):
+            # Fill Curve drops curve attributes, so fill each loop on its own
+            zone = g.ForEachGeometryElementZone.curve(loops, selection=bounded)
+            face_item = zone.items.integer(face, "Face")
+            area_item = zone.items.float(area, "Area")
+            seen_item = zone.items.integer(seen.switch.integer(0, 1), "Seen")
+            stamped = (
+                g.FillCurve(zone.element, mode="Triangles")
+                >> g.StoreNamedAttribute.face.integer(
+                    name="face", value=face_item.output
+                )
+                >> g.StoreNamedAttribute.face.integer(
+                    name="seen", value=seen_item.output
+                )
+                >> g.SetPosition(offset=g.CombineXYZ(z=-area_item.output))
+            )
+            stack = zone.generated_items.geometry(stamped, "Fill").output
+
+        with g.Frame("What surrounds each outline"):
+            p = g.Position().o.position
+            q = at(p, g.OffsetPointInCurve(offset=1).o.point_index)
+            spline = g.CurveOfPoint().o.curve_index
+            length = (q - p).length()
+            pick = length == length.point.max(spline)
+            # outlines run clockwise, so their left is outside the piece
+            outside = (p + q) * 0.5 + perp((q - p).normalize()) * (length * 0.01)
+            above = outside + g.CombineXYZ(z=10.0).o.vector
+
+            def down(name):
+                return g.Raycast.integer(
+                    target_geometry=stack,
+                    attribute=attr("integer", name),
+                    interpolation="Nearest",
+                    source_position=above,
+                    ray_direction=(0.0, 0.0, -1.0),
+                    ray_length=100.0,
+                ).o
+
+            hit = down("face")
+            found = pick & hit.is_hit
+            container = found.switch.integer(-1, hit.attribute).point.max(spline)
+            container_seen = found.switch.integer(0, down("seen").attribute)
+            container_seen = container_seen.point.max(spline) > 0
+            container_area = found.switch.float(-1.0, -hit.hit_position.z)
+            container_area = container_area.point.max(spline)
+
+        with g.Frame("Colour"):
+            patch = attr("integer", "patch")
+            shade = attr("float", "shade")
+            # coloured by the patch they show, shaded by its normal
+            base = g.RandomValue.vector(min=0.35, max=0.95, id=patch, seed=seed).o.value
+            color = base * (shade * 0.6 + 0.4)
+
+        hole = ~bounded & (container >= 0) & container_seen
+        keep = (bounded & seen) | hole
+        (
+            g.SeparateGeometry.spline(
+                loops
+                # per stroke: Grease Pencil reads fill_id on the curve domain
+                >> g.StoreNamedAttribute.spline.boolean(name="hole", value=hole)
+                >> g.StoreNamedAttribute.spline.integer(
+                    name="fill_id",
+                    value=bounded.switch.integer(container + 1, face + 1),
+                )
+                >> g.StoreNamedAttribute.spline.float(
+                    name="group_area",
+                    value=bounded.switch.float(container_area, area),
+                ),
+                selection=keep,
+            ).o.selection
+            # regions first, largest first; holes after. A fill's colour comes
+            # from its first stroke, which is then always the region itself
+            >> g.SortElements.spline(
+                group_id=attr("boolean", "hole").switch.integer(0, 1),
+                sort_weight=-attr("float", "group_area"),
+            )
+            >> g.StoreNamedAttribute.spline.color(name="fill_color", value=color)
+            >> g.StoreNamedAttribute.point.float(name="opacity", value=0.0)
+            >> tree.outputs.geometry("Curves")
+        )
+
+
+class ToGreasePencil(CustomGeometryGroup):
+    """Curves to Grease Pencil, one layer per input, named, bottom to top."""
+
+    _name = "To Grease Pencil"
     _color_tag = "GEOMETRY"
 
     def __init__(
         self,
-        loops: InputGeometry = ...,
+        fills: InputGeometry = None,
+        lines: InputGeometry = None,
+        hidden: InputGeometry = None,
         material: InputMaterial = None,
-        seed: InputInteger = 0,
-        line_width: InputFloat = 0.0015,
     ):
-        super().__init__(
-            loops=loops, material=material, seed=seed, line_width=line_width
-        )
+        super().__init__(fills=fills, lines=lines, hidden=hidden, material=material)
 
     def _build_group(self, tree):
-        loops = tree.inputs.geometry("Loops")
+        layers = [
+            g.SetGeometryName(tree.inputs.geometry(name), name=name)
+            for name in ("Fills", "Lines", "Hidden")
+        ]
         material = tree.inputs.material("Material")
-        seed = tree.inputs.integer("Seed", 0)
-        width = tree.inputs.float("Line Width", 0.0015, min_value=0.0)
-        area = attr("float", "area")
-        face = attr("integer", "face")
-        patch = attr("integer", "patch")
-        shade = attr("float", "shade")
-        # regions coloured by the patch they show, shaded by its normal; regions
-        # that show nothing (background) are left unfilled
-        base = g.RandomValue.vector(min=0.35, max=0.95, id=patch, seed=seed).o.value
-        color = base * (shade * 0.6 + 0.4)
-        seen = attr("boolean", "seen")
-        bounded = g.SeparateGeometry.spline(
-            loops, selection=(area > 0.0) & seen
-        ).o.selection
         (
-            bounded
-            >> g.SortElements.spline(sort_weight=-area)
-            # strokes sharing a non-zero fill_id are filled together; without
-            # one, Grease Pencil draws no fill at all
-            >> g.StoreNamedAttribute.spline.integer(name="fill_id", value=face + 1)
-            >> g.SetCurveRadius(radius=width * 0.5)
-            >> g.CurvesToGreasePencil(instances_as_layers=False)
+            g.GeometryToInstance(*layers)
+            # each instance's geometry name becomes its layer's name
+            >> g.CurvesToGreasePencil(instances_as_layers=True)
             >> g.SetMaterial(material=material)
-            >> g.SetGreasePencilColor.fill(color=color)
-            >> g.SetGreasePencilColor.stroke(color=(0.05, 0.05, 0.08, 1.0))
             >> tree.outputs.geometry("Grease Pencil")
         )

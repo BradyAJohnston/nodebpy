@@ -560,8 +560,23 @@ class ProjectedContours(CustomGeometryGroup):
             q = g.Position().o.position.transform(to_camera)
             screen = g.CombineXYZ(q.x / -q.z, q.y / -q.z)
 
+        with g.Frame("Kind of each vertex's curve edges"):
+            # the share of a vertex's selected edges that are silhouettes or
+            # boundaries; a segment's kind is the mean of its two ends, which
+            # survives Mesh to Curve (edge attributes arrive averaged on points)
+            selected = silhouette | boundary | sharp
+            outline_like = selected & (silhouette | boundary)
+            share = (
+                g.EvaluateOnDomain.edge.float(
+                    outline_like.switch.float(0.0, 1.0)
+                ).o.value
+                / g.EvaluateOnDomain.edge.float(selected.switch.float(0.0, 1.0)).o.value
+            )
+
         (
-            g.MeshToCurve.edges(mesh, selection=silhouette | boundary | sharp)
+            mesh
+            >> g.StoreNamedAttribute.point.float(name="silv", value=share)
+            >> g.MeshToCurve.edges(selection=selected)
             # distance from the camera, in this object's space, for occlusion
             >> g.StoreNamedAttribute.point.float(
                 name="dist", value=(g.Position().o.position - eye).length()
@@ -633,6 +648,17 @@ class CurveFragments(CustomGeometryGroup):
             >> g.StoreNamedAttribute.point.integer(name="seg", value=g.Index())
             >> g.StoreNamedAttribute.point.float(name="fa", value=0.0)
             >> g.StoreNamedAttribute.point.float(name="fb", value=1.0)
+            # 1 for a silhouette or boundary segment, 0 for a crease
+            >> g.StoreNamedAttribute.point.float(
+                name="sil",
+                value=(
+                    g.NamedAttribute.float("silv").o.attribute
+                    + g.NamedAttribute.float("silv").o.attribute.point.at(
+                        nxt.o.point_index
+                    )
+                )
+                * 0.5,
+            )
             >> g.StoreNamedAttribute.point.float(
                 name="da", value=g.NamedAttribute.float("dist").o.attribute
             )

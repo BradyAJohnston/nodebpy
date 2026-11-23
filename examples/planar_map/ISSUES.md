@@ -34,6 +34,14 @@ method itself are under "Open items in the method" in the README.
   takes a geometry, not str 'keep'"). Worth checking every node whose first
   parameter is a geometry and whose obvious positional is something else.
 
+### `g.GeometryToInstance([a, b])` rejects a list
+- **Seen:** `TypeError: Unsupported type: <class 'list'>`.
+- **Expected:** a list feeds a multi-input, as it does for `g.JoinGeometry([...])`
+  and as the skill says ("a list (each item linked into a multi-input such as
+  Join Geometry)").
+- **Workaround:** `g.GeometryToInstance(a, b)`.
+- **Fix:** accept a list (and tuples) wherever a multi-input takes `*args`.
+
 ## nodebpy: typing
 
 ### `InputVector` rejects tuples that mix sockets and numbers
@@ -94,6 +102,23 @@ anything from the current geometry must be captured or chosen outside."
 - Found by reading `fill_cache_from_fill_ids` in `grease_pencil_fills.cc`.
 - **Report?** Curves to Grease Pencil could offer to set `fill_id`, or the node's
   docs could mention it. **Skill:** add to the Grease Pencil notes.
+
+### Fill Curve drops curve attributes
+- A `face` attribute on the input splines is gone from the filled mesh, so there
+  is no way to tell which face came from which curve. **Workaround:** a For Each
+  Element zone over splines, filling one curve at a time and stamping the value
+  on its faces. **Report?** Propagating spline attributes to the faces each
+  curve (or Group ID) produces would be natural.
+
+### Grease Pencil layer names come from geometry names
+- Curves to Grease Pencil with *Instances as Layers* names each layer after its
+  instance's geometry name, so `Set Geometry Name` before `Geometry to Instance`
+  names the layers. Undocumented as far as I found; worth a skill note next to
+  `fill_id`. Joining separately converted Grease Pencil geometries gives unnamed
+  layers.
+- The stroke and fill attributes (`vertex_color`, `fill_color`, `opacity`,
+  `fill_id`) can be stored on the curves before conversion and carry over, which
+  avoids Set Grease Pencil Color per layer. `fill_id` must be on the curve domain.
 
 ### Field switches evaluate both branches
 - With Separating Lines off, a pass still computes every separating-line field;

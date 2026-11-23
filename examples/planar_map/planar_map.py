@@ -7,6 +7,7 @@ front of the camera, where it lines up with the object in the camera's view.
 from __future__ import annotations
 
 from bsp import CREASE, BSPCells, BSPDebugView, CurveFragments, ProjectedContours
+from lines import HiddenLines, VisibleLines
 from occlusion import (
     EdgeVisibility,
     FragmentWalls,
@@ -19,9 +20,10 @@ from regions import (
     Halfedges,
     NextHalfedge,
     OrderedFragments,
+    RegionFills,
     RegionLoops,
-    RegionsToGreasePencil,
     Stops,
+    ToGreasePencil,
 )
 
 from nodebpy import geometry as g
@@ -45,6 +47,8 @@ def build(name: str = "Planar Map"):
             )
             show_mesh = tree.inputs.boolean("Show Mesh", True)
             show_regions = tree.inputs.boolean("Show Regions", True)
+            show_lines = tree.inputs.boolean("Show Lines", True)
+            show_hidden = tree.inputs.boolean("Show Hidden Lines", False)
             show_bsp = tree.inputs.boolean("Show BSP", False)
             width = tree.inputs.float("Line Width", 0.0015, min_value=0.0)
             seed = tree.inputs.integer("Color Seed", 0)
@@ -79,19 +83,22 @@ def build(name: str = "Planar Map"):
                 )
 
             seen = identify(halfedges)
-            merged = identify(
-                EdgeVisibility(
-                    seen, fragments=fragments, surface=surface, camera=camera
-                )
-                >> MergeRegions()
-                >> Faces()
+            judged = EdgeVisibility(
+                seen, fragments=fragments, surface=surface, camera=camera
             )
+            merged = identify(judged >> MergeRegions() >> Faces())
             final = g.Switch(occlusion, seen, merged)
 
         with g.Frame("Regions"):
             loops = RegionLoops(final, fragments=fragments)
-            pencil = RegionsToGreasePencil(
-                loops, material=region_material, seed=seed, line_width=width
+            fills = RegionFills(loops, seed=seed)
+            lines = VisibleLines(final, fragments=fragments, line_width=width)
+            hidden = HiddenLines(judged, fragments=fragments, line_width=width)
+            pencil = ToGreasePencil(
+                fills,
+                lines=g.Switch(show_lines, None, lines),
+                hidden=g.Switch(show_hidden & occlusion, None, hidden),
+                material=region_material,
             )
 
         view = BSPDebugView(cloud, line_width=width)

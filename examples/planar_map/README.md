@@ -16,7 +16,8 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzan
 | 2. Region identification (halfedge planar map) | §3.1–3.4 | done: `regions.py` |
 | Gap circles | §3.5 | not started |
 | 3. Ray-traced region identity, merging | §4.1–4.2 | done: `occlusion.py` |
-| Edge classification (silhouette / interior) | §4.3 | not started |
+| Edge classification, line layers | §4.3 | done: `lines.py` |
+| Holes assigned to their region | §4.4.1 | done: `RegionFills` |
 | Partial transparency (layer merging) | §4.4 | out of scope: sequential, with cycle checks |
 
 ## How stage 1 maps onto nodes
@@ -94,6 +95,25 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzan
 - **Colour.** Regions are coloured by the patch they show and shaded by its
   normal; regions that see nothing are left unfilled.
 
+## Drawing
+
+The output is one Grease Pencil geometry with three named layers, from
+`ToGreasePencil` (each layer is an instance whose geometry name becomes the layer
+name):
+
+- **Fills:** one fill per region (`fill_id`), coloured by patch and shaded by
+  normal. A clockwise outline (a connected piece inside a region, like an eye in
+  the head) joins its surrounding region's fill as a hole, so each area is filled
+  once. The surrounding region is found by filling every bounded loop, stacking
+  the fills by area (smallest on top) and casting down from just outside the
+  outline.
+- **Lines:** every visible edge, wider for outlines (background on one side) than
+  silhouettes, and for silhouettes than creases (Section 4.3). The paper
+  classifies by patch adjacency; here each segment remembers whether it came
+  from a silhouette or boundary edge or a crease, which Mesh to Curve passes on
+  as a per-vertex share of the two.
+- **Hidden:** the edges occlusion removed, dashed (off by default).
+
 ## Open items in the method
 
 - Faces made only of zero-length steps between nodes have no fragment to sample,
@@ -102,9 +122,8 @@ BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzan
 - At depth 8 and below, the straight step across a large node can cross another
   curve; the loop then crosses itself and Grease Pencil leaves part of it
   unfilled. The map is still valid.
-- Holes (Section 4.4.1) are not assigned to their surrounding region; drawing
-  largest first hides this for opaque regions. Grease Pencil's `fill_id` can
-  group a hole loop with its region when transparency needs it.
+- Line classes come from the input curves, so a silhouette that coincides with
+  a crease takes whichever its segment's ends say.
 
 `run_suzanne.py` checks the invariants after each run: cells are counter-clockwise
 and tile the root exactly, cell ids are unique, every fragment lies inside its cell,
