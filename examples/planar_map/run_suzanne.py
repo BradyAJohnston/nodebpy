@@ -206,9 +206,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--max-depth", type=int, default=18)
     parser.add_argument("--out", type=Path, default=HERE / "out")
+    parser.add_argument(
+        "--no-separating", action="store_true", help="turn off separating lines"
+    )
     args = parser.parse_args()
 
     monkey, mod, tree = scene(args.max_depth)
+    set_input(mod, "Separating Lines", not args.no_separating)
     set_input(mod, "Show Cloud", True)
 
     # depth 0 gives the fragments as they entered, to compare lengths against
