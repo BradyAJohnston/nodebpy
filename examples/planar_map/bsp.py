@@ -54,6 +54,9 @@ CLOUD = {
     "cell": "integer",
     "depth": "integer",
     "curve": "integer",
+    "seg": "integer",
+    "fa": "float",
+    "fb": "float",
     "a": "vector",
     "b": "vector",
     "p0": "vector",
@@ -128,7 +131,8 @@ def writer(group_name: str, names: list[str]) -> type[CustomGeometryGroup]:
 
 WriteSplit = writer("Write BSP Split", ["split", "axis", "m1", "m2"])
 WriteChildren = writer(
-    "Write BSP Children", ["a", "b", "cell", "depth", "p0", "p1", "p2", "p3"]
+    "Write BSP Children",
+    ["a", "b", "fa", "fb", "cell", "depth", "p0", "p1", "p2", "p3"],
 )
 
 
@@ -477,9 +481,13 @@ class SplitCells(CustomGeometryGroup):
         with g.Frame("Fragment pieces"):
             # a cut fragment's copy 0 is [a, x], copy 1 is [x, b]
             cut = r.split & crossing
-            x = lerp(r.a, r.b, side_a / (side_a - side_b))
+            t = side_a / (side_a - side_b)
+            x = lerp(r.a, r.b, t)
+            fx = r.fa + (r.fb - r.fa) * t
             new_a = (cut & ~first_copy).switch.vector(r.a, x)
             new_b = (cut & first_copy).switch.vector(r.b, x)
+            new_fa = (cut & ~first_copy).switch.float(r.fa, fx)
+            new_fb = (cut & first_copy).switch.float(r.fb, fx)
             side = cut.switch.float(
                 side_a + side_b, first_copy.switch.float(side_b, side_a)
             )
@@ -492,6 +500,8 @@ class SplitCells(CustomGeometryGroup):
             geometry=dup.o.geometry,
             a=new_a,
             b=new_b,
+            fa=new_fa,
+            fb=new_fb,
             cell=r.cell * 2 + child,
             depth=r.depth + split_cell.switch.integer(0, 1),
             p0=new_p[0],
@@ -607,6 +617,11 @@ class CurveFragments(CustomGeometryGroup):
             >> g.StoreNamedAttribute.point.vector(name="a", value=position)
             >> g.StoreNamedAttribute.point.vector(name="b", value=next_pos)
             >> g.StoreNamedAttribute.point.integer(name="curve", value=piece_id)
+            # where each fragment came from: its segment, and the part of it
+            # (fa to fb) it covers, so curve order survives the splits
+            >> g.StoreNamedAttribute.point.integer(name="seg", value=g.Index())
+            >> g.StoreNamedAttribute.point.float(name="fa", value=0.0)
+            >> g.StoreNamedAttribute.point.float(name="fb", value=1.0)
             # stored: Offset Point in Curve means nothing once these are points
             >> g.StoreNamedAttribute.point.boolean(name="keep", value=keep)
             >> g.CurveToPoints.evaluated()
@@ -768,70 +783,3 @@ class BSPDebugView(CustomGeometryGroup):
                 >> g.PointsToCurves(curve_group_id=index.output, weight=end)
             )
             tube(pieces) >> tree.outputs.geometry("Fragments")
-
-
-def build(name: str = "Planar Map BSP"):
-    """The modifier tree: contours of the object it sits on, split into cells.
-
-    The debug view is placed on a plane `Overlay Distance` in front of the camera,
-    where it lines up with the object in the camera's view. `Show Cloud` adds the
-    raw point cloud (in screen space), which `run_suzanne.py` reads.
-    """
-    with g.tree(name, clear=True, is_modifier=True) as tree:
-        mesh = tree.inputs.geometry("Geometry")
-        camera = tree.inputs.object("Camera")
-        max_depth = tree.inputs.integer("Max Depth", 18, min_value=0, max_value=24)
-        separating = tree.inputs.boolean("Separating Lines", True)
-        crease = tree.inputs.float(
-            "Crease Angle", CREASE, subtype="ANGLE", min_value=0.0
-        )
-        with tree.inputs.panel("Display"):
-            distance = tree.inputs.float(
-                "Overlay Distance", 1.0, min_value=0.001, subtype="DISTANCE"
-            )
-            width = tree.inputs.float("Line Width", 0.0015, min_value=0.0)
-            show_mesh = tree.inputs.boolean("Show Mesh", True)
-            show_cloud = tree.inputs.boolean("Show Cloud", False)
-            materials = [
-                tree.inputs.material(name)
-                for name in ("Cell Material", "Fragment Material", "Node Material")
-            ]
-
-        cloud = (
-            ProjectedContours(mesh, camera=camera, crease_angle=crease)
-            >> CurveFragments()
-            >> BSPCells(max_depth=max_depth, separating_lines=separating)
-        )
-        view = BSPDebugView(cloud, line_width=width)
-
-        with g.Frame("Place in front of the camera"):
-            # screen (x, y) is camera-space (x, y, -1) after the divide, so
-            # (x d, y d, -d) projects to the same spot for any distance d
-            to_local = (
-                g.ObjectInfo(g.SelfObject()).o.transform.invert()
-                @ g.ObjectInfo(camera).o.transform
-                @ g.CombineTransform(
-                    translation=g.CombineXYZ(z=-distance),
-                    scale=g.CombineXYZ(distance, distance, distance),
-                ).o.transform
-            )
-            overlay = g.TransformGeometry(
-                g.JoinGeometry(
-                    [
-                        g.SetMaterial(view.o.cells, material=materials[0]),
-                        g.SetMaterial(view.o.fragments, material=materials[1]),
-                        g.SetMaterial(view.o.intersections, material=materials[2]),
-                    ]
-                ),
-                mode="Matrix",
-                transform=to_local,
-            )
-
-        g.JoinGeometry(
-            [
-                g.Switch(show_mesh, None, mesh),
-                overlay,
-                g.Switch(show_cloud, None, cloud),
-            ]
-        ) >> tree.outputs.geometry("Geometry")
-    return tree

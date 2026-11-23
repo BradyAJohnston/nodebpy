@@ -1,10 +1,11 @@
-"""Run stage 1 (the BSP) on Suzanne and plot the cells.
+"""Run the planar map on Suzanne, check it, and plot the BSP.
 
     BLENDER_USER_EXTENSIONS=/nonexistent uv run python examples/planar_map/run_suzanne.py
 
-Writes `suzanne_bsp.png` (cells, fragments, intersection nodes) and
-`suzanne_bsp.blend` to `out/` next to this script, checks the partition (cells tile
-the root, fragments sit in their cells, no curve length is lost) and prints counts.
+Checks the partition (cells tile the root, fragments sit in their cells, no curve
+length is lost) and the planar map (`next` is a permutation that continues where
+each halfedge ends, every connected piece has V - E + F = 2, signed areas cancel).
+Writes `suzanne_bsp.png` and `suzanne_bsp.blend` to `out/` next to this script.
 """
 
 from __future__ import annotations
@@ -21,7 +22,7 @@ sys.path.insert(0, str(HERE))
 import nodebpy  # noqa: F401  (before bpy, so the source tree wins)
 import bpy
 import numpy as np
-from bsp import build
+from planar_map import build
 from mathutils import Vector
 # isort: on
 
@@ -52,6 +53,7 @@ def scene(max_depth: int):
         ("Node Material", (0.85, 0.12, 0.1, 1.0)),
     ]:
         set_input(mod, name, flat_material(name.replace(" Material", ""), color))
+    set_input(mod, "Region Material", fill_material())
     monkey.update_tag()
     return monkey, mod, tree
 
@@ -74,6 +76,102 @@ def flat_material(name: str, color):
         s.Emission(color=color, strength=1.0) >> s.MaterialOutput()
     mat.material.diffuse_color = color
     return mat.material
+
+
+def fill_material():
+    """A Grease Pencil material; the regions' own colours come from their fill and
+    stroke colour attributes. Fills show because the fill colour is opaque."""
+    mat = bpy.data.materials.new("Region")
+    bpy.data.materials.create_gpencil_data(mat)
+    gp = mat.grease_pencil
+    gp.fill_color = (1.0, 1.0, 1.0, 1.0)
+    gp.color = (0.05, 0.05, 0.08, 1.0)
+    return mat
+
+
+def _get(attrs, name, n, width=1, dtype=np.int32):
+    key = {3: "vector", 1: "value"}[width]
+    out = np.zeros(n * width, dtype=np.float32 if width == 3 else dtype)
+    attrs[name].data.foreach_get(key, out)
+    return out.reshape(n, width) if width == 3 else out
+
+
+def read_map(obj):
+    """The halfedges (points) and region loops (curves) from the Halfedges output."""
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    geo = obj.evaluated_get(depsgraph).evaluated_geometry()
+    pc = geo.pointcloud
+    n = len(pc.points)
+    half = {
+        name: _get(pc.attributes, name, n)
+        for name in ("hid", "vertex", "next", "face", "rank")
+    }
+    curves = geo.curves
+    m = len(curves.points)
+    positions = np.zeros(m * 3, dtype=np.float32)
+    curves.attributes["position"].data.foreach_get("vector", positions)
+    offsets = np.zeros(len(curves.curves) + 1, dtype=np.int32)
+    curves.curve_offset_data.foreach_get("value", offsets)
+    area = _get(curves.attributes, "area", len(curves.curves), dtype=np.float32)
+    loops = [
+        positions.reshape(m, 3)[offsets[i] : offsets[i + 1], :2]
+        for i in range(len(curves.curves))
+    ]
+    return half, loops, area
+
+
+def check_map(half, loops, area, node_area: float) -> tuple[list[str], dict]:
+    """The planar map's invariants; returns what failed and some counts."""
+    failures = []
+    hid, nxt, vertex, face = half["hid"], half["next"], half["vertex"], half["face"]
+    h = len(hid)
+    if not (hid == np.arange(h)).all():
+        failures.append("halfedges are not in hid order")
+    if sorted(nxt) != list(range(h)):
+        failures.append("next is not a permutation")
+    twin = hid ^ 1
+    if (vertex[nxt] != vertex[twin]).any():
+        bad = (vertex[nxt] != vertex[twin]).sum()
+        failures.append(f"{bad} halfedges continue from the wrong vertex")
+    if (face[nxt] != face).any():
+        failures.append("next leaves its face")
+
+    # connected pieces of the graph, by union-find over edges
+    ids = {v: i for i, v in enumerate(np.unique(vertex))}
+    parent = list(range(len(ids)))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for e in range(0, h, 2):
+        a, b = find(ids[vertex[e]]), find(ids[vertex[e + 1]])
+        parent[a] = b
+    piece = np.array([find(ids[v]) for v in vertex])
+    euler_bad = 0
+    for p in np.unique(piece):
+        mask = piece == p
+        v = len(np.unique(vertex[mask]))
+        e = mask.sum() // 2
+        f = len(np.unique(face[mask]))
+        euler_bad += v - e + f != 2
+    if euler_bad:
+        failures.append(f"{euler_bad} pieces have V - E + F != 2")
+
+    total = float(area.sum())
+    if abs(total) > node_area:
+        failures.append(f"signed areas sum to {total:.3e}, over {node_area:.3e}")
+    counts = {
+        "vertices": len(ids),
+        "edges": h // 2,
+        "faces": len(np.unique(face)),
+        "regions": int((area > 0).sum()),
+        "pieces": len(np.unique(piece)),
+        "area_sum": total,
+    }
+    return failures, counts
 
 
 def read_cloud(obj):
@@ -213,7 +311,7 @@ def main():
 
     monkey, mod, tree = scene(args.max_depth)
     set_input(mod, "Separating Lines", not args.no_separating)
-    set_input(mod, "Show Cloud", True)
+    set_input(mod, "Data", "BSP Cloud")
 
     # depth 0 gives the fragments as they entered, to compare lengths against
     set_input(mod, "Max Depth", 0)
@@ -231,7 +329,7 @@ def main():
 
     cells = cloud["is_cell"]
     frag = ~cells
-    print(f"tree: {len(tree)} nodes; evaluated in {elapsed:.2f}s")
+    print(f"evaluated in {elapsed:.2f}s")
     print(
         f"fragments: {frag.sum()} segments in {len(np.unique(cloud['curve'][frag]))} pieces"
     )
@@ -239,13 +337,23 @@ def main():
         f"cells: {cells.sum()} leaves, max depth {cloud['depth'][cells].max()}, "
         f"{cloud['is_intersection'].sum()} intersection nodes"
     )
-
     failures = check(cloud, input_length)
-    print("checks:", "all passed" if not failures else "; ".join(failures))
+    print("partition checks:", "all passed" if not failures else "; ".join(failures))
+
+    set_input(mod, "Data", "Halfedges")
+    half, loops, area = read_map(monkey)
+    quads = np.stack([cloud[f"p{k}"][cells, :2] for k in range(4)], axis=1)
+    node_area = float(_area(quads[cloud["is_intersection"][cells]]).sum())
+    failures, counts = check_map(half, loops, area, node_area)
+    print(
+        "planar map: {vertices} vertices, {edges} edges, {faces} faces "
+        "({regions} bounded regions) in {pieces} pieces".format(**counts)
+    )
+    print("map checks:", "all passed" if not failures else "; ".join(failures))
 
     args.out.mkdir(parents=True, exist_ok=True)
     plot(cloud, args.out / "suzanne_bsp.png")
-    set_input(mod, "Show Cloud", False)
+    set_input(mod, "Data", "None")
     bpy.ops.wm.save_as_mainfile(filepath=str(args.out / "suzanne_bsp.blend"))
 
 
