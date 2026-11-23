@@ -161,6 +161,37 @@ with g.tree("Jitter Demo", clear=True) as tree:
   `OtherVertex`, `OffsetVector`, `PrincipalComponents`,
   `GeometryPrincipalComponents`, `ClipFieldToBox`.
 
+Or declare the interface once as class fields, with `GeometryGroup` (or
+`ShaderGroup` / `CompositorGroup`) from `nodebpy.builder.fields`. The typed
+`__init__` is generated, and each field reads as the interface socket inside `build()`
+and as the node's socket afterwards (`node.amount`, `x >> node.geometry`):
+
+```python
+from typing import ClassVar
+
+from nodebpy import geometry as g
+from nodebpy.builder.fields import (
+    FloatInput, GeometryGroup, GeometryInput, GeometryOutput, Panel,
+)
+
+
+class FieldJitter(GeometryGroup):        # tree name "Field Jitter"; set _name to override
+    geometry: GeometryInput = GeometryInput(default=None)
+    with Panel("Noise"):
+        amount: FloatInput = FloatInput(default=0.2, min_value=0.0)
+    result: ClassVar[GeometryOutput] = GeometryOutput(name="Geometry")
+
+    def build(self) -> None:
+        offset = g.RandomValue.vector(min=-1) * self.amount
+        self.geometry >> g.SetPosition(offset=offset) >> self.result
+
+
+with g.tree("Field Jitter Demo", clear=True) as tree:
+    g.IcoSphere() >> FieldJitter(amount=0.15) >> tree.outputs.geometry("Geometry")
+```
+
+Write `default=` by keyword and annotate outputs `ClassVar[...]`.
+
 ## 5. Essentials and asset libraries
 
 Blender's bundled Essentials groups (Array, Smooth by Angle, hair tools, ...) are
