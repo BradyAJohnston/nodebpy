@@ -1903,6 +1903,9 @@ def test_interface_offers_the_sockets_its_tree_accepts(tree_type):
     )
     from nodebpy.builder._utils import _older_blender
     from nodebpy.export.codegen import _INTERFACE_TYPE_METHOD
+    from nodebpy.nodes._blender import GENERATED_FOR
+
+    newer_blender = tuple(bpy.app.version[:2]) > GENERATED_FOR
 
     with _TREE_BUILDERS[tree_type]() as tree:
         context = tree.inputs
@@ -1924,9 +1927,14 @@ def test_interface_offers_the_sockets_its_tree_accepts(tree_type):
                 accepted = True
             except TypeError:
                 accepted = False
-            if accepted or not hasattr(context, method) or not _older_blender():
-                assert hasattr(context, method) == accepted, (socket_type, method)
+            offered = hasattr(context, method)
+            if offered == accepted:
                 continue
+            if accepted and newer_blender:
+                # a socket type a newer Blender added to this tree; offered
+                # once the node classes are generated from it
+                continue
+            assert offered and _older_blender(), (socket_type, method)
             # a socket type the newest Blender added to this tree
             with pytest.raises(NodeUnavailableError, match="generated from Blender"):
                 getattr(context, method)()
